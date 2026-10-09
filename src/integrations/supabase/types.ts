@@ -8,6 +8,12 @@ export type Database = {
         Update: { [k: string]: unknown };
         Relationships: [{ foreignKeyName: "aplicaciones_vacante_id_fkey"; columns: ["vacante_id"]; isOneToOne: false; referencedRelation: "vacantes"; referencedColumns: ["id"] }];
       };
+      borradores: {
+        Row: { id: string; created_at: string; origen: string; estado: string; texto: string; titulo: string | null; empresa: string | null; provincia: string | null; contacto_nombre: string | null; contacto_email: string | null; contacto_telefono: string | null; fuente: string | null; fuente_url: string | null; datos: Record<string, unknown> | null };
+        Insert: { texto: string; [k: string]: unknown };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
       contenido_sitio: {
         Row: { clave: string; updated_at: string; valor: string };
         Insert: { clave: string; updated_at?: string; valor?: string };

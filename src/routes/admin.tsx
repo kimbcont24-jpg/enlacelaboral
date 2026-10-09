@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ExternalLink, ImageUp, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
+import { ExternalLink, Eye, ImageUp, Inbox, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -18,7 +18,9 @@ export const Route = createFileRoute("/admin")({
   component: Admin,
 });
 
-type Tab = "publicar" | "vacantes" | "aplicaciones" | "textos";
+type Tab = "publicar" | "borradores" | "vacantes" | "aplicaciones" | "textos";
+
+type BorradorRow = { id: string; created_at: string; origen: string; texto: string; titulo: string | null; empresa: string | null; provincia: string | null; contacto_nombre: string | null; contacto_email: string | null; contacto_telefono: string | null; fuente: string | null; fuente_url: string | null; datos: Record<string, unknown> | null };
 
 const campo = "mt-1 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-primary";
 const etiqueta = "text-xs font-semibold uppercase tracking-wide text-muted-foreground";
@@ -30,6 +32,14 @@ function Admin() {
   const [uid, setUid] = useState("");
   const [tab, setTab] = useState<Tab>("publicar");
   const [editar, setEditar] = useState<Vacante | null>(null);
+  const [desde, setDesde] = useState<BorradorRow | null>(null);
+  const [pendientes, setPendientes] = useState(0);
+
+  const contar = useCallback(async () => {
+    const { count } = await supabase.from("borradores").select("id", { count: "exact", head: true }).eq("estado", "pendiente");
+    setPendientes(count ?? 0);
+  }, []);
+  useEffect(() => { if (estado === "si") void contar(); }, [estado, contar, tab]);
 
   useEffect(() => {
     void (async () => {
@@ -66,6 +76,7 @@ function Admin() {
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "publicar", label: editar ? "Editando vacante" : "Publicar vacante" },
+    { id: "borradores", label: pendientes ? `Borradores (${pendientes})` : "Borradores" },
     { id: "vacantes", label: "Mis vacantes" },
     { id: "aplicaciones", label: "Aplicaciones" },
     { id: "textos", label: "Textos" },
@@ -92,7 +103,8 @@ function Admin() {
               ))}
             </div>
             <div className="mt-6">
-              {tab === "publicar" && <Publicar uid={uid} editar={editar} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={cerrarEdicion} />}
+              {tab === "publicar" && <Publicar uid={uid} editar={editar} desde={desde} alPublicarBorrador={() => { setDesde(null); void contar(); setTab("borradores"); }} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={() => { setDesde(null); cerrarEdicion(); }} />}
+              {tab === "borradores" && <Borradores onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
               {tab === "vacantes" && <MisVacantes onEditar={(v) => { setEditar(v); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
               {tab === "aplicaciones" && <Aplicaciones />}
               {tab === "textos" && <Textos />}
@@ -131,7 +143,44 @@ async function miEmpresa(uid: string): Promise<string> {
   return (nueva as { id: string }).id;
 }
 
-function Publicar({ uid, editar, alTerminar, cancelar }: { uid: string; editar: Vacante | null; alTerminar: () => void; cancelar: () => void }) {
+const str = (v: unknown) => (typeof v === "string" ? v.trim() : typeof v === "number" ? String(v) : "");
+const enLista = (v: unknown, lista: readonly string[], porDefecto: string) => { const x = str(v); return lista.includes(x) ? x : porDefecto; };
+
+function desdeBorradorRow(r: BorradorRow): Borrador {
+  const base = extraer(r.texto);
+  const d = r.datos ?? {};
+  const reqs = Array.isArray(d["requisitos"]) ? (d["requisitos"] as unknown[]).map(str).filter(Boolean).join("\n") : str(d["requisitos"]);
+  const conIA = Object.keys(d).length > 0;
+  const b: Borrador = conIA
+    ? {
+        titulo: str(d["titulo"]) || base.titulo,
+        empresa: str(d["empresa"]),
+        provincia: enLista(d["provincia"], provincias.slice(1), base.provincia),
+        modalidad: enLista(d["modalidad"], modalidades, base.modalidad),
+        tipo: enLista(d["tipo"], tiposEmpleo, base.tipo),
+        experiencia: enLista(d["experiencia"], nivelesExperiencia, base.experiencia),
+        area: enLista(d["area"], areas, base.area),
+        salarioMin: str(d["salarioMin"]).replace(/\D/g, ""),
+        salarioMax: str(d["salarioMax"]).replace(/\D/g, ""),
+        descripcion: str(d["descripcion"]),
+        requisitos: reqs,
+        aplicar: str(d["aplicar"]),
+        fuente: str(d["fuente"]),
+        fuenteUrl: str(d["fuenteUrl"]),
+      }
+    : base;
+  return {
+    ...b,
+    titulo: r.titulo?.trim() || b.titulo,
+    empresa: r.empresa?.trim() || b.empresa,
+    provincia: r.provincia && provincias.slice(1).includes(r.provincia) ? r.provincia : b.provincia,
+    aplicar: b.aplicar || r.contacto_email?.trim() || "",
+    fuente: r.fuente?.trim() || b.fuente || (r.origen === "correo" ? "Correo recibido" : ""),
+    fuenteUrl: r.fuente_url?.trim() || b.fuenteUrl,
+  };
+}
+
+function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar }: { uid: string; editar: Vacante | null; desde: BorradorRow | null; alPublicarBorrador: () => void; alTerminar: () => void; cancelar: () => void }) {
   const qc = useQueryClient();
   const [texto, setTexto] = useState("");
   const [b, setB] = useState<Borrador>(borradorVacio);
@@ -147,6 +196,14 @@ function Publicar({ uid, editar, alTerminar, cancelar }: { uid: string; editar: 
       setTexto("");
     }
   }, [editar]);
+
+  useEffect(() => {
+    if (desde && !editar) {
+      setTexto(desde.texto);
+      setB(desdeBorradorRow(desde));
+      setLleno(true);
+    }
+  }, [desde, editar]);
 
   const set = (k: keyof Borrador) => (e: { target: { value: string } }) => setB((x) => ({ ...x, [k]: e.target.value }));
 
@@ -201,7 +258,7 @@ function Publicar({ uid, editar, alTerminar, cancelar }: { uid: string; editar: 
     setTexto("");
     setB(borradorVacio);
     setLleno(false);
-    if (editar) cancelar();
+    if (editar || desde) cancelar();
   };
 
   const publicar = async () => {
@@ -240,12 +297,16 @@ function Publicar({ uid, editar, alTerminar, cancelar }: { uid: string; editar: 
         const { error } = await supabase.from("vacantes").insert({ ...fila, empresa_id: empresaId, owner_id: uid, estado: "publicada" });
         if (error) throw error;
         toast.success("¡Vacante publicada! Ya aparece en tu página.");
+        if (desde) {
+          await supabase.from("borradores").update({ estado: "publicado" }).eq("id", desde.id);
+        }
       }
       await qc.invalidateQueries({ queryKey: ["vacantes"] });
       setTexto("");
       setB((x) => ({ ...borradorVacio, fuente: x.fuente }));
       setLleno(false);
       if (editar) alTerminar();
+      else if (desde) alPublicarBorrador();
     } catch (err) {
       toast.error(`No se pudo guardar: ${err instanceof Error ? err.message : "error desconocido"}`);
     } finally {
@@ -257,6 +318,12 @@ function Publicar({ uid, editar, alTerminar, cancelar }: { uid: string; editar: 
     <div className="space-y-6">
       {!editar && (
         <section className="rounded-2xl border border-border bg-surface p-5">
+          {desde && (
+            <div className="mb-4 rounded-xl border border-primary/40 bg-primary/5 p-3 text-sm">
+              <p className="font-bold text-primary">Revisando borrador {desde.origen === "empresa" ? "enviado por una empresa" : "llegado por correo"}</p>
+              {(desde.contacto_nombre || desde.contacto_email || desde.contacto_telefono) && <p className="mt-1 text-muted-foreground">Contacto: {[desde.contacto_nombre, desde.contacto_email, desde.contacto_telefono].filter(Boolean).join(" · ")}</p>}
+            </div>
+          )}
           <h2 className="text-lg font-bold">1. Pega el texto o sube la imagen</h2>
           <p className="mt-1 text-sm text-muted-foreground">Copia la vacante de otro sitio y pégala aquí. También puedes pegar una captura directamente (Ctrl+V) o subir una foto.</p>
           <textarea value={texto} onChange={(e) => setTexto(e.target.value)} onPaste={alPegar} rows={8} placeholder="Pega aquí el texto de la vacante…" className={campo} />
@@ -298,6 +365,49 @@ function Publicar({ uid, editar, alTerminar, cancelar }: { uid: string; editar: 
           {guardando ? <Loader2 className="animate-spin" /> : editar ? <Save /> : <Send />} {editar ? "Guardar cambios" : "Publicar vacante"}
         </Button>
       </section>
+    </div>
+  );
+}
+
+function Borradores({ onRevisar, onCambio }: { onRevisar: (r: BorradorRow) => void; onCambio: () => void }) {
+  const [items, setItems] = useState<BorradorRow[] | null>(null);
+  const cargar = useCallback(async () => {
+    const { data, error } = await supabase.from("borradores").select("*").eq("estado", "pendiente").order("created_at", { ascending: false }).limit(200);
+    if (error) toast.error("No se pudieron cargar los borradores.");
+    setItems((data as unknown as BorradorRow[] | null) ?? []);
+  }, []);
+  useEffect(() => void cargar(), [cargar]);
+
+  const descartar = async (r: BorradorRow) => {
+    if (!confirm(`¿Descartar "${r.titulo || "este borrador"}"?`)) return;
+    const { error } = await supabase.from("borradores").update({ estado: "descartado" }).eq("id", r.id);
+    if (error) toast.error("No se pudo descartar."); else toast.success("Borrador descartado.");
+    await cargar();
+    onCambio();
+  };
+
+  if (!items) return <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>;
+  if (!items.length) return (
+    <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
+      <Inbox className="mx-auto mb-2 size-6" />
+      No hay borradores. Aquí llegan las vacantes que envían las empresas y las que llegan a tu correo de vacantes.
+    </div>
+  );
+  const accion = "inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-sm font-semibold hover:border-primary hover:text-primary";
+  return (
+    <div className="space-y-3">
+      <p className="text-xs text-muted-foreground">{items.length} por revisar. Nada se publica hasta que tú lo apruebes.</p>
+      {items.map((r) => (
+        <div key={r.id} className="rounded-2xl border border-border bg-surface p-4">
+          <p className="font-bold">{r.titulo || str(r.datos?.["titulo"]) || "Vacante sin título"} <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">{r.origen === "empresa" ? "Empresa" : "Correo"}</span></p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{[r.empresa || str(r.datos?.["empresa"]), r.provincia, new Date(r.created_at).toLocaleDateString("es-DO"), r.contacto_email].filter(Boolean).join(" · ")}</p>
+          <p className="mt-2 line-clamp-3 whitespace-pre-line text-sm text-muted-foreground">{r.texto}</p>
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
+            <button type="button" onClick={() => onRevisar(r)} className={`${accion} border-primary text-primary`}><Eye className="size-4" /> Revisar y publicar</button>
+            <button type="button" onClick={() => void descartar(r)} className={`${accion} hover:border-destructive hover:text-destructive`}><Trash2 className="size-4" /> Descartar</button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
