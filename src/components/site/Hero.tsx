@@ -1,10 +1,14 @@
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { CheckCircle2, FileSearch, Search, Send, Sparkles } from "lucide-react";
 
 import { SearchBar } from "@/components/site/SearchBar";
 import { FiltrosRapidos, type Filtros } from "@/components/site/Filtros";
 import { textosPorDefecto, useContenido } from "@/lib/contenido";
 
-const candidata = "https://enlace-rd.lovable.app/assets/hero-candidata-CMUjrSGi.jpg";
+const pasos = [
+  { icono: Search, titulo: "Busca", texto: "Filtra por área, provincia, salario o modalidad." },
+  { icono: FileSearch, titulo: "Revisa la vacante", texto: "Requisitos, salario si lo publican y la fuente original." },
+  { icono: Send, titulo: "Aplica gratis", texto: "Te llevamos al contacto de la empresa o envías tus datos aquí mismo." },
+];
 
 type Props = { puesto: string; provincia: string; onPuesto: (v: string) => void; onProvincia: (v: string) => void; onBuscar: () => void; filtros: Filtros; onFiltros: (f: Filtros) => void; total: number };
 
@@ -25,11 +29,21 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, filtr
               {["Aplicar es gratis", "Fuente original visible", "Vacantes de todo el país"].map((x) => (<li key={x} className="flex items-center gap-1.5 text-muted-foreground"><CheckCircle2 className="size-4 text-success" /> {x}</li>))}
             </ul>
           </div>
-          <div className="relative mx-auto hidden w-full max-w-md md:block lg:max-w-none">
-            <div className="relative mx-auto aspect-square w-[min(100%,26rem)]">
-              <div className="absolute inset-0 rounded-[42%_58%_46%_54%/54%_44%_56%_46%] bg-primary/10" />
-              <img src={candidata} alt="Persona buscando empleo" width={1024} height={1024} className="absolute inset-3 size-[calc(100%-1.5rem)] rounded-[42%_58%_46%_54%/54%_44%_56%_46%] object-cover" />
-            </div>
+          <div className="rounded-3xl border border-border bg-surface p-6 shadow-[var(--shadow-soft)] md:p-8">
+            <p className="text-sm font-bold uppercase tracking-wide text-primary">Cómo funciona</p>
+            <ol className="mt-5 space-y-5">
+              {pasos.map((p, i) => (
+                <li key={p.titulo} className="flex gap-4">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                    <p.icono className="size-5" aria-hidden="true" />
+                  </span>
+                  <div>
+                    <p className="font-bold"><span className="text-muted-foreground">{i + 1}.</span> {p.titulo}</p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">{p.texto}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
         <div className="mt-10 rounded-3xl border border-border bg-surface/80 p-2 shadow-[var(--shadow-lift)]">
