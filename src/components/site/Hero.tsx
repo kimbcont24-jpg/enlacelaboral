@@ -1,87 +1,47 @@
-import { Building2, CheckCircle2, GraduationCap, Landmark, Search, UserRound, Users } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 import { SearchBar } from "@/components/site/SearchBar";
-import { FiltrosRapidos, type Filtros } from "@/components/site/Filtros";
-import { LogoMarca } from "@/components/site/Logo";
 import { textosPorDefecto, useContenido } from "@/lib/contenido";
 
-const personas = [
-  { icono: UserRound, texto: "Buscas tu primer empleo" },
-  { icono: Users, texto: "Tienes experiencia" },
-  { icono: Search, texto: "Quieres cambiar de trabajo" },
-];
+const populares = ["Recepcionista", "Cajero", "Call center", "Asistente administrativo", "Ventas", "Chofer"];
 
-const organizaciones = [
-  { icono: Building2, texto: "Empresas" },
-  { icono: GraduationCap, texto: "Universidades y centros técnicos" },
-  { icono: Landmark, texto: "Instituciones y ferias de empleo" },
-];
+type Props = { puesto: string; provincia: string; onPuesto: (v: string) => void; onProvincia: (v: string) => void; onBuscar: () => void; total: number; provincias: number };
 
-type Props = { puesto: string; provincia: string; onPuesto: (v: string) => void; onProvincia: (v: string) => void; onBuscar: () => void; filtros: Filtros; onFiltros: (f: Filtros) => void; total: number };
-
-function Lado({ titulo, items, color }: { titulo: string; items: typeof personas; color: "mango" | "mar" }) {
-  const tono = color === "mango" ? "bg-cta/15 text-[#9a5b00]" : "bg-primary/10 text-primary";
-  return (
-    <div>
-      <p className="text-sm font-bold text-foreground">{titulo}</p>
-      <ul className="mt-3 space-y-2">
-        {items.map((i) => (
-          <li key={i.texto} className="flex items-center gap-3 rounded-xl border border-border bg-surface px-3 py-2.5 text-sm font-medium">
-            <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${tono}`}><i.icono className="size-4" aria-hidden="true" /></span>
-            {i.texto}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function Diagrama() {
-  return (
-    <div className="rounded-3xl bg-secondary p-5 sm:p-6" aria-label="Cómo conecta Enlace RD">
-            <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto_1fr]">
-              <Lado titulo="Personas" items={personas} color="mango" />
-              <div className="flex flex-row items-center justify-center gap-2 sm:flex-col">
-                <span className="hidden h-8 w-px bg-border sm:block" />
-                <LogoMarca className="h-12 w-16" />
-                <span className="hidden h-8 w-px bg-border sm:block" />
-              </div>
-              <Lado titulo="Empresas e instituciones" items={organizaciones} color="mar" />
-            </div>
-            <p className="mt-4 text-center text-sm text-muted-foreground">Nosotros hacemos el enlace: reunimos las vacantes y te llevamos directo a quien contrata.</p>
-          </div>
-  );
-}
-
-export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, filtros, onFiltros, total }: Props) {
+export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total, provincias }: Props) {
   const t = useContenido();
-  // Textos de la versión anterior guardados en el panel: se reemplazan por los nuevos.
-  const viejo = (v: string) => v.startsWith("Encuentra tu próximo empleo") || v.startsWith("Conectamos talento con oportunidades reales");
+  // Textos de versiones anteriores guardados en el panel: se reemplazan por los nuevos.
+  const viejo = (v: string) => v.startsWith("Encuentra tu próximo empleo") || v.startsWith("Conectamos talento con oportunidades reales") || v.startsWith("Tu enlace con el empleo");
   const titulo = viejo(t.hero_titulo) ? textosPorDefecto.hero_titulo : t.hero_titulo;
-  const subtitulo = viejo(t.hero_subtitulo) ? textosPorDefecto.hero_subtitulo : t.hero_subtitulo;
+  const subtitulo = viejo(t.hero_subtitulo) || t.hero_subtitulo.startsWith("Reunimos vacantes") ? textosPorDefecto.hero_subtitulo : t.hero_subtitulo;
+
   return (
-    <header className="border-b border-border bg-surface px-4 pb-10 pt-8 sm:px-6 md:pt-12">
+    <header className="bg-primary px-4 pb-12 pt-10 text-white sm:px-6 md:pb-16 md:pt-14">
       <div className="mx-auto max-w-6xl">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
-          <div>
-            <h1 className="text-balance text-4xl font-extrabold leading-[1.08] tracking-tight md:text-[3.4rem]">{titulo}</h1>
-            <p className="mt-4 max-w-xl text-lg text-muted-foreground">{subtitulo}</p>
-            <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
-              {["Aplicar es gratis", "Siempre ves la fuente original", "Vacantes de todo el país"].map((x) => (
-                <li key={x} className="flex items-center gap-1.5"><CheckCircle2 className="size-4 text-success" aria-hidden="true" /> {x}</li>
-              ))}
-            </ul>
-          </div>
+        <h1 className="max-w-3xl text-balance text-4xl font-extrabold leading-[1.08] tracking-tight md:text-[3.25rem]">{titulo}</h1>
+        <p className="mt-3 max-w-2xl text-lg text-white/85">{subtitulo}</p>
 
-          <div className="hidden lg:block"><Diagrama /></div>
+        <div className="mt-7 max-w-4xl [&_form]:border-transparent [&_form]:text-foreground">
+          <SearchBar puesto={puesto} provincia={provincia} onPuesto={onPuesto} onProvincia={onProvincia} onSubmit={onBuscar} ctaLabel="Buscar" />
         </div>
 
-        <div className="mt-10 rounded-2xl border border-border bg-background p-2 shadow-[var(--shadow-soft)]">
-          <SearchBar puesto={puesto} provincia={provincia} onPuesto={onPuesto} onProvincia={onProvincia} onSubmit={onBuscar} ctaLabel="Buscar empleo" />
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <span className="mr-1 text-sm text-white/75">Búsquedas populares:</span>
+          {populares.map((p) => (
+            <Link key={p} to="/vacantes" search={{ q: p }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-white/20">{p}</Link>
+          ))}
+          <Link to="/vacantes" search={{ modalidad: "Remoto" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-white/20">Desde casa</Link>
+          <Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-white/20">Primer empleo</Link>
         </div>
-        <FiltrosRapidos value={filtros} onChange={onFiltros} className="mt-4 justify-center" />
-        <div className="mt-8 lg:hidden"><Diagrama /></div>
-        {total > 0 && (<p className="mt-5 text-center text-sm text-muted-foreground"><span className="font-bold text-foreground">{total}</span> {total === 1 ? "vacante disponible" : "vacantes disponibles"} · aplicar es gratis</p>)}
+
+        <dl className="mt-9 flex flex-wrap gap-x-10 gap-y-4 border-t border-white/15 pt-6">
+          {total > 0 && (
+            <div><dt className="text-sm text-white/70">Vacantes activas</dt><dd className="text-2xl font-extrabold">{total}</dd></div>
+          )}
+          {provincias > 0 && (
+            <div><dt className="text-sm text-white/70">Provincias con vacantes</dt><dd className="text-2xl font-extrabold">{provincias}</dd></div>
+          )}
+          <div><dt className="text-sm text-white/70">Costo para aplicar</dt><dd className="text-2xl font-extrabold">Gratis</dd></div>
+        </dl>
       </div>
     </header>
   );

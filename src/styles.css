@@ -35,31 +35,31 @@
 }
 
 :root {
-  --radius: 0.875rem;
-  /* Paleta "Caribe": mar (marca), mango (acción), tinta (texto), niebla (fondo) */
-  --background: #f3f7f8;
-  --foreground: #13293d;
+  --radius: 0.75rem;
+  /* Paleta "Bandera": azul dominicano (marca), rojo (acción), fondo gris claro */
+  --background: #f4f6f9;
+  --foreground: #14213a;
   --surface: #ffffff;
-  --primary: #0a7a8c;
+  --primary: #002d62;
   --primary-foreground: #ffffff;
-  --secondary: #e3eff1;
-  --secondary-foreground: #13293d;
-  --muted: #e9f0f2;
-  --muted-foreground: #4f6476;
-  --accent: #13293d;
+  --secondary: #e8eef6;
+  --secondary-foreground: #14213a;
+  --muted: #eef1f5;
+  --muted-foreground: #556275;
+  --accent: #002d62;
   --accent-foreground: #ffffff;
-  --cta: #f5a524;
-  --cta-hover: #e8961a;
-  --cta-foreground: #13293d;
-  --success: #1b8a5a;
+  --cta: #ce1126;
+  --cta-hover: #a90e1f;
+  --cta-foreground: #ffffff;
+  --success: #0f7a43;
   --destructive: #c8372d;
   --destructive-foreground: #ffffff;
-  --border: rgb(19 41 61 / 0.11);
-  --input: rgb(19 41 61 / 0.18);
-  --ring: #0a7a8c;
-  --shadow-soft: 0 1px 2px rgb(19 41 61 / 0.06), 0 8px 24px -12px rgb(19 41 61 / 0.18);
-  --shadow-lift: 0 18px 40px -22px rgb(10 122 140 / 0.45);
-  --shadow-glow: 0 18px 40px -22px rgb(10 122 140 / 0.45);
+  --border: rgb(20 33 58 / 0.11);
+  --input: rgb(20 33 58 / 0.2);
+  --ring: #002d62;
+  --shadow-soft: 0 1px 2px rgb(20 33 58 / 0.06), 0 8px 24px -14px rgb(20 33 58 / 0.25);
+  --shadow-lift: 0 16px 32px -20px rgb(0 45 98 / 0.45);
+  --shadow-glow: 0 16px 32px -20px rgb(0 45 98 / 0.45);
 }
 
 @layer base {
@@ -86,6 +86,6 @@
 }
 
 @layer base {
-  :focus-visible { outline: 3px solid var(--cta); outline-offset: 2px; }
+  :focus-visible { outline: 3px solid #f5b400; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 }

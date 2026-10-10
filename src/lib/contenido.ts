@@ -3,8 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const textosEditables = {
   hero_badge: { etiqueta: "Portada · etiqueta superior", valor: "Tu próximo paso comienza aquí" },
-  hero_titulo: { etiqueta: "Portada · título", valor: "Tu enlace con el empleo en República Dominicana" },
-  hero_subtitulo: { etiqueta: "Portada · subtítulo", valor: "Reunimos vacantes de empresas, portales e instituciones en un solo lugar. Buscas, ves los requisitos y aplicas gratis." },
+  hero_titulo: { etiqueta: "Portada · título", valor: "Encuentra empleo en República Dominicana" },
+  hero_subtitulo: { etiqueta: "Portada · subtítulo", valor: "Vacantes reales de empresas e instituciones de todo el país, en un solo lugar. Aplicar es gratis." },
   especialista_cita: { etiqueta: "Consejo del especialista · cita", valor: "Lee bien los requisitos indispensables y aplica si cumples la mayoría. Muchas empresas valoran la actitud y las ganas de aprender." },
   especialista_firma: { etiqueta: "Consejo del especialista · firma", valor: "Equipo Enlace RD" },
   reclutadores_titulo: { etiqueta: "Bloque reclutadores · título", valor: "¿Buscas talento?" },
