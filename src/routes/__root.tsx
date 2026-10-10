@@ -24,13 +24,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Enlace Laboral" },
-      { name: "description", content: "Empleos en República Dominicana." },
+      { title: "Enlace RD · Empleos en República Dominicana" },
+      { name: "description", content: "Vacantes reales de empresas, portales e instituciones de República Dominicana, en un solo lugar. Aplicar es gratis." },
+      { name: "theme-color", content: "#0a7a8c" },
       { name: "google-site-verification", content: "nAeJKgDNM-yYtt0zmC-2lKd0eo_y-u7L07Re10v9NVg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
     ],
   }),

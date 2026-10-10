@@ -24,8 +24,8 @@ export function JobCard({ job }: { job: Vacante }) {
           <p className="mt-2 text-xs text-muted-foreground">Fuente: {job.fuente}</p>
         </div>
         <div className="flex shrink-0 flex-col gap-2 sm:w-44">
-          <Link to="/vacantes/$id" params={{ id: job.id }} className="rounded-xl bg-primary px-5 py-3 text-center text-sm font-bold text-primary-foreground hover:brightness-110">Ver vacante</Link>
-          <button onClick={() => aplicar(job)} className="rounded-xl border border-border px-5 py-2.5 text-center text-sm font-semibold hover:border-primary hover:text-primary">Cómo aplicar</button>
+          <button onClick={() => aplicar(job)} className="btn-aplicar rounded-xl px-5 py-3 text-center text-base">Aplicar</button>
+          <Link to="/vacantes/$id" params={{ id: job.id }} className="rounded-xl border border-border px-5 py-2.5 text-center text-sm font-semibold hover:border-primary hover:text-primary">Ver detalles</Link>
         </div>
       </div>
       <AdminAcciones job={job} />

@@ -20,18 +20,17 @@ function Empresas() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <header className="mx-auto max-w-7xl px-6 pb-12 pt-16">
-        <p className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-primary">Para empresas y reclutadores</p>
-        <h1 className="max-w-3xl text-balance text-4xl font-extrabold tracking-tight md:text-6xl">Publicar es gratis. Llega a candidatos <span className="text-primary">de todo el país.</span></h1>
+                <h1 className="max-w-3xl text-balance text-4xl font-extrabold tracking-tight md:text-6xl">Publica tus vacantes gratis y llega a candidatos de todo el país</h1>
         <p className="mt-4 max-w-2xl text-muted-foreground">Envía tu vacante y la publicamos sin costo. Los servicios extras son opcionales.</p>
       </header>
       <section className="mx-auto max-w-7xl px-6 pb-16">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {planes.map((p) => (
             <div key={p.nombre} className={p.popular ? "relative flex flex-col rounded-3xl border-2 border-primary bg-surface p-7" : "relative flex flex-col rounded-3xl border border-border bg-surface p-7"}>
-              {p.popular && (<span className="absolute -top-3 left-7 rounded-full bg-primary px-3 py-1 text-[10px] font-black uppercase tracking-wider text-primary-foreground">Más elegido</span>)}
+              
               <h2 className="text-lg font-bold">{p.nombre}</h2>
               <div className="mt-3 flex items-baseline gap-1"><span className="text-3xl font-extrabold">{p.precio}</span><span className="text-sm text-muted-foreground">{p.unidad}</span></div>
-              {"impulso" in p && p.impulso && (<p className="mt-3 rounded-lg bg-primary/10 px-3 py-2 text-xs font-bold text-primary">⚡ {p.impulso}</p>)}
+              {"impulso" in p && p.impulso && (<p className="mt-3 rounded-lg bg-primary/10 px-3 py-2 text-xs font-bold text-primary">{p.impulso}</p>)}
               <p className="mt-3 text-sm text-muted-foreground">{p.resumen}</p>
               <ul className="mt-6 flex-1 space-y-2 text-sm">{p.beneficios.map((b) => (<li key={b} className="flex gap-2"><span className="text-primary">✓</span> {b}</li>))}</ul>
               <button onClick={() => { setPlan(p.nombre); document.getElementById("publicar")?.scrollIntoView({ behavior: "smooth" }); }} className="mt-6 w-full rounded-xl border border-border py-3 font-bold hover:border-primary hover:text-primary">{p.cta}</button>

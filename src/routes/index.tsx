@@ -7,7 +7,6 @@ import { Footer } from "@/components/site/Footer";
 import { JobCard } from "@/components/site/JobCard";
 import { Hero } from "@/components/site/Hero";
 import { AreasGrid } from "@/components/site/AreasGrid";
-import { RedInstitucional } from "@/components/site/Ecosistema";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { consejos } from "@/lib/data";
 import { useContenido } from "@/lib/contenido";
@@ -65,7 +64,6 @@ function Home() {
         </div>
       </section>
       <AreasGrid jobs={jobs} />
-      <RedInstitucional />
       <section className="border-t border-border bg-secondary/40 px-6 py-16">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-5">
@@ -87,12 +85,12 @@ function Home() {
         </div>
       </section>
       <section className="px-6 py-16">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 rounded-3xl border border-border bg-surface p-8 md:flex-row md:items-center md:justify-between md:p-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 rounded-3xl bg-foreground p-8 text-white md:flex-row md:items-center md:justify-between md:p-10">
           <div className="max-w-xl">
             <h2 className="text-2xl font-bold tracking-tight">{t.reclutadores_titulo}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{t.reclutadores_texto}</p>
+            <p className="mt-2 text-white/75">{t.reclutadores_texto}</p>
           </div>
-          <Link to="/empresas" className="rounded-xl bg-primary px-6 py-3.5 text-center font-bold text-primary-foreground hover:brightness-110">Publicar vacante gratis</Link>
+          <Link to="/empresas" className="btn-aplicar rounded-xl px-6 py-3.5 text-center">Publicar vacante gratis</Link>
         </div>
       </section>
       <Footer />
