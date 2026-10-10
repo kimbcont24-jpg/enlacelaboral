@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ExternalLink, Eye, ImageUp, Inbox, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
+import { ExternalLink, Eye, ImageUp, Inbox, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -436,6 +436,12 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
     await refrescar();
   };
 
+  const destacar = async (v: Vacante) => {
+    const { error } = await supabase.from("vacantes").update({ destacada: !v.destacada }).eq("id", v.id);
+    if (error) toast.error("No se pudo cambiar."); else toast.success(v.destacada ? "Ya no está destacada." : "Vacante destacada: sale arriba del listado.");
+    await refrescar();
+  };
+
   const borrar = async (v: Vacante) => {
     if (!confirm(`¿Borrar "${v.titulo}"? No se puede deshacer.`)) return;
     const { error } = await supabase.from("vacantes").delete().eq("id", v.id);
@@ -455,11 +461,12 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
       <p className="text-xs text-muted-foreground">{items.filter((v) => v.estado === "publicada").length} visibles · {items.length} en total</p>
       {lista.map((v) => (
         <div key={v.id} className="rounded-2xl border border-border bg-surface p-4">
-          <p className="font-bold">{v.titulo} {v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">Pausada</span>}</p>
+          <p className="font-bold">{v.titulo} {v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">Pausada</span>}{v.destacada && <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Destacada</span>}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{v.empresa} · {v.provincia} · {v.salario} · {v.publicado} · Fuente: {v.fuente}</p>
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
             <button type="button" onClick={() => onEditar(v)} className={`${accion} border-primary text-primary`}><Pencil className="size-4" /> Editar</button>
             <button type="button" onClick={() => void alternar(v)} className={accion}>{v.estado === "publicada" ? <><Pause className="size-4" /> Pausar</> : <><Play className="size-4" /> Publicar</>}</button>
+            <button type="button" onClick={() => void destacar(v)} className={accion}><Star className={`size-4 ${v.destacada ? "fill-current" : ""}`} /> {v.destacada ? "Quitar" : "Destacar"}</button>
             <Link to="/vacantes/$id" params={{ id: v.id }} target="_blank" className={accion}><ExternalLink className="size-4" /> Ver</Link>
             <button type="button" onClick={() => void borrar(v)} className={`${accion} hover:border-destructive hover:text-destructive`}><Trash2 className="size-4" /> Borrar</button>
           </div>

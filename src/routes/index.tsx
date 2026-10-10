@@ -7,7 +7,7 @@ import { Footer } from "@/components/site/Footer";
 import { JobCard } from "@/components/site/JobCard";
 import { Hero } from "@/components/site/Hero";
 import { AreasGrid } from "@/components/site/AreasGrid";
-import { NexaSection, RedInstitucional } from "@/components/site/Ecosistema";
+import { RedInstitucional } from "@/components/site/Ecosistema";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { consejos } from "@/lib/data";
 import { useContenido } from "@/lib/contenido";
@@ -65,7 +65,6 @@ function Home() {
         </div>
       </section>
       <AreasGrid jobs={jobs} />
-      <NexaSection />
       <RedInstitucional />
       <section className="border-t border-border bg-secondary/40 px-6 py-16">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-12 lg:items-start">

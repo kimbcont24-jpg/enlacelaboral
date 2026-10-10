@@ -1,16 +1,16 @@
 export const redInstitucional = [
-  { nombre: "Candidatos", icono: "UserRound" },
-  { nombre: "Empresas", icono: "Building2" },
+  { nombre: "Empresas que publican", icono: "Building2" },
+  { nombre: "Portales de empleo", icono: "Landmark" },
+  { nombre: "LinkedIn y redes sociales", icono: "Link2" },
   { nombre: "Reclutadores", icono: "Briefcase" },
   { nombre: "Universidades", icono: "GraduationCap" },
-  { nombre: "INFOTEP", icono: "Wrench" },
   { nombre: "Centros técnicos", icono: "School" },
-  { nombre: "Instituciones públicas", icono: "Landmark" },
-  { nombre: "Programas de inclusión", icono: "HeartHandshake" },
   { nombre: "Ferias de empleo", icono: "MapPin" },
-  { nombre: "Referidos", icono: "Link2" },
+  { nombre: "Programas de inclusión", icono: "HeartHandshake" },
+  { nombre: "Referidos", icono: "UserRound" },
+  { nombre: "Bolsas universitarias", icono: "Wrench" },
 ];
 
-export const fuentesTalento = ["Portales corporativos", "Bolsas universitarias", "INFOTEP", "Centros técnicos", "Programas de inclusión", "Ferias de empleo", "Redes de reclutadores", "Referidos verificados", "Candidatos directos"];
+export const fuentesTalento = ["Siempre mostramos la fuente original", "Revisamos cada vacante antes de publicarla", "Aplicar es gratis", "Nunca pagues por un empleo"];
 
 export const preguntasNexa = ["¿Qué empleos puedo buscar?", "¿Mi CV está bien?", "¿Cómo me preparo para una entrevista?", "¿Cuánto debería ganar?", "¿Qué vacantes encajan conmigo?"];

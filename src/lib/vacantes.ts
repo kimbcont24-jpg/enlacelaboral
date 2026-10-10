@@ -23,6 +23,7 @@ export type Vacante = {
   creado: string;
   estado: string;
   categorias: string[];
+  destacada: boolean;
 };
 
 export type VacanteRow = {
@@ -40,9 +41,10 @@ export type VacanteRow = {
   etiquetas: string[] | null;
   estado: string;
   created_at: string;
+  destacada?: boolean | null;
 };
 
-export const SELECT = "id,titulo,area,provincia,modalidad,tipo,experiencia,salario_min,salario_max,descripcion,requisitos,etiquetas,estado,created_at";
+export const SELECT = "id,titulo,area,provincia,modalidad,tipo,experiencia,salario_min,salario_max,descripcion,requisitos,etiquetas,estado,created_at,destacada";
 
 const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
 
@@ -94,11 +96,12 @@ export function rowToVacante(r: VacanteRow): Vacante {
     creado: r.created_at,
     estado: r.estado,
     categorias: tags,
+    destacada: !!r.destacada,
   };
 }
 
 export async function fetchPublicadas(): Promise<Vacante[]> {
-  const { data, error } = await supabase.from("vacantes").select(SELECT).eq("estado", "publicada").order("created_at", { ascending: false }).limit(300);
+  const { data, error } = await supabase.from("vacantes").select(SELECT).eq("estado", "publicada").gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString()).order("destacada", { ascending: false }).order("created_at", { ascending: false }).limit(300);
   if (error) throw error;
   return ((data ?? []) as unknown as VacanteRow[]).map(rowToVacante);
 }

@@ -69,7 +69,7 @@ function Empresas() {
       </section>
       <section className="mx-auto max-w-7xl px-6 py-20">
         <h2 className="text-2xl font-bold">Servicios para candidatos</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
           {serviciosCandidato.map((s) => (
             <div key={s.nombre} className="rounded-2xl border border-border bg-surface p-6">
               <h3 className="font-bold">{s.nombre}</h3>

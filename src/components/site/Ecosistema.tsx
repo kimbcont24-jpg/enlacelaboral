@@ -14,8 +14,8 @@ export function RedInstitucional() {
   return (
     <section className="relative overflow-hidden border-t border-border bg-secondary/30 px-6 py-16 md:py-20">
       <div className="relative mx-auto max-w-7xl">
-        <h2 className="text-3xl font-extrabold tracking-tight md:text-5xl">Una red que conecta <span className="text-shine">todo el ecosistema laboral</span></h2>
-        <p className="mt-3 max-w-xl text-muted-foreground">No importa dónde esté el talento. Enlace lo conecta.</p>
+        <h2 className="text-3xl font-extrabold tracking-tight md:text-5xl">Vacantes de muchas fuentes, <span className="text-shine">en un solo lugar</span></h2>
+        <p className="mt-3 max-w-xl text-muted-foreground">Reunimos oportunidades que hoy están regadas en portales, redes y ferias, para que no tengas que buscar en diez sitios.</p>
         <div className="mt-10 grid items-center gap-8 lg:grid-cols-[1fr_auto_1fr]">
           <div className="grid gap-3 sm:grid-cols-2">
             {redInstitucional.slice(0, 5).map((n) => (
@@ -32,7 +32,7 @@ export function RedInstitucional() {
           </div>
         </div>
         <div className="mt-12 border-t border-border pt-8">
-          <h3 className="text-xl font-bold">Conectamos talento desde múltiples fuentes</h3>
+          <h3 className="text-xl font-bold">Nuestro compromiso</h3>
           <div className="mt-5 flex flex-wrap gap-2.5">
             {fuentesTalento.map((f) => (<span key={f} className="rounded-full border border-border bg-background px-4 py-2 text-sm font-medium">{f}</span>))}
           </div>

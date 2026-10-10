@@ -28,27 +28,24 @@ export const rangosSalario = [
 ] as const;
 
 export const planes = [
-  { nombre: "Publicación Gratis", precio: "RD$0", unidad: "vacantes ilimitadas", resumen: "Publicar en Enlace Laboral es gratis siempre. Solo necesitas crear tu cuenta de reclutador.", beneficios: ["Vacantes ilimitadas activas 30 días", "Recepción de aplicaciones en tu panel y correo", "Filtro básico por provincia y área", "Registro verificado de empresa (sin costo)"], cta: "Crear cuenta y publicar gratis" },
-  { nombre: "Vacante Destacada 7 días", precio: "RD$500", unidad: "por vacante", resumen: "El impulso que llena la plaza rápido: tu vacante arriba, con sello dorado y difusión activa.", impulso: "Hasta 8x más candidatos que una vacante gratis", beneficios: ["Posición fija arriba del listado + sello dorado", "Difusión en alertas por WhatsApp, correo y redes", "Enlace Match prioritario: te empuja los mejores perfiles", "Enlace Smart Screen: preguntas filtro automáticas", "Panel con vistas, aplicaciones y ranking IA en vivo", "Si no recibes 10 aplicaciones, repetimos el impulso gratis"], cta: "Destacar por RD$500", popular: true },
-  { nombre: "Plan Empresa Gold", precio: "RD$1,900", unidad: "por mes", resumen: "Para quien contrata seguido: destacadas incluidas y búsqueda directa en la base de talento.", impulso: "4 destacadas incluidas (valor RD$2,000)", beneficios: ["4 vacantes destacadas al mes incluidas", "Enlace Talent Radar: busca y contacta CVs directo", "Página de empresa con sello Enlace Trust", "Logo de la empresa en resultados de búsqueda", "Reportes mensuales de mercado y salarios (Salary IQ)", "Soporte por WhatsApp con especialista"], cta: "Activar Gold por RD$1,900" },
-  { nombre: "Reclutamiento Asistido", precio: "RD$5,900", unidad: "por posición cubierta", resumen: "Nosotros hacemos el proceso: filtramos, entrevistamos y te enviamos la terna.", impulso: "Pagas solo cuando contratas", beneficios: ["Terna final de 3 candidatos evaluados", "Entrevistas por competencias con especialista", "Verificación de referencias y antecedentes", "Garantía de reemplazo 30 días"], cta: "Solicitar propuesta" },
+  { nombre: "Publicación Gratis", precio: "RD$0", unidad: "sin límite", resumen: "Envíanos tu vacante. La revisamos y la publicamos sin costo.", beneficios: ["Revisamos tu vacante antes de publicarla", "Visible en Enlace RD por 30 días", "Los candidatos te contactan por el medio que indiques", "Empresa y fuente visibles para generar confianza"], cta: "Publicar gratis" },
+  { nombre: "Vacante Destacada 7 días", precio: "RD$500", unidad: "por vacante", resumen: "Tu vacante sale arriba del listado, marcada como Destacada, y la compartimos en nuestros canales.", beneficios: ["Primera posición del listado por 7 días", "Etiqueta “Destacada” en la vacante", "La compartimos en nuestros canales de WhatsApp y redes"], cta: "Destacar por RD$500", popular: true },
+  { nombre: "Plan Empresa", precio: "RD$1,900", unidad: "por mes", resumen: "Para quien contrata seguido.", beneficios: ["4 vacantes destacadas al mes", "Publicación prioritaria de tus vacantes", "Atención directa por WhatsApp"], cta: "Quiero este plan" },
+  { nombre: "Reclutamiento Asistido", precio: "RD$5,900", unidad: "por posición cubierta", resumen: "Hacemos el proceso por ti: filtramos, entrevistamos y te enviamos los mejores perfiles.", impulso: "Pagas solo si contratas", beneficios: ["Filtro de candidatos por una reclutadora", "Entrevistas por competencias", "Terna final para tu decisión"], cta: "Solicitar propuesta" },
 ];
 
 export const comparativa = [
-  { fila: "Vacantes ilimitadas", gratis: true, destacada: true },
-  { fila: "Aplicaciones en tu panel", gratis: true, destacada: true },
-  { fila: "Posición arriba del listado", gratis: false, destacada: true },
-  { fila: "Sello dorado y logo visible", gratis: false, destacada: true },
-  { fila: "Alertas WhatsApp + correo a candidatos", gratis: false, destacada: true },
-  { fila: "Ranking IA de aplicantes (Smart Screen)", gratis: false, destacada: true },
-  { fila: "Métricas en vivo de la vacante", gratis: false, destacada: true },
-  { fila: "Garantía: 10 aplicaciones o repetimos", gratis: false, destacada: true },
+  { fila: "Publicación sin costo", gratis: true, destacada: true },
+  { fila: "Revisión antes de publicar", gratis: true, destacada: true },
+  { fila: "Visible 30 días", gratis: true, destacada: true },
+  { fila: "Primera posición del listado (7 días)", gratis: false, destacada: true },
+  { fila: "Etiqueta “Destacada”", gratis: false, destacada: true },
+  { fila: "Compartida en nuestros canales", gratis: false, destacada: true },
 ];
 
 export const serviciosCandidato = [
-  { nombre: "Perfil Gratis", precio: "RD$0", beneficios: ["Aplica a todas las vacantes", "Alertas por correo", "Consejos y guías de empleo"] },
-  { nombre: "CV Revisado por Especialista", precio: "RD$500", beneficios: ["Revisión línea por línea", "Versión optimizada para filtros ATS", "Carta de presentación modelo"] },
-  { nombre: "Perfil Destacado (30 días)", precio: "RD$300", beneficios: ["Apareces primero ante reclutadores", "Simulación de entrevista con IA", "Alertas prioritarias por WhatsApp"] },
+  { nombre: "Perfil Gratis", precio: "RD$0", beneficios: ["Aplica a todas las vacantes", "Consejos y guías de empleo"] },
+  { nombre: "CV Revisado por una Reclutadora", precio: "RD$500", beneficios: ["Revisión línea por línea", "Sugerencias para pasar filtros automáticos (ATS)", "Carta de presentación modelo"] },
 ];
 
 export const consejos = [

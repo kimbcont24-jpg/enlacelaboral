@@ -8,9 +8,10 @@ import type { Vacante } from "@/lib/vacantes";
 export function JobCard({ job }: { job: Vacante }) {
   const aplicar = useApply();
   return (
-    <article className="rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-primary/50">
+    <article className={`rounded-2xl border bg-surface p-5 transition-colors hover:border-primary/50 ${job.destacada ? "border-primary/60" : "border-border"}`}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
+          {job.destacada && <span className="mb-1.5 inline-block rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-primary">Destacada</span>}
           <Link to="/vacantes/$id" params={{ id: job.id }} className="text-lg font-bold leading-snug hover:text-primary">{job.titulo}</Link>
           <p className="mt-0.5 flex items-center gap-1.5 text-sm text-muted-foreground"><Building2 className="size-4 shrink-0" /> {job.empresa}</p>
           <p className={`mt-2 flex items-center gap-1.5 text-base font-bold ${job.salarioMin > 0 ? "text-success" : "text-muted-foreground"}`}><Banknote className="size-4 shrink-0" /> {job.salario}</p>
