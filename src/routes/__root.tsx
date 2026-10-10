@@ -26,6 +26,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Enlace Laboral" },
       { name: "description", content: "Empleos en República Dominicana." },
+      { name: "google-site-verification", content: "nAeJKgDNM-yYtt0zmC-2lKd0eo_y-u7L07Re10v9NVg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
