@@ -55,14 +55,17 @@ function Diagrama() {
 
 export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, filtros, onFiltros, total }: Props) {
   const t = useContenido();
-  const titulo = t.hero_titulo === textosPorDefecto.hero_titulo ? "Tu enlace con el empleo en República Dominicana" : t.hero_titulo;
+  // Textos de la versión anterior guardados en el panel: se reemplazan por los nuevos.
+  const viejo = (v: string) => v.startsWith("Encuentra tu próximo empleo") || v.startsWith("Conectamos talento con oportunidades reales");
+  const titulo = viejo(t.hero_titulo) ? textosPorDefecto.hero_titulo : t.hero_titulo;
+  const subtitulo = viejo(t.hero_subtitulo) ? textosPorDefecto.hero_subtitulo : t.hero_subtitulo;
   return (
     <header className="border-b border-border bg-surface px-4 pb-10 pt-8 sm:px-6 md:pt-12">
       <div className="mx-auto max-w-6xl">
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
           <div>
             <h1 className="text-balance text-4xl font-extrabold leading-[1.08] tracking-tight md:text-[3.4rem]">{titulo}</h1>
-            <p className="mt-4 max-w-xl text-lg text-muted-foreground">{t.hero_subtitulo}</p>
+            <p className="mt-4 max-w-xl text-lg text-muted-foreground">{subtitulo}</p>
             <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
               {["Aplicar es gratis", "Siempre ves la fuente original", "Vacantes de todo el país"].map((x) => (
                 <li key={x} className="flex items-center gap-1.5"><CheckCircle2 className="size-4 text-success" aria-hidden="true" /> {x}</li>
