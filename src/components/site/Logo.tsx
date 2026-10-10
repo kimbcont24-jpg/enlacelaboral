@@ -27,7 +27,7 @@ export function Logo({ className }: { className?: string }) {
       <LogoMarca className="h-8 w-10" />
       <span className="flex flex-col leading-none">
         <span className="text-xl font-extrabold tracking-tight text-foreground">enlace<span className="text-primary">rd</span></span>
-        <span className="mt-0.5 text-[11px] font-semibold text-muted-foreground">conecta talento y empresas</span>
+        <span className="mt-0.5 hidden text-[11px] font-semibold text-muted-foreground sm:block">conecta talento y empresas</span>
       </span>
     </Link>
   );

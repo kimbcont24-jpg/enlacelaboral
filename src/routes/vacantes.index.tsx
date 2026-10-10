@@ -8,6 +8,7 @@ import { JobCard } from "@/components/site/JobCard";
 import { SearchBar } from "@/components/site/SearchBar";
 import { FiltrosRapidos, filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { useVacantes } from "@/lib/vacantes";
+import { claridad } from "@/lib/claridad";
 
 type Search = { q?: string; provincia?: string; area?: string; modalidad?: string; tipo?: string; experiencia?: string; salarioMin?: string };
 
@@ -15,7 +16,7 @@ const str = (v: unknown) => (typeof v === "string" && v ? v : undefined);
 
 export const Route = createFileRoute("/vacantes/")({
   validateSearch: (s: Record<string, unknown>): Search => ({ q: str(s["q"]), provincia: str(s["provincia"]), area: str(s["area"]), modalidad: str(s["modalidad"]), tipo: str(s["tipo"]), experiencia: str(s["experiencia"]), salarioMin: str(s["salarioMin"]) }),
-  head: () => ({ meta: [{ title: "Vacantes en RD | Enlace Laboral" }, { name: "description", content: "Busca vacantes en toda República Dominicana. Filtra por área, ubicación, salario y modalidad." }] }),
+  head: () => ({ meta: [{ title: "Vacantes en República Dominicana | Enlace RD" }, { name: "description", content: "Busca vacantes en toda República Dominicana. Filtra por área, ubicación, salario y modalidad." }] }),
   component: Vacantes,
 });
 
@@ -27,17 +28,19 @@ function Vacantes() {
   const { jobs, cargando } = useVacantes();
   const [puesto, setPuesto] = useState(search.q ?? "");
   const [provinciaBuscador, setProvinciaBuscador] = useState(search.provincia ?? TODAS);
-  const [filtros, setFiltros] = useState<Filtros>({ ...filtrosVacios, area: search.area ?? "", provincia: search.provincia ?? "", modalidad: search.modalidad ?? "", tipo: search.tipo ?? "", experiencia: search.experiencia ?? "", salarioMin: search.salarioMin ?? "" });
-  const [orden, setOrden] = useState<"reciente" | "salario">("reciente");
+  const [filtros, setFiltros] = useState<Filtros>({ ...filtrosVacios, area: search.area ?? "", provincia: search.provincia ?? "", modalidad: search.modalidad ?? "", tipo: search.tipo ?? "", experiencia: search.experiencia ?? "", salarioMin: search.salarioMin ?? "", fecha: "", conSalario: "" });
+  const [orden, setOrden] = useState<"reciente" | "salario" | "claridad">("reciente");
   const [query, setQuery] = useState(search.q ?? "");
 
   useEffect(() => {
-    if (search.area !== undefined) setFiltros((f) => ({ ...f, area: search.area ?? "" }));
-  }, [search.area]);
+    setFiltros((f) => ({ ...f, area: search.area ?? f.area, provincia: search.provincia ?? f.provincia, modalidad: search.modalidad ?? f.modalidad, experiencia: search.experiencia ?? f.experiencia }));
+  }, [search.area, search.provincia, search.modalidad, search.experiencia]);
 
   const resultados = useMemo(() => {
     const list = filtrarJobs(jobs, filtros, query);
-    return orden === "salario" ? [...list].sort((a, b) => b.salarioMin - a.salarioMin) : list;
+    if (orden === "salario") return [...list].sort((a, b) => b.salarioMin - a.salarioMin);
+    if (orden === "claridad") return [...list].sort((a, b) => claridad(b).puntos - claridad(a).puntos);
+    return list;
   }, [jobs, filtros, query, orden]);
 
   const buscar = () => {
@@ -56,9 +59,10 @@ function Vacantes() {
         <FiltrosRapidos value={filtros} onChange={setFiltros} className="mt-4" />
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
           <p className="text-sm text-muted-foreground"><span className="font-bold text-foreground">{resultados.length}</span> {resultados.length === 1 ? "vacante" : "vacantes"}</p>
-          <select value={orden} onChange={(e) => setOrden(e.target.value as "reciente" | "salario")} aria-label="Ordenar" className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium">
+          <select value={orden} onChange={(e) => setOrden(e.target.value as "reciente" | "salario" | "claridad")} aria-label="Ordenar" className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium">
             <option value="reciente">Más recientes</option>
             <option value="salario">Mayor salario</option>
+            <option value="claridad">Más completas primero</option>
           </select>
         </div>
         <div className="mt-6 space-y-4">
