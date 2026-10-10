@@ -174,7 +174,7 @@ function desdeBorradorRow(r: BorradorRow): Borrador {
     titulo: r.titulo?.trim() || b.titulo,
     empresa: r.empresa?.trim() || b.empresa,
     provincia: r.provincia && provincias.slice(1).includes(r.provincia) ? r.provincia : b.provincia,
-    aplicar: b.aplicar || r.contacto_email?.trim() || "",
+    aplicar: b.aplicar || (r.origen === "empresa" ? r.contacto_email?.trim() || "" : ""),
     fuente: r.fuente?.trim() || b.fuente || (r.origen === "correo" ? "Correo recibido" : ""),
     fuenteUrl: r.fuente_url?.trim() || b.fuenteUrl,
   };
