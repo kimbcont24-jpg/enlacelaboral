@@ -34,7 +34,7 @@ export const borradorVacio: Borrador = {
 
 const EMOJI = /[\p{Extended_Pictographic}️‍⃣]/gu;
 const VINETA = /^([-•*✓✔▪●◦➢→>»►★☆]|\d+[.)-])\s*/;
-const RUIDO = /s[ií]gue(nos)?\b|comp[aá]rte(lo)?\b|dale (like|me gusta)|link en (la )?bio|etiqueta a|menciona a|m[aá]s vacantes en|visita nuestr|dale follow|activa las notificaciones|^@\w+$/i;
+const RUIDO = /s[ií]gue(nos)?\b|comp[aá]rte(lo)?\b|dale (like|me gusta)|link en (la )?bio|etiqueta a|menciona a|m[aá]s vacantes en|visita nuestr|dale follow|activa las notificaciones|^@\w+$|^(asunto|subject|de|from|para|to|fecha|date|cc|enviado|sent|reenviado)\s*:|mensaje reenviado|forwarded message/i;
 const SOLO_TITULAR = /^(vacante(s)?( disponible(s)?)?|empleo|oportunidad( laboral| de empleo)?|estamos contratando|[uú]nete( a nuestro equipo)?|atenci[oó]n|importante|aviso|se busca|se solicita|buscamos|oferta de empleo|we are hiring|hiring)[!:.\s]*$/i;
 
 type Sec = "req" | "fun" | "ben" | "hor" | "apl" | "otro";
