@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ExternalLink, Eye, ImageUp, Inbox, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
+import { ExternalLink, Eye, ImageUp, Inbox, Share2, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/contenido";
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, extraer, type Borrador } from "@/lib/extraer";
-import { SELECT, rowToVacante, type Vacante, type VacanteRow } from "@/lib/vacantes";
+import { SELECT, rowToVacante, textoWhatsApp, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/admin")({
   validateSearch: (s: Record<string, unknown>): { editar?: string } => ({ editar: typeof s["editar"] === "string" ? (s["editar"] as string) : undefined }),
@@ -436,6 +436,16 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
     await refrescar();
   };
 
+  const copiarWhatsApp = async (v: Vacante) => {
+    const texto = textoWhatsApp(v);
+    try {
+      await navigator.clipboard.writeText(texto);
+      toast.success("Texto copiado. Pégalo en tu canal o estado de WhatsApp.");
+    } catch {
+      window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, "_blank");
+    }
+  };
+
   const destacar = async (v: Vacante) => {
     const { error } = await supabase.from("vacantes").update({ destacada: !v.destacada }).eq("id", v.id);
     if (error) toast.error("No se pudo cambiar."); else toast.success(v.destacada ? "Ya no está destacada." : "Vacante destacada: sale arriba del listado.");
@@ -463,10 +473,11 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
         <div key={v.id} className="rounded-2xl border border-border bg-surface p-4">
           <p className="font-bold">{v.titulo} {v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">Pausada</span>}{v.destacada && <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Destacada</span>}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{v.empresa} · {v.provincia} · {v.salario} · {v.publicado} · Fuente: {v.fuente}</p>
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
             <button type="button" onClick={() => onEditar(v)} className={`${accion} border-primary text-primary`}><Pencil className="size-4" /> Editar</button>
             <button type="button" onClick={() => void alternar(v)} className={accion}>{v.estado === "publicada" ? <><Pause className="size-4" /> Pausar</> : <><Play className="size-4" /> Publicar</>}</button>
             <button type="button" onClick={() => void destacar(v)} className={accion}><Star className={`size-4 ${v.destacada ? "fill-current" : ""}`} /> {v.destacada ? "Quitar" : "Destacar"}</button>
+            <button type="button" onClick={() => void copiarWhatsApp(v)} className={accion}><Share2 className="size-4" /> WhatsApp</button>
             <Link to="/vacantes/$id" params={{ id: v.id }} target="_blank" className={accion}><ExternalLink className="size-4" /> Ver</Link>
             <button type="button" onClick={() => void borrar(v)} className={`${accion} hover:border-destructive hover:text-destructive`}><Trash2 className="size-4" /> Borrar</button>
           </div>

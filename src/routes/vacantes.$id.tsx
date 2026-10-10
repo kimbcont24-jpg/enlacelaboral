@@ -1,11 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Share2 } from "lucide-react";
 
 import { AdminAcciones } from "@/components/site/AdminAcciones";
 import { useApply } from "@/components/site/apply-context";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { fetchVacante } from "@/lib/vacantes";
+import { enlaceWhatsApp, fetchVacante, jobPostingLd } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -18,7 +18,12 @@ export const Route = createFileRoute("/vacantes/$id")({
     const { job } = loaderData;
     const title = `${job.titulo} en ${job.provincia} | Enlace Laboral`;
     const desc = `${job.titulo} · ${job.empresa} · ${job.modalidad} en ${job.provincia}. ${job.salario}.`;
-    return { meta: [{ title }, { name: "description", content: desc }, { property: "og:title", content: title }, { property: "og:description", content: desc }] };
+    const ld = jobPostingLd(job);
+    const vencida = Date.now() - new Date(job.creado).getTime() > 30 * 864e5 || job.estado !== "publicada";
+    return {
+      meta: [{ title }, { name: "description", content: desc }, { property: "og:title", content: title }, { property: "og:description", content: desc }, { property: "og:type", content: "website" }, ...(vencida ? [{ name: "robots", content: "noindex" }] : [])],
+      scripts: ld && !vencida ? [{ type: "application/ld+json", children: ld }] : [],
+    };
   },
   component: Detalle,
 });
@@ -61,6 +66,7 @@ function Detalle() {
             {job.fuenteUrl && (<a href={job.fuenteUrl} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">Ver publicación original <ExternalLink className="size-3.5" /></a>)}
             <p className="mt-4 text-sm text-muted-foreground">Enlace RD republica esta vacante para facilitar tu búsqueda. Confirma los detalles con la empresa. Nunca pagues dinero para ser contratado.</p>
             <button onClick={() => aplicar(job)} className="grad-primary mt-5 w-full rounded-xl py-3.5 text-base font-bold text-primary-foreground">Cómo aplicar</button>
+            <a href={enlaceWhatsApp(job)} target="_blank" rel="noopener noreferrer" className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-bold hover:border-primary hover:text-primary"><Share2 className="size-4" /> Compartir por WhatsApp</a>
           </div>
         </aside>
       </div>

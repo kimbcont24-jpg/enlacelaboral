@@ -131,3 +131,55 @@ export function enlaceAplicar(a: string): { href: string; label: string } | null
   }
   return null;
 }
+
+export const SITIO = "https://enlace-rd.vercel.app";
+
+export function textoWhatsApp(job: Vacante, origen = SITIO): string {
+  const lineas = [
+    `*${job.titulo}*`,
+    job.empresa !== "Empresa no indicada" ? `🏢 ${job.empresa}` : null,
+    `📍 ${job.provincia} · ${job.modalidad}`,
+    job.salarioMin > 0 ? `💰 ${job.salario}` : null,
+    "",
+    "Mira los requisitos y cómo aplicar (gratis):",
+    `${origen}/vacantes/${job.id}`,
+  ];
+  return lineas.filter((l) => l !== null).join("\n");
+}
+
+export const enlaceWhatsApp = (job: Vacante, origen?: string) => `https://wa.me/?text=${encodeURIComponent(textoWhatsApp(job, origen))}`;
+
+const TIPO_GOOGLE: Record<string, string> = { "Tiempo completo": "FULL_TIME", "Medio tiempo": "PART_TIME", "Pasantía": "INTERN", "Por proyecto": "CONTRACTOR" };
+
+/** Datos para Google Empleos. Solo para vacantes publicadas directamente por la empresa. */
+export function jobPostingLd(job: Vacante): string | null {
+  if (job.fuente !== "Publicada por la empresa" || job.empresa === "Empresa no indicada") return null;
+  const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const partes = [
+    job.descripcion ? `<p>${esc(job.descripcion).replace(/\n/g, "<br>")}</p>` : "",
+    job.requisitos.length ? `<p>Requisitos:</p><ul>${job.requisitos.map((r) => `<li>${esc(r)}</li>`).join("")}</ul>` : "",
+  ].filter(Boolean);
+  const vence = new Date(new Date(job.creado).getTime() + 30 * 864e5).toISOString();
+  const ld: Record<string, unknown> = {
+    "@context": "https://schema.org/",
+    "@type": "JobPosting",
+    title: job.titulo,
+    description: partes.join("") || `<p>${esc(job.titulo)}</p>`,
+    datePosted: job.creado,
+    validThrough: vence,
+    employmentType: TIPO_GOOGLE[job.tipo] ?? "OTHER",
+    hiringOrganization: { "@type": "Organization", name: job.empresa },
+    directApply: false,
+  };
+  if (job.modalidad === "Remoto" || job.provincia === "Remoto desde RD") {
+    ld["jobLocationType"] = "TELECOMMUTE";
+    ld["applicantLocationRequirements"] = { "@type": "Country", name: "DO" };
+  } else {
+    ld["jobLocation"] = { "@type": "Place", address: { "@type": "PostalAddress", addressRegion: job.provincia, addressCountry: "DO" } };
+  }
+  if (job.salarioMin > 0) {
+    const valor = job.salarioMax ? { minValue: job.salarioMin, maxValue: job.salarioMax } : { value: job.salarioMin };
+    ld["baseSalary"] = { "@type": "MonetaryAmount", currency: "DOP", value: { "@type": "QuantitativeValue", ...valor, unitText: "MONTH" } };
+  }
+  return JSON.stringify(ld).replace(/</g, "\\u003c");
+}
