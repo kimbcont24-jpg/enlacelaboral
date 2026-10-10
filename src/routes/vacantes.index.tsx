@@ -16,7 +16,7 @@ const str = (v: unknown) => (typeof v === "string" && v ? v : undefined);
 
 export const Route = createFileRoute("/vacantes/")({
   validateSearch: (s: Record<string, unknown>): Search => ({ q: str(s["q"]), provincia: str(s["provincia"]), area: str(s["area"]), modalidad: str(s["modalidad"]), tipo: str(s["tipo"]), experiencia: str(s["experiencia"]), salarioMin: str(s["salarioMin"]) }),
-  head: () => ({ meta: [{ title: "Vacantes en República Dominicana | Enlace RD" }, { name: "description", content: "Busca vacantes en toda República Dominicana. Filtra por área, ubicación, salario y modalidad." }] }),
+  head: () => ({ meta: [{ title: "Vacantes en República Dominicana | Enlace Laboral" }, { name: "description", content: "Busca vacantes en toda República Dominicana. Filtra por área, ubicación, salario y modalidad." }] }),
   component: Vacantes,
 });
 

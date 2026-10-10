@@ -8,7 +8,7 @@ import { useGuardados } from "@/lib/guardados";
 import { useVacantes } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/guardadas")({
-  head: () => ({ meta: [{ title: "Vacantes guardadas | Enlace RD" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Vacantes guardadas | Enlace Laboral" }, { name: "robots", content: "noindex" }] }),
   component: Guardadas,
 });
 

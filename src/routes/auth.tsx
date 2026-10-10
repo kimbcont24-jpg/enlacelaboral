@@ -76,7 +76,7 @@ function Auth() {
       <Header />
       <main className="mx-auto grid max-w-6xl gap-10 px-6 py-14 lg:grid-cols-2">
         <div>
-          <h1 className="text-balance text-4xl font-extrabold tracking-tight">Acceso a Enlace RD</h1>
+          <h1 className="text-balance text-4xl font-extrabold tracking-tight">Acceso a Enlace Laboral</h1>
           <p className="mt-6 text-sm text-muted-foreground">¿Buscas empleo? No necesitas cuenta. <Link to="/vacantes" className="font-semibold text-primary">Mira las vacantes</Link>.</p>
         </div>
         <form onSubmit={enviar} className="space-y-3 self-start rounded-3xl border border-border bg-surface p-7">

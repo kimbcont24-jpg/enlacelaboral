@@ -89,7 +89,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
     salario,
     descripcion: r.descripcion,
     requisitos: r.requisitos ?? [],
-    fuente: meta["fuente"] || "Enlace RD",
+    fuente: meta["fuente"] || "Enlace Laboral",
     fuenteUrl: meta["fuente_url"] || "",
     aplicar: meta["aplicar"] || "",
     publicado: hace(r.created_at),

@@ -6,7 +6,7 @@ export const textosEditables = {
   hero_titulo: { etiqueta: "Portada · título", valor: "Encuentra empleo en República Dominicana" },
   hero_subtitulo: { etiqueta: "Portada · subtítulo", valor: "Vacantes reales de empresas e instituciones de todo el país, en un solo lugar. Aplicar es gratis." },
   especialista_cita: { etiqueta: "Consejo del especialista · cita", valor: "Lee bien los requisitos indispensables y aplica si cumples la mayoría. Muchas empresas valoran la actitud y las ganas de aprender." },
-  especialista_firma: { etiqueta: "Consejo del especialista · firma", valor: "Equipo Enlace RD" },
+  especialista_firma: { etiqueta: "Consejo del especialista · firma", valor: "Equipo Enlace Laboral" },
   reclutadores_titulo: { etiqueta: "Bloque reclutadores · título", valor: "¿Buscas talento?" },
   reclutadores_texto: { etiqueta: "Bloque reclutadores · texto", valor: "Publicar vacantes es gratis. Escríbenos y publicamos tu vacante para que llegue a más personas." },
 } as const;

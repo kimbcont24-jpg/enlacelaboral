@@ -93,7 +93,7 @@ function Admin() {
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-5">
               <div>
                 <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Administración</p>
-                <h1 className="mt-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Panel de Enlace RD</h1>
+                <h1 className="mt-1 text-2xl font-extrabold tracking-tight sm:text-3xl">Panel de Enlace Laboral</h1>
               </div>
               <Button variant="outline" onClick={() => void salir()}><LogOut /> Salir</Button>
             </div>
@@ -130,7 +130,7 @@ function aBorrador(v: Vacante): Borrador {
     descripcion: v.descripcion,
     requisitos: v.requisitos.join("\n"),
     aplicar: v.aplicar,
-    fuente: v.fuente === "Enlace RD" ? "" : v.fuente,
+    fuente: v.fuente === "Enlace Laboral" ? "" : v.fuente,
     fuenteUrl: v.fuenteUrl,
   };
 }
@@ -138,7 +138,7 @@ function aBorrador(v: Vacante): Borrador {
 async function miEmpresa(uid: string): Promise<string> {
   const { data } = await supabase.from("empresas").select("id").eq("owner_id", uid).maybeSingle();
   if (data) return (data as { id: string }).id;
-  const { data: nueva, error } = await supabase.from("empresas").insert({ owner_id: uid, nombre: "Enlace RD", rnc: "no-aplica" }).select("id").single();
+  const { data: nueva, error } = await supabase.from("empresas").insert({ owner_id: uid, nombre: "Enlace Laboral", rnc: "no-aplica" }).select("id").single();
   if (error || !nueva) throw error ?? new Error("No se pudo preparar la cuenta");
   return (nueva as { id: string }).id;
 }

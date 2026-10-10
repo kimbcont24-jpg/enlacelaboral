@@ -24,8 +24,8 @@ export function Footer() {
             {areas.slice(0, 7).map((a) => <li key={a}><Link to="/vacantes" search={{ area: a }} className="hover:text-primary">{a}</Link></li>)}
           </ul>
         </nav>
-        <nav aria-label="Enlace RD">
-          <p className="text-sm font-bold">Enlace RD</p>
+        <nav aria-label="Enlace Laboral">
+          <p className="text-sm font-bold">Enlace Laboral</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li><Link to="/vacantes" className="hover:text-primary">Todas las vacantes</Link></li>
             <li><Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} className="hover:text-primary">Primer empleo</Link></li>
@@ -36,7 +36,7 @@ export function Footer() {
           </ul>
         </nav>
       </div>
-      <p className="mx-auto mt-10 max-w-7xl border-t border-border pt-6 text-xs text-muted-foreground">© 2026 Enlace RD · Hecho en República Dominicana</p>
+      <p className="mx-auto mt-10 max-w-7xl border-t border-border pt-6 text-xs text-muted-foreground">© 2026 Enlace Laboral · Hecho en República Dominicana</p>
     </footer>
   );
 }

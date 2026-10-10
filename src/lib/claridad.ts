@@ -12,7 +12,7 @@ export function claridad(job: Vacante): Claridad {
     ["Empresa identificada", job.empresa !== "Empresa no indicada"],
     ["Requisitos claros", job.requisitos.length > 0],
     ["Funciones u horario", job.descripcion.trim().length > 20],
-    ["Cómo aplicar", job.aplicar.trim().length > 0 || job.fuente === "Enlace RD"],
+    ["Cómo aplicar", job.aplicar.trim().length > 0 || job.fuente === "Enlace Laboral"],
     ["Fuente verificable", job.fuenteUrl.trim().length > 0 || job.fuente === "Publicada por la empresa"],
   ];
   const tiene = criterios.filter(([, ok]) => ok).map(([n]) => n);

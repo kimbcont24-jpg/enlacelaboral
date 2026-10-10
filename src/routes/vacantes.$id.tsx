@@ -84,7 +84,7 @@ function Detalle() {
             <p className="text-sm font-semibold text-muted-foreground">Fuente original</p>
             <p className="mt-1 font-bold">{job.fuente}</p>
             {job.fuenteUrl && (<a href={job.fuenteUrl} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">Ver publicación original <ExternalLink className="size-3.5" /></a>)}
-            <p className="mt-4 text-sm text-muted-foreground">Enlace RD republica esta vacante para facilitar tu búsqueda. Confirma los detalles con la empresa. Nunca pagues dinero para ser contratado.</p>
+            <p className="mt-4 text-sm text-muted-foreground">Enlace Laboral republica esta vacante para facilitar tu búsqueda. Confirma los detalles con la empresa. Nunca pagues dinero para ser contratado.</p>
             <button onClick={() => aplicar(job)} className="btn-aplicar mt-5 w-full rounded-xl py-3.5 text-lg">Aplicar a esta vacante</button>
             <div className="mt-3"><BotonGuardar id={job.id} grande /></div>
             <a href={enlaceWhatsApp(job)} target="_blank" rel="noopener noreferrer" className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-bold hover:border-primary hover:text-primary"><Share2 className="size-4" /> Compartir por WhatsApp</a>

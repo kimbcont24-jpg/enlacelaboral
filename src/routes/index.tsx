@@ -15,7 +15,7 @@ import { useVacantes } from "@/lib/vacantes";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Empleos en República Dominicana | Enlace RD" },
+      { title: "Empleos en República Dominicana | Enlace Laboral" },
       { name: "description", content: "Busca empleo en República Dominicana. Vacantes de todo el país en un solo lugar, con la fuente original visible." },
     ],
   }),
@@ -82,7 +82,7 @@ function Home() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">Empleos recientes</h2>
-            <p className="mt-1 text-muted-foreground">Las últimas vacantes publicadas en Enlace RD.</p>
+            <p className="mt-1 text-muted-foreground">Las últimas vacantes publicadas en Enlace Laboral.</p>
           </div>
           <Link to="/vacantes" className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-bold text-primary hover:bg-primary hover:text-white">Ver todos los empleos <ArrowRight className="size-4" aria-hidden="true" /></Link>
         </div>
