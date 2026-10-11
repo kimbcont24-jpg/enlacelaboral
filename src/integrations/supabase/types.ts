@@ -40,7 +40,10 @@ export type Database = {
       };
     };
     Views: { [_ in never]: never };
-    Functions: { [_ in never]: never };
+    Functions: {
+      suscribir_alerta: { Args: { p_email: string; p_area?: string | null; p_provincia?: string | null }; Returns: string };
+      baja_alerta: { Args: { p_token: string }; Returns: string };
+    };
     Enums: { app_role: "admin" | "user" };
     CompositeTypes: { [_ in never]: never };
   };

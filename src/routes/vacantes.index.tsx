@@ -8,6 +8,7 @@ import { JobCard } from "@/components/site/JobCard";
 import { SearchBar } from "@/components/site/SearchBar";
 import { FiltrosRapidos, filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { useVacantes } from "@/lib/vacantes";
+import { AlertaForm } from "@/components/site/AlertaForm";
 import { claridad } from "@/lib/claridad";
 
 type Search = { q?: string; provincia?: string; area?: string; modalidad?: string; tipo?: string; experiencia?: string; salarioMin?: string };
@@ -68,8 +69,9 @@ function Vacantes() {
         <div className="mt-6 space-y-4">
           {cargando && (<div className="flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Cargando vacantes…</div>)}
           {!cargando && resultados.map((job) => (<JobCard key={job.id} job={job} />))}
-          {!cargando && resultados.length === 0 && (<div className="rounded-2xl border border-dashed border-border p-12 text-center"><p className="font-bold">No encontramos vacantes con esos filtros</p><p className="mt-2 text-sm text-muted-foreground">Prueba con otra ubicación o limpia los filtros.</p></div>)}
+          {!cargando && resultados.length === 0 && (<div className="rounded-2xl border border-dashed border-border p-12 text-center"><p className="font-bold">No encontramos vacantes con esos filtros</p><p className="mt-2 text-sm text-muted-foreground">Prueba con otra ubicación o limpia los filtros. O crea una alerta y te avisamos cuando salga una.</p></div>)}
         </div>
+        <div className="mt-10"><AlertaForm areaInicial={filtros.area} provinciaInicial={filtros.provincia} /></div>
       </div>
       <Footer />
     </div>

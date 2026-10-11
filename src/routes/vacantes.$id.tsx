@@ -8,6 +8,7 @@ import { Footer } from "@/components/site/Footer";
 import { enlaceWhatsApp, fetchVacante, jobPostingLd, useVacantes } from "@/lib/vacantes";
 import { claridad } from "@/lib/claridad";
 import { BotonGuardar, ClaridadPill, JobCard } from "@/components/site/JobCard";
+import { AlertaForm } from "@/components/site/AlertaForm";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -78,6 +79,7 @@ function Detalle() {
               <div className="mt-4 space-y-3">{similares.map((j) => <JobCard key={j.id} job={j} />)}</div>
             </section>
           )}
+          <section className="mt-12"><AlertaForm areaInicial={job.area} provinciaInicial={job.provincia} /></section>
         </article>
         <aside className="lg:col-span-4">
           <div className="sticky top-24 rounded-3xl border border-border bg-surface p-6">

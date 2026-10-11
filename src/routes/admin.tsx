@@ -104,7 +104,7 @@ function Admin() {
             </div>
             <div className="mt-6">
               {tab === "publicar" && <Publicar uid={uid} editar={editar} desde={desde} alPublicarBorrador={() => { setDesde(null); void contar(); setTab("borradores"); }} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={() => { setDesde(null); cerrarEdicion(); }} />}
-              {tab === "borradores" && <Borradores onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
+              {tab === "borradores" && <Borradores uid={uid} onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
               {tab === "vacantes" && <MisVacantes onEditar={(v) => { setEditar(v); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
               {tab === "aplicaciones" && <Aplicaciones />}
               {tab === "textos" && <Textos />}
@@ -132,6 +132,30 @@ function aBorrador(v: Vacante): Borrador {
     aplicar: v.aplicar,
     fuente: v.fuente === "Enlace Laboral" ? "" : v.fuente,
     fuenteUrl: v.fuenteUrl,
+  };
+}
+
+function filaDesde(b: Borrador) {
+  const min = Number(b.salarioMin) || 0;
+  const max = Number(b.salarioMax) || 0;
+  const etiquetas = [
+    b.empresa.trim() && `m:empresa:${b.empresa.trim()}`,
+    `m:fuente:${b.fuente.trim()}`,
+    b.fuenteUrl.trim() && `m:fuente_url:${b.fuenteUrl.trim()}`,
+    b.aplicar.trim() && `m:aplicar:${b.aplicar.trim()}`,
+  ].filter(Boolean) as string[];
+  return {
+    titulo: b.titulo.trim(),
+    area: b.area,
+    provincia: b.provincia,
+    modalidad: b.modalidad,
+    tipo: b.tipo,
+    experiencia: b.experiencia,
+    salario_min: min,
+    salario_max: max > min ? max : null,
+    descripcion: b.descripcion.trim(),
+    requisitos: b.requisitos.split("\n").map((r) => r.trim()).filter(Boolean),
+    etiquetas,
   };
 }
 
@@ -266,27 +290,7 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
     if (!b.fuente.trim()) return void toast.error("Indica de dónde sacaste la vacante (Fuente).");
     setGuardando(true);
     try {
-      const min = Number(b.salarioMin) || 0;
-      const max = Number(b.salarioMax) || 0;
-      const etiquetas = [
-        b.empresa.trim() && `m:empresa:${b.empresa.trim()}`,
-        `m:fuente:${b.fuente.trim()}`,
-        b.fuenteUrl.trim() && `m:fuente_url:${b.fuenteUrl.trim()}`,
-        b.aplicar.trim() && `m:aplicar:${b.aplicar.trim()}`,
-      ].filter(Boolean) as string[];
-      const fila = {
-        titulo: b.titulo.trim(),
-        area: b.area,
-        provincia: b.provincia,
-        modalidad: b.modalidad,
-        tipo: b.tipo,
-        experiencia: b.experiencia,
-        salario_min: min,
-        salario_max: max > min ? max : null,
-        descripcion: b.descripcion.trim(),
-        requisitos: b.requisitos.split("\n").map((r) => r.trim()).filter(Boolean),
-        etiquetas,
-      };
+      const fila = filaDesde(b);
       if (editar) {
         const { data, error } = await supabase.from("vacantes").update(fila).eq("id", editar.id).select("id");
         if (error) throw error;
@@ -369,7 +373,9 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
   );
 }
 
-function Borradores({ onRevisar, onCambio }: { onRevisar: (r: BorradorRow) => void; onCambio: () => void }) {
+function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: BorradorRow) => void; onCambio: () => void }) {
+  const qc = useQueryClient();
+  const [publicando, setPublicando] = useState<string | null>(null);
   const [items, setItems] = useState<BorradorRow[] | null>(null);
   const cargar = useCallback(async () => {
     const { data, error } = await supabase.from("borradores").select("*").eq("estado", "pendiente").order("created_at", { ascending: false }).limit(200);
@@ -386,6 +392,27 @@ function Borradores({ onRevisar, onCambio }: { onRevisar: (r: BorradorRow) => vo
     onCambio();
   };
 
+  const publicarYa = async (r: BorradorRow) => {
+    const b = desdeBorradorRow(r);
+    if (!b.titulo.trim()) return void toast.error("Este borrador no tiene puesto. Ábrelo con “Revisar” y complétalo.");
+    if (!b.fuente.trim()) b.fuente = r.origen === "empresa" ? "Publicada por la empresa" : "Correo recibido";
+    setPublicando(r.id);
+    try {
+      const empresaId = await miEmpresa(uid);
+      const { error } = await supabase.from("vacantes").insert({ ...filaDesde(b), empresa_id: empresaId, owner_id: uid, estado: "publicada" });
+      if (error) throw error;
+      await supabase.from("borradores").update({ estado: "publicado" }).eq("id", r.id);
+      await qc.invalidateQueries({ queryKey: ["vacantes"] });
+      toast.success(`Publicada: ${b.titulo}`);
+      await cargar();
+      onCambio();
+    } catch (err) {
+      toast.error(`No se pudo publicar: ${err instanceof Error ? err.message : "error"}`);
+    } finally {
+      setPublicando(null);
+    }
+  };
+
   if (!items) return <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>;
   if (!items.length) return (
     <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
@@ -396,18 +423,27 @@ function Borradores({ onRevisar, onCambio }: { onRevisar: (r: BorradorRow) => vo
   const accion = "inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-sm font-semibold hover:border-primary hover:text-primary";
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted-foreground">{items.length} por revisar. Nada se publica hasta que tú lo apruebes.</p>
-      {items.map((r) => (
+      <p className="text-xs text-muted-foreground">{items.length} por revisar. Mira el resumen y pulsa “Publicar ya”, o “Revisar primero” si quieres corregir algo.</p>
+      {items.map((r) => {
+        const v = desdeBorradorRow(r);
+        return (
         <div key={r.id} className="rounded-2xl border border-border bg-surface p-4">
           <p className="font-bold">{r.titulo || str(r.datos?.["titulo"]) || "Vacante sin título"} <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">{r.origen === "empresa" ? "Empresa" : "Correo"}</span></p>
           <p className="mt-0.5 text-xs text-muted-foreground">{[r.empresa || str(r.datos?.["empresa"]), r.provincia, new Date(r.created_at).toLocaleDateString("es-DO"), r.contacto_email].filter(Boolean).join(" · ")}</p>
-          <p className="mt-2 line-clamp-3 whitespace-pre-line text-sm text-muted-foreground">{r.texto}</p>
+          <div className="mt-3 rounded-xl bg-secondary p-3 text-sm">
+            <p className="text-xs font-semibold text-muted-foreground">Así se publicaría:</p>
+            <p className="mt-1 font-bold">{v.titulo || "Sin puesto: revisa antes"}</p>
+            <p className="text-muted-foreground">{[v.empresa || "Empresa no indicada", v.provincia, v.modalidad, v.salarioMin ? `RD$${Number(v.salarioMin).toLocaleString("es-DO")}${v.salarioMax ? ` - RD$${Number(v.salarioMax).toLocaleString("es-DO")}` : ""}` : "Salario no publicado"].join(" · ")}</p>
+            <p className="text-muted-foreground">{v.requisitos ? `${v.requisitos.split("\n").length} requisitos` : "Sin requisitos"} · {v.aplicar ? `Aplicar: ${v.aplicar}` : "Aplican por tu página"}</p>
+          </div>
           <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
-            <button type="button" onClick={() => onRevisar(r)} className={`${accion} border-primary text-primary`}><Eye className="size-4" /> Revisar y publicar</button>
+            <button type="button" disabled={publicando === r.id} onClick={() => void publicarYa(r)} className="btn-aplicar inline-flex h-10 items-center justify-center gap-1.5 rounded-lg px-4 text-sm">{publicando === r.id ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />} Publicar ya</button>
+            <button type="button" onClick={() => onRevisar(r)} className={`${accion} border-primary text-primary`}><Eye className="size-4" /> Revisar primero</button>
             <button type="button" onClick={() => void descartar(r)} className={`${accion} hover:border-destructive hover:text-destructive`}><Trash2 className="size-4" /> Descartar</button>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
