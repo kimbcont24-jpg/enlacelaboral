@@ -2,6 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 
+/** Centro de contenido (generador de piezas para Instagram). Se abre con la vacante ya cargada. */
+export const CENTRO_CONTENIDO = "https://claude.ai/artifact/UmhZSbiFjeTqkxTC9mpRK6";
+export function enlacePieza(job: Pick<Vacante, "titulo" | "empresa" | "provincia" | "modalidad" | "tipo" | "salarioMin" | "salarioMax" | "requisitos">): string {
+  const datos = { t: job.titulo, e: job.empresa, p: job.provincia, m: job.modalidad, j: job.tipo, a: job.salarioMin || 0, b: job.salarioMax || 0, r: job.requisitos[0] ?? "" };
+  const bytes = new TextEncoder().encode(JSON.stringify(datos));
+  const b64 = btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return `${CENTRO_CONTENIDO}#p.${b64}`;
+}
+
 export type Vacante = {
   id: string;
   titulo: string;

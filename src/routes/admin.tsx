@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ExternalLink, Eye, ImageUp, Inbox, Share2, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
+import { ExternalLink, Eye, ImageUp, Inbox, Instagram, Share2, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/contenido";
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, extraer, type Borrador } from "@/lib/extraer";
-import { CANAL_WHATSAPP, SELECT, rowToVacante, textoWhatsApp, type Vacante, type VacanteRow } from "@/lib/vacantes";
+import { CANAL_WHATSAPP, SELECT, enlacePieza, rowToVacante, textoWhatsApp, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/admin")({
   validateSearch: (s: Record<string, unknown>): { editar?: string } => ({ editar: typeof s["editar"] === "string" ? (s["editar"] as string) : undefined }),
@@ -173,6 +173,7 @@ function CompartirEnCanal() {
       <p className="mt-1 text-sm">{lista.length === 1 ? `“${lista[0]!.titulo}” ya está publicada.` : `${lista.length} vacantes publicadas en esta sesión. Las llevo juntas en un solo mensaje.`} Pulsa el botón: copio el texto y abro tu canal. Allí solo pegas y envías.</p>
       <div className="mt-3 flex flex-wrap gap-2">
         <button type="button" onClick={() => void llevar()} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#1fa855] px-5 text-sm font-bold text-white hover:bg-[#178c46]"><Share2 className="size-4" /> Copiar y abrir mi canal</button>
+        <a href={enlacePieza(lista[0]!)} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-primary-foreground hover:opacity-90"><Instagram className="size-4" /> Pieza para Instagram</a>
         <button type="button" onClick={() => setLista([])} className="h-11 rounded-xl border border-border bg-surface px-4 text-sm font-semibold">Ya la compartí</button>
       </div>
     </div>
@@ -567,11 +568,12 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
         <div key={v.id} className="rounded-2xl border border-border bg-surface p-4">
           <p className="font-bold">{v.titulo} {v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">Pausada</span>}{v.destacada && <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Destacada</span>}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{v.empresa} · {v.provincia} · {v.salario} · {v.publicado} · Fuente: {v.fuente}</p>
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
             <button type="button" onClick={() => onEditar(v)} className={`${accion} border-primary text-primary`}><Pencil className="size-4" /> Editar</button>
             <button type="button" onClick={() => void alternar(v)} className={accion}>{v.estado === "publicada" ? <><Pause className="size-4" /> Pausar</> : <><Play className="size-4" /> Publicar</>}</button>
             <button type="button" onClick={() => void destacar(v)} className={accion}><Star className={`size-4 ${v.destacada ? "fill-current" : ""}`} /> {v.destacada ? "Quitar" : "Destacar"}</button>
             <button type="button" onClick={() => void copiarWhatsApp(v)} className={accion}><Share2 className="size-4" /> WhatsApp</button>
+            <a href={enlacePieza(v)} target="_blank" rel="noopener noreferrer" className={accion} title="Abre el generador de piezas con esta vacante cargada"><Instagram className="size-4" /> Instagram</a>
             <Link to="/vacantes/$id" params={{ id: v.id }} target="_blank" className={accion}><ExternalLink className="size-4" /> Ver</Link>
             <button type="button" onClick={() => void borrar(v)} className={`${accion} hover:border-destructive hover:text-destructive`}><Trash2 className="size-4" /> Borrar</button>
           </div>
