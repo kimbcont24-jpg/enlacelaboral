@@ -6,6 +6,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { AlertaForm } from "@/components/site/AlertaForm";
+import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { Hero } from "@/components/site/Hero";
 import { AreasGrid } from "@/components/site/AreasGrid";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
@@ -94,7 +95,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="px-4 pb-12 sm:px-6"><div className="mx-auto max-w-6xl"><AlertaForm /></div></section>
+      <section className="px-4 pb-12 sm:px-6"><div className="mx-auto grid max-w-6xl gap-4"><CanalWhatsApp /><AlertaForm /></div></section>
 
       <AreasGrid jobs={jobs} />
 

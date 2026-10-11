@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 import { SearchBar } from "@/components/site/SearchBar";
 import { textosPorDefecto, useContenido } from "@/lib/contenido";
+import { CANAL_WHATSAPP } from "@/lib/vacantes";
 
 const populares = ["Recepcionista", "Cajero", "Call center", "Asistente administrativo", "Ventas", "Chofer"];
 
@@ -41,6 +42,7 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
             <div><dt className="text-sm text-white/70">Provincias con vacantes</dt><dd className="text-2xl font-extrabold">{provincias}</dd></div>
           )}
           <div><dt className="text-sm text-white/70">Costo para aplicar</dt><dd className="text-2xl font-extrabold">Gratis</dd></div>
+          <div className="flex items-end"><a href={CANAL_WHATSAPP} target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#1fa855] px-4 py-2 text-sm font-bold text-white hover:bg-[#178c46]">Únete al canal de WhatsApp</a></div>
         </dl>
       </div>
     </header>

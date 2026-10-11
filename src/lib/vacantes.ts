@@ -143,6 +143,9 @@ export function textoWhatsApp(job: Vacante, origen = SITIO): string {
     "",
     "Mira los requisitos y cómo aplicar (gratis):",
     `${origen}/vacantes/${job.id}`,
+    "",
+    "Más vacantes en el canal de Enlace Laboral:",
+    CANAL_WHATSAPP,
   ];
   return lineas.filter((l) => l !== null).join("\n");
 }
@@ -183,3 +186,5 @@ export function jobPostingLd(job: Vacante): string | null {
   }
   return JSON.stringify(ld).replace(/</g, "\\u003c");
 }
+
+export const CANAL_WHATSAPP = "https://whatsapp.com/channel/0029Vb7GW0UKLaHf3idEm62D";

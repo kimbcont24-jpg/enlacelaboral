@@ -9,6 +9,7 @@ import { enlaceWhatsApp, fetchVacante, jobPostingLd, useVacantes } from "@/lib/v
 import { claridad } from "@/lib/claridad";
 import { BotonGuardar, ClaridadPill, JobCard } from "@/components/site/JobCard";
 import { AlertaForm } from "@/components/site/AlertaForm";
+import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -89,6 +90,7 @@ function Detalle() {
             <p className="mt-4 text-sm text-muted-foreground">Enlace Laboral republica esta vacante para facilitar tu búsqueda. Confirma los detalles con la empresa. Nunca pagues dinero para ser contratado.</p>
             <button onClick={() => aplicar(job)} className="btn-aplicar mt-5 w-full rounded-xl py-3.5 text-lg">Aplicar a esta vacante</button>
             <div className="mt-3"><BotonGuardar id={job.id} grande /></div>
+            <div className="mt-3"><CanalWhatsApp variante="boton" /></div>
             <a href={enlaceWhatsApp(job)} target="_blank" rel="noopener noreferrer" className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-bold hover:border-primary hover:text-primary"><Share2 className="size-4" /> Compartir por WhatsApp</a>
           </div>
         </aside>

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 import { Logo } from "@/components/site/Logo";
 import { areas, provincias } from "@/lib/data";
+import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 
 export function Footer() {
   return (
@@ -10,6 +11,7 @@ export function Footer() {
         <div>
           <Logo />
           <p className="mt-4 max-w-xs text-sm text-muted-foreground">Reunimos vacantes de empresas, portales e instituciones de República Dominicana. Aplicar siempre es gratis.</p>
+          <div className="mt-4 max-w-xs"><CanalWhatsApp variante="boton" /></div>
           <p className="mt-4 max-w-xs rounded-xl bg-secondary p-3 text-sm"><strong>Cuídate:</strong> ninguna empresa seria te cobra por entrevistarte o contratarte.</p>
         </div>
         <nav aria-label="Empleos por provincia">
