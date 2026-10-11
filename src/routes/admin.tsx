@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/contenido";
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, extraer, type Borrador } from "@/lib/extraer";
-import { SELECT, rowToVacante, textoWhatsApp, type Vacante, type VacanteRow } from "@/lib/vacantes";
+import { CANAL_WHATSAPP, SELECT, rowToVacante, textoWhatsApp, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/admin")({
   validateSearch: (s: Record<string, unknown>): { editar?: string } => ({ editar: typeof s["editar"] === "string" ? (s["editar"] as string) : undefined }),
@@ -102,6 +102,7 @@ function Admin() {
                 <Button key={t.id} variant={tab === t.id ? "default" : "outline"} onClick={() => setTab(t.id)} className="h-11">{t.label}</Button>
               ))}
             </div>
+            <CompartirEnCanal />
             <div className="mt-6">
               {tab === "publicar" && <Publicar uid={uid} editar={editar} desde={desde} alPublicarBorrador={() => { setDesde(null); void contar(); setTab("borradores"); }} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={() => { setDesde(null); cerrarEdicion(); }} />}
               {tab === "borradores" && <Borradores uid={uid} onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
@@ -133,6 +134,49 @@ function aBorrador(v: Vacante): Borrador {
     fuente: v.fuente === "Enlace Laboral" ? "" : v.fuente,
     fuenteUrl: v.fuenteUrl,
   };
+}
+
+const EVENTO_PUBLICADA = "enlace-vacante-publicada";
+function avisarPublicada(v: Vacante) {
+  window.dispatchEvent(new CustomEvent<Vacante>(EVENTO_PUBLICADA, { detail: v }));
+}
+
+async function copiar(texto: string) {
+  try {
+    await navigator.clipboard.writeText(texto);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Paso 2 después de publicar: llevar la vacante al canal de WhatsApp. */
+function CompartirEnCanal() {
+  const [lista, setLista] = useState<Vacante[]>([]);
+  useEffect(() => {
+    const alPublicar = (e: Event) => setLista((l) => [(e as CustomEvent<Vacante>).detail, ...l].slice(0, 10));
+    window.addEventListener(EVENTO_PUBLICADA, alPublicar);
+    return () => window.removeEventListener(EVENTO_PUBLICADA, alPublicar);
+  }, []);
+  if (!lista.length) return null;
+  const texto = lista.length === 1
+    ? textoWhatsApp(lista[0]!, window.location.origin)
+    : ["*Vacantes nuevas en Enlace Laboral*", "", ...lista.map((v) => `• ${v.titulo} · ${v.provincia}${v.salarioMin > 0 ? ` · ${v.salario}` : ""}\n${window.location.origin}/vacantes/${v.id}`), "", "Aplicar es gratis."].join("\n");
+  const llevar = async () => {
+    const ok = await copiar(texto);
+    toast.success(ok ? "Texto copiado. Pégalo en tu canal y envía." : "Abre tu canal y pega el texto.");
+    window.open(CANAL_WHATSAPP, "_blank", "noopener");
+  };
+  return (
+    <div className="mt-5 rounded-2xl border border-[#1fa855]/40 bg-[#e9f8ef] p-4">
+      <p className="font-bold text-[#0d6b35]">Paso 2: llévala a tu canal de WhatsApp</p>
+      <p className="mt-1 text-sm">{lista.length === 1 ? `“${lista[0]!.titulo}” ya está publicada.` : `${lista.length} vacantes publicadas en esta sesión. Las llevo juntas en un solo mensaje.`} Pulsa el botón: copio el texto y abro tu canal. Allí solo pegas y envías.</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button type="button" onClick={() => void llevar()} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#1fa855] px-5 text-sm font-bold text-white hover:bg-[#178c46]"><Share2 className="size-4" /> Copiar y abrir mi canal</button>
+        <button type="button" onClick={() => setLista([])} className="h-11 rounded-xl border border-border bg-surface px-4 text-sm font-semibold">Ya la compartí</button>
+      </div>
+    </div>
+  );
 }
 
 function filaDesde(b: Borrador) {
@@ -298,9 +342,10 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
         toast.success("Cambios guardados.");
       } else {
         const empresaId = await miEmpresa(uid);
-        const { error } = await supabase.from("vacantes").insert({ ...fila, empresa_id: empresaId, owner_id: uid, estado: "publicada" });
+        const { data: nueva, error } = await supabase.from("vacantes").insert({ ...fila, empresa_id: empresaId, owner_id: uid, estado: "publicada" }).select(SELECT).single();
         if (error) throw error;
         toast.success("¡Vacante publicada! Ya aparece en tu página.");
+        if (nueva) avisarPublicada(rowToVacante(nueva as unknown as VacanteRow));
         if (desde) {
           await supabase.from("borradores").update({ estado: "publicado" }).eq("id", desde.id);
         }
@@ -399,11 +444,12 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
     setPublicando(r.id);
     try {
       const empresaId = await miEmpresa(uid);
-      const { error } = await supabase.from("vacantes").insert({ ...filaDesde(b), empresa_id: empresaId, owner_id: uid, estado: "publicada" });
+      const { data: nueva, error } = await supabase.from("vacantes").insert({ ...filaDesde(b), empresa_id: empresaId, owner_id: uid, estado: "publicada" }).select(SELECT).single();
       if (error) throw error;
       await supabase.from("borradores").update({ estado: "publicado" }).eq("id", r.id);
       await qc.invalidateQueries({ queryKey: ["vacantes"] });
       toast.success(`Publicada: ${b.titulo}`);
+      if (nueva) avisarPublicada(rowToVacante(nueva as unknown as VacanteRow));
       await cargar();
       onCambio();
     } catch (err) {
@@ -472,6 +518,15 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
     await refrescar();
   };
 
+  const copiarHoy = async () => {
+    const hoy = (items ?? []).filter((v) => v.estado === "publicada" && Date.now() - new Date(v.creado).getTime() < 864e5);
+    if (!hoy.length) return void toast.error("Hoy no has publicado vacantes todavía.");
+    const texto = ["*Vacantes nuevas en Enlace Laboral*", "", ...hoy.map((v) => `• ${v.titulo} · ${v.provincia}${v.salarioMin > 0 ? ` · ${v.salario}` : ""}\n${window.location.origin}/vacantes/${v.id}`), "", "Aplicar es gratis."].join("\n");
+    const ok = await copiar(texto);
+    toast.success(ok ? `${hoy.length} vacantes copiadas. Pégalas en tu canal.` : "Abre tu canal y pega el texto.");
+    window.open(CANAL_WHATSAPP, "_blank", "noopener");
+  };
+
   const copiarWhatsApp = async (v: Vacante) => {
     const texto = textoWhatsApp(v);
     try {
@@ -504,7 +559,10 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
   return (
     <div className="space-y-3">
       <input value={filtro} onChange={(e) => setFiltro(e.target.value)} placeholder="Buscar en mis vacantes…" className={campo} />
-      <p className="text-xs text-muted-foreground">{items.filter((v) => v.estado === "publicada").length} visibles · {items.length} en total</p>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs text-muted-foreground">{items.filter((v) => v.estado === "publicada").length} visibles · {items.length} en total</p>
+        <button type="button" onClick={() => void copiarHoy()} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#1fa855] px-4 text-sm font-bold text-white hover:bg-[#178c46]"><Share2 className="size-4" /> Llevar las de hoy al canal</button>
+      </div>
       {lista.map((v) => (
         <div key={v.id} className="rounded-2xl border border-border bg-surface p-4">
           <p className="font-bold">{v.titulo} {v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">Pausada</span>}{v.destacada && <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Destacada</span>}</p>
