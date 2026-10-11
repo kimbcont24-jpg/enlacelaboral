@@ -11,6 +11,7 @@ const nav = [
   { to: "/vacantes", label: "Empleos" },
   { to: "/empresas", label: "Empresas" },
   { to: "/recursos", label: "Consejos" },
+  { to: "/cv", label: "Mi CV" },
 ];
 
 export function Header() {

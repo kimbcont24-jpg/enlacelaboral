@@ -3,6 +3,8 @@ import { CheckCircle2, ExternalLink, Loader2, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { enlaceAplicar, type Vacante } from "@/lib/vacantes";
+import { cvCompleto, leerCV, textoCV, type CV } from "@/lib/cv";
+import { Link } from "@tanstack/react-router";
 
 export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: () => void }) {
   const [estado, setEstado] = useState<"form" | "enviando" | "listo">("form");
@@ -10,8 +12,18 @@ export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: ()
   const [contacto, setContacto] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [cv, setCv] = useState<CV | null>(null);
+  const [incluirCv, setIncluirCv] = useState(true);
 
-  useEffect(() => { if (job) { setEstado("form"); setError(null); } }, [job]);
+  useEffect(() => {
+    if (job) {
+      setEstado("form"); setError(null);
+      const g = leerCV();
+      setCv(cvCompleto(g) ? g : null);
+      if (cvCompleto(g)) { if (!nombre) setNombre(g.nombre); if (!contacto) setContacto(g.telefono || g.correo); }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [job]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -24,7 +36,8 @@ export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: ()
   const enviar = async () => {
     setEstado("enviando");
     setError(null);
-    const { error: err } = await supabase.from("aplicaciones").insert({ vacante_id: job.id, nombre: nombre.trim(), contacto: contacto.trim(), mensaje: mensaje.trim() || null });
+    const texto = [mensaje.trim(), cv && incluirCv ? `--- CV ---\n${textoCV(cv)}` : ""].filter(Boolean).join("\n\n");
+    const { error: err } = await supabase.from("aplicaciones").insert({ vacante_id: job.id, nombre: nombre.trim(), contacto: contacto.trim(), mensaje: texto || null });
     if (err) {
       setError("No pudimos enviar tus datos. Intenta de nuevo en un momento.");
       setEstado("form");
@@ -70,6 +83,11 @@ export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: ()
             <input required value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre completo" className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-primary" />
             <input required value={contacto} onChange={(e) => setContacto(e.target.value)} placeholder="WhatsApp o correo" className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-primary" />
             <textarea value={mensaje} onChange={(e) => setMensaje(e.target.value)} rows={3} placeholder="Cuéntanos brevemente tu experiencia (opcional)" className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-primary" />
+            {cv ? (
+              <label className="flex items-start gap-2 rounded-xl bg-secondary px-4 py-3 text-sm"><input type="checkbox" checked={incluirCv} onChange={(e) => setIncluirCv(e.target.checked)} className="mt-0.5 accent-[var(--cta)]" /> <span>Incluir mi CV de Enlace Laboral ({cv.nombre}). <Link to="/cv" className="font-semibold text-primary underline">Editarlo</Link></span></label>
+            ) : (
+              <p className="text-sm text-muted-foreground">¿No tienes CV? <Link to="/cv" className="font-semibold text-primary underline">Créalo gratis en 5 minutos</Link> y se incluye solo al aplicar.</p>
+            )}
             {error && <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
             <button type="submit" disabled={estado === "enviando"} className="grad-primary flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-base font-bold text-primary-foreground disabled:opacity-70">
               {estado === "enviando" ? (<><Loader2 className="size-4 animate-spin" /> Enviando…</>) : "Enviar mis datos"}
