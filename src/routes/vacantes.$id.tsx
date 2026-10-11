@@ -5,7 +5,7 @@ import { AdminAcciones } from "@/components/site/AdminAcciones";
 import { useApply } from "@/components/site/apply-context";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { enlaceWhatsApp, fetchVacante, jobPostingLd, useVacantes } from "@/lib/vacantes";
+import { enlaceWhatsApp, fetchVacante, jobPostingLd, SITIO, useVacantes } from "@/lib/vacantes";
 import { claridad } from "@/lib/claridad";
 import { slug } from "@/lib/empleos";
 import { BotonGuardar, ClaridadPill, JobCard } from "@/components/site/JobCard";
@@ -26,7 +26,14 @@ export const Route = createFileRoute("/vacantes/$id")({
     const ld = jobPostingLd(job);
     const vencida = Date.now() - new Date(job.creado).getTime() > 30 * 864e5 || job.estado !== "publicada";
     return {
-      meta: [{ title }, { name: "description", content: desc }, { property: "og:title", content: title }, { property: "og:description", content: desc }, { property: "og:type", content: "website" }, ...(vencida ? [{ name: "robots", content: "noindex" }] : [])],
+      meta: [
+        { title }, { name: "description", content: desc },
+        { property: "og:title", content: title }, { property: "og:description", content: desc }, { property: "og:type", content: "website" },
+        { property: "og:url", content: `${SITIO}/vacantes/${job.id}` },
+        { property: "og:image", content: `${SITIO}/og/vacantes/${job.id}.png` }, { property: "og:image:width", content: "1200" }, { property: "og:image:height", content: "630" },
+        { name: "twitter:card", content: "summary_large_image" }, { name: "twitter:image", content: `${SITIO}/og/vacantes/${job.id}.png` },
+        ...(vencida ? [{ name: "robots", content: "noindex" }] : []),
+      ],
       scripts: ld && !vencida ? [{ type: "application/ld+json", children: ld }] : [],
     };
   },

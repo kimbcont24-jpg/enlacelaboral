@@ -3,6 +3,8 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { landingsArea, landingsProvincia, slug } from "./lib/empleos";
+import { imagenVacante } from "./lib/og";
+import { leerMeta, type VacanteRow } from "./lib/vacantes";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -62,10 +64,39 @@ async function sitemap(origen: string): Promise<Response> {
   return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
 }
 
+const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
+
+/** /og/vacantes/<id>.png → imagen de vista previa para redes y WhatsApp. */
+async function ogVacante(id: string, origen: string): Promise<Response> {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return new Response("No encontrada", { status: 404 });
+  let fila: VacanteRow | null = null;
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,titulo,provincia,modalidad,tipo,salario_min,salario_max,requisitos,etiquetas,estado&id=eq.${id}&limit=1`, { headers: { apikey: SB_KEY } });
+    if (r.ok) fila = ((await r.json()) as VacanteRow[])[0] ?? null;
+  } catch {
+    fila = null;
+  }
+  if (!fila) return new Response("No encontrada", { status: 404 });
+  const { meta } = leerMeta(fila.etiquetas);
+  const min = fila.salario_min ?? 0, max = fila.salario_max ?? 0;
+  try {
+    const png = await imagenVacante({
+      titulo: fila.titulo, empresa: meta["empresa"] || "Empresa no indicada", provincia: fila.provincia, modalidad: fila.modalidad, tipo: fila.tipo,
+      conSalario: min > 0, salario: max > min ? `${pesos(min)} – ${pesos(max)}` : min > 0 ? pesos(min) : "",
+    }, origen);
+    return new Response(png as BodyInit, { headers: { "content-type": "image/png", "cache-control": "public, max-age=3600, s-maxage=86400" } });
+  } catch (e) {
+    console.error(e);
+    return new Response("Error", { status: 500 });
+  }
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
     if (url.pathname === "/sitemap.xml") return sitemap(url.origin);
+    const og = url.pathname.match(/^\/og\/vacantes\/([0-9a-f-]{36})\.png$/i);
+    if (og) return ogVacante(og[1]!, url.origin);
     if (url.pathname === "/robots.txt") {
       return new Response(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /panel\nDisallow: /auth\n\nSitemap: ${url.origin}/sitemap.xml\n`, { headers: { "content-type": "text/plain; charset=utf-8" } });
     }
