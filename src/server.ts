@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { landingsArea, landingsProvincia, slug } from "./lib/empleos";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -45,16 +46,19 @@ const SB_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
 async function sitemap(origen: string): Promise<Response> {
   const desde = new Date(Date.now() - 30 * 864e5).toISOString();
-  let filas: { id: string; created_at: string }[] = [];
+  let filas: { id: string; created_at: string; etiquetas: string[] | null }[] = [];
   try {
-    const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,created_at&estado=eq.publicada&created_at=gte.${encodeURIComponent(desde)}&order=created_at.desc&limit=1000`, { headers: { apikey: SB_KEY } });
+    const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,created_at,etiquetas&estado=eq.publicada&created_at=gte.${encodeURIComponent(desde)}&order=created_at.desc&limit=1000`, { headers: { apikey: SB_KEY } });
     if (r.ok) filas = (await r.json()) as typeof filas;
   } catch {
     filas = [];
   }
   const fijas = ["/", "/vacantes", "/empresas", "/recursos"].map((p) => `<url><loc>${origen}${p}</loc><changefreq>daily</changefreq></url>`);
   const vacantes = filas.map((f) => `<url><loc>${origen}/vacantes/${f.id}</loc><lastmod>${f.created_at.slice(0, 10)}</lastmod></url>`);
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${[...fijas, ...vacantes].join("")}</urlset>`;
+  const empresas = new Set<string>();
+  for (const f of filas) for (const t of f.etiquetas ?? []) if (t.startsWith("m:empresa:") && t.length > 10) empresas.add(slug(t.slice(10)));
+  const landings = [...landingsProvincia, ...landingsArea].map((l) => l.slug).concat([...empresas]).filter(Boolean).map((s) => `<url><loc>${origen}/empleos/${s}</loc><changefreq>daily</changefreq></url>`);
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${[...fijas, ...landings, ...vacantes].join("")}</urlset>`;
   return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
 }
 

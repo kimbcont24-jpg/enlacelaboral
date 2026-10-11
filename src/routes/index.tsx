@@ -13,6 +13,7 @@ import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filt
 import { consejos } from "@/lib/data";
 import { useContenido } from "@/lib/contenido";
 import { useVacantes } from "@/lib/vacantes";
+import { slug } from "@/lib/empleos";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -105,7 +106,7 @@ function Home() {
             <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">Empleos por provincia</h2>
             <div className="mt-6 flex flex-wrap gap-2">
               {provinciasConVacantes.map(([p, n]) => (
-                <Link key={p} to="/vacantes" search={{ provincia: p }} className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary">{p} <span className="text-muted-foreground">({n})</span></Link>
+                <Link key={p} to="/empleos/$slug" params={{ slug: slug(p.replace(/\s*\(.*?\)\s*/g, "").replace("Remoto desde RD", "Remoto")) }} className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary">{p} <span className="text-muted-foreground">({n})</span></Link>
               ))}
             </div>
           </div>

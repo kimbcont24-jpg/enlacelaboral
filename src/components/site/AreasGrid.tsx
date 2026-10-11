@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Boxes, Briefcase, Calculator, Factory, HeartPulse, Hotel, Laptop, Headphones, Settings, TrendingUp, Users } from "lucide-react";
 
 import { areas } from "@/lib/data";
+import { slug } from "@/lib/empleos";
 import type { Vacante } from "@/lib/vacantes";
 
 const iconos: Record<string, typeof Briefcase> = { "Administración": Briefcase, "Recursos Humanos": Users, Ventas: TrendingUp, "Tecnología": Laptop, Operaciones: Settings, "Contabilidad y Finanzas": Calculator, "Producción": Factory, "Logística": Boxes, "Servicio al Cliente": Headphones, Salud: HeartPulse, "Hotelería y Turismo": Hotel };
@@ -17,7 +18,7 @@ export function AreasGrid({ jobs }: { jobs: Vacante[] }) {
             const Icono = iconos[area] ?? Briefcase;
             const total = jobs.filter((j) => j.area === area).length;
             return (
-              <Link key={area} to="/vacantes" search={{ area }} className="flex items-center gap-3 rounded-2xl border border-border bg-background p-4 transition-colors hover:border-primary hover:bg-secondary">
+              <Link key={area} to="/empleos/$slug" params={{ slug: slug(area) }} className="flex items-center gap-3 rounded-2xl border border-border bg-background p-4 transition-colors hover:border-primary hover:bg-secondary">
                 <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-white"><Icono className="size-5" /></span>
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold">{area}</span>

@@ -7,6 +7,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { enlaceWhatsApp, fetchVacante, jobPostingLd, useVacantes } from "@/lib/vacantes";
 import { claridad } from "@/lib/claridad";
+import { slug } from "@/lib/empleos";
 import { BotonGuardar, ClaridadPill, JobCard } from "@/components/site/JobCard";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
@@ -48,7 +49,7 @@ function Detalle() {
           <Link to="/vacantes" className="text-sm font-semibold text-muted-foreground hover:text-primary">← Volver a vacantes</Link>
           <AdminAcciones job={job} volverAlListado />
           <h1 className="mt-4 text-3xl font-extrabold tracking-tight md:text-4xl">{job.titulo}</h1>
-          <p className="mt-2 text-lg text-muted-foreground">{job.empresa} • {job.provincia}</p>
+          <p className="mt-2 text-lg text-muted-foreground">{job.empresa !== "Empresa no indicada" ? <Link to="/empleos/$slug" params={{ slug: slug(job.empresa) }} className="hover:text-primary hover:underline">{job.empresa}</Link> : job.empresa} • <Link to="/empleos/$slug" params={{ slug: slug(job.provincia.replace(/\s*\(.*?\)\s*/g, "").replace("Remoto desde RD", "Remoto")) }} className="hover:text-primary hover:underline">{job.provincia}</Link></p>
           <ClaridadPill job={job} className="mt-3" />
           <p className={`mt-4 text-2xl font-extrabold ${job.salarioMin > 0 ? "text-success" : "text-muted-foreground"}`}>{job.salario}</p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-muted-foreground">

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import { Logo } from "@/components/site/Logo";
-import { areas, provincias } from "@/lib/data";
+import { landingsArea, landingsProvincia } from "@/lib/empleos";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 
 export function Footer() {
@@ -17,13 +17,13 @@ export function Footer() {
         <nav aria-label="Empleos por provincia">
           <p className="text-sm font-bold">Empleos por provincia</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            {provincias.slice(1, 8).map((p) => <li key={p}><Link to="/vacantes" search={{ provincia: p }} className="hover:text-primary">{p}</Link></li>)}
+            {landingsProvincia.slice(0, 7).map((l) => <li key={l.slug}><Link to="/empleos/$slug" params={{ slug: l.slug }} className="hover:text-primary">{l.nombre.replace(/\s*\(.*?\)/, "")}</Link></li>)}
           </ul>
         </nav>
         <nav aria-label="Empleos por área">
           <p className="text-sm font-bold">Empleos por área</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            {areas.slice(0, 7).map((a) => <li key={a}><Link to="/vacantes" search={{ area: a }} className="hover:text-primary">{a}</Link></li>)}
+            {landingsArea.slice(0, 7).map((l) => <li key={l.slug}><Link to="/empleos/$slug" params={{ slug: l.slug }} className="hover:text-primary">{l.nombre}</Link></li>)}
           </ul>
         </nav>
         <nav aria-label="Enlace Laboral">

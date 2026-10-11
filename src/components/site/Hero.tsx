@@ -30,7 +30,7 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
           {populares.map((p) => (
             <Link key={p} to="/vacantes" search={{ q: p }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-white/20">{p}</Link>
           ))}
-          <Link to="/vacantes" search={{ modalidad: "Remoto" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-white/20">Desde casa</Link>
+          <Link to="/empleos/$slug" params={{ slug: "remoto" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-white/20">Desde casa</Link>
           <Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-medium text-white hover:bg-white/20">Primer empleo</Link>
         </div>
 
