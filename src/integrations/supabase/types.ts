@@ -3,7 +3,7 @@ export type Database = {
   public: {
     Tables: {
       aplicaciones: {
-        Row: { contacto: string; created_at: string; id: string; mensaje: string | null; nombre: string; vacante_id: string };
+        Row: { contacto: string; created_at: string; id: string; mensaje: string | null; nombre: string; vacante_id: string; enviada_at: string | null };
         Insert: { contacto: string; created_at?: string; id?: string; mensaje?: string | null; nombre: string; vacante_id: string };
         Update: { [k: string]: unknown };
         Relationships: [{ foreignKeyName: "aplicaciones_vacante_id_fkey"; columns: ["vacante_id"]; isOneToOne: false; referencedRelation: "vacantes"; referencedColumns: ["id"] }];

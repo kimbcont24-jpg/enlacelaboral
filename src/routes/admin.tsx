@@ -584,10 +584,10 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
 }
 
 function Aplicaciones() {
-  type A = { id: string; nombre: string; contacto: string; mensaje: string | null; created_at: string; vacantes: { titulo: string } | null };
+  type A = { id: string; nombre: string; contacto: string; mensaje: string | null; created_at: string; enviada_at: string | null; vacantes: { titulo: string } | null };
   const [items, setItems] = useState<A[] | null>(null);
   const cargar = useCallback(async () => {
-    const { data } = await supabase.from("aplicaciones").select("id,nombre,contacto,mensaje,created_at,vacantes(titulo)").order("created_at", { ascending: false }).limit(500);
+    const { data } = await supabase.from("aplicaciones").select("id,nombre,contacto,mensaje,created_at,enviada_at,vacantes(titulo)").order("created_at", { ascending: false }).limit(500);
     setItems((data as unknown as A[] | null) ?? []);
   }, []);
   useEffect(() => void cargar(), [cargar]);
@@ -604,8 +604,8 @@ function Aplicaciones() {
         <div key={a.id} className="flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-border bg-surface p-4">
           <div className="min-w-0">
             <p className="font-bold">{a.nombre} <span className="font-normal text-muted-foreground">· {a.contacto}</span></p>
-            <p className="text-xs text-primary">{a.vacantes?.titulo ?? "Vacante"} · {new Date(a.created_at).toLocaleDateString("es-DO")}</p>
-            {a.mensaje && <p className="mt-1 text-sm text-muted-foreground">{a.mensaje}</p>}
+            <p className="text-xs text-primary">{a.vacantes?.titulo ?? "Vacante"} · {new Date(a.created_at).toLocaleDateString("es-DO")} {a.enviada_at ? <span className="ml-1 rounded-full bg-success/10 px-2 py-0.5 font-bold text-success">Enviada por correo</span> : <span className="ml-1 rounded-full bg-muted px-2 py-0.5 font-bold text-muted-foreground">Se envía en la próxima hora</span>}</p>
+            {a.mensaje && <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">{a.mensaje}</p>}
           </div>
           <Button size="sm" variant="outline" onClick={() => void borrar(a.id)}><Trash2 /> Borrar</Button>
         </div>
