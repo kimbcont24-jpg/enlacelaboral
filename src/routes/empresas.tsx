@@ -22,6 +22,11 @@ function Empresas() {
       <header className="mx-auto max-w-7xl px-6 pb-12 pt-16">
                 <h1 className="max-w-3xl text-balance text-4xl font-extrabold tracking-tight md:text-6xl">Publica tus vacantes gratis y llega a candidatos de todo el país</h1>
         <p className="mt-4 max-w-2xl text-muted-foreground">Envía tu vacante y la publicamos sin costo. Los servicios extras son opcionales.</p>
+        <ul className="mt-6 grid max-w-3xl gap-3 text-sm sm:grid-cols-3">
+          <li className="rounded-2xl border border-border bg-surface p-4"><p className="font-bold">Los candidatos te llegan al correo</p><p className="mt-1 text-muted-foreground">Cada aplicación se envía al correo que indiques, con los datos y el CV de la persona.</p></li>
+          <li className="rounded-2xl border border-border bg-surface p-4"><p className="font-bold">Difusión incluida</p><p className="mt-1 text-muted-foreground">Tu vacante sale en la página, en el canal de WhatsApp y en Instagram, con tu nombre de empresa.</p></li>
+          <li className="rounded-2xl border border-border bg-surface p-4"><p className="font-bold">Sin cuenta ni contraseña</p><p className="mt-1 text-muted-foreground">Un formulario de dos minutos. También puedes mandarla por correo a kimbcont24+vacantes@gmail.com.</p></li>
+        </ul>
       </header>
       <section className="mx-auto max-w-7xl px-6 pb-16">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
