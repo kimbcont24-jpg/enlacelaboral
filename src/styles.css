@@ -36,30 +36,30 @@
 
 :root {
   --radius: 0.75rem;
-  /* Paleta "Bandera": azul dominicano (marca), rojo (acción), fondo gris claro */
+  /* Paleta "Azul": azul profundo (marca) + azul eléctrico (acción), fondo gris claro */
   --background: #f4f6f9;
   --foreground: #14213a;
   --surface: #ffffff;
-  --primary: #002d62;
+  --primary: #0a2f5c;
   --primary-foreground: #ffffff;
   --secondary: #e8eef6;
   --secondary-foreground: #14213a;
   --muted: #eef1f5;
   --muted-foreground: #556275;
-  --accent: #002d62;
+  --accent: #1d6ff2;
   --accent-foreground: #ffffff;
-  --cta: #ce1126;
-  --cta-hover: #a90e1f;
+  --cta: #1d6ff2;
+  --cta-hover: #155fd4;
   --cta-foreground: #ffffff;
   --success: #0f7a43;
   --destructive: #c8372d;
   --destructive-foreground: #ffffff;
   --border: rgb(20 33 58 / 0.11);
   --input: rgb(20 33 58 / 0.2);
-  --ring: #002d62;
+  --ring: #1d6ff2;
   --shadow-soft: 0 1px 2px rgb(20 33 58 / 0.06), 0 8px 24px -14px rgb(20 33 58 / 0.25);
-  --shadow-lift: 0 16px 32px -20px rgb(0 45 98 / 0.45);
-  --shadow-glow: 0 16px 32px -20px rgb(0 45 98 / 0.45);
+  --shadow-lift: 0 16px 32px -20px rgb(10 47 92 / 0.4);
+  --shadow-glow: 0 16px 32px -20px rgb(10 47 92 / 0.4);
 }
 
 @layer base {
@@ -72,18 +72,39 @@
   &:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
 }
 
-@utility text-shine { color: var(--primary); }
+@utility text-shine {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--cta) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 
-@utility grad-primary { background-color: var(--primary); }
+@utility grad-primary { background-image: linear-gradient(135deg, var(--primary) 0%, #0f4aa8 100%); }
 
-@utility hero-dark { background-color: var(--foreground); color: #ffffff; }
+/* Portada: azul profundo con brillos azules, como una pantalla moderna. */
+@utility hero-dark {
+  position: relative; isolation: isolate; color: #ffffff; overflow: hidden;
+  background-color: #0a2f5c;
+  background-image:
+    radial-gradient(60% 80% at 100% 0%, rgb(29 111 242 / 0.55) 0%, transparent 60%),
+    radial-gradient(50% 70% at 0% 100%, rgb(29 111 242 / 0.28) 0%, transparent 60%),
+    linear-gradient(135deg, #0a2f5c 0%, #0c3a74 60%, #0f4aa8 100%);
+  &::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; opacity: .35; pointer-events: none;
+    background-image: linear-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(70% 90% at 50% 0%, #000 30%, transparent 100%);
+  }
+}
 
 @utility btn-aplicar {
-  background-color: var(--cta);
+  background-image: linear-gradient(135deg, #2b7cff 0%, var(--cta) 60%, #155fd4 100%);
   color: var(--cta-foreground);
   font-weight: 700;
-  &:hover { background-color: var(--cta-hover); }
+  box-shadow: 0 6px 16px -8px rgb(29 111 242 / 0.7);
+  transition: transform .2s var(--ease-out-expo), box-shadow .2s var(--ease-out-expo), filter .2s;
+  &:hover { filter: brightness(1.06); box-shadow: 0 10px 22px -8px rgb(29 111 242 / 0.8); transform: translateY(-1px); }
 }
+
+@utility vidrio { background-color: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.18); backdrop-filter: blur(10px); }
 
 @layer base {
   :focus-visible { outline: 3px solid #f5b400; outline-offset: 2px; }

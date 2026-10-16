@@ -72,7 +72,7 @@ function Home() {
             </div>
           </div>
           <div className="flex items-start gap-4 rounded-2xl bg-secondary p-5">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-cta text-white"><Building2 className="size-5" aria-hidden="true" /></span>
+            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-cta text-white shadow-[0_8px_16px_-8px_rgba(29,111,242,.8)]"><Building2 className="size-5" aria-hidden="true" /></span>
             <div>
               <p className="font-bold">¿Eres empresa o institución?</p>
               <p className="mt-1 text-sm text-muted-foreground">Publica tus vacantes gratis y llega a candidatos de todo el país. <Link to="/empresas" className="font-semibold text-primary underline">Publicar vacante</Link></p>
@@ -135,7 +135,7 @@ function Home() {
       </section>
 
       <section className="px-4 py-14 sm:px-6">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 rounded-3xl bg-primary p-8 text-white md:flex-row md:items-center md:justify-between md:p-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 hero-dark rounded-3xl p-8 md:flex-row md:items-center md:justify-between md:p-10">
           <div className="max-w-xl">
             <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">{t.reclutadores_titulo}</h2>
             <p className="mt-2 text-white/80">Publicar vacantes es gratis. Envíanos tu vacante y la publicamos para candidatos de todo el país.</p>

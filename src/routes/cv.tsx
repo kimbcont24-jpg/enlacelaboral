@@ -163,16 +163,16 @@ function Hoja({ cv }: { cv: CV }) {
   const vacio = !cv.nombre && !cv.resumen && !exp.length;
   return (
     <article id="cv-hoja" className="mx-auto w-full max-w-[210mm] rounded-2xl border border-border bg-white p-8 text-[#14213a] shadow-[var(--shadow-lift)] sm:p-10" style={{ fontFamily: "Figtree, system-ui, sans-serif" }}>
-      <header className="border-b-4 border-[#002d62] pb-4">
-        <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-[#002d62]">{nombre}</h2>
-        {cv.puesto && <p className="mt-1 text-lg font-semibold text-[#ce1126]">{cv.puesto}</p>}
+      <header className="border-b-4 border-[#0a2f5c] pb-4">
+        <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0a2f5c]">{nombre}</h2>
+        {cv.puesto && <p className="mt-1 text-lg font-semibold text-[#1d6ff2]">{cv.puesto}</p>}
         {contacto && <p className="mt-2 text-sm text-[#5b6678]">{contacto}</p>}
       </header>
       {vacio && <p className="mt-6 text-sm text-[#5b6678]">Llena el formulario y tu CV aparece aquí. Cuando esté listo, descárgalo en PDF.</p>}
       {cv.resumen && <p className="mt-5 text-[15px] leading-relaxed">{cv.resumen}</p>}
       {exp.length > 0 && (
         <section className="mt-6">
-          <h3 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#002d62]">Experiencia</h3>
+          <h3 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0a2f5c]">Experiencia</h3>
           <div className="mt-3 space-y-4">
             {exp.map((e, i) => (
               <div key={i}>
@@ -188,7 +188,7 @@ function Hoja({ cv }: { cv: CV }) {
       )}
       {edu.length > 0 && (
         <section className="mt-6">
-          <h3 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#002d62]">Formación</h3>
+          <h3 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0a2f5c]">Formación</h3>
           <ul className="mt-3 space-y-1.5">
             {edu.map((e, i) => <li key={i} className="flex flex-wrap items-baseline justify-between gap-x-4"><span><span className="font-bold">{e.titulo}</span>{e.centro && <span className="text-[#5b6678]"> · {e.centro}</span>}</span>{e.anio && <span className="text-sm text-[#5b6678]">{e.anio}</span>}</li>)}
           </ul>
@@ -198,13 +198,13 @@ function Hoja({ cv }: { cv: CV }) {
         <section className="mt-6 grid gap-5 sm:grid-cols-2">
           {habilidades.length > 0 && (
             <div>
-              <h3 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#002d62]">Habilidades</h3>
-              <ul className="mt-3 flex flex-wrap gap-1.5">{habilidades.map((h) => <li key={h} className="rounded-md bg-[#e8eef6] px-2.5 py-1 text-sm font-semibold text-[#002d62]">{h}</li>)}</ul>
+              <h3 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0a2f5c]">Habilidades</h3>
+              <ul className="mt-3 flex flex-wrap gap-1.5">{habilidades.map((h) => <li key={h} className="rounded-md bg-[#e8eef6] px-2.5 py-1 text-sm font-semibold text-[#0a2f5c]">{h}</li>)}</ul>
             </div>
           )}
           {cv.idiomas && (
             <div>
-              <h3 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#002d62]">Idiomas</h3>
+              <h3 className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#0a2f5c]">Idiomas</h3>
               <p className="mt-3 text-[15px]">{cv.idiomas}</p>
             </div>
           )}

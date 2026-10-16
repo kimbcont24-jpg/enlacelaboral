@@ -38,7 +38,7 @@ export function AlertaForm({ areaInicial = "", provinciaInicial = "", compacta =
     <form onSubmit={(e) => void enviar(e)} className={compacta ? "" : "rounded-3xl border border-border bg-surface p-6 md:p-8"}>
       {!compacta && (
         <div className="mb-5 flex items-start gap-3">
-          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-cta text-white"><BellRing className="size-5" aria-hidden="true" /></span>
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-cta text-white shadow-[0_8px_16px_-8px_rgba(29,111,242,.8)]"><BellRing className="size-5" aria-hidden="true" /></span>
           <div>
             <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">Recibe empleos en tu correo</h2>
             <p className="mt-1 text-muted-foreground">Te avisamos cada mañana cuando salga una vacante para ti. Gratis y sin cuenta.</p>

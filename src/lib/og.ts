@@ -8,7 +8,7 @@ import { initWasm, Resvg } from "@resvg/resvg-wasm";
  */
 type Datos = { titulo: string; empresa: string; provincia: string; modalidad: string; tipo: string; salario: string; conSalario: boolean; requisito?: string };
 
-const NAVY = "#002d62", ROJO = "#ce1126", VERDE = "#0f7a43", GRIS = "#5b6678", TINTA = "#14213a";
+const NAVY = "#0a2f5c", ROJO = "#1d6ff2", VERDE = "#0f7a43", GRIS = "#5b6678", TINTA = "#14213a";
 
 let fuentes: { name: string; data: ArrayBuffer; weight: 600 | 800; style: "normal" }[] | null = null;
 let wasmListo: Promise<void> | null = null;
@@ -69,7 +69,7 @@ function plantilla(d: Datos) {
     ),
     h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 64px", height: 70, background: NAVY, color: "#fff", fontSize: 24, fontWeight: 700 } },
       h("span", {}, "Aplica gratis en enlace-rd.vercel.app"),
-      h("span", { style: { color: "#ff4057" } }, "Toca para ver la vacante »"),
+      h("span", { style: { color: "#8ec1ff" } }, "Toca para ver la vacante »"),
     ),
   );
 }

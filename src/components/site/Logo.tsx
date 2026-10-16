@@ -5,13 +5,13 @@ import { cn } from "@/lib/utils";
 
 /**
  * Marca de Enlace Laboral: dos eslabones entrelazados.
- * El azul es la persona que busca empleo; el rojo, la empresa o institución que contrata.
+ * El azul profundo es la persona que busca empleo; el azul eléctrico, la empresa o institución que contrata.
  * Se cruzan por arriba y por abajo, como en una cadena real: quedan enlazados.
  */
 export function LogoMarca({ className, invertido = false }: { className?: string; invertido?: boolean }) {
   const id = useId().replace(/:/g, "");
-  const azul = invertido ? "#ffffff" : "#002d62";
-  const rojo = invertido ? "#ff4057" : "#ce1126";
+  const azul = invertido ? "#ffffff" : "#0a2f5c";
+  const rojo = invertido ? "#8ec1ff" : "#1d6ff2";
   return (
     <svg viewBox="0 0 64 64" role="img" aria-label="Enlace Laboral" className={className}>
       <defs>
@@ -31,7 +31,7 @@ export function Logo({ className, invertido = false }: { className?: string; inv
     <Link to="/" className={cn("flex items-center gap-1.5", className)} aria-label="Enlace Laboral, inicio">
       <LogoMarca className="size-12 -my-1" invertido={invertido} />
       <span className={cn("text-[22px] font-extrabold leading-none tracking-tight", invertido ? "text-white" : "text-primary")}>
-        Enlace <span className={invertido ? "text-[#ff4057]" : "text-cta"}>Laboral</span>
+        Enlace <span className={invertido ? "text-[#8ec1ff]" : "text-cta"}>Laboral</span>
       </span>
     </Link>
   );
