@@ -55,7 +55,7 @@ async function sitemap(origen: string): Promise<Response> {
   } catch {
     filas = [];
   }
-  const fijas = ["/", "/vacantes", "/empresas", "/recursos", "/cv"].map((p) => `<url><loc>${origen}${p}</loc><changefreq>daily</changefreq></url>`);
+  const fijas = ["/", "/vacantes", "/empresas", "/recursos", "/cv", "/impulso"].map((p) => `<url><loc>${origen}${p}</loc><changefreq>daily</changefreq></url>`);
   const vacantes = filas.map((f) => `<url><loc>${origen}/vacantes/${f.id}</loc><lastmod>${f.created_at.slice(0, 10)}</lastmod></url>`);
   const empresas = new Set<string>();
   for (const f of filas) for (const t of f.etiquetas ?? []) if (t.startsWith("m:empresa:") && t.length > 10) empresas.add(slug(t.slice(10)));

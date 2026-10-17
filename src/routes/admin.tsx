@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin")({
   component: Admin,
 });
 
-type Tab = "publicar" | "borradores" | "vacantes" | "aplicaciones" | "textos";
+type Tab = "publicar" | "borradores" | "vacantes" | "aplicaciones" | "pedidos" | "textos";
 
 type BorradorRow = { id: string; created_at: string; origen: string; texto: string; titulo: string | null; empresa: string | null; provincia: string | null; contacto_nombre: string | null; contacto_email: string | null; contacto_telefono: string | null; fuente: string | null; fuente_url: string | null; datos: Record<string, unknown> | null };
 
@@ -79,6 +79,7 @@ function Admin() {
     { id: "borradores", label: pendientes ? `Borradores (${pendientes})` : "Borradores" },
     { id: "vacantes", label: "Mis vacantes" },
     { id: "aplicaciones", label: "Aplicaciones" },
+    { id: "pedidos", label: "Pedidos de CV" },
     { id: "textos", label: "Textos" },
   ];
 
@@ -108,6 +109,7 @@ function Admin() {
               {tab === "borradores" && <Borradores uid={uid} onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
               {tab === "vacantes" && <MisVacantes onEditar={(v) => { setEditar(v); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
               {tab === "aplicaciones" && <Aplicaciones />}
+              {tab === "pedidos" && <Pedidos />}
               {tab === "textos" && <Textos />}
             </div>
           </>
@@ -608,6 +610,58 @@ function Aplicaciones() {
             {a.mensaje && <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">{a.mensaje}</p>}
           </div>
           <Button size="sm" variant="outline" onClick={() => void borrar(a.id)}><Trash2 /> Borrar</Button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Pedidos() {
+  type P = { id: string; codigo: string; paquete: string; precio: number; nombre: string; contacto: string; correo: string | null; puesto: string | null; cv_texto: string | null; notas: string | null; estado: string; created_at: string };
+  const [items, setItems] = useState<P[] | null>(null);
+  const cargar = useCallback(async () => {
+    const { data } = await supabase.from("pedidos_servicios").select("*").order("created_at", { ascending: false }).limit(300);
+    setItems((data as unknown as P[] | null) ?? []);
+  }, []);
+  useEffect(() => void cargar(), [cargar]);
+  const marcar = async (id: string, estado: "pendiente_pago" | "pagado" | "entregado") => {
+    const ahora = new Date().toISOString();
+    const cambios: Record<string, unknown> = { estado };
+    if (estado === "pagado") cambios["pagado_at"] = ahora;
+    if (estado === "entregado") cambios["entregado_at"] = ahora;
+    await supabase.from("pedidos_servicios").update(cambios).eq("id", id);
+    void cargar();
+  };
+  const borrar = async (id: string) => {
+    if (!confirm("¿Borrar este pedido?")) return;
+    await supabase.from("pedidos_servicios").delete().eq("id", id);
+    void cargar();
+  };
+  if (!items) return <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>;
+  const cobrado = items.filter((p) => p.estado !== "pendiente_pago").reduce((s, p) => s + p.precio, 0);
+  const color: Record<string, string> = { pendiente_pago: "bg-muted text-muted-foreground", pagado: "bg-cta/10 text-cta", entregado: "bg-success/10 text-success" };
+  const nombreEstado: Record<string, string> = { pendiente_pago: "Falta el pago", pagado: "Pagado · por entregar", entregado: "Entregado" };
+  return (
+    <div className="space-y-3">
+      <p className="rounded-2xl border border-border bg-surface p-4 text-sm">Cobrado: <span className="text-lg font-extrabold text-success">RD${cobrado.toLocaleString("es-DO")}</span> · Pedidos: {items.length} · Por entregar: {items.filter((p) => p.estado === "pagado").length}</p>
+      {!items.length && <p className="text-sm text-muted-foreground">Todavía no hay pedidos. Cuando alguien pida un servicio en /impulso, aparece aquí y te llega un correo. Pon tus datos de pago en la pestaña Textos.</p>}
+      {items.map((p) => (
+        <div key={p.id} className="rounded-2xl border border-border bg-surface p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-bold">{p.nombre} <span className="font-normal text-muted-foreground">· {p.codigo} · {p.paquete} · RD${p.precio.toLocaleString("es-DO")}</span></p>
+              <p className="text-sm text-primary"><a className="underline" href={`https://wa.me/${p.contacto.replace(/\D/g, "").replace(/^(?!1)/, "1")}`} target="_blank" rel="noreferrer">{p.contacto}</a>{p.correo ? ` · ${p.correo}` : ""} · {new Date(p.created_at).toLocaleString("es-DO")}</p>
+              <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-xs font-bold ${color[p.estado] ?? ""}`}>{nombreEstado[p.estado] ?? p.estado}</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {p.estado === "pendiente_pago" && <Button size="sm" onClick={() => void marcar(p.id, "pagado")}>Marcar pagado</Button>}
+              {p.estado === "pagado" && <Button size="sm" onClick={() => void marcar(p.id, "entregado")}>Marcar entregado</Button>}
+              <Button size="sm" variant="outline" onClick={() => void borrar(p.id)}><Trash2 /> Borrar</Button>
+            </div>
+          </div>
+          {p.puesto && <p className="mt-2 text-sm"><b>Busca:</b> {p.puesto}</p>}
+          {p.notas && <p className="mt-1 whitespace-pre-line text-sm"><b>Notas:</b> {p.notas}</p>}
+          {p.cv_texto && <details className="mt-2"><summary className="cursor-pointer text-sm font-semibold text-primary">Ver su CV</summary><pre className="mt-2 whitespace-pre-wrap rounded-lg bg-muted p-3 text-xs">{p.cv_texto}</pre></details>}
         </div>
       ))}
     </div>

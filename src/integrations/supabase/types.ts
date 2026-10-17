@@ -26,6 +26,12 @@ export type Database = {
         Update: { [k: string]: unknown };
         Relationships: [];
       };
+      pedidos_servicios: {
+        Row: { id: string; codigo: string; paquete: string; precio: number; nombre: string; contacto: string; correo: string | null; puesto: string | null; cv_texto: string | null; notas: string | null; estado: string; avisado_at: string | null; pagado_at: string | null; entregado_at: string | null; created_at: string };
+        Insert: { [k: string]: unknown };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
       user_roles: {
         Row: { id: string; role: "admin" | "user"; user_id: string };
         Insert: { id?: string; role: "admin" | "user"; user_id: string };
@@ -42,6 +48,7 @@ export type Database = {
     Views: { [_ in never]: never };
     Functions: {
       suscribir_alerta: { Args: { p_email: string; p_area?: string | null; p_provincia?: string | null }; Returns: string };
+      crear_pedido: { Args: { p_paquete: string; p_nombre: string; p_contacto: string; p_correo: string | null; p_puesto: string | null; p_cv: string | null; p_notas: string | null }; Returns: { codigo: string; precio: number } };
       baja_alerta: { Args: { p_token: string }; Returns: string };
     };
     Enums: { app_role: "admin" | "user" };

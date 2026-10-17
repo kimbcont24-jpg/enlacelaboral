@@ -9,6 +9,8 @@ export const textosEditables = {
   especialista_firma: { etiqueta: "Consejo del especialista · firma", valor: "Equipo Enlace Laboral" },
   reclutadores_titulo: { etiqueta: "Bloque reclutadores · título", valor: "¿Buscas talento?" },
   reclutadores_texto: { etiqueta: "Bloque reclutadores · texto", valor: "Publicar vacantes es gratis. Escríbenos y publicamos tu vacante para que llegue a más personas." },
+  pago_datos: { etiqueta: "Servicios de CV · datos para pagar (banco, tipo y número de cuenta, titular)", valor: "" },
+  pago_whatsapp: { etiqueta: "Servicios de CV · WhatsApp para enviar el comprobante (solo números, con 1809…)", valor: "" },
 } as const;
 
 export type ClaveTexto = keyof typeof textosEditables;

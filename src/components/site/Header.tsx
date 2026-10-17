@@ -12,6 +12,7 @@ const nav = [
   { to: "/empresas", label: "Empresas" },
   { to: "/recursos", label: "Consejos" },
   { to: "/cv", label: "Mi CV" },
+  { to: "/impulso", label: "Impulso" },
 ];
 
 export function Header() {

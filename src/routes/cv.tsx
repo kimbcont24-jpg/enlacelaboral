@@ -44,6 +44,10 @@ function CrearCV() {
       <div className="mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6">
         <div className="no-print">
           <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">Crea tu CV gratis</h1>
+          <Link to="/impulso" className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-cta/40 bg-cta/5 p-4 text-sm hover:border-cta">
+            <span><b>¿Prefieres que te lo hagamos?</b> CV profesional, carta y LinkedIn en menos de 24 horas, desde RD$500.</span>
+            <span className="font-bold text-cta">Ver Impulso Laboral →</span>
+          </Link>
           <p className="mt-2 max-w-2xl text-muted-foreground">Una página, limpia, con lo que un reclutador revisa en 30 segundos. Sin cuenta, sin marca de agua. Se guarda en tu teléfono y lo puedes editar cuando quieras.</p>
           <div className="mt-5 flex flex-wrap gap-2">
             <button type="button" onClick={descargar} className="btn-aplicar inline-flex items-center gap-2 rounded-xl px-5 py-3 text-base"><Download className="size-4" /> Descargar en PDF</button>
