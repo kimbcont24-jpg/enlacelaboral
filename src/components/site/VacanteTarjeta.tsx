@@ -3,7 +3,7 @@ import { MapPin } from "lucide-react";
 
 import { BotonGuardar, ClaridadPill } from "@/components/site/JobCard";
 import { useApply } from "@/components/site/apply-context";
-import { esNueva } from "@/lib/claridad";
+import { diasRestantes, esNueva, venceTexto } from "@/lib/claridad";
 import type { Vacante } from "@/lib/vacantes";
 
 /** Tarjeta compacta para cuadrículas (portada). */
@@ -20,6 +20,7 @@ export function VacanteTarjeta({ job }: { job: Vacante }) {
       <Link to="/vacantes/$id" params={{ id: job.id }} className="mt-3 text-lg font-bold leading-snug hover:text-primary hover:underline">{job.titulo}</Link>
       <p className="mt-1 text-sm text-muted-foreground">{job.empresa}</p>
       <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="size-3.5" aria-hidden="true" /> {job.provincia} · {job.publicado}</p>
+      {diasRestantes(job) <= 5 && <p className="mt-1 text-xs font-semibold text-destructive">{venceTexto(job)}</p>}
       <p className={`mt-3 text-base font-extrabold ${job.salarioMin > 0 ? "text-success" : "text-muted-foreground"}`}>{job.salario}</p>
       <ClaridadPill job={job} className="mt-2 self-start" />
       <div className="mt-auto flex gap-2 pt-4">

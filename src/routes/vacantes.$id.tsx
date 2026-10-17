@@ -8,6 +8,7 @@ import { Footer } from "@/components/site/Footer";
 import { enlaceWhatsApp, fetchVacante, jobPostingLd, SITIO, useVacantes } from "@/lib/vacantes";
 import { claridad } from "@/lib/claridad";
 import { slug } from "@/lib/empleos";
+import { nivelDe, venceTexto } from "@/lib/claridad";
 import { BotonGuardar, ClaridadPill, JobCard } from "@/components/site/JobCard";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
@@ -60,7 +61,7 @@ function Detalle() {
           <ClaridadPill job={job} className="mt-3" />
           <p className={`mt-4 text-2xl font-extrabold ${job.salarioMin > 0 ? "text-success" : "text-muted-foreground"}`}>{job.salario}</p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-muted-foreground">
-            {[job.modalidad, job.tipo, `Experiencia: ${job.experiencia}`, job.area, `Publicada el ${fecha}`].map((x) => (<span key={x} className="rounded-full border border-border px-3 py-1">{x}</span>))}
+            {[job.modalidad, job.tipo, `Experiencia: ${job.experiencia}`, job.area, `Publicada el ${fecha}`, venceTexto(job), nivelDe(job)].map((x) => (<span key={x} className="rounded-full border border-border px-3 py-1">{x}</span>))}
           </div>
           {job.requisitos.length > 0 && (
             <>

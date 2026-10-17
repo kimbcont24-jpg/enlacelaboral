@@ -3,7 +3,7 @@ import { Banknote, Bookmark, Briefcase, Building2, Clock, MapPin, Monitor } from
 
 import { AdminAcciones } from "@/components/site/AdminAcciones";
 import { useApply } from "@/components/site/apply-context";
-import { claridad, esNueva } from "@/lib/claridad";
+import { claridad, diasRestantes, esNueva, nivelDe, venceTexto } from "@/lib/claridad";
 import { useGuardados } from "@/lib/guardados";
 import type { Vacante } from "@/lib/vacantes";
 
@@ -56,9 +56,11 @@ export function JobCard({ job }: { job: Vacante }) {
             <span className="inline-flex items-center gap-1.5"><Monitor className="size-4 shrink-0" aria-hidden="true" /> {job.modalidad}</span>
             <span className="inline-flex items-center gap-1.5"><Briefcase className="size-4 shrink-0" aria-hidden="true" /> {job.tipo}</span>
             <span className="inline-flex items-center gap-1.5"><Clock className="size-4 shrink-0" aria-hidden="true" /> {job.publicado}</span>
+            <span className={diasRestantes(job) <= 5 ? "font-semibold text-destructive" : ""}>{venceTexto(job)}</span>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <ClaridadPill job={job} />
+            <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold text-primary">{nivelDe(job)}</span>
             <span className="text-xs text-muted-foreground">Fuente: {job.fuente}</span>
           </div>
         </div>

@@ -9,7 +9,7 @@ export function SearchBar({ puesto, provincia, onPuesto, onProvincia, onSubmit, 
     <form onSubmit={(e) => { e.preventDefault(); onSubmit?.(); }} className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-2.5 shadow-[var(--shadow-soft)] md:flex-row md:items-center">
       <div className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5">
         <Search className="size-5 shrink-0 text-muted-foreground" />
-        <input value={puesto} onChange={(e) => onPuesto(e.target.value)} placeholder="¿Qué empleo buscas?" aria-label="Puesto, área o palabra clave" className="w-full min-w-0 bg-transparent text-base outline-none md:text-lg" />
+        <input value={puesto} onChange={(e) => onPuesto(e.target.value)} placeholder="Puesto, empresa o palabra clave" aria-label="Puesto, empresa, área o palabra clave" className="w-full min-w-0 bg-transparent text-base outline-none md:text-lg" />
       </div>
       <div className="hidden h-8 w-px bg-border md:block" />
       <div className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5">
