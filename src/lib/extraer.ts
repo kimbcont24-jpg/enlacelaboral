@@ -1,4 +1,5 @@
 export type Borrador = {
+  redes?: boolean;
   titulo: string;
   empresa: string;
   provincia: string;

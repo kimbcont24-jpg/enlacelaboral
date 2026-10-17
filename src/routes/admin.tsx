@@ -139,6 +139,7 @@ function aBorrador(v: Vacante): Borrador {
     aplicar: v.aplicar,
     fuente: v.fuente === "Enlace Laboral" ? "" : v.fuente,
     fuenteUrl: v.fuenteUrl,
+    redes: !!v.redes,
   };
 }
 
@@ -194,6 +195,7 @@ function filaDesde(b: Borrador) {
     `m:fuente:${b.fuente.trim()}`,
     b.fuenteUrl.trim() && `m:fuente_url:${b.fuenteUrl.trim()}`,
     b.aplicar.trim() && `m:aplicar:${b.aplicar.trim()}`,
+    b.redes && "m:redes:si",
   ].filter(Boolean) as string[];
   return {
     titulo: b.titulo.trim(),
@@ -252,6 +254,7 @@ function desdeBorradorRow(r: BorradorRow): Borrador {
     aplicar: b.aplicar || (r.origen === "empresa" ? r.contacto_email?.trim() || "" : ""),
     fuente: r.fuente?.trim() || b.fuente || (r.origen === "correo" ? "Correo recibido" : ""),
     fuenteUrl: r.fuente_url?.trim() || b.fuenteUrl,
+    redes: /Autoriza compartir en redes: s[ií]/i.test(r.texto),
   };
 }
 
@@ -417,6 +420,7 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
           <label className="block"><span className={etiqueta}>Fuente (dónde la viste) *</span><input value={b.fuente} onChange={set("fuente")} className={campo} placeholder="Ej. LinkedIn, Instagram de la empresa…" /></label>
           <label className="block"><span className={etiqueta}>Enlace de la fuente</span><input value={b.fuenteUrl} onChange={set("fuenteUrl")} className={campo} placeholder="https://…" /></label>
         </div>
+        <label className="mt-4 flex items-start gap-2 text-sm"><input type="checkbox" checked={!!b.redes} onChange={(e) => setB((x) => ({ ...x, redes: e.target.checked }))} className="mt-1 size-4" /><span>La empresa o quien la envió <strong>autoriza compartirla en las redes de Enlace Laboral</strong> (Telegram, Facebook, Instagram, WhatsApp). Sin esto, no se comparte sola.</span></label>
         <Button type="button" onClick={() => void publicar()} disabled={guardando} className="mt-6 h-12 w-full text-base font-bold sm:w-auto sm:px-8">
           {guardando ? <Loader2 className="animate-spin" /> : editar ? <Save /> : <Send />} {editar ? "Guardar cambios" : "Publicar vacante"}
         </Button>

@@ -93,7 +93,7 @@ const caja = "mt-1 w-full rounded-xl border border-border bg-surface px-4 py-3 o
 const rotulo = "font-mono text-[10px] uppercase tracking-widest text-muted-foreground";
 
 function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: string) => void; onListo: () => void }) {
-  const [f, setF] = useState({ empresa: "", contacto: "", correo: "", telefono: "", titulo: "", provincia: provincias[1] ?? "Distrito Nacional", detalle: "", trampa: "" });
+  const [f, setF] = useState({ empresa: "", contacto: "", correo: "", telefono: "", titulo: "", provincia: provincias[1] ?? "Distrito Nacional", detalle: "", trampa: "", redes: false });
   const [enviando, setEnviando] = useState(false);
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF((x) => ({ ...x, [k]: e.target.value }));
 
@@ -102,7 +102,7 @@ function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: st
     if (f.trampa) return onListo();
     if (f.detalle.trim().length < 30) return void toast.error("Cuéntanos un poco más: funciones, requisitos y horario.");
     setEnviando(true);
-    const texto = [`Puesto: ${f.titulo.trim()}`, `Empresa: ${f.empresa.trim()}`, `Ubicación: ${f.provincia}`, "", f.detalle.trim(), "", `Plan: ${plan}`].join("\n");
+    const texto = [`Puesto: ${f.titulo.trim()}`, `Empresa: ${f.empresa.trim()}`, `Ubicación: ${f.provincia}`, "", f.detalle.trim(), "", `Plan: ${plan}`, f.redes ? "Autoriza compartir en redes: sí" : "Autoriza compartir en redes: no"].join("\n");
     const { error } = await supabase.from("borradores").insert({
       origen: "empresa",
       texto,
@@ -131,6 +131,7 @@ function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: st
       <label className="block"><span className={rotulo}>Ubicación</span><select required value={f.provincia} onChange={set("provincia")} className={caja}>{provincias.slice(1).map((p) => (<option key={p}>{p}</option>))}</select></label>
       <label className="block"><span className={rotulo}>Plan</span><select value={plan} onChange={(e) => setPlan(e.target.value)} className={caja}>{planes.map((p) => (<option key={p.nombre} value={p.nombre}>{p.nombre} — {p.precio}</option>))}</select></label>
       <label className="block"><span className={rotulo}>Detalles</span><textarea required rows={5} maxLength={8000} value={f.detalle} onChange={set("detalle")} placeholder="Funciones, requisitos, horario, salario y beneficios. Si publicas el salario, tu vacante llama más la atención." className={caja} /></label>
+      <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.redes} onChange={(e) => setF((x) => ({ ...x, redes: e.target.checked }))} className="mt-1 size-4" /><span>Autorizo que Enlace Laboral comparta esta vacante en sus redes (Telegram, Facebook, Instagram y WhatsApp). Es opcional y gratis.</span></label>
       <input tabIndex={-1} autoComplete="off" aria-hidden="true" value={f.trampa} onChange={set("trampa")} className="hidden" name="sitio_web" />
       <button type="submit" disabled={enviando} className="w-full rounded-xl bg-primary py-3.5 font-bold text-primary-foreground disabled:opacity-60">{enviando ? "Enviando…" : "Enviar vacante gratis"}</button>
       <p className="text-center text-xs text-muted-foreground">La revisamos antes de publicarla. Te contactamos al correo que indiques.</p>
