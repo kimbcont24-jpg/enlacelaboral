@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, Eye, ImageUp, Inbox, Instagram, Share2, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,6 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/contenido";
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, extraer, type Borrador } from "@/lib/extraer";
+import { senalesRiesgo } from "@/lib/antiestafa";
+import { aCsvUrl, tablaAVacantes } from "@/lib/csv";
 import { CANAL_WHATSAPP, SELECT, enlacePieza, rowToVacante, textoWhatsApp, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/admin")({
@@ -18,7 +20,7 @@ export const Route = createFileRoute("/admin")({
   component: Admin,
 });
 
-type Tab = "publicar" | "borradores" | "vacantes" | "aplicaciones" | "pedidos" | "textos";
+type Tab = "publicar" | "borradores" | "masiva" | "vacantes" | "aplicaciones" | "pedidos" | "textos";
 
 type BorradorRow = { id: string; created_at: string; origen: string; texto: string; titulo: string | null; empresa: string | null; provincia: string | null; contacto_nombre: string | null; contacto_email: string | null; contacto_telefono: string | null; fuente: string | null; fuente_url: string | null; datos: Record<string, unknown> | null };
 
@@ -77,6 +79,7 @@ function Admin() {
   const tabs: { id: Tab; label: string }[] = [
     { id: "publicar", label: editar ? "Editando vacante" : "Publicar vacante" },
     { id: "borradores", label: pendientes ? `Borradores (${pendientes})` : "Borradores" },
+    { id: "masiva", label: "Carga masiva" },
     { id: "vacantes", label: "Mis vacantes" },
     { id: "aplicaciones", label: "Aplicaciones" },
     { id: "pedidos", label: "Pedidos de CV" },
@@ -107,6 +110,7 @@ function Admin() {
             <div className="mt-6">
               {tab === "publicar" && <Publicar uid={uid} editar={editar} desde={desde} alPublicarBorrador={() => { setDesde(null); void contar(); setTab("borradores"); }} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={() => { setDesde(null); cerrarEdicion(); }} />}
               {tab === "borradores" && <Borradores uid={uid} onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
+              {tab === "masiva" && <CargaMasiva />}
               {tab === "vacantes" && <MisVacantes onEditar={(v) => { setEditar(v); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
               {tab === "aplicaciones" && <Aplicaciones />}
               {tab === "pedidos" && <Pedidos />}
@@ -440,26 +444,56 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
     onCambio();
   };
 
-  const publicarYa = async (r: BorradorRow) => {
+  const analizar = (r: BorradorRow) => {
     const b = desdeBorradorRow(r);
-    if (!b.titulo.trim()) return void toast.error("Este borrador no tiene puesto. Ábrelo con “Revisar” y complétalo.");
+    const riesgos = senalesRiesgo(`${r.texto} ${b.descripcion}`, !!(b.aplicar.trim() || r.contacto_email || r.contacto_telefono));
+    const completa = !!b.titulo.trim() && !!b.empresa.trim() && !!b.aplicar.trim() && riesgos.length === 0;
+    return { b, riesgos, completa };
+  };
+
+  /** Publica un borrador. En modo silencioso no avisa de cada uno (se usa al publicar en bloque). */
+  const publicarUno = async (r: BorradorRow, silencioso = false): Promise<boolean> => {
+    const b = desdeBorradorRow(r);
+    if (!b.titulo.trim()) { if (!silencioso) toast.error("Este borrador no tiene puesto. Ábrelo con “Revisar” y complétalo."); return false; }
     if (!b.fuente.trim()) b.fuente = r.origen === "empresa" ? "Publicada por la empresa" : "Correo recibido";
-    setPublicando(r.id);
     try {
       const empresaId = await miEmpresa(uid);
       const { data: nueva, error } = await supabase.from("vacantes").insert({ ...filaDesde(b), empresa_id: empresaId, owner_id: uid, estado: "publicada" }).select(SELECT).single();
       if (error) throw error;
       await supabase.from("borradores").update({ estado: "publicado" }).eq("id", r.id);
-      await qc.invalidateQueries({ queryKey: ["vacantes"] });
-      toast.success(`Publicada: ${b.titulo}`);
+      if (!silencioso) toast.success(`Publicada: ${b.titulo}`);
       if (nueva) avisarPublicada(rowToVacante(nueva as unknown as VacanteRow));
-      await cargar();
-      onCambio();
+      return true;
     } catch (err) {
-      toast.error(`No se pudo publicar: ${err instanceof Error ? err.message : "error"}`);
-    } finally {
-      setPublicando(null);
+      if (!silencioso) toast.error(`No se pudo publicar: ${err instanceof Error ? err.message : "error"}`);
+      return false;
     }
+  };
+
+  const publicarYa = async (r: BorradorRow) => {
+    const { riesgos } = analizar(r);
+    const aviso = riesgos.filter((x) => !x.startsWith("No trae forma"));
+    if (aviso.length && !confirm(`Ojo, esta vacante tiene señales de riesgo:\n\n• ${aviso.join("\n• ")}\n\n¿La publicas de todos modos?`)) return;
+    setPublicando(r.id);
+    await publicarUno(r);
+    await qc.invalidateQueries({ queryKey: ["vacantes"] });
+    await cargar();
+    onCambio();
+    setPublicando(null);
+  };
+
+  const completas = (items ?? []).filter((r) => analizar(r).completa);
+  const publicarCompletas = async () => {
+    if (!completas.length) return;
+    if (!confirm(`Se publicarán ${completas.length} vacantes que tienen puesto, empresa y forma de aplicar, y ninguna señal de estafa. ¿Seguimos?`)) return;
+    setPublicando("todas");
+    let ok = 0;
+    for (const r of completas) if (await publicarUno(r, true)) ok += 1;
+    await qc.invalidateQueries({ queryKey: ["vacantes"] });
+    toast.success(`${ok} de ${completas.length} vacantes publicadas.`);
+    await cargar();
+    onCambio();
+    setPublicando(null);
   };
 
   if (!items) return <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>;
@@ -472,9 +506,12 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
   const accion = "inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 text-sm font-semibold hover:border-primary hover:text-primary";
   return (
     <div className="space-y-3">
-      <p className="text-xs text-muted-foreground">{items.length} por revisar. Mira el resumen y pulsa “Publicar ya”, o “Revisar primero” si quieres corregir algo.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-4">
+        <p className="text-sm text-muted-foreground">{items.length} por revisar · <b className="text-foreground">{completas.length}</b> están completas y sin señales de estafa.</p>
+        <button type="button" disabled={!completas.length || publicando !== null} onClick={() => void publicarCompletas()} className="btn-aplicar inline-flex h-10 items-center gap-2 rounded-lg px-5 text-sm disabled:opacity-50">{publicando === "todas" ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />} Publicar las {completas.length} completas</button>
+      </div>
       {items.map((r) => {
-        const v = desdeBorradorRow(r);
+        const { b: v, riesgos } = analizar(r);
         return (
         <div key={r.id} className="rounded-2xl border border-border bg-surface p-4">
           <p className="font-bold">{r.titulo || str(r.datos?.["titulo"]) || "Vacante sin título"} <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">{r.origen === "empresa" ? "Empresa" : "Correo"}</span></p>
@@ -485,8 +522,14 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
             <p className="text-muted-foreground">{[v.empresa || "Empresa no indicada", v.provincia, v.modalidad, v.salarioMin ? `RD$${Number(v.salarioMin).toLocaleString("es-DO")}${v.salarioMax ? ` - RD$${Number(v.salarioMax).toLocaleString("es-DO")}` : ""}` : "Salario no publicado"].join(" · ")}</p>
             <p className="text-muted-foreground">{v.requisitos ? `${v.requisitos.split("\n").length} requisitos` : "Sin requisitos"} · {v.aplicar ? `Aplicar: ${v.aplicar}` : "Aplican por tu página"}</p>
           </div>
+          {riesgos.length > 0 && (
+            <div className="mt-3 rounded-xl border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive" role="alert">
+              <p className="font-bold">Revisa antes de publicar:</p>
+              <ul className="mt-1 list-disc pl-5">{riesgos.map((x) => (<li key={x}>{x}</li>))}</ul>
+            </div>
+          )}
           <div className="mt-3 grid grid-cols-2 gap-2 sm:flex">
-            <button type="button" disabled={publicando === r.id} onClick={() => void publicarYa(r)} className="btn-aplicar inline-flex h-10 items-center justify-center gap-1.5 rounded-lg px-4 text-sm">{publicando === r.id ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />} Publicar ya</button>
+            <button type="button" disabled={publicando !== null} onClick={() => void publicarYa(r)} className="btn-aplicar inline-flex h-10 items-center justify-center gap-1.5 rounded-lg px-4 text-sm">{publicando === r.id ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />} Publicar ya</button>
             <button type="button" onClick={() => onRevisar(r)} className={`${accion} border-primary text-primary`}><Eye className="size-4" /> Revisar primero</button>
             <button type="button" onClick={() => void descartar(r)} className={`${accion} hover:border-destructive hover:text-destructive`}><Trash2 className="size-4" /> Descartar</button>
           </div>
@@ -613,6 +656,107 @@ function Aplicaciones() {
         </div>
       ))}
     </div>
+  );
+}
+
+function CargaMasiva() {
+  const qc = useQueryClient();
+  const [texto, setTexto] = useState("");
+  const [enviando, setEnviando] = useState(false);
+  const [resultado, setResultado] = useState<{ creadas: number; actualizadas: number; omitidas: { fila: number; motivo: string }[] } | null>(null);
+  const tabla = useMemo(() => tablaAVacantes(texto), [texto]);
+  const leerArchivo = async (f: File) => setTexto(await f.text());
+  const publicar = async () => {
+    if (!tabla.filas.length || tabla.faltan.length) return;
+    if (!confirm(`Se publicarán hasta ${tabla.filas.length} vacantes. ¿Seguimos?`)) return;
+    setEnviando(true);
+    const { data, error } = await supabase.rpc("importar_vacantes_admin", { p_filas: tabla.filas });
+    setEnviando(false);
+    if (error || !data) return void toast.error(`No se pudo importar: ${error?.message ?? "error"}`);
+    setResultado(data);
+    await qc.invalidateQueries({ queryKey: ["vacantes"] });
+    toast.success(`${data.creadas} nuevas y ${data.actualizadas} actualizadas.`);
+    if (!data.omitidas.length) setTexto("");
+  };
+  const plantilla = () => {
+    const blob = new Blob(["puesto,empresa,provincia,modalidad,tipo,experiencia,area,salario_min,salario_max,descripcion,requisitos,aplicar\n"], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "plantilla-vacantes.csv";
+    a.click();
+  };
+  return (
+    <div className="space-y-8">
+      <section className="space-y-3">
+        <h2 className="text-xl font-extrabold">Subir muchas vacantes de una vez</h2>
+        <p className="text-sm text-muted-foreground">Copia las filas desde Excel o Google Sheets (con la primera fila de títulos) y pégalas aquí, o sube un archivo .csv. Columnas: <b>puesto, provincia</b> (obligadas), empresa, modalidad, tipo, experiencia, área, salario mínimo y máximo, descripción, requisitos (separados con | ) y aplicar (correo, WhatsApp o enlace).</p>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={plantilla}>Descargar plantilla</Button>
+          <label className="inline-flex h-9 cursor-pointer items-center rounded-md border border-input px-3 text-sm font-medium hover:bg-accent">Subir archivo .csv<input type="file" accept=".csv,.tsv,.txt,text/csv" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) void leerArchivo(f); e.target.value = ""; }} /></label>
+        </div>
+        <textarea value={texto} onChange={(e) => { setTexto(e.target.value); setResultado(null); }} rows={7} placeholder="Pega aquí las filas copiadas de Excel o Sheets…" className={campo} />
+        {texto.trim() && (
+          <div className="rounded-2xl border border-border bg-surface p-4 text-sm">
+            {tabla.faltan.length > 0 ? (
+              <p className="font-semibold text-destructive">Faltan columnas obligatorias: {tabla.faltan.join(", ")}. Revisa la primera fila.</p>
+            ) : (
+              <>
+                <p><b>{tabla.filas.length}</b> vacantes listas. Columnas reconocidas: {tabla.reconocidas.join(", ")}.{tabla.ignoradas.length > 0 && <span className="text-muted-foreground"> Se ignoran: {tabla.ignoradas.join(", ")}.</span>}</p>
+                <ul className="mt-2 list-disc pl-5 text-muted-foreground">{tabla.filas.slice(0, 5).map((f, i) => (<li key={i}>{f["titulo"]} · {f["empresa"] || "sin empresa"} · {f["provincia"]}</li>))}{tabla.filas.length > 5 && <li>… y {tabla.filas.length - 5} más</li>}</ul>
+                <Button className="mt-3" disabled={enviando} onClick={() => void publicar()}>{enviando ? <Loader2 className="animate-spin" /> : <Send />} Publicar {tabla.filas.length} vacantes</Button>
+              </>
+            )}
+          </div>
+        )}
+        {resultado && resultado.omitidas.length > 0 && (
+          <div className="rounded-2xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive" role="alert">
+            <p className="font-bold">No se publicaron {resultado.omitidas.length} filas:</p>
+            <ul className="mt-1 list-disc pl-5">{resultado.omitidas.map((o) => (<li key={o.fila}>Fila {o.fila}: {o.motivo}</li>))}</ul>
+          </div>
+        )}
+      </section>
+      <HojasConectadas />
+    </div>
+  );
+}
+
+function HojasConectadas() {
+  type H = { id: string; nombre: string; url: string; activa: boolean; ultima_sync: string | null; resultado: string | null };
+  const [hojas, setHojas] = useState<H[] | null>(null);
+  const [nombre, setNombre] = useState("");
+  const [url, setUrl] = useState("");
+  const cargar = useCallback(async () => {
+    const { data } = await supabase.from("hojas_vacantes").select("*").order("created_at", { ascending: false });
+    setHojas((data as unknown as H[] | null) ?? []);
+  }, []);
+  useEffect(() => void cargar(), [cargar]);
+  const agregar = async () => {
+    if (nombre.trim().length < 2 || !/^https:\/\//.test(url.trim())) return void toast.error("Escribe un nombre y el enlace completo de la hoja (empieza con https://).");
+    const { error } = await supabase.from("hojas_vacantes").insert({ nombre: nombre.trim(), url: aCsvUrl(url) });
+    if (error) return void toast.error("No se pudo guardar la hoja.");
+    setNombre(""); setUrl(""); toast.success("Hoja conectada. Se lee todos los días a las 6:30 a. m."); void cargar();
+  };
+  const alternar = async (h: H) => { await supabase.from("hojas_vacantes").update({ activa: !h.activa }).eq("id", h.id); void cargar(); };
+  const quitar = async (h: H) => { if (!confirm(`¿Quitar la hoja «${h.nombre}»? Sus vacantes ya publicadas no se borran.`)) return; await supabase.from("hojas_vacantes").delete().eq("id", h.id); void cargar(); };
+  return (
+    <section className="space-y-3">
+      <h2 className="text-xl font-extrabold">Hojas conectadas (se sincronizan solas)</h2>
+      <p className="text-sm text-muted-foreground">Una empresa o agencia mantiene una hoja de Google Sheets con sus vacantes. Cada mañana la leemos: lo nuevo se publica, lo que cambió se actualiza y lo que quitaron se cierra. La hoja debe estar compartida como «Cualquier persona con el enlace: lector» y cada fila necesita puesto, provincia y <b>aplicar</b>.</p>
+      <div className="grid gap-2 sm:grid-cols-[1fr_2fr_auto]">
+        <input className={campo} placeholder="Nombre (empresa o agencia)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+        <input className={campo} placeholder="Enlace de la hoja de Google" value={url} onChange={(e) => setUrl(e.target.value)} />
+        <Button className="mt-1" onClick={() => void agregar()}>Conectar</Button>
+      </div>
+      {hojas?.map((h) => (
+        <div key={h.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface p-4 text-sm">
+          <div className="min-w-0">
+            <p className="font-bold">{h.nombre} {!h.activa && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-xs">En pausa</span>}</p>
+            <p className="text-xs text-muted-foreground">{h.ultima_sync ? `Última lectura: ${new Date(h.ultima_sync).toLocaleString("es-DO")} · ${h.resultado ?? ""}` : "Todavía no se ha leído (se lee a las 6:30 a. m.)"}</p>
+          </div>
+          <div className="flex gap-2"><Button size="sm" variant="outline" onClick={() => void alternar(h)}>{h.activa ? "Pausar" : "Activar"}</Button><Button size="sm" variant="outline" onClick={() => void quitar(h)}><Trash2 /> Quitar</Button></div>
+        </div>
+      ))}
+    </section>
   );
 }
 

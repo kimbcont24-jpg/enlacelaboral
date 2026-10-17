@@ -32,6 +32,12 @@ export type Database = {
         Update: { [k: string]: unknown };
         Relationships: [];
       };
+      hojas_vacantes: {
+        Row: { id: string; nombre: string; url: string; activa: boolean; ultima_sync: string | null; resultado: string | null; created_at: string };
+        Insert: { nombre: string; url: string; activa?: boolean };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
       user_roles: {
         Row: { id: string; role: "admin" | "user"; user_id: string };
         Insert: { id?: string; role: "admin" | "user"; user_id: string };
@@ -49,6 +55,8 @@ export type Database = {
     Functions: {
       suscribir_alerta: { Args: { p_email: string; p_area?: string | null; p_provincia?: string | null }; Returns: string };
       crear_pedido: { Args: { p_paquete: string; p_nombre: string; p_contacto: string; p_correo: string | null; p_puesto: string | null; p_cv: string | null; p_notas: string | null }; Returns: { codigo: string; precio: number } };
+      importar_vacantes_admin: { Args: { p_filas: unknown }; Returns: { creadas: number; actualizadas: number; cerradas: number; omitidas: { fila: number; motivo: string }[] } };
+      renovar_vacante: { Args: { p_renov: string; p_cerrar?: boolean }; Returns: { accion: "renovada" | "cerrada" | "vencida"; titulo?: string } };
       baja_alerta: { Args: { p_token: string }; Returns: string };
     };
     Enums: { app_role: "admin" | "user" };
