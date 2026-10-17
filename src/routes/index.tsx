@@ -64,14 +64,14 @@ function Home() {
 
       <section className="border-b border-border bg-surface px-4 py-6 sm:px-6">
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">
-          <div className="flex items-start gap-4 rounded-2xl bg-secondary p-5">
+          <div className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-soft)]">
             <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary text-white"><UserRound className="size-5" aria-hidden="true" /></span>
             <div>
               <p className="font-bold">¿Buscas empleo?</p>
               <p className="mt-1 text-sm text-muted-foreground">Busca, mira el salario y los requisitos, y aplica gratis. ¿Sin CV? <Link to="/cv" className="font-semibold text-primary underline">Créalo gratis en 5 minutos</Link>.</p>
             </div>
           </div>
-          <div className="flex items-start gap-4 rounded-2xl bg-secondary p-5">
+          <div className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-soft)]">
             <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-cta text-white shadow-[0_8px_16px_-8px_rgba(29,111,242,.8)]"><Building2 className="size-5" aria-hidden="true" /></span>
             <div>
               <p className="font-bold">¿Eres empresa o institución?</p>
@@ -84,7 +84,8 @@ function Home() {
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">Empleos recientes</h2>
+            <p className="eyebrow">Vacantes</p>
+            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Empleos recientes</h2>
             <p className="mt-1 text-muted-foreground">Las últimas vacantes publicadas en Enlace Laboral.</p>
           </div>
           <Link to="/vacantes" className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-bold text-primary hover:bg-primary hover:text-white">Ver todos los empleos <ArrowRight className="size-4" aria-hidden="true" /></Link>
@@ -103,7 +104,8 @@ function Home() {
       {provinciasConVacantes.length > 0 && (
         <section className="px-4 py-12 sm:px-6">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">Empleos por provincia</h2>
+            <p className="eyebrow">Explora</p>
+            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Empleos por provincia</h2>
             <div className="mt-6 flex flex-wrap gap-2">
               {provinciasConVacantes.map(([p, n]) => (
                 <Link key={p} to="/empleos/$slug" params={{ slug: slug(p.replace(/\s*\(.*?\)\s*/g, "").replace("Remoto desde RD", "Remoto")) }} className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary">{p} <span className="text-muted-foreground">({n})</span></Link>
@@ -116,7 +118,8 @@ function Home() {
       <section className="border-t border-border bg-surface px-4 py-14 sm:px-6">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-4">
-            <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">Consejos para tu búsqueda</h2>
+            <p className="eyebrow">Guías</p>
+            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Consejos para tu búsqueda</h2>
             <div className="mt-5 rounded-2xl border-l-4 border-cta bg-secondary p-5">
               <p className="leading-relaxed">“{t.especialista_cita}”</p>
               <p className="mt-2 text-sm text-muted-foreground">{t.especialista_firma}</p>
@@ -124,7 +127,7 @@ function Home() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:col-span-8">
             {consejos.slice(0, 4).map((c) => (
-              <Link key={c.titulo} to="/recursos" className="block rounded-2xl border border-border bg-background p-5 hover:border-primary/60">
+              <Link key={c.titulo} to="/recursos" className="lift block rounded-2xl border border-border bg-background p-5 hover:border-primary/40">
                 <span className="text-xs font-bold text-cta">{c.categoria} · {c.minutos} min de lectura</span>
                 <h3 className="mt-1 font-bold leading-snug">{c.titulo}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{c.resumen}</p>

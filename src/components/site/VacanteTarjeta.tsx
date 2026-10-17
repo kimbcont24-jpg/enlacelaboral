@@ -11,7 +11,7 @@ export function VacanteTarjeta({ job }: { job: Vacante }) {
   const aplicar = useApply();
   const etiqueta = job.modalidad === "Remoto" ? "Desde casa" : job.tipo;
   return (
-    <article className={`flex flex-col rounded-2xl border bg-surface p-5 transition-shadow hover:shadow-[var(--shadow-lift)] ${job.destacada ? "border-primary/50" : "border-border"}`}>
+    <article className={`lift flex flex-col rounded-2xl border bg-surface p-5 ${job.destacada ? "border-cta/50" : "border-border"}`}>
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="rounded-md bg-secondary px-2 py-0.5 text-xs font-bold text-primary">{etiqueta}</span>
         {job.destacada && <span className="rounded-md bg-primary px-2 py-0.5 text-xs font-bold text-white">Destacada</span>}
