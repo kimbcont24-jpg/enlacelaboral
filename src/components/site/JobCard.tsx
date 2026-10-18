@@ -58,7 +58,7 @@ export function JobCard({ job }: { job: Vacante }) {
       </div>
 
       <p className="mt-3.5 flex items-baseline gap-1.5">
-        <span className={`text-xl font-extrabold tabular-nums ${conSueldo ? "text-success" : "text-sm font-bold text-muted-foreground"}`}>{job.salario}</span>
+        <span className={conSueldo ? "text-xl font-extrabold tabular-nums text-success" : "text-sm font-bold text-muted-foreground"}>{job.salario}</span>
         {conSueldo && <span className="text-xs font-semibold text-muted-foreground">al mes</span>}
       </p>
 
