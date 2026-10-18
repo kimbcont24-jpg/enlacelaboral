@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { Actividad } from "@/components/admin/Actividad";
+import { DesdeFotos } from "@/components/admin/DesdeFotos";
 import { Control } from "@/components/admin/Control";
 import { Empresas } from "@/components/admin/Empresas";
 import { Inicio } from "@/components/admin/Inicio";
@@ -18,6 +19,7 @@ import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/conten
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, extraer, type Borrador } from "@/lib/extraer";
 import { senalesRiesgo } from "@/lib/antiestafa";
+import { EVENTO_PUBLICADA, avisarPublicada, filaDesde, miEmpresa } from "@/lib/publicar";
 import { aCsvUrl, tablaAVacantes } from "@/lib/csv";
 import { CANAL_WHATSAPP, SELECT, enlacePieza, rowToVacante, textoWhatsApp, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
@@ -93,6 +95,7 @@ function Admin() {
     {
       id: "vacantes", label: "Vacantes", aviso: pendientes + reportesNuevos,
       tabs: [
+        { id: "fotos", label: "Desde fotos" },
         { id: "publicar", label: editar ? "Editando vacante" : "Publicar" },
         { id: "borradores", label: pendientes ? `Borradores (${pendientes})` : "Borradores" },
         { id: "masiva", label: "Carga masiva" },
@@ -140,6 +143,7 @@ function Admin() {
             <CompartirEnCanal />
             <div className="mt-6">
               {tab === "inicio" && <Inicio onIr={ir} />}
+              {tab === "fotos" && <DesdeFotos uid={uid} />}
               {tab === "publicar" && <Publicar uid={uid} editar={editar} desde={desde} alPublicarBorrador={() => { setDesde(null); void contar(); setTab("borradores"); }} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={() => { setDesde(null); cerrarEdicion(); }} />}
               {tab === "borradores" && <Borradores uid={uid} onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
               {tab === "masiva" && <CargaMasiva />}
@@ -177,12 +181,8 @@ function aBorrador(v: Vacante): Borrador {
     fuente: v.fuente === "Enlace Laboral" ? "" : v.fuente,
     fuenteUrl: v.fuenteUrl,
     redes: !!v.redes,
+    imagen: v.imagen || "",
   };
-}
-
-const EVENTO_PUBLICADA = "enlace-vacante-publicada";
-function avisarPublicada(v: Vacante) {
-  window.dispatchEvent(new CustomEvent<Vacante>(EVENTO_PUBLICADA, { detail: v }));
 }
 
 async function copiar(texto: string) {
@@ -222,39 +222,6 @@ function CompartirEnCanal() {
       </div>
     </div>
   );
-}
-
-function filaDesde(b: Borrador) {
-  const min = Number(b.salarioMin) || 0;
-  const max = Number(b.salarioMax) || 0;
-  const etiquetas = [
-    b.empresa.trim() && `m:empresa:${b.empresa.trim()}`,
-    `m:fuente:${b.fuente.trim()}`,
-    b.fuenteUrl.trim() && `m:fuente_url:${b.fuenteUrl.trim()}`,
-    b.aplicar.trim() && `m:aplicar:${b.aplicar.trim()}`,
-    b.redes && "m:redes:si",
-  ].filter(Boolean) as string[];
-  return {
-    titulo: b.titulo.trim(),
-    area: b.area,
-    provincia: b.provincia,
-    modalidad: b.modalidad,
-    tipo: b.tipo,
-    experiencia: b.experiencia,
-    salario_min: min,
-    salario_max: max > min ? max : null,
-    descripcion: b.descripcion.trim(),
-    requisitos: b.requisitos.split("\n").map((r) => r.trim()).filter(Boolean),
-    etiquetas,
-  };
-}
-
-async function miEmpresa(uid: string): Promise<string> {
-  const { data } = await supabase.from("empresas").select("id").eq("owner_id", uid).maybeSingle();
-  if (data) return (data as { id: string }).id;
-  const { data: nueva, error } = await supabase.from("empresas").insert({ owner_id: uid, nombre: "Enlace Laboral", rnc: "no-aplica" }).select("id").single();
-  if (error || !nueva) throw error ?? new Error("No se pudo preparar la cuenta");
-  return (nueva as { id: string }).id;
 }
 
 const str = (v: unknown) => (typeof v === "string" ? v.trim() : typeof v === "number" ? String(v) : "");
@@ -342,15 +309,12 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
     }
     setLeyendo(0);
     try {
-      const { createWorker } = await import("tesseract.js");
-      const worker = await createWorker("spa", 1, {
-        logger: (m: { status: string; progress: number }) => {
-          if (m.status === "recognizing text") setLeyendo(Math.round(m.progress * 100));
-        },
-      });
-      const { data } = await worker.recognize(file);
-      await worker.terminate();
-      const t = data.text.trim();
+      const { crearLector, prepararFoto, limpiarOCR } = await import("@/lib/ocr");
+      const { lectura } = await prepararFoto(file);
+      const lector = await crearLector();
+      let crudo = "";
+      try { crudo = await lector.leer(lectura, "auto", (p) => setLeyendo(Math.round(p * 100))); } finally { await lector.cerrar(); }
+      const t = limpiarOCR(crudo).trim();
       if (!t) throw new Error("sin texto");
       setTexto(t);
       llenar(t);

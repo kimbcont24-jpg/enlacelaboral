@@ -76,6 +76,14 @@ function Detalle() {
               <p className="mt-3 whitespace-pre-line leading-relaxed text-muted-foreground">{job.descripcion}</p>
             </>
           )}
+          {job.imagen && (
+            <section className="mt-10" aria-labelledby="img-orig">
+              <h2 id="img-orig" className="text-xl font-bold">Imagen original</h2>
+              <a href={job.imagen} target="_blank" rel="noopener noreferrer" className="mt-3 block max-w-md overflow-hidden rounded-2xl border border-border" aria-label="Abrir la imagen original en tamaño completo">
+                <img src={job.imagen} alt={`Publicación original de la vacante ${job.titulo}`} loading="lazy" className="w-full object-contain" />
+              </a>
+            </section>
+          )}
           <section className="mt-10 rounded-2xl border border-border bg-surface p-5" aria-labelledby="claridad-titulo">
             <h2 id="claridad-titulo" className="text-lg font-bold">Índice de claridad: {c.nivel.toLowerCase()} ({c.puntos} de {c.total})</h2>
             <p className="mt-1 text-sm text-muted-foreground">Lo medimos con lo que la vacante dice. Mientras más completa, menos sorpresas al aplicar.</p>

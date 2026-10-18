@@ -34,6 +34,7 @@ export type Vacante = {
   categorias: string[];
   destacada: boolean;
   redes?: boolean;
+  imagen?: string;
 };
 
 export type VacanteRow = {
@@ -108,6 +109,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
     categorias: tags,
     destacada: !!r.destacada,
     redes: meta["redes"] === "si",
+    imagen: meta["imagen"] || "",
   };
 }
 
