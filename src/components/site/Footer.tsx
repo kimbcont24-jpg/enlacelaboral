@@ -35,6 +35,8 @@ export function Footer() {
             <li><Link to="/guardadas" className="hover:text-white">Mis guardadas</Link></li>
             <li><Link to="/empresas" className="hover:text-white">Publicar una vacante</Link></li>
             <li><Link to="/recursos" className="hover:text-white">Consejos y guías</Link></li>
+            <li><Link to="/herramientas/salario-neto" className="hover:text-white">Calculadora de salario neto</Link></li>
+            <li><Link to="/herramientas/liquidacion" className="hover:text-white">Calculadora de liquidación</Link></li>
           </ul>
         </nav>
       </div>

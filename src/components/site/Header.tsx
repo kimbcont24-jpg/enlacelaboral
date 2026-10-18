@@ -14,6 +14,7 @@ const nav = [
   { to: "/recursos", label: "Consejos" },
   { to: "/cv", label: "Mi CV" },
   { to: "/impulso", label: "Impulso" },
+  { to: "/herramientas", label: "Herramientas" },
 ];
 
 export function Header() {
