@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { Actividad } from "@/components/admin/Actividad";
+import { Estudio } from "@/components/admin/Estudio";
 import { DesdeFotos } from "@/components/admin/DesdeFotos";
 import { Control } from "@/components/admin/Control";
 import { Empresas } from "@/components/admin/Empresas";
@@ -105,6 +106,7 @@ function Admin() {
     },
     { id: "negocio", label: "Negocio", tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: "Empresas" }] },
     { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
+    { id: "crecer", label: "Crecer", tabs: [{ id: "estudio", label: "Estudio viral" }] },
     { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }] },
   ];
   const grupoActual = grupos.find((g) => g.tabs.some((t) => t.id === tab)) ?? grupos[0]!;
@@ -144,6 +146,7 @@ function Admin() {
             <div className="mt-6">
               {tab === "inicio" && <Inicio onIr={ir} />}
               {tab === "fotos" && <DesdeFotos uid={uid} />}
+              {tab === "estudio" && <Estudio />}
               {tab === "publicar" && <Publicar uid={uid} editar={editar} desde={desde} alPublicarBorrador={() => { setDesde(null); void contar(); setTab("borradores"); }} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={() => { setDesde(null); cerrarEdicion(); }} />}
               {tab === "borradores" && <Borradores uid={uid} onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
               {tab === "masiva" && <CargaMasiva />}
