@@ -71,6 +71,7 @@ export type Database = {
       renovar_vacante: { Args: { p_renov: string; p_cerrar?: boolean }; Returns: { accion: "renovada" | "cerrada" | "vencida"; titulo?: string } };
       panel_admin: { Args: Record<string, never>; Returns: unknown };
       usuarios_admin: { Args: Record<string, never>; Returns: { id: string; email: string; nombre: string | null; creado: string; ultimo_acceso: string | null; es_admin: boolean }[] };
+      alertas_admin: { Args: Record<string, never>; Returns: { email: string; area: string | null; provincia: string | null; activa: boolean; created_at: string; ultimo_envio: string | null }[] };
       cambiar_admin: { Args: { p_user: string; p_admin: boolean }; Returns: undefined };
       reportar_vacante: { Args: { p_id: string; p_motivo: string; p_detalle?: string | null }; Returns: undefined };
       baja_alerta: { Args: { p_token: string }; Returns: string };

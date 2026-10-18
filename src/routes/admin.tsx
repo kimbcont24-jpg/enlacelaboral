@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ExternalLink, Eye, ImageUp, Inbox, Instagram, Share2, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
+import { RefreshCw, ExternalLink, Eye, ImageUp, Inbox, Instagram, Share2, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { supabase } from "@/integrations/supabase/client";
 import { Actividad } from "@/components/admin/Actividad";
+import { Exportar } from "@/components/admin/Exportar";
 import { Estudio } from "@/components/admin/Estudio";
 import { DesdeFotos } from "@/components/admin/DesdeFotos";
 import { Control } from "@/components/admin/Control";
@@ -104,7 +105,7 @@ function Admin() {
         { id: "reportes", label: reportesNuevos ? `Reportes (${reportesNuevos})` : "Reportes" },
       ],
     },
-    { id: "negocio", label: "Negocio", tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: "Empresas" }] },
+    { id: "negocio", label: "Negocio", tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: "Empresas" }, { id: "exportar", label: "Descargar datos" }] },
     { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
     { id: "crecer", label: "Crecer", tabs: [{ id: "estudio", label: "Estudio viral" }] },
     { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }] },
@@ -147,6 +148,7 @@ function Admin() {
               {tab === "inicio" && <Inicio onIr={ir} />}
               {tab === "fotos" && <DesdeFotos uid={uid} />}
               {tab === "estudio" && <Estudio />}
+              {tab === "exportar" && <Exportar />}
               {tab === "publicar" && <Publicar uid={uid} editar={editar} desde={desde} alPublicarBorrador={() => { setDesde(null); void contar(); setTab("borradores"); }} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={() => { setDesde(null); cerrarEdicion(); }} />}
               {tab === "borradores" && <Borradores uid={uid} onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
               {tab === "masiva" && <CargaMasiva />}
@@ -552,6 +554,8 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
   const qc = useQueryClient();
   const [items, setItems] = useState<Vacante[] | null>(null);
   const [filtro, setFiltro] = useState("");
+  const [sel, setSel] = useState<string[]>([]);
+  const [trabajando, setTrabajando] = useState(false);
 
   const cargar = useCallback(async () => {
     const { data, error } = await supabase.from("vacantes").select(SELECT).order("created_at", { ascending: false }).limit(500);
@@ -604,6 +608,19 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
     await refrescar();
   };
 
+  const enGrupo = async (texto: string, cambios: Record<string, unknown> | "borrar", pide?: string) => {
+    if (!sel.length) return;
+    if (pide && !confirm(pide.replace("{n}", String(sel.length)))) return;
+    setTrabajando(true);
+    const q = cambios === "borrar" ? supabase.from("vacantes").delete().in("id", sel) : supabase.from("vacantes").update(cambios).in("id", sel);
+    const { error } = await q;
+    setTrabajando(false);
+    if (error) return void toast.error("No se pudo completar. Intenta otra vez.");
+    toast.success(`${sel.length} vacante${sel.length === 1 ? "" : "s"}: ${texto}.`);
+    setSel([]);
+    await refrescar();
+  };
+
   if (!items) return <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>;
   if (!items.length) return <p className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Todavía no has publicado vacantes. Ve a “Publicar vacante” para crear la primera.</p>;
 
@@ -617,9 +634,26 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
         <p className="text-xs text-muted-foreground">{items.filter((v) => v.estado === "publicada").length} visibles · {items.length} en total</p>
         <button type="button" onClick={() => void copiarHoy()} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#1fa855] px-4 text-sm font-bold text-white hover:bg-[#178c46]"><Share2 className="size-4" /> Llevar las de hoy al canal</button>
       </div>
+      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-surface px-4 py-2.5 text-sm">
+        <label className="flex items-center gap-2 font-semibold"><input type="checkbox" className="size-4" checked={lista.length > 0 && lista.every((v) => sel.includes(v.id))} onChange={(e) => setSel(e.target.checked ? lista.map((v) => v.id) : [])} /> Elegir todas las de la lista ({lista.length})</label>
+        {sel.length > 0 && <span className="text-muted-foreground">{sel.length} elegidas</span>}
+      </div>
+      {sel.length > 0 && (
+        <div className="sticky top-2 z-20 flex flex-wrap items-center gap-2 rounded-2xl border border-primary bg-surface p-3 shadow-lg" role="toolbar" aria-label="Acciones para las vacantes elegidas">
+          <span className="mr-1 text-sm font-bold">{sel.length} elegidas:</span>
+          <button type="button" disabled={trabajando} onClick={() => void enGrupo("pausadas", { estado: "pausada" }, "¿Pausar {n} vacantes? Dejan de verse en la página.")} className={accion}><Pause className="size-4" /> Pausar</button>
+          <button type="button" disabled={trabajando} onClick={() => void enGrupo("publicadas", { estado: "publicada" })} className={accion}><Play className="size-4" /> Publicar</button>
+          <button type="button" disabled={trabajando} onClick={() => void enGrupo("renovadas por 30 días más", { created_at: new Date().toISOString(), estado: "publicada" }, "¿Renovar {n} vacantes? Quedan como nuevas por 30 días.")} className={accion}><RefreshCw className="size-4" /> Renovar 30 días</button>
+          <button type="button" disabled={trabajando} onClick={() => void enGrupo("destacadas", { destacada: true })} className={accion}><Star className="size-4" /> Destacar</button>
+          <button type="button" disabled={trabajando} onClick={() => void enGrupo("sin destacar", { destacada: false })} className={accion}>Quitar destacado</button>
+          <button type="button" disabled={trabajando} onClick={() => void enGrupo("borradas", "borrar", "¿Borrar {n} vacantes? No se puede deshacer.")} className={`${accion} hover:border-destructive hover:text-destructive`}><Trash2 className="size-4" /> Borrar</button>
+          <button type="button" onClick={() => setSel([])} className="ml-auto text-sm font-semibold text-muted-foreground hover:underline">Quitar selección</button>
+          {trabajando && <Loader2 className="size-4 animate-spin text-primary" />}
+        </div>
+      )}
       {lista.map((v) => (
-        <div key={v.id} className="rounded-2xl border border-border bg-surface p-4">
-          <p className="font-bold">{v.titulo} {v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">Pausada</span>}{v.destacada && <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Destacada</span>}</p>
+        <div key={v.id} className={`rounded-2xl border bg-surface p-4 ${sel.includes(v.id) ? "border-primary" : "border-border"}`}>
+          <p className="font-bold"><input type="checkbox" className="mr-2 size-4 align-middle" aria-label={`Elegir ${v.titulo}`} checked={sel.includes(v.id)} onChange={() => setSel((x) => (x.includes(v.id) ? x.filter((i) => i !== v.id) : [...x, v.id]))} />{v.titulo} {v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">Pausada</span>}{v.destacada && <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Destacada</span>}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{v.empresa} · {v.provincia} · {v.salario} · {v.publicado} · Fuente: {v.fuente}</p>
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
             <button type="button" onClick={() => onEditar(v)} className={`${accion} border-primary text-primary`}><Pencil className="size-4" /> Editar</button>

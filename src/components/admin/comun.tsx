@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-export type TabId = "inicio" | "fotos" | "publicar" | "borradores" | "masiva" | "vacantes" | "reportes" | "aplicaciones" | "pedidos" | "empresas" | "control" | "actividad" | "usuarios" | "estudio" | "textos";
+export type TabId = "inicio" | "fotos" | "publicar" | "borradores" | "masiva" | "vacantes" | "reportes" | "aplicaciones" | "pedidos" | "empresas" | "control" | "actividad" | "usuarios" | "estudio" | "exportar" | "textos";
 
 export const campo = "mt-1 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-primary";
 export const rotulo = "text-xs font-semibold uppercase tracking-wide text-muted-foreground";
