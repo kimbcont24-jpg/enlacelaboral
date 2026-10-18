@@ -6,6 +6,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useContenido } from "@/lib/contenido";
+import { useControles } from "@/lib/controles";
 import { leerCV, cvCompleto, textoCV, type CV } from "@/lib/cv";
 import { diagnosticarCV } from "@/lib/diagnostico";
 import { OFERTA_TEXTO, PAQUETES, ofertaVigente, pesosRD, precioActual, useCuentaRegresiva, type Paquete } from "@/lib/impulso";
@@ -285,6 +286,7 @@ function Pedido({ paquete, onCambiar }: { paquete: Paquete; onCambiar: () => voi
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
   const [hecho, setHecho] = useState<{ codigo: string; precio: number } | null>(null);
+  const controles = useControles();
   const set = (k: keyof typeof f) => (v: string | boolean) => setF((x) => ({ ...x, [k]: v }));
   const enVivo = paquete.id === "entrevista" || paquete.id === "despegue";
 
@@ -297,6 +299,7 @@ function Pedido({ paquete, onCambiar }: { paquete: Paquete; onCambiar: () => voi
     setEnviando(true);
     const { data, error: err } = await supabase.rpc("crear_pedido", { p_paquete: paquete.id, p_nombre: f.nombre, p_contacto: f.contacto, p_correo: f.correo || null, p_puesto: f.puesto || null, p_cv: f.cv || null, p_notas: f.notas || null });
     setEnviando(false);
+    if (err?.message.includes("pedidos_pausados")) return setError("Por ahora no estamos recibiendo pedidos nuevos. Vuelve en unas horas.");
     if (err || !data) return setError("No pudimos guardar tu pedido. Intenta de nuevo en un momento.");
     setHecho(data as { codigo: string; precio: number });
   };
@@ -324,6 +327,17 @@ function Pedido({ paquete, onCambiar }: { paquete: Paquete; onCambiar: () => voi
         {numero.length >= 10 && (
           <a href={`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#1fa855] px-6 py-3 text-base font-bold text-white hover:opacity-90"><MessageCircle className="size-5" aria-hidden="true" /> Enviar comprobante por WhatsApp</a>
         )}
+      </section>
+    );
+  }
+
+
+  if (!controles.activos.ctl_pedidos) {
+    return (
+      <section className="mt-12 rounded-2xl border-2 border-border bg-surface p-6 text-center md:p-8" aria-live="polite">
+        <h2 className="text-xl font-extrabold">Pedidos en pausa por ahora</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Estamos al día con los pedidos actuales. Vuelve en unas horas para hacer el tuyo. Mientras, puedes crear tu CV gratis en <a href="/cv" className="font-semibold text-primary underline">Mi CV</a>.</p>
+        <button type="button" onClick={onCambiar} className="mt-4 rounded-xl border border-border px-4 py-2 text-sm font-semibold">Ver otros paquetes</button>
       </section>
     );
   }

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
+import { useControles } from "@/lib/controles";
 import { comparativa, planes, provincias, serviciosCandidato } from "@/lib/data";
 
 export const Route = createFileRoute("/empresas")({
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/empresas")({
 });
 
 function Empresas() {
+  const controles = useControles();
   const [enviado, setEnviado] = useState(false);
   const [plan, setPlan] = useState(planes[0]!.nombre);
 
@@ -66,6 +68,11 @@ function Empresas() {
               <p className="mt-2 text-sm text-muted-foreground">La revisamos y te avisamos al correo cuando esté publicada. Plan: <strong>{plan}</strong>.</p>
               <button onClick={() => setEnviado(false)} className="mt-6 rounded-xl border border-border px-4 py-2 text-sm font-bold">Enviar otra</button>
             </div>
+          ) : !controles.activos.ctl_empresas ? (
+            <div className="rounded-3xl border border-border bg-background p-8 text-center">
+              <h3 className="text-xl font-bold">Recepción de vacantes en pausa</h3>
+              <p className="mt-2 text-sm text-muted-foreground">Por ahora no estamos recibiendo vacantes nuevas. Vuelve en unas horas, o escríbenos por el canal de WhatsApp.</p>
+            </div>
           ) : (
             <FormVacante plan={plan} setPlan={setPlan} onListo={() => setEnviado(true)} />
           )}
@@ -115,7 +122,7 @@ function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: st
       fuente: "Publicada por la empresa",
     });
     setEnviando(false);
-    if (error) return void toast.error("No se pudo enviar. Intenta otra vez en un momento.");
+    if (error) return void toast.error(error.message.includes("recepcion_pausada") ? "Por ahora no estamos recibiendo vacantes. Vuelve en unas horas." : "No se pudo enviar. Intenta otra vez en un momento.");
     onListo();
   };
 

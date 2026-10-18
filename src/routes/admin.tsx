@@ -7,6 +7,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { supabase } from "@/integrations/supabase/client";
+import { Actividad } from "@/components/admin/Actividad";
+import { Control } from "@/components/admin/Control";
+import { Empresas } from "@/components/admin/Empresas";
+import { Inicio } from "@/components/admin/Inicio";
+import { Reportes } from "@/components/admin/Reportes";
+import { Usuarios } from "@/components/admin/Usuarios";
+import type { TabId } from "@/components/admin/comun";
 import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/contenido";
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, extraer, type Borrador } from "@/lib/extraer";
@@ -20,7 +27,7 @@ export const Route = createFileRoute("/admin")({
   component: Admin,
 });
 
-type Tab = "publicar" | "borradores" | "masiva" | "vacantes" | "aplicaciones" | "pedidos" | "textos";
+type Tab = TabId;
 
 type BorradorRow = { id: string; created_at: string; origen: string; texto: string; titulo: string | null; empresa: string | null; provincia: string | null; contacto_nombre: string | null; contacto_email: string | null; contacto_telefono: string | null; fuente: string | null; fuente_url: string | null; datos: Record<string, unknown> | null };
 
@@ -32,14 +39,19 @@ function Admin() {
   const search = Route.useSearch();
   const [estado, setEstado] = useState<"cargando" | "no" | "si">("cargando");
   const [uid, setUid] = useState("");
-  const [tab, setTab] = useState<Tab>("publicar");
+  const [tab, setTab] = useState<Tab>("inicio");
   const [editar, setEditar] = useState<Vacante | null>(null);
   const [desde, setDesde] = useState<BorradorRow | null>(null);
   const [pendientes, setPendientes] = useState(0);
+  const [reportesNuevos, setReportesNuevos] = useState(0);
 
   const contar = useCallback(async () => {
-    const { count } = await supabase.from("borradores").select("id", { count: "exact", head: true }).eq("estado", "pendiente");
+    const [{ count }, { count: rep }] = await Promise.all([
+      supabase.from("borradores").select("id", { count: "exact", head: true }).eq("estado", "pendiente"),
+      supabase.from("reportes").select("id", { count: "exact", head: true }).eq("estado", "nuevo"),
+    ]);
     setPendientes(count ?? 0);
+    setReportesNuevos(rep ?? 0);
   }, []);
   useEffect(() => { if (estado === "si") void contar(); }, [estado, contar, tab]);
 
@@ -76,20 +88,29 @@ function Admin() {
     await navigate({ to: "/auth", replace: true });
   };
 
-  const tabs: { id: Tab; label: string }[] = [
-    { id: "publicar", label: editar ? "Editando vacante" : "Publicar vacante" },
-    { id: "borradores", label: pendientes ? `Borradores (${pendientes})` : "Borradores" },
-    { id: "masiva", label: "Carga masiva" },
-    { id: "vacantes", label: "Mis vacantes" },
-    { id: "aplicaciones", label: "Aplicaciones" },
-    { id: "pedidos", label: "Pedidos de CV" },
-    { id: "textos", label: "Textos" },
+  const grupos: { id: string; label: string; aviso?: number; tabs: { id: Tab; label: string }[] }[] = [
+    { id: "inicio", label: "Inicio", tabs: [{ id: "inicio", label: "Resumen" }] },
+    {
+      id: "vacantes", label: "Vacantes", aviso: pendientes + reportesNuevos,
+      tabs: [
+        { id: "publicar", label: editar ? "Editando vacante" : "Publicar" },
+        { id: "borradores", label: pendientes ? `Borradores (${pendientes})` : "Borradores" },
+        { id: "masiva", label: "Carga masiva" },
+        { id: "vacantes", label: "Publicadas" },
+        { id: "reportes", label: reportesNuevos ? `Reportes (${reportesNuevos})` : "Reportes" },
+      ],
+    },
+    { id: "negocio", label: "Negocio", tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: "Empresas" }] },
+    { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
+    { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }] },
   ];
+  const grupoActual = grupos.find((g) => g.tabs.some((t) => t.id === tab)) ?? grupos[0]!;
+  const ir = (t: Tab) => { setTab(t); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         {estado === "cargando" && <div className="flex justify-center py-20"><Loader2 className="size-6 animate-spin text-primary" /></div>}
         {estado === "no" && <p className="py-20 text-center text-muted-foreground">Esta sección es solo para la administradora.</p>}
         {estado === "si" && (
@@ -101,19 +122,35 @@ function Admin() {
               </div>
               <Button variant="outline" onClick={() => void salir()}><LogOut /> Salir</Button>
             </div>
-            <div className="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-              {tabs.map((t) => (
-                <Button key={t.id} variant={tab === t.id ? "default" : "outline"} onClick={() => setTab(t.id)} className="h-11">{t.label}</Button>
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap" role="group" aria-label="Secciones">
+              {grupos.map((g) => (
+                <Button key={g.id} variant={grupoActual.id === g.id ? "default" : "outline"} onClick={() => ir(g.tabs[0]!.id)} className="relative h-11">
+                  {g.label}
+                  {!!g.aviso && grupoActual.id !== g.id && <span className="absolute -right-1.5 -top-1.5 grid min-w-5 place-items-center rounded-full bg-destructive px-1 text-[11px] font-bold text-white">{g.aviso}</span>}
+                </Button>
               ))}
             </div>
+            {grupoActual.tabs.length > 1 && (
+              <div className="mt-3 flex flex-wrap gap-2 border-b border-border pb-3" role="group" aria-label={`Secciones de ${grupoActual.label}`}>
+                {grupoActual.tabs.map((t) => (
+                  <Button key={t.id} size="sm" variant={tab === t.id ? "secondary" : "ghost"} onClick={() => ir(t.id)} aria-current={tab === t.id ? "page" : undefined} className={tab === t.id ? "font-bold" : ""}>{t.label}</Button>
+                ))}
+              </div>
+            )}
             <CompartirEnCanal />
             <div className="mt-6">
+              {tab === "inicio" && <Inicio onIr={ir} />}
               {tab === "publicar" && <Publicar uid={uid} editar={editar} desde={desde} alPublicarBorrador={() => { setDesde(null); void contar(); setTab("borradores"); }} alTerminar={() => { cerrarEdicion(); setTab("vacantes"); }} cancelar={() => { setDesde(null); cerrarEdicion(); }} />}
               {tab === "borradores" && <Borradores uid={uid} onRevisar={(r) => { cerrarEdicion(); setDesde(r); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} onCambio={() => void contar()} />}
               {tab === "masiva" && <CargaMasiva />}
               {tab === "vacantes" && <MisVacantes onEditar={(v) => { setEditar(v); setTab("publicar"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />}
               {tab === "aplicaciones" && <Aplicaciones />}
               {tab === "pedidos" && <Pedidos />}
+              {tab === "reportes" && <Reportes onCambio={() => void contar()} />}
+              {tab === "empresas" && <Empresas />}
+              {tab === "control" && <Control />}
+              {tab === "actividad" && <Actividad />}
+              {tab === "usuarios" && <Usuarios uid={uid} />}
               {tab === "textos" && <Textos />}
             </div>
           </>

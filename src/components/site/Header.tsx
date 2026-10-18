@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
+import { AvisoGlobal } from "@/components/site/AvisoGlobal";
 import { Logo } from "@/components/site/Logo";
 import { useEsAdmin } from "@/components/site/AdminAcciones";
 import { useGuardados } from "@/lib/guardados";
@@ -27,6 +28,8 @@ export function Header() {
   }, []);
 
   return (
+    <>
+    <AvisoGlobal />
     <nav className={cn("sticky top-0 z-50 flex items-center justify-between gap-3 border-b px-4 transition-all duration-500 sm:px-6", scrolled ? "border-border/80 bg-surface/85 py-3 shadow-[var(--shadow-soft)] backdrop-blur-md" : "border-transparent bg-surface py-4")}>
       <Logo />
       <div className="hidden items-center gap-7 text-[15px] font-semibold md:flex">
@@ -49,5 +52,6 @@ export function Header() {
       )}
       </div>
     </nav>
+    </>
   );
 }

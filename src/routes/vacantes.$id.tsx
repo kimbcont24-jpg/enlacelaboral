@@ -12,6 +12,7 @@ import { nivelDe, venceTexto } from "@/lib/claridad";
 import { BotonGuardar, ClaridadPill, JobCard } from "@/components/site/JobCard";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
+import { ReportarVacante } from "@/components/site/ReportarVacante";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -101,6 +102,7 @@ function Detalle() {
             <div className="mt-3"><BotonGuardar id={job.id} grande /></div>
             <div className="mt-3"><CanalWhatsApp variante="boton" /></div>
             <a href={enlaceWhatsApp(job)} target="_blank" rel="noopener noreferrer" className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-bold hover:border-primary hover:text-primary"><Share2 className="size-4" /> Compartir por WhatsApp</a>
+            <ReportarVacante id={job.id} />
           </div>
         </aside>
       </div>

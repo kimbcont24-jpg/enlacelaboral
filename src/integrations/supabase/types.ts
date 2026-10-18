@@ -38,6 +38,18 @@ export type Database = {
         Update: { [k: string]: unknown };
         Relationships: [];
       };
+      reportes: {
+        Row: { id: string; vacante_id: string; motivo: string; detalle: string | null; estado: string; created_at: string };
+        Insert: { [k: string]: unknown };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
+      registro_actividad: {
+        Row: { id: number; at: string; usuario: string | null; tabla: string; accion: string; detalle: Record<string, unknown> | null };
+        Insert: { [k: string]: unknown };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
       user_roles: {
         Row: { id: string; role: "admin" | "user"; user_id: string };
         Insert: { id?: string; role: "admin" | "user"; user_id: string };
@@ -57,6 +69,10 @@ export type Database = {
       crear_pedido: { Args: { p_paquete: string; p_nombre: string; p_contacto: string; p_correo: string | null; p_puesto: string | null; p_cv: string | null; p_notas: string | null }; Returns: { codigo: string; precio: number } };
       importar_vacantes_admin: { Args: { p_filas: unknown }; Returns: { creadas: number; actualizadas: number; cerradas: number; omitidas: { fila: number; motivo: string }[] } };
       renovar_vacante: { Args: { p_renov: string; p_cerrar?: boolean }; Returns: { accion: "renovada" | "cerrada" | "vencida"; titulo?: string } };
+      panel_admin: { Args: Record<string, never>; Returns: unknown };
+      usuarios_admin: { Args: Record<string, never>; Returns: { id: string; email: string; nombre: string | null; creado: string; ultimo_acceso: string | null; es_admin: boolean }[] };
+      cambiar_admin: { Args: { p_user: string; p_admin: boolean }; Returns: undefined };
+      reportar_vacante: { Args: { p_id: string; p_motivo: string; p_detalle?: string | null }; Returns: undefined };
       baja_alerta: { Args: { p_token: string }; Returns: string };
     };
     Enums: { app_role: "admin" | "user" };
