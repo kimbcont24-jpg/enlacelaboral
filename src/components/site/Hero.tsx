@@ -12,9 +12,9 @@ const populares = ["Recepcionista", "Cajero", "Call center", "Asistente administ
 
 type Props = { puesto: string; provincia: string; onPuesto: (v: string) => void; onProvincia: (v: string) => void; onBuscar: () => void; total: number; provincias: number; jobs?: Vacante[] };
 
-/** Vacante real que se muestra en la tarjeta de la portada: destacada, o la más reciente con salario, o la más reciente. */
+/** Vacante real que se muestra en la tarjeta de la portada: la destacada o, si no hay, la más reciente. */
 function elegirTarjeta(jobs: Vacante[]): Vacante | undefined {
-  return jobs.find((j) => j.destacada) ?? jobs.find((j) => j.salarioMin > 0) ?? jobs[0];
+  return jobs.find((j) => j.destacada) ?? jobs[0];
 }
 
 function TarjetaPortada({ job }: { job: Vacante }) {
