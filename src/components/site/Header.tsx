@@ -32,7 +32,7 @@ export function Header() {
     <>
     <AvisoGlobal />
     <nav className={cn("sticky top-0 z-50 flex items-center justify-between gap-3 border-b px-4 transition-all duration-500 sm:px-6", scrolled ? "border-border/80 bg-surface/85 py-3 shadow-[var(--shadow-soft)] backdrop-blur-md" : "border-transparent bg-surface py-4")}>
-      <Logo />
+      <Logo cabecera />
       <div className="hidden items-center gap-7 text-[15px] font-semibold md:flex">
         {nav.map((item) => (
           <Link key={item.to} to={item.to} className="transition-colors hover:text-primary" activeProps={{ className: "text-primary" }}>{item.label}</Link>

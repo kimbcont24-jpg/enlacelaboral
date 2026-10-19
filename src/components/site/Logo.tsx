@@ -1,38 +1,60 @@
-import { useId } from "react";
+import type { Ref } from "react";
 import { Link } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
+import {
+  LOGO_BROCHE,
+  LOGO_BROCHE_CENTRO,
+  LOGO_CABEZA,
+  LOGO_CUERPO,
+  LOGO_MALETIN,
+  LOGO_VIEWBOX,
+} from "@/components/site/logo-paths";
 
 /**
- * Marca de Enlace Laboral: dos eslabones entrelazados.
- * El azul profundo es la persona que busca empleo; el azul eléctrico, la empresa o institución que contrata.
- * Se cruzan por arriba y por abajo, como en una cadena real: quedan enlazados.
+ * Símbolo de Enlace Laboral: una persona (azul profundo) enlazada a un maletín (azul eléctrico).
+ * Los colores salen de variables CSS (ver styles.css) para poder cambiarlos con animación.
+ * `anillo` agrega la onda que se ve en la entrada, cuando persona y maletín quedan enlazados.
  */
-export function LogoMarca({ className, invertido = false }: { className?: string; invertido?: boolean }) {
-  const id = useId().replace(/:/g, "");
-  const azul = invertido ? "#ffffff" : "#0a2f5c";
-  const rojo = invertido ? "#8ec1ff" : "#1d6ff2";
+export function LogoMarca({ className, invertido = false, anillo = false }: { className?: string; invertido?: boolean; anillo?: boolean }) {
   return (
-    <svg viewBox="0 0 64 64" role="img" aria-label="Enlace Laboral" className={className}>
-      <defs>
-        <clipPath id={`cruce-${id}`}><rect x="0" y="32" width="64" height="32" /></clipPath>
-      </defs>
-      <g transform="rotate(-35 32 32)">
-        <ellipse cx="26" cy="32" rx="13" ry="8" fill="none" stroke={azul} strokeWidth="5.6" />
-        <ellipse cx="38" cy="32" rx="13" ry="8" fill="none" stroke={rojo} strokeWidth="5.6" />
-        <ellipse cx="26" cy="32" rx="13" ry="8" fill="none" stroke={azul} strokeWidth="5.6" clipPath={`url(#cruce-${id})`} />
-      </g>
+    <svg
+      viewBox={LOGO_VIEWBOX}
+      aria-hidden="true"
+      focusable="false"
+      overflow="visible"
+      data-invertido={invertido ? "" : undefined}
+      className={cn("logo-marca", className)}
+    >
+      <path className="p-persona p-cabeza" d={LOGO_CABEZA} />
+      <path className="p-persona p-cuerpo" d={LOGO_CUERPO} />
+      <path className="p-maletin p-case" d={LOGO_MALETIN} />
+      <path className="p-maletin p-broche" d={LOGO_BROCHE} />
+      {anillo && <circle className="p-anillo" cx={LOGO_BROCHE_CENTRO.x} cy={LOGO_BROCHE_CENTRO.y} r="64" fill="none" strokeWidth="9" />}
     </svg>
   );
 }
 
-export function Logo({ className, invertido = false }: { className?: string; invertido?: boolean }) {
+/** Símbolo + nombre. El tamaño sale del font-size del contenedor (todo va en em), así escala parejo. */
+export const LogoHorizontal = ({ className, invertido = false, anillo = false, refLogo, datosCabecera = false }: { className?: string; invertido?: boolean; anillo?: boolean; refLogo?: Ref<HTMLSpanElement>; datosCabecera?: boolean }) => (
+  <span
+    ref={refLogo}
+    data-invertido={invertido ? "" : undefined}
+    data-logo-header={datosCabecera ? "" : undefined}
+    className={cn("logo-lockup inline-flex items-center gap-[0.42em] whitespace-nowrap leading-none", className)}
+  >
+    <LogoMarca className="h-[1.62em] w-auto shrink-0" anillo={anillo} />
+    <span className="logo-nombre font-black tracking-[-0.03em]">
+      <span className="logo-palabra"><span className="logo-t1">Enlace</span></span>{" "}
+      <span className="logo-palabra"><span className="logo-t2">Laboral</span></span>
+    </span>
+  </span>
+);
+
+export function Logo({ className, invertido = false, cabecera = false, tamano = "text-[22px] sm:text-[28px]" }: { className?: string; invertido?: boolean; cabecera?: boolean; tamano?: string }) {
   return (
-    <Link to="/" className={cn("flex items-center gap-1.5", className)} aria-label="Enlace Laboral, inicio">
-      <LogoMarca className="size-12 -my-1" invertido={invertido} />
-      <span className={cn("text-[22px] font-extrabold leading-none tracking-tight", invertido ? "text-white" : "text-primary")}>
-        Enlace <span className={invertido ? "text-[#8ec1ff]" : "text-cta"}>Laboral</span>
-      </span>
+    <Link to="/" className={cn("logo-link inline-flex items-center", className)} aria-label="Enlace Laboral, inicio">
+      <LogoHorizontal className={tamano} invertido={invertido} datosCabecera={cabecera} />
     </Link>
   );
 }

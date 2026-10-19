@@ -3,6 +3,7 @@ import { Outlet, Link, createRootRouteWithContext, HeadContent, Scripts } from "
 import { type ReactNode } from "react";
 
 import { ApplyProvider } from "@/components/site/apply-context";
+import { EntradaLogo, scriptEntrada } from "@/components/site/EntradaLogo";
 import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 
@@ -31,9 +32,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Unbounded:wght@700;800&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Unbounded:wght@700;800&display=swap" },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
+    scripts: [{ children: scriptEntrada }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -54,6 +58,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ApplyProvider>
+        <EntradaLogo />
         <Outlet />
         <Toaster richColors position="top-center" />
       </ApplyProvider>

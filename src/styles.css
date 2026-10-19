@@ -108,6 +108,47 @@
 @keyframes entra-arriba { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @utility entra { animation: entra-arriba .6s var(--ease-out-expo) both; @media (prefers-reduced-motion: reduce) { animation: none; } }
 
+/* ===== Logo (persona + maletín) ===== */
+/* Los colores viven en variables del contenedor; así el logo puede pasar de "sobre azul" a "sobre blanco" con animación. */
+.logo-lockup { --l-persona: #0a2f5c; --l-maletin: #1d6ff2; --l-t1: #0a2f5c; --l-t2: #1d6ff2; }
+.logo-lockup[data-invertido] { --l-persona: #ffffff; --l-maletin: #8ec1ff; --l-t1: #ffffff; --l-t2: #8ec1ff; }
+.logo-marca[data-invertido] { --l-persona: #ffffff; --l-maletin: #8ec1ff; }
+.p-persona { fill: var(--l-persona, #0a2f5c); transition: fill .9s ease; }
+.p-maletin { fill: var(--l-maletin, #1d6ff2); transition: fill .9s ease; }
+.p-anillo { stroke: var(--l-maletin, #8ec1ff); }
+.logo-t1 { display: inline-block; color: var(--l-t1); transition: color .9s ease; }
+.logo-t2 { display: inline-block; color: var(--l-t2); transition: color .9s ease; }
+.logo-palabra { display: inline-block; overflow: hidden; vertical-align: top; line-height: 1.2; padding-inline: .04em; margin-inline: -.04em; }
+.logo-marca { transition: transform .45s var(--ease-out-expo); }
+.logo-link:hover .logo-marca, .logo-link:focus-visible .logo-marca { transform: scale(1.08) rotate(-3deg); }
+
+/* ===== Entrada de la página (ver EntradaLogo.tsx) ===== */
+.entrada { display: none; position: fixed; inset: 0; z-index: 200; cursor: pointer; touch-action: none; overscroll-behavior: contain; }
+html[data-entrada="1"] .entrada { display: block; animation: entrada-seguro .01s linear 6s forwards; }
+html[data-entrada="1"] [data-logo-header] { visibility: hidden; animation: entrada-mostrar .01s linear 6s forwards; }
+@keyframes entrada-seguro { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+@keyframes entrada-mostrar { to { visibility: visible; } }
+.entrada-fondo { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 46%, #123e78 0%, #0a2f5c 52%, #07213f 100%); }
+.entrada-fondo::before { content: ""; position: absolute; left: 50%; top: 46%; width: 120vmax; height: 120vmax; margin: -60vmax 0 0 -60vmax; border-radius: 50%; background: radial-gradient(circle, rgb(29 111 242 / .34) 0%, rgb(29 111 242 / 0) 42%); animation: e-brillo 1.6s var(--ease-out-expo) .05s both; }
+.entrada-centro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.15rem; padding: 0 1rem; }
+.entrada-logo { font-size: min(8.4vw, 58px); }
+.entrada-lema { margin: 0; text-align: center; font-size: clamp(13px, 3.5vw, 17px); font-weight: 600; color: rgb(255 255 255 / .74); animation: e-aparece .6s ease-out 1s both; }
+.entrada .p-cabeza { transform-box: fill-box; transform-origin: center; animation: e-cabeza .55s cubic-bezier(.34, 1.56, .64, 1) .1s both; }
+.entrada .p-cuerpo { animation: e-persona .65s var(--ease-out-expo) .2s both; }
+.entrada .p-case { animation: e-maletin .7s var(--ease-out-expo) .3s both; }
+.entrada .p-broche { transform-box: fill-box; transform-origin: center; animation: e-broche .38s cubic-bezier(.34, 1.56, .64, 1) .78s both; }
+.entrada .p-anillo { transform-box: fill-box; transform-origin: center; animation: e-anillo .85s ease-out .8s both; }
+.entrada .logo-t1 { animation: e-sube .7s var(--ease-out-expo) .55s both; }
+.entrada .logo-t2 { animation: e-sube .7s var(--ease-out-expo) .68s both; }
+@keyframes e-brillo { from { opacity: 0; transform: scale(.35); } to { opacity: 1; transform: scale(1); } }
+@keyframes e-cabeza { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes e-persona { from { opacity: 0; transform: translateX(-120px); } to { opacity: 1; transform: none; } }
+@keyframes e-maletin { from { opacity: 0; transform: translateX(140px); } to { opacity: 1; transform: none; } }
+@keyframes e-broche { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes e-anillo { from { opacity: .9; transform: scale(.25); } to { opacity: 0; transform: scale(5); } }
+@keyframes e-sube { from { transform: translateY(108%); } to { transform: none; } }
+@keyframes e-aparece { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
 @utility eyebrow { font-size: .75rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--cta); }
 
 @utility vidrio { background-color: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.18); backdrop-filter: blur(10px); }
