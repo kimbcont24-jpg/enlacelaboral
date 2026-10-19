@@ -314,11 +314,11 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
     }
     setLeyendo(0);
     try {
-      const { crearLector, prepararFoto, limpiarOCR } = await import("@/lib/ocr");
+      const { crearLector, prepararFoto, leerFoto, limpiarOCR } = await import("@/lib/ocr");
       const { lectura } = await prepararFoto(file);
       const lector = await crearLector();
       let crudo = "";
-      try { crudo = await lector.leer(lectura, "auto", (p) => setLeyendo(Math.round(p * 100))); } finally { await lector.cerrar(); }
+      try { crudo = (await leerFoto(lector, lectura, (p) => setLeyendo(Math.round(p * 100)))).texto; } finally { await lector.cerrar(); }
       const t = limpiarOCR(crudo).trim();
       if (!t) throw new Error("sin texto");
       setTexto(t);

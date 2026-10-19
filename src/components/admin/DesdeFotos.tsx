@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AlertTriangle, Camera, CheckCircle2, ExternalLink, ImagePlus, Loader2, RefreshCw, Send, Trash2 } from "lucide-react";
+import { AlertTriangle, Camera, CheckCircle2, ExternalLink, FileText, ImagePlus, Loader2, RefreshCw, Scissors, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import { campo, rotulo } from "@/components/admin/comun";
 import { supabase } from "@/integrations/supabase/client";
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import type { Borrador } from "@/lib/extraer";
-import { AVISO_CORREO, analizarTexto, crearLector, esRepetida, prepararFoto, type Lector, type Modo } from "@/lib/ocr";
+import { AVISO_CORREO, analizarTexto, crearLector, esRepetida, leerFoto, prepararFoto, type Lector } from "@/lib/ocr";
 import { avisarPublicada, filaDesde, miEmpresa } from "@/lib/publicar";
 import { SELECT, rowToVacante, useVacantes, type VacanteRow } from "@/lib/vacantes";
 import { useQueryClient } from "@tanstack/react-query";
@@ -20,8 +20,11 @@ type Item = {
   preview: string;
   estado: Estado;
   progreso: number;
-  modo: Modo;
+  /** true = relectura a fondo (prueba las tres formas de leer). */
+  profundo: boolean;
   b: Borrador;
+  dudas: (keyof Borrador)[];
+  varias: Borrador[];
   texto: string;
   avisos: string[];
   riesgo: string[];
@@ -59,7 +62,7 @@ export function DesdeFotos({ uid }: { uid: string }) {
     const nuevos: Item[] = imgs.map((f) => {
       const id = crypto.randomUUID();
       archivos.current.set(id, f);
-      return { id, nombre: f.name || "foto", preview: URL.createObjectURL(f), estado: "cola", progreso: 0, modo: "auto", b: vacioB(fuente, redes), texto: "", avisos: [], riesgo: [] };
+      return { id, nombre: f.name || "foto", preview: URL.createObjectURL(f), estado: "cola", progreso: 0, profundo: false, b: vacioB(fuente, redes), dudas: [], varias: [], texto: "", avisos: [], riesgo: [] };
     });
     setItems((xs) => [...xs, ...nuevos]);
   }, [fuente, redes]);
@@ -87,10 +90,10 @@ export function DesdeFotos({ uid }: { uid: string }) {
         const { lectura, subir } = await prepararFoto(file);
         blobs.current.set(id, subir);
         lector.current ??= await crearLector();
-        const crudo = await lector.current.leer(lectura, siguiente.modo, (p) => cambiar(id, (i) => ({ ...i, progreso: Math.round(p * 100) })));
-        const a = analizarTexto(crudo);
-        if (a.texto.replace(/\s/g, "").length < 25) throw new Error("No encontré texto legible. Prueba con una foto más clara o con «Releer modo flyer».");
-        cambiar(id, (i) => ({ ...i, estado: "listo", progreso: 100, b: { ...a.b, fuente: i.b.fuente, redes: i.b.redes }, texto: a.texto, avisos: a.avisos, riesgo: a.riesgo }));
+        const r = await leerFoto(lector.current, lectura, (p) => cambiar(id, (i) => ({ ...i, progreso: Math.round(p * 100) })), siguiente.profundo);
+        const a = analizarTexto(r.texto);
+        if (a.texto.replace(/\s/g, "").length < 25) throw new Error("No encontré texto legible. Prueba con una foto más clara o toca «Releer a fondo».");
+        cambiar(id, (i) => ({ ...i, estado: "listo", progreso: 100, b: { ...a.b, fuente: i.b.fuente, redes: i.b.redes }, dudas: a.dudas, varias: a.varias, texto: a.texto, avisos: a.avisos, riesgo: a.riesgo }));
       } catch (e) {
         cambiar(id, (i) => ({ ...i, estado: "error", error: e instanceof Error ? e.message : "No pude leer la imagen." }));
       } finally {
@@ -102,14 +105,31 @@ export function DesdeFotos({ uid }: { uid: string }) {
 
   useEffect(() => () => { void lector.current?.cerrar(); }, []);
 
-  const releer = (id: string) => cambiar(id, (i) => ({ ...i, estado: "cola", modo: "flyer", error: undefined }));
+  const [pegado, setPegado] = useState("");
+  const agregarTexto = () => {
+    const a = analizarTexto(pegado);
+    if (a.texto.replace(/\s/g, "").length < 25) { toast.error("Pega el texto completo de la vacante."); return; }
+    const id = crypto.randomUUID();
+    setItems((xs) => [...xs, { id, nombre: "Texto pegado", preview: "", estado: "listo", progreso: 100, profundo: false, b: { ...a.b, fuente, redes }, dudas: a.dudas, varias: a.varias, texto: a.texto, avisos: a.avisos, riesgo: a.riesgo }]);
+    setPegado("");
+  };
+  const separar = (id: string) => setItems((xs) => xs.flatMap((x) => {
+    if (x.id !== id || x.varias.length < 2) return [x];
+    return x.varias.map((v) => {
+      const nid = crypto.randomUUID();
+      const blob = blobs.current.get(id);
+      if (blob) blobs.current.set(nid, blob);
+      return { ...x, id: nid, nombre: `${x.nombre} · ${v.titulo}`, b: { ...v, fuente: x.b.fuente, redes: x.b.redes }, avisos: x.avisos.filter((a) => !/trae \d+ puestos/i.test(a)), dudas: [], varias: [] };
+    });
+  }));
+  const releer = (id: string) => cambiar(id, (i) => ({ ...i, estado: "cola", profundo: true, error: undefined }));
   const quitar = (id: string) => {
-    setItems((xs) => { const x = xs.find((i) => i.id === id); if (x) URL.revokeObjectURL(x.preview); return xs.filter((i) => i.id !== id); });
+    setItems((xs) => { const x = xs.find((i) => i.id === id); if (x?.preview && !xs.some((o) => o.id !== id && o.preview === x.preview)) URL.revokeObjectURL(x.preview); return xs.filter((i) => i.id !== id); });
     blobs.current.delete(id); archivos.current.delete(id);
   };
   const campoB = (id: string, k: keyof Borrador, v: string | boolean) => cambiar(id, (i) => {
     const b = { ...i.b, [k]: v } as Borrador;
-    return { ...i, b, avisos: k === "aplicar" ? i.avisos.filter((a) => !a.startsWith(AVISO_CORREO)) : i.avisos, riesgo: k === "aplicar" ? i.riesgo.filter((r) => !r.startsWith("No trae forma")).concat(String(v).trim() ? [] : ["No trae forma de contacto ni de aplicar"]) : i.riesgo };
+    return { ...i, b, dudas: i.dudas.filter((d) => d !== k), avisos: k === "aplicar" ? i.avisos.filter((a) => !a.startsWith(AVISO_CORREO)) : i.avisos, riesgo: k === "aplicar" ? i.riesgo.filter((r) => !r.startsWith("No trae forma")).concat(String(v).trim() ? [] : ["No trae forma de contacto ni de aplicar"]) : i.riesgo };
   });
 
   const publicar = useCallback(async (it: Item, silencioso = false): Promise<boolean> => {
@@ -175,6 +195,12 @@ export function DesdeFotos({ uid }: { uid: string }) {
           <label className="block"><span className={rotulo}>Fuente de estas fotos</span><select className={campo} value={fuente} onChange={(e) => { setFuente(e.target.value); setItems((xs) => xs.map((i) => (i.estado === "listo" || i.estado === "cola" ? { ...i, b: { ...i.b, fuente: e.target.value } } : i))); }}>{FUENTES.map((f) => (<option key={f}>{f}</option>))}</select></label>
           <label className="flex items-end gap-2 pb-2 text-sm"><input type="checkbox" className="size-4" checked={redes} onChange={(e) => { setRedes(e.target.checked); setItems((xs) => xs.map((i) => (i.estado === "listo" || i.estado === "cola" ? { ...i, b: { ...i.b, redes: e.target.checked } } : i))); }} /><span>Autorizaron compartirlas en redes</span></label>
         </div>
+        <div className="mx-auto mt-5 max-w-xl text-left">
+          <label className="block"><span className={rotulo}>¿Copiaste el texto de la vacante? Pégalo aquí</span>
+            <textarea className={campo} rows={3} value={pegado} onChange={(e) => setPegado(e.target.value)} placeholder="Pega el texto copiado de WhatsApp, Instagram, Facebook o un correo" aria-label="Pegar texto de la vacante" />
+          </label>
+          <Button className="mt-2" size="sm" variant="outline" disabled={pegado.trim().length < 25} onClick={agregarTexto}><FileText /> Leer este texto</Button>
+        </div>
         <p className="mx-auto mt-3 max-w-xl text-xs text-muted-foreground">Sube solo flyers que la empresa te envió o que ella misma publica para que se difundan.</p>
       </div>
 
@@ -190,28 +216,33 @@ export function DesdeFotos({ uid }: { uid: string }) {
 
       <div className="space-y-4">
         {items.map((it) => (
-          <Tarjeta key={it.id} it={it} repetida={it.estado === "listo" && esRepetida(it.b, jobs)} onCampo={(k, v) => campoB(it.id, k, v)} onPublicar={() => void publicarUna(it)} onQuitar={() => quitar(it.id)} onReleer={() => releer(it.id)} />
+          <Tarjeta key={it.id} it={it} repetida={it.estado === "listo" && esRepetida(it.b, jobs)} onCampo={(k, v) => campoB(it.id, k, v)} onPublicar={() => void publicarUna(it)} onQuitar={() => quitar(it.id)} onReleer={() => releer(it.id)} onSeparar={() => separar(it.id)} />
         ))}
       </div>
     </div>
   );
 }
 
-function Tarjeta({ it, repetida, onCampo, onPublicar, onQuitar, onReleer }: { it: Item; repetida: boolean; onCampo: (k: keyof Borrador, v: string | boolean) => void; onPublicar: () => void; onQuitar: () => void; onReleer: () => void }) {
+function Tarjeta({ it, repetida, onCampo, onPublicar, onQuitar, onReleer, onSeparar }: { it: Item; repetida: boolean; onCampo: (k: keyof Borrador, v: string | boolean) => void; onPublicar: () => void; onQuitar: () => void; onReleer: () => void; onSeparar: () => void }) {
+  const dudoso = (k: keyof Borrador) => it.dudas.includes(k) || (k === "aplicar" && (!it.b.aplicar.trim() || it.avisos.some((a) => a.startsWith(AVISO_CORREO)))) || (k === "titulo" && !it.b.titulo.trim());
+  const dc = (k: keyof Borrador) => (dudoso(k) ? `${campo} !border-[#e0b100] bg-[#fff8dc]` : campo);
+  const duda = (k: keyof Borrador) => (dudoso(k) ? <span className="ml-1 font-bold normal-case tracking-normal text-[#6b4a00]">· revísalo</span> : null);
   const hecha = it.estado === "publicada";
   return (
-    <article className={`grid gap-4 rounded-2xl border bg-surface p-4 sm:grid-cols-[180px_1fr] ${hecha ? "border-success/40 opacity-80" : "border-border"}`}>
-      <a href={it.preview} target="_blank" rel="noopener noreferrer" className="block self-start overflow-hidden rounded-xl border border-border bg-muted" aria-label={`Ver foto ${it.nombre}`}>
-        <img src={it.preview} alt={`Foto de la vacante ${it.nombre}`} className="max-h-72 w-full object-contain" />
-      </a>
+    <article className={`grid gap-4 rounded-2xl border bg-surface p-4 ${it.preview ? "sm:grid-cols-[180px_1fr]" : ""} ${hecha ? "border-success/40 opacity-80" : "border-border"}`}>
+      {it.preview && (
+        <a href={it.preview} target="_blank" rel="noopener noreferrer" className="block self-start overflow-hidden rounded-xl border border-border bg-muted" aria-label={`Ver foto ${it.nombre}`}>
+          <img src={it.preview} alt={`Foto de la vacante ${it.nombre}`} className="max-h-72 w-full object-contain" />
+        </a>
+      )}
       <div className="min-w-0">
         {(it.estado === "cola" || it.estado === "leyendo") && (
-          <p className="flex items-center gap-2 text-sm font-semibold text-muted-foreground"><Loader2 className="size-4 animate-spin" /> {it.estado === "cola" ? "En espera…" : `Leyendo la imagen… ${it.progreso}%`}{it.modo === "flyer" && " (modo flyer)"}</p>
+          <p className="flex items-center gap-2 text-sm font-semibold text-muted-foreground"><Loader2 className="size-4 animate-spin" /> {it.estado === "cola" ? "En espera…" : `Leyendo la imagen… ${it.progreso}%`}{it.profundo && " (a fondo)"}</p>
         )}
         {it.estado === "error" && (
           <div className="space-y-3">
             <p className="flex items-start gap-2 text-sm font-semibold text-destructive"><AlertTriangle className="mt-0.5 size-4 shrink-0" /> {it.error}</p>
-            <div className="flex gap-2"><Button size="sm" variant="outline" onClick={onReleer}><RefreshCw /> Releer modo flyer</Button><Button size="sm" variant="ghost" onClick={onQuitar}><Trash2 /> Quitar</Button></div>
+            <div className="flex gap-2"><Button size="sm" variant="outline" onClick={onReleer}><RefreshCw /> Releer a fondo</Button><Button size="sm" variant="ghost" onClick={onQuitar}><Trash2 /> Quitar</Button></div>
           </div>
         )}
         {hecha && (
@@ -221,15 +252,21 @@ function Tarjeta({ it, repetida, onCampo, onPublicar, onQuitar, onReleer }: { it
         )}
         {(it.estado === "listo" || it.estado === "publicando") && (
           <div className="space-y-3">
+            {it.varias.length > 1 && (
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/40 bg-primary/5 px-3 py-2 text-sm">
+                <p className="font-semibold">Parece que aquí hay {it.varias.length} vacantes: {it.varias.map((v) => v.titulo).join(", ")}.</p>
+                <Button size="sm" onClick={onSeparar}><Scissors /> Separar en {it.varias.length} vacantes</Button>
+              </div>
+            )}
             {repetida && <p className="rounded-lg border border-[#e0b100]/50 bg-[#fff8dc] px-3 py-2 text-sm font-semibold text-[#6b4a00]">Ya hay una vacante publicada con este puesto y empresa. Revisa que no sea repetida.</p>}
             {it.riesgo.filter((r) => !r.startsWith("No trae forma")).map((r) => (<p key={r} className="rounded-lg border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm font-semibold text-destructive">Ojo: {r}. Revísala bien antes de publicar.</p>))}
             <div className="grid gap-3 sm:grid-cols-2">
-              <label className="block sm:col-span-2"><span className={rotulo}>Puesto *</span><input className={campo} value={it.b.titulo} onChange={(e) => onCampo("titulo", e.target.value)} maxLength={120} /></label>
-              <label className="block"><span className={rotulo}>Empresa</span><input className={campo} value={it.b.empresa} onChange={(e) => onCampo("empresa", e.target.value)} placeholder="Vacío si no la dicen" /></label>
-              <label className="block"><span className={rotulo}>Provincia</span><select className={campo} value={it.b.provincia} onChange={(e) => onCampo("provincia", e.target.value)}>{provincias.slice(1).map((p) => (<option key={p}>{p}</option>))}</select></label>
-              <label className="block"><span className={rotulo}>Salario desde (RD$)</span><input className={campo} inputMode="numeric" value={it.b.salarioMin} onChange={(e) => onCampo("salarioMin", e.target.value.replace(/\D/g, ""))} placeholder="Vacío si no lo dicen" /></label>
+              <label className="block sm:col-span-2"><span className={rotulo}>Puesto *{duda("titulo")}</span><input className={dc("titulo")} value={it.b.titulo} onChange={(e) => onCampo("titulo", e.target.value)} maxLength={120} /></label>
+              <label className="block"><span className={rotulo}>Empresa{duda("empresa")}</span><input className={dc("empresa")} value={it.b.empresa} onChange={(e) => onCampo("empresa", e.target.value)} placeholder="Vacío si no la dicen" /></label>
+              <label className="block"><span className={rotulo}>Provincia{duda("provincia")}</span><select className={dc("provincia")} value={it.b.provincia} onChange={(e) => onCampo("provincia", e.target.value)}>{provincias.slice(1).map((p) => (<option key={p}>{p}</option>))}</select></label>
+              <label className="block"><span className={rotulo}>Salario desde (RD$){duda("salarioMin")}</span><input className={dc("salarioMin")} inputMode="numeric" value={it.b.salarioMin} onChange={(e) => onCampo("salarioMin", e.target.value.replace(/\D/g, ""))} placeholder="Vacío si no lo dicen" /></label>
               <label className="block"><span className={rotulo}>Salario hasta</span><input className={campo} inputMode="numeric" value={it.b.salarioMax} onChange={(e) => onCampo("salarioMax", e.target.value.replace(/\D/g, ""))} /></label>
-              <label className="block sm:col-span-2"><span className={rotulo}>Cómo aplicar (correo, WhatsApp o enlace) *</span><input className={campo} value={it.b.aplicar} onChange={(e) => onCampo("aplicar", e.target.value)} /></label>
+              <label className="block sm:col-span-2"><span className={rotulo}>Cómo aplicar (correo, WhatsApp o enlace) *{duda("aplicar")}</span><input className={dc("aplicar")} value={it.b.aplicar} onChange={(e) => onCampo("aplicar", e.target.value)} /></label>
             </div>
             {it.avisos.length > 0 && <ul className="space-y-1 text-xs text-muted-foreground">{it.avisos.map((a) => (<li key={a}>• {a}</li>))}</ul>}
             <details className="rounded-xl border border-border p-3 text-sm">
@@ -248,7 +285,7 @@ function Tarjeta({ it, repetida, onCampo, onPublicar, onQuitar, onReleer }: { it
             </details>
             <div className="flex flex-wrap gap-2">
               <Button disabled={it.estado === "publicando"} onClick={onPublicar}>{it.estado === "publicando" ? <Loader2 className="animate-spin" /> : <Send />} Publicar esta</Button>
-              <Button variant="outline" size="sm" onClick={onReleer} disabled={it.estado === "publicando"}><RefreshCw /> Releer modo flyer</Button>
+              <Button variant="outline" size="sm" onClick={onReleer} disabled={it.estado === "publicando"}><RefreshCw /> Releer a fondo</Button>
               <Button variant="ghost" size="sm" onClick={onQuitar} disabled={it.estado === "publicando"}><Trash2 /> Quitar</Button>
             </div>
           </div>
