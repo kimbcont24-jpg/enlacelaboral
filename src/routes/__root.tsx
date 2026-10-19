@@ -4,6 +4,7 @@ import { type ReactNode } from "react";
 
 import { ApplyProvider } from "@/components/site/apply-context";
 import { EntradaLogo, scriptEntrada } from "@/components/site/EntradaLogo";
+import { RobotNexa } from "@/components/site/RobotNexa";
 import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 
@@ -60,6 +61,7 @@ function RootComponent() {
       <ApplyProvider>
         <EntradaLogo />
         <Outlet />
+        <RobotNexa />
         <Toaster richColors position="top-center" />
       </ApplyProvider>
     </QueryClientProvider>

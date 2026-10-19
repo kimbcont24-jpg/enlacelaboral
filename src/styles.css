@@ -149,6 +149,29 @@ html[data-entrada="1"] [data-logo-header] { visibility: hidden; animation: entra
 @keyframes e-sube { from { transform: translateY(108%); } to { transform: none; } }
 @keyframes e-aparece { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
+/* ===== Robot Nexa (ver RobotNexa.tsx) ===== */
+.robot { filter: drop-shadow(0 10px 14px rgb(10 47 92 / .32)); animation: robot-llega .95s cubic-bezier(.34, 1.45, .64, 1) both; transition: transform .25s var(--ease-out-expo); -webkit-tap-highlight-color: transparent; }
+.robot:hover { transform: scale(1.06) rotate(-2deg); }
+.robot:active { transform: scale(.96); }
+.robot-flota { animation: robot-flota 3.4s ease-in-out infinite; }
+.robot-sombra { transform-box: fill-box; transform-origin: center; animation: robot-sombra 3.4s ease-in-out infinite; }
+.robot-antena { transform-box: fill-box; transform-origin: center; animation: robot-pulso 2.2s ease-in-out infinite; }
+.robot-ojos { transition: transform .12s ease-out; }
+.robot-ojo { transform-box: fill-box; transform-origin: center; animation: robot-parpadeo 5.2s ease-in-out 1.5s infinite; }
+.robot-brazo { transform-origin: 94px 99px; animation: robot-saluda .55s ease-in-out 1.05s 3; }
+.robot:hover .robot-brazo { animation: robot-saluda .55s ease-in-out 2; }
+.robot-panel { transform-origin: bottom right; animation: robot-panel .32s var(--ease-out-expo) both; }
+.robot-burbuja { transform-origin: bottom right; animation: robot-panel .4s var(--ease-out-expo) both; }
+.robot-burbuja::after { content: ""; position: absolute; right: 1.1rem; bottom: -6px; width: 12px; height: 12px; background: var(--surface); transform: rotate(45deg); box-shadow: 1px 1px 0 var(--border); }
+html[data-entrada="1"] .robot { visibility: hidden; }
+@keyframes robot-llega { 0% { opacity: 0; transform: translateY(120%) rotate(10deg) scale(.8); } 100% { opacity: 1; transform: none; } }
+@keyframes robot-flota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes robot-sombra { 0%, 100% { transform: scaleX(1); opacity: .22; } 50% { transform: scaleX(.86); opacity: .14; } }
+@keyframes robot-pulso { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22); } }
+@keyframes robot-parpadeo { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.08); } }
+@keyframes robot-saluda { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-38deg); } }
+@keyframes robot-panel { from { opacity: 0; transform: translateY(10px) scale(.94); } to { opacity: 1; transform: none; } }
+
 @utility eyebrow { font-size: .75rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--cta); }
 
 @utility vidrio { background-color: rgb(255 255 255 / 0.1); border: 1px solid rgb(255 255 255 / 0.18); backdrop-filter: blur(10px); }
