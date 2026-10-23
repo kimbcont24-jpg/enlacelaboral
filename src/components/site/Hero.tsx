@@ -73,6 +73,7 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
           ))}
           <Link to="/empleos/$slug" params={{ slug: "remoto" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Desde casa</Link>
           <Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Primer empleo</Link>
+          <Link to="/descubrir" className="rounded-full bg-[#ffd84d] px-3.5 py-1.5 text-sm font-extrabold text-[#3d2f00] hover:bg-[#ffe27a]">Descubrir deslizando</Link>
         </div>
 
         </div>

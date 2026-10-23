@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, ExternalLink, Loader2, X } from "lucide-react";
+import { CheckCircle2, Copy, ExternalLink, Loader2, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { enlaceAplicar, type Vacante } from "@/lib/vacantes";
 import { cvCompleto, leerCV, textoCV, type CV } from "@/lib/cv";
 import { Link } from "@tanstack/react-router";
+import { enlaceConMensaje, mensajeAplicacion, viaAplicar } from "@/lib/mensajes";
+import { usePostulaciones } from "@/lib/postulaciones";
 
 export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: () => void }) {
   const [estado, setEstado] = useState<"form" | "enviando" | "listo">("form");
@@ -14,6 +16,10 @@ export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: ()
   const [error, setError] = useState<string | null>(null);
   const [cv, setCv] = useState<CV | null>(null);
   const [incluirCv, setIncluirCv] = useState(true);
+  const [texto, setTexto] = useState("");
+  const [editado, setEditado] = useState(false);
+  const [copiado, setCopiado] = useState(false);
+  const { registrar, yaAplico } = usePostulaciones();
 
   useEffect(() => {
     if (job) {
@@ -30,8 +36,19 @@ export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: ()
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // el mensaje se arma solo con el nombre y el CV, hasta que la persona lo edite
+  useEffect(() => {
+    if (job && !editado) setTexto(mensajeAplicacion(job, nombre, cv));
+  }, [job, nombre, cv, editado]);
+  useEffect(() => { if (job) { setEditado(false); setCopiado(false); } }, [job]);
+
   if (!job) return null;
-  const enlace = enlaceAplicar(job.aplicar);
+  const enlace = enlaceConMensaje(job, texto) ?? enlaceAplicar(job.aplicar);
+  const via = viaAplicar(job);
+  const ya = yaAplico(job.id);
+  const copiar = async () => {
+    try { await navigator.clipboard.writeText(texto); setCopiado(true); setTimeout(() => setCopiado(false), 2000); } catch { /* sin portapapeles */ }
+  };
 
   const enviar = async () => {
     setEstado("enviando");
@@ -43,6 +60,7 @@ export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: ()
       setEstado("form");
       return;
     }
+    registrar(job, "Formulario de Enlace Laboral");
     setEstado("listo");
   };
 
@@ -61,15 +79,25 @@ export function ApplyDialog({ job, onClose }: { job: Vacante | null; onClose: ()
         {job.aplicar ? (
           <div className="mt-6 space-y-4">
             <div className="rounded-2xl bg-secondary p-4 text-sm">
-              <p className="font-bold">Cómo aplicar</p>
+              <p className="font-bold">Cómo aplicar · {via.texto}</p>
               <p className="mt-1 whitespace-pre-line text-muted-foreground">{job.aplicar}</p>
             </div>
+            {(via.clave === "whatsapp" || via.clave === "correo") && (
+              <div className="space-y-2">
+                <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre (para el mensaje)" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary" />
+                <label className="block text-xs font-bold text-muted-foreground">Mensaje listo para enviar (puedes cambiarlo)
+                  <textarea value={texto} onChange={(e) => { setTexto(e.target.value); setEditado(true); }} rows={5} className="mt-1 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm font-normal text-foreground outline-none focus:border-primary" />
+                </label>
+                <button type="button" onClick={() => void copiar()} className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"><Copy className="size-3.5" /> {copiado ? "¡Copiado!" : "Copiar mensaje"}</button>
+              </div>
+            )}
             {enlace && (
-              <a href={enlace.href} target="_blank" rel="noopener noreferrer" className="grad-primary flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-bold text-primary-foreground">
+              <a href={enlace.href} target="_blank" rel="noopener noreferrer" onClick={() => registrar(job, via.texto)} className="grad-primary flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-bold text-primary-foreground">
                 {enlace.label} <ExternalLink className="size-4" />
               </a>
             )}
-            <p className="text-xs text-muted-foreground">Vacante publicada originalmente en {job.fuente}. Nunca pagues dinero para ser contratado.</p>
+            <p className="text-xs text-muted-foreground">{ya ? <>Esta vacante ya está en <Link to="/guardadas" search={{ ver: "postulaciones" }} onClick={onClose} className="font-semibold text-primary underline">Mis postulaciones</Link>.</> : "Al tocar el botón la anotamos en «Mis postulaciones» para que le des seguimiento."}</p>
+            <p className="text-xs text-muted-foreground">{/^publicada por/i.test(job.fuente) ? `Vacante ${job.fuente.toLowerCase()}.` : `Vacante publicada originalmente en ${job.fuente}.`} Nunca pagues dinero para ser contratado.</p>
           </div>
         ) : estado === "listo" ? (
           <div className="mt-6 rounded-2xl border border-success/30 bg-success/10 p-6 text-center">

@@ -6,6 +6,8 @@ import { AdminAcciones } from "@/components/site/AdminAcciones";
 import { useApply } from "@/components/site/apply-context";
 import { claridad, diasRestantes, esNueva, nivelDe, venceTexto } from "@/lib/claridad";
 import { useGuardados } from "@/lib/guardados";
+import { viaAplicar } from "@/lib/mensajes";
+import { usePostulaciones } from "@/lib/postulaciones";
 import type { Vacante } from "@/lib/vacantes";
 
 export function ClaridadPill({ job, className = "" }: { job: Vacante; className?: string }) {
@@ -41,14 +43,17 @@ export function JobCard({ job }: { job: Vacante }) {
   const nueva = esNueva(job);
   const pronto = diasRestantes(job) <= 5;
   const conSueldo = job.salarioMin > 0;
+  const via = viaAplicar(job);
+  const { yaAplico } = usePostulaciones();
   return (
     <article className={`group relative rounded-2xl border bg-surface p-4 transition-[border-color,box-shadow] hover:border-primary/50 hover:shadow-[var(--shadow-soft)] sm:p-5 ${job.destacada ? "border-primary/50 border-t-4 border-t-[#ffd84d]" : "border-border"}`}>
       <div className="flex items-start gap-3.5">
         <EmpresaAvatar nombre={job.empresa} className="size-12 text-xl" />
         <div className="min-w-0 flex-1">
-          <div className={`flex flex-wrap items-center gap-x-2 gap-y-1 ${job.destacada || nueva ? "mb-1.5" : ""}`}>
+          <div className={`flex flex-wrap items-center gap-x-2 gap-y-1 ${job.destacada || nueva || yaAplico(job.id) ? "mb-1.5" : ""}`}>
             {job.destacada && <span className="rounded-full bg-[#ffd84d] px-2 py-0.5 text-[11px] font-extrabold text-[#3d2f00]">Destacada</span>}
             {nueva && <span className="rounded-full bg-cta px-2 py-0.5 text-[11px] font-bold text-cta-foreground">Nueva</span>}
+            {yaAplico(job.id) && <span className="rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-bold text-success">Ya aplicaste</span>}
           </div>
           <h3 className="text-lg font-extrabold leading-snug">
             <Link to="/vacantes/$id" params={{ id: job.id }} className="text-balance after:absolute after:inset-0 after:rounded-2xl group-hover:text-primary">{job.titulo}</Link>
@@ -71,6 +76,7 @@ export function JobCard({ job }: { job: Vacante }) {
       <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
         <ClaridadPill job={job} />
         <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-primary">{nivelDe(job)}</span>
+        <span className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted-foreground">{via.texto}</span>
         <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Clock className="size-3.5" aria-hidden="true" /> {job.publicado}</span>
         <span className={`text-xs ${pronto ? "font-bold text-destructive" : "text-muted-foreground"}`}>{venceTexto(job)}</span>
       </div>

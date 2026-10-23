@@ -151,6 +151,7 @@ export function RobotNexa() {
             <p className="px-1 pt-1 text-xs font-bold text-muted-foreground">¿Qué quieres hacer?</p>
             <Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} onClick={cerrar} className={fila}><UserRound className={icono} aria-hidden="true" /> Encontrar mi primer empleo</Link>
             <Link to="/vacantes" search={{ modalidad: "Remoto" }} onClick={cerrar} className={fila}><Laptop className={icono} aria-hidden="true" /> Trabajar desde casa</Link>
+            <Link to="/descubrir" onClick={cerrar} className={fila}><Search className={icono} aria-hidden="true" /> Descubrir empleos deslizando</Link>
             <Link to="/cv" onClick={cerrar} className={fila}><FileText className={icono} aria-hidden="true" /> Crear mi CV gratis</Link>
             <Link to="/herramientas/salario-neto" onClick={cerrar} className={fila}><Calculator className={icono} aria-hidden="true" /> Calcular cuánto me llega de sueldo</Link>
             <Link to="/empresas" onClick={cerrar} className={fila}><Building2 className={icono} aria-hidden="true" /> Publicar una vacante</Link>

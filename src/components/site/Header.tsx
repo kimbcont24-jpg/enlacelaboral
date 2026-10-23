@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/vacantes", label: "Empleos" },
+  { to: "/descubrir", label: "Descubrir" },
   { to: "/empresas", label: "Empresas" },
   { to: "/recursos", label: "Consejos" },
   { to: "/cv", label: "Mi CV" },
