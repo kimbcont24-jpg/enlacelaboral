@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Header } from "@/components/site/Header";
@@ -103,6 +103,48 @@ function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: st
   const [f, setF] = useState({ empresa: "", contacto: "", correo: "", telefono: "", titulo: "", provincia: provincias[1] ?? "Distrito Nacional", detalle: "", trampa: "", redes: false });
   const [enviando, setEnviando] = useState(false);
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF((x) => ({ ...x, [k]: e.target.value }));
+  const [leyendo, setLeyendo] = useState<number | null>(null);
+  const [leido, setLeido] = useState<string[] | null>(null);
+  const entrada = useRef<HTMLInputElement>(null);
+
+  /** Lee el flyer en el navegador de la empresa (la foto no se envía a ningún servidor) y llena el formulario. */
+  const leerFlyer = async (file: File | undefined) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return void toast.error("Sube una foto o captura del flyer (JPG o PNG).");
+    setLeyendo(0);
+    setLeido(null);
+    let lector: { cerrar: () => Promise<void> } | null = null;
+    try {
+      const ocr = await import("@/lib/ocr");
+      const { lectura } = await ocr.prepararFoto(file);
+      const l = await ocr.crearLector();
+      lector = l;
+      const r = await ocr.leerFoto(l, lectura, (p) => setLeyendo(Math.round(p * 100)));
+      const a = ocr.analizarTexto(r.texto);
+      const b = a.varias[0] ?? a.b;
+      const correo = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/.exec(b.aplicar || a.texto)?.[0] ?? "";
+      const tel = /(?:8[024]9)[\s.-]?\d{3}[\s.-]?\d{4}/.exec(a.texto)?.[0] ?? "";
+      const detalle = a.texto.split("\n").map((l) => l.trim()).filter(Boolean).join("\n");
+      if (!b.titulo && a.texto.trim().length < 20) throw new Error("vacio");
+      setF((x) => ({
+        ...x,
+        titulo: b.titulo || x.titulo,
+        empresa: b.empresa || x.empresa,
+        provincia: provincias.slice(1).includes(b.provincia) ? b.provincia : x.provincia,
+        correo: x.correo || correo,
+        telefono: x.telefono || tel,
+        detalle,
+      }));
+      setLeido([b.titulo ? "el puesto" : "", b.empresa ? "la empresa" : "", b.provincia ? "la ubicación" : "", correo ? "el correo" : "", detalle ? "los detalles" : ""].filter(Boolean));
+      toast.success("Leímos tu flyer. Revisa los datos antes de enviar.");
+    } catch {
+      toast.error("No pudimos leer esa imagen. Prueba con una foto más nítida o llena el formulario a mano.");
+    } finally {
+      await lector?.cerrar().catch(() => undefined);
+      setLeyendo(null);
+      if (entrada.current) entrada.current.value = "";
+    }
+  };
 
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,6 +170,15 @@ function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: st
 
   return (
     <form onSubmit={(e) => void enviar(e)} className="space-y-4 rounded-3xl border border-border bg-background p-8">
+      <div className="rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 p-4">
+        <p className="font-bold">¿Ya tienes el flyer de la vacante?</p>
+        <p className="mt-1 text-sm text-muted-foreground">Súbelo y llenamos el formulario por ti. La imagen se lee en tu dispositivo y no se guarda.</p>
+        <input ref={entrada} type="file" accept="image/*" className="hidden" onChange={(e) => void leerFlyer(e.target.files?.[0])} />
+        <button type="button" disabled={leyendo !== null} onClick={() => entrada.current?.click()} className="mt-3 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-60">
+          {leyendo !== null ? `Leyendo tu flyer… ${leyendo}%` : "Subir flyer o captura"}
+        </button>
+        {leido && leido.length > 0 && <p role="status" className="mt-3 text-sm font-semibold text-success">Llenamos {leido.join(", ")}. Revisa todo antes de enviar.</p>}
+      </div>
       <label className="block"><span className={rotulo}>Empresa</span><input required maxLength={200} value={f.empresa} onChange={set("empresa")} placeholder="Nombre de la empresa" className={caja} /></label>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block"><span className={rotulo}>Contacto</span><input required maxLength={200} value={f.contacto} onChange={set("contacto")} placeholder="Nombre y apellido" className={caja} /></label>
