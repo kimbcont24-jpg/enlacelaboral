@@ -99,7 +99,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
     salarioMax: max,
     salario,
     descripcion: r.descripcion,
-    requisitos: r.requisitos ?? [],
+    requisitos: (r.requisitos ?? []).filter((x) => !/^[\p{Lu}\s]{6,}:\s*$|^[^.]{3,40}:\s*$/u.test(x.trim())),
     fuente: meta["fuente"] || "Enlace Laboral",
     fuenteUrl: meta["fuente_url"] || "",
     aplicar: meta["aplicar"] || "",
