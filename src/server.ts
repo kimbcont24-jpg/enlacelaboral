@@ -91,9 +91,40 @@ async function ogVacante(id: string, origen: string): Promise<Response> {
   }
 }
 
+
+type PorCompartir = { id: string; titulo: string; empresa: string; provincia: string; modalidad: string; tipo: string; salario_min: number | null; salario_max: number | null; enlace: string };
+
+/** /api/telegram → publica en @enlacelaboral las vacantes pendientes (máx. 5 por vuelta). */
+async function telegram(): Promise<Response> {
+  const bot = process.env["TELEGRAM_BOT_TOKEN"];
+  const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
+  if (!bot) return json({ ok: false, error: "falta TELEGRAM_BOT_TOKEN" }, 500);
+  const h = { apikey: SB_KEY, authorization: `Bearer ${SB_KEY}`, "content-type": "application/json" };
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/redes_pendientes`, { method: "POST", headers: h, body: "{}" });
+  if (!r.ok) return json({ ok: false, error: "no se pudo leer vacantes" }, 502);
+  const filas = (await r.json()) as PorCompartir[];
+  const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  let enviadas = 0;
+  const errores: string[] = [];
+  for (const v of filas) {
+    const sal = v.salario_min ? `RD$${v.salario_min.toLocaleString("es-DO")}${v.salario_max ? " – RD$" + v.salario_max.toLocaleString("es-DO") : ""}` : "Salario no indicado";
+    const texto = [`<b>${esc(v.titulo)}</b>`, v.empresa ? esc(v.empresa) : "", `📍 ${esc(v.provincia)} · ${esc(v.modalidad)} · ${esc(v.tipo)}`, `💰 ${sal}`, "", `Ver y aplicar: ${v.enlace}`].filter((x, i) => x || i === 4).join("\n");
+    const t = await fetch(`https://api.telegram.org/bot${bot}/sendMessage`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ chat_id: "@enlacelaboral", text: texto, parse_mode: "HTML" }) });
+    if (t.ok) {
+      await fetch(`${SB_URL}/rest/v1/rpc/redes_marcar`, { method: "POST", headers: h, body: JSON.stringify({ p_id: v.id }) });
+      enviadas++;
+    } else {
+      errores.push(`${t.status}: ${((await t.json().catch(() => ({}))) as { description?: string }).description ?? ""}`);
+      break;
+    }
+  }
+  return json({ ok: errores.length === 0, pendientes: filas.length, enviadas, errores });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
+    if (url.pathname === "/api/telegram") return telegram();
     if (url.pathname === "/sitemap.xml") return sitemap(url.origin);
     const og = url.pathname.match(/^\/og\/vacantes\/([0-9a-f-]{36})\.png$/i);
     if (og) return ogVacante(og[1]!, url.origin);

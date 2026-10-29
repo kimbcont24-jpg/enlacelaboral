@@ -1,0 +1,10 @@
+name: Telegram
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS --max-time 60 https://enlace-rd.vercel.app/api/telegram
