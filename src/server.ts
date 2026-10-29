@@ -107,8 +107,8 @@ async function telegram(): Promise<Response> {
   let enviadas = 0;
   const errores: string[] = [];
   for (const v of filas) {
-    const sal = v.salario_min ? `RD$${v.salario_min.toLocaleString("es-DO")}${v.salario_max ? " – RD$" + v.salario_max.toLocaleString("es-DO") : ""}` : "Salario no indicado";
-    const texto = [`<b>${esc(v.titulo)}</b>`, v.empresa ? esc(v.empresa) : "", `📍 ${esc(v.provincia)} · ${esc(v.modalidad)} · ${esc(v.tipo)}`, `💰 ${sal}`, "", `Ver y aplicar: ${v.enlace}`].filter((x, i) => x || i === 4).join("\n");
+    const sal = v.salario_min ? `RD$${v.salario_min.toLocaleString("es-DO")}${v.salario_max ? " – RD$" + v.salario_max.toLocaleString("es-DO") : ""}` : "";
+    const texto = [`<b>${esc(v.titulo)}</b>`, v.empresa ? esc(v.empresa) : "", `📍 ${esc(v.provincia)} · ${esc(v.modalidad)} · ${esc(v.tipo)}`, sal ? `💰 ${sal}` : "", "", `Ver y aplicar: ${v.enlace}`].filter((x, i) => x || i === 4).join("\n");
     const t = await fetch(`https://api.telegram.org/bot${bot}/sendMessage`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ chat_id: "@enlacelaboral", text: texto, parse_mode: "HTML" }) });
     if (t.ok) {
       await fetch(`${SB_URL}/rest/v1/rpc/redes_marcar`, { method: "POST", headers: h, body: JSON.stringify({ p_id: v.id }) });

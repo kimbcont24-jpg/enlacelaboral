@@ -85,7 +85,7 @@ export function hace(fecha: string) {
 export function rowToVacante(r: VacanteRow): Vacante {
   const { meta, tags } = leerMeta(r.etiquetas);
   const max = r.salario_max && r.salario_max > r.salario_min ? r.salario_max : null;
-  const salario = r.salario_min > 0 ? (max ? `${pesos(r.salario_min)} - ${pesos(max)}` : pesos(r.salario_min)) : "Salario no publicado";
+  const salario = r.salario_min > 0 ? (max ? `${pesos(r.salario_min)} - ${pesos(max)}` : pesos(r.salario_min)) : "";
   return {
     id: r.id,
     titulo: r.titulo,

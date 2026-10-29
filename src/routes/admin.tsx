@@ -529,7 +529,7 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
           <div className="mt-3 rounded-xl bg-secondary p-3 text-sm">
             <p className="text-xs font-semibold text-muted-foreground">Así se publicaría:</p>
             <p className="mt-1 font-bold">{v.titulo || "Sin puesto: revisa antes"}</p>
-            <p className="text-muted-foreground">{[v.empresa || "Empresa no indicada", v.provincia, v.modalidad, v.salarioMin ? `RD$${Number(v.salarioMin).toLocaleString("es-DO")}${v.salarioMax ? ` - RD$${Number(v.salarioMax).toLocaleString("es-DO")}` : ""}` : "Salario no publicado"].join(" · ")}</p>
+            <p className="text-muted-foreground">{[v.empresa || "Empresa no indicada", v.provincia, v.modalidad, v.salarioMin ? `RD$${Number(v.salarioMin).toLocaleString("es-DO")}${v.salarioMax ? ` - RD$${Number(v.salarioMax).toLocaleString("es-DO")}` : ""}` : ""].filter(Boolean).join(" · ")}</p>
             <p className="text-muted-foreground">{v.requisitos ? `${v.requisitos.split("\n").length} requisitos` : "Sin requisitos"} · {v.aplicar ? `Aplicar: ${v.aplicar}` : "Aplican por tu página"}</p>
           </div>
           {riesgos.length > 0 && (

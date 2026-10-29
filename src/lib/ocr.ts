@@ -232,7 +232,7 @@ export function analizarTexto(crudo: string): Analisis {
   if (!b.titulo) avisos.push("No pude detectar el puesto.");
   if (!b.empresa) avisos.push("No se vio el nombre de la empresa.");
   if (!b.aplicar) avisos.push("No encontré cómo aplicar (correo, WhatsApp o enlace).");
-  if (!b.salarioMin && !avisosLectura.some((a) => /sueldo|pago/i.test(a))) avisos.push("No dice el salario. Se publicará como «Salario no publicado».");
+  if (!b.salarioMin && !avisosLectura.some((a) => /sueldo|pago/i.test(a))) avisos.push("No dice el salario. Se publicará sin salario.");
   avisos.push(...avisosLectura);
   return { b, avisos, riesgo: senalesRiesgo(texto, !!b.aplicar), texto, dudas, varias };
 }

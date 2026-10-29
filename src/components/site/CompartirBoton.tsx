@@ -10,7 +10,7 @@ export function CompartirBoton({ job, solo = false, className = "" }: { job: Vac
     const url = `${SITIO}/vacantes/${job.id}`;
     try {
       if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
-        await navigator.share({ title: `${job.titulo} en ${job.provincia}`, text: `${job.titulo} · ${job.salario}`, url });
+        await navigator.share({ title: `${job.titulo} en ${job.provincia}`, text: job.salario ? `${job.titulo} · ${job.salario}` : job.titulo, url });
         return;
       }
     } catch (e) {

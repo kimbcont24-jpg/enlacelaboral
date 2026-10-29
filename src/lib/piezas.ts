@@ -151,14 +151,8 @@ export function dibujarVacante(f: Formato, v: Vacante, n: number, total: number)
     x.fillStyle = VERDE;
     x.font = `800 ${v.salario.length > 22 ? 48 : 58}px ${FUENTE}`;
     x.fillText(v.salario, px + 32, y + 82);
-  } else {
-    x.fillStyle = "#eef1f6";
-    x.beginPath(); x.roundRect(px, y, an, 100, 24); x.fill();
-    x.fillStyle = "#6b7a90";
-    x.font = `700 40px ${FUENTE}`;
-    x.fillText("Salario no publicado", px + 32, y + 66);
   }
-  y += (v.salarioMin > 0 ? 120 : 100) + 50;
+  y += (v.salarioMin > 0 ? 120 + 50 : 0);
   // datos
   let xx = px;
   for (const txt of [v.provincia.replace(/\s*\(.*?\)\s*/g, ""), v.modalidad, v.tipo]) {

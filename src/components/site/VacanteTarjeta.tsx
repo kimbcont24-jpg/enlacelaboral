@@ -23,10 +23,12 @@ export function VacanteTarjeta({ job }: { job: Vacante }) {
           <p className="mt-0.5 truncate text-sm text-muted-foreground">{job.empresa}</p>
         </div>
       </div>
-      <p className="mt-4 flex items-baseline gap-1.5">
+      {conSueldo && (
+<p className="mt-4 flex items-baseline gap-1.5">
         <span className={conSueldo ? "text-xl font-extrabold tabular-nums text-success" : "text-sm font-bold text-muted-foreground"}>{job.salario}</span>
         {conSueldo && <span className="text-xs font-semibold text-muted-foreground">al mes</span>}
       </p>
+)}
       <p className="mt-2 flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="size-3.5 shrink-0" aria-hidden="true" /> {job.provincia}</p>
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <span className="rounded-md bg-secondary px-2 py-0.5 text-xs font-bold text-primary">{etiqueta}</span>

@@ -30,13 +30,11 @@ function TarjetaPortada({ job }: { job: Vacante }) {
           <p className="truncate text-sm text-muted-foreground">{job.empresa}</p>
         </div>
       </div>
-      {conSueldo ? (
+      {conSueldo && (
         <div className="mt-4">
           <p className="font-display text-[1.6rem] font-extrabold leading-none tracking-tight text-success">{job.salario.split(" - ")[0]}</p>
           <p className="mt-1.5 text-sm font-bold text-success">{job.salario.includes(" - ") ? `a ${job.salario.split(" - ")[1]}` : ""}<span className="font-semibold text-muted-foreground">{job.salario.includes(" - ") ? " al mes" : "al mes"}</span></p>
         </div>
-      ) : (
-        <p className="mt-4 text-base font-bold text-muted-foreground">{job.salario}</p>
       )}
       <p className="mt-1.5 text-sm text-muted-foreground">{job.provincia} · {job.modalidad}</p>
       <button onClick={() => aplicar(job)} className="btn-aplicar mt-4 h-12 w-full rounded-full text-base">Aplicar</button>

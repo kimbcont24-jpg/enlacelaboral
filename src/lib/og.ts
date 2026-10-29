@@ -62,10 +62,12 @@ function plantilla(d: Datos) {
       ),
       h("div", { style: { display: "flex", marginTop: 18, fontSize: tituloTam, fontWeight: 800, color: NAVY, lineHeight: 1.08, letterSpacing: -1, maxHeight: tituloTam * 2.3, overflow: "hidden" } }, d.titulo),
       h("div", { style: { display: "flex", gap: 12, marginTop: 22, flexWrap: "wrap" } }, pill(d.provincia), pill(d.modalidad), pill(d.tipo)),
-      h("div", { style: { display: "flex", flexDirection: "column", marginTop: "auto", marginBottom: 24 } },
-        h("div", { style: { fontSize: 20, fontWeight: 600, color: GRIS, letterSpacing: 2 } }, d.conSalario ? "SALARIO" : "SALARIO NO PUBLICADO"),
-        h("div", { style: { fontSize: d.conSalario ? 44 : 26, fontWeight: d.conSalario ? 800 : 600, color: d.conSalario ? VERDE : GRIS, marginTop: 4 } }, d.conSalario ? d.salario : "Pregunta en la entrevista. Nunca pagues por aplicar."),
-      ),
+      d.conSalario
+        ? h("div", { style: { display: "flex", flexDirection: "column", marginTop: "auto", marginBottom: 24 } },
+            h("div", { style: { fontSize: 20, fontWeight: 600, color: GRIS, letterSpacing: 2 } }, "SALARIO"),
+            h("div", { style: { fontSize: 44, fontWeight: 800, color: VERDE, marginTop: 4 } }, d.salario),
+          )
+        : h("div", { style: { display: "flex", marginTop: "auto" } }),
     ),
     h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 64px", height: 70, background: NAVY, color: "#fff", fontSize: 24, fontWeight: 700 } },
       h("span", {}, "Aplica gratis en enlace-rd.vercel.app"),

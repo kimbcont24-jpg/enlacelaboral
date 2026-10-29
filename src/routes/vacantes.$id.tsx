@@ -27,7 +27,7 @@ export const Route = createFileRoute("/vacantes/$id")({
     if (!loaderData) return { meta: [{ title: "Vacante no disponible | Enlace Laboral" }, { name: "robots", content: "noindex" }] };
     const { job } = loaderData;
     const title = `${job.titulo} en ${job.provincia} | Enlace Laboral`;
-    const desc = `${job.titulo} · ${job.empresa} · ${job.modalidad} en ${job.provincia}. ${job.salario}.`;
+    const desc = `${job.titulo} · ${job.empresa} · ${job.modalidad} en ${job.provincia}.${job.salario ? " " + job.salario + "." : ""}`;
     const ld = jobPostingLd(job);
     const vencida = Date.now() - new Date(job.creado).getTime() > 30 * 864e5 || job.estado !== "publicada";
     return {
@@ -86,12 +86,7 @@ function Dato({ Icono, etiqueta, valor, alerta = false }: { Icono: typeof Mail; 
 
 function Sueldo({ job }: { job: Vacante }) {
   if (job.salarioMin <= 0) {
-    return (
-      <div>
-        <p className="text-2xl font-extrabold text-muted-foreground">Salario no publicado</p>
-        <p className="mt-1 text-sm text-muted-foreground">La empresa no lo indica. Pregúntalo antes de ir a una entrevista.</p>
-      </div>
-    );
+    return null;
   }
   const [min, max] = job.salario.split(" - ");
   return (
@@ -277,8 +272,8 @@ function Detalle() {
       >
         <div className="mx-auto flex max-w-xl items-center gap-2.5">
           <div className="min-w-0 flex-1">
-            <p className={`truncate text-sm font-extrabold ${job.salarioMin > 0 ? "text-success" : "text-muted-foreground"}`}>{job.salario}</p>
-            <p className="truncate text-xs text-muted-foreground">{job.titulo}</p>
+            {job.salarioMin > 0 && <p className="truncate text-sm font-extrabold text-success">{job.salario}</p>}
+            <p className={`truncate ${job.salarioMin > 0 ? "text-xs" : "text-sm font-bold"} text-muted-foreground`}>{job.titulo}</p>
           </div>
           <div className="[&_button]:size-12"><BotonGuardar id={job.id} /></div>
           <button tabIndex={barra ? 0 : -1} onClick={() => aplicar(job)} className="btn-aplicar h-12 shrink-0 rounded-xl px-6 text-base">Aplicar</button>
