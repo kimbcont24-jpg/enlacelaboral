@@ -1,0 +1,22 @@
+name: Recolectar vacantes
+on:
+  schedule:
+    - cron: "45 9 * * *"   # 5:45 a. m. RD, todos los días
+  workflow_dispatch:
+jobs:
+  recolectar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/recolectar.mjs
+      - run: |
+          git config user.name "Recolector Enlace Laboral"
+          git config user.email "bot@enlace-rd.vercel.app"
+          git add carga/auto-latest.json carga/auto-resumen.json
+          git commit -m "Recolector: vacantes del día [skip ci]" || echo "sin cambios"
+          git push
