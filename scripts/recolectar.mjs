@@ -7,7 +7,7 @@ const UA = { "user-agent": "Mozilla/5.0 (compatible; EnlaceLaboralBot/1.0; +http
 const DIAS = Number(process.env.DIAS ?? 3);
 const hoy = new Date();
 const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
-const limpiar = (s) => (s ?? "").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&#160;/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/[ \t ]+/g, " ").replace(/\s*\n\s*/g, "\n").trim();
+const limpiar = (s) => (s ?? "").replace(/<br\s*\/?>|<\/(?:td|tr|div|p|li|h\d|table|section|ul)>/gi, "\n").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&#160;/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/[ \t ]+/g, " ").replace(/\s*\n\s*/g, "\n").trim();
 const uno = (s) => s.replace(/\s+/g, " ").trim();
 const tituloBonito = (t) => { t = t.trim().replace(/^[¡!]+|[¡!]+$/g, ""); if (t === t.toUpperCase()) t = t.toLowerCase().replace(/(^|\s|\()(\p{L})/gu, (m, a, b) => a + b.toUpperCase()); return t.slice(0, 120); };
 const malo = /\bedad\b|años de edad|\bsexo\b|femenin|masculin|\bhombre|\bmujer|buena presencia|foto actual/i;
