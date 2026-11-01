@@ -42,7 +42,7 @@ async function getText(url, init = {}, latin1 = false) {
   const r = await fetch(url, { ...init, headers: { ...UA, ...(init.headers ?? {}) } });
   if (!r.ok) throw new Error(`${r.status} ${url}`);
   const buf = await r.arrayBuffer();
-  return new TextDecoder(latin1 ? "iso-8859-1" : "utf-8").decode(buf);
+  return new TextDecoder(latin1 ? "windows-1252" : "utf-8").decode(buf);
 }
 const fecha = (iso) => new Date(iso);
 const reciente = (d) => d && (hoy - d) / 864e5 <= DIAS;
@@ -52,8 +52,8 @@ async function aldaba() {
   const filas = [];
   const base = "https://www.aldaba.com/";
   const sec = (t, a, b) => { const i = t.search(new RegExp("\\n\\s*" + a + "\\s*\\n")); if (i < 0) return ""; const rest = t.slice(i + a.length + 2); const j = b ? rest.search(new RegExp("\\n\\s*(" + b + ")\\s*\\n")) : -1; return (j > 0 ? rest.slice(0, j) : rest).trim(); };
-  let parar = false;
-  for (let off = 0; off < 140 && !parar; off += 7) {
+  let viejas = 0;
+  for (let off = 0; off < 210 && viejas < 8; off += 7) {
     const html = await getText(`${base}ver_ofertas.php?offset=${off}&pais=Rep%FAblica+Dominicana&ln=4605&oby=dt&sel_ciudad=a%3A0%3A%7B%7D`, {}, true);
     const ids = [...new Set([...html.matchAll(/detalle_of\.php\?oferta=(\d+)/g)].map((m) => m[1]))];
     if (ids.length === 0) { log("aldaba sin ids en offset", off, "html", html.length, JSON.stringify(limpiar(html).slice(0, 400))); break; }
@@ -64,7 +64,8 @@ async function aldaba() {
         const f = sec(t, "Fecha", "Empresa");
         const [dd, mm, yy] = f.split("-").map(Number);
         const d = yy ? new Date(yy, mm - 1, dd) : null;
-        if (!reciente(d)) { parar = true; break; }
+        if (!reciente(d)) { viejas++; if (viejas >= 8) break; continue; }
+        viejas = 0;
         if (!empresa || /confidencial/i.test(empresa)) continue;
         const puesto = sec(t, "Puesto", "Código").replace(/\|.*$/, "").trim();
         const ciudad = sec(t, "Ciudad", "País");
