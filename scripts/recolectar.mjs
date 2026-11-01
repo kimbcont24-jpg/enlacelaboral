@@ -3,7 +3,7 @@
 // Fuentes: Aldaba (solo ofertas con empresa visible, fuente visible), Eaton, Medtronic, Baxter.
 import { writeFileSync, mkdirSync } from "node:fs";
 
-const UA = { "user-agent": "Mozilla/5.0 (compatible; EnlaceLaboralBot/1.0; +https://enlace-rd.vercel.app)" };
+const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36", "accept-language": "es-DO,es;q=0.9" };
 const DIAS = Number(process.env.DIAS ?? 3);
 const hoy = new Date();
 const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
@@ -56,7 +56,7 @@ async function aldaba() {
   for (let off = 0; off < 140 && !parar; off += 7) {
     const html = await getText(`${base}ver_ofertas.php?offset=${off}&pais=Rep%FAblica+Dominicana&ln=4605&oby=dt&sel_ciudad=a%3A0%3A%7B%7D`, {}, true);
     const ids = [...new Set([...html.matchAll(/detalle_of\.php\?oferta=(\d+)/g)].map((m) => m[1]))];
-    if (ids.length === 0) break;
+    if (ids.length === 0) { log("aldaba sin ids en offset", off, "html", html.length, JSON.stringify(limpiar(html).slice(0, 400))); break; }
     for (const id of ids) {
       try {
         const t = limpiar(await getText(`${base}detalle_of.php?oferta=${id}`, {}, true).then((h) => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, "")));
