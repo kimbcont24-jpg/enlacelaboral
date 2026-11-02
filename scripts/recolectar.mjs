@@ -155,7 +155,99 @@ async function baxter() {
   return filas;
 }
 
-const fuentes = { aldaba, eaton, medtronic, baxter };
+/* ---------------- Genérico: páginas con JSON-LD JobPosting ---------------- */
+function jsonLd(html) {
+  for (const m of html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
+    try {
+      let j = JSON.parse(m[1].trim());
+      const lista = Array.isArray(j) ? j : j["@graph"] ?? [j];
+      const jp = lista.find((x) => x && /JobPosting/i.test(x["@type"] ?? ""));
+      if (jp) return jp;
+    } catch { /* siguiente */ }
+  }
+  return null;
+}
+function filaDesdeJobPosting(jp, { empresa, url, fuenteTexto, provDef = "Santo Domingo" }) {
+  const d = limpiar(jp.description ?? "");
+  const loc = jp.jobLocation ? [].concat(jp.jobLocation).map((l) => `${l.address?.addressLocality ?? ""} ${l.address?.addressRegion ?? ""}`).join(" ") : "";
+  const qi = d.search(/Qualifications|Requirements|Requisitos|What you'll bring|Lo que aportarás|Education|Experience|Skills|Preferred/i);
+  const q = qi > 0 ? d.slice(qi, qi + 900) : "";
+  const titulo = tituloBonito(limpiar(jp.title ?? ""));
+  if (!titulo || !d) return null;
+  const f = jp.datePosted ? ` Publicada el ${String(jp.datePosted).slice(0, 10)}` : "";
+  return { titulo, empresa, provincia: provinciaDe(loc, provDef), area: areaDe(titulo), modalidad: /remote|remoto/i.test(jp.jobLocationType ?? "") ? "Remoto" : /hybrid|híbrid/i.test(d) ? "Híbrido" : "Presencial", tipo: /part[- ]time|medio tiempo/i.test(jp.employmentType ?? "") ? "Medio tiempo" : /intern|pasant/i.test(titulo) ? "Pasantía" : "Tiempo completo", experiencia: experienciaDe(q || d), descripcion: `${uno(d).slice(0, 900)}${f} ${fuenteTexto}`, requisitos: requisitosDe(q).join(" | ") || `Ver requisitos en el sitio de ${empresa}`, fuente: "Sitio de la empresa", fuente_url: url, aplicar: url, redes: "si" };
+}
+
+/* ---------------- Alorica (SmartRecruiters, API pública) ---------------- */
+async function alorica() {
+  const filas = [];
+  const j = JSON.parse(await getText("https://api.smartrecruiters.com/v1/companies/Alorica/postings?country=do&limit=100", { headers: { accept: "application/json" } }));
+  for (const p of j.content ?? []) {
+    try {
+      const d = JSON.parse(await getText(`https://api.smartrecruiters.com/v1/companies/Alorica/postings/${p.id}`, { headers: { accept: "application/json" } }));
+      const s = d.jobAd?.sections ?? {};
+      const desc = limpiar(s.jobDescription?.text ?? "");
+      const req = limpiar(s.qualifications?.text ?? "");
+      const url = d.applyUrl ?? `https://jobs.smartrecruiters.com/Alorica/${p.id}`;
+      const titulo = tituloBonito(p.name ?? "");
+      if (!titulo || !desc) continue;
+      filas.push({ titulo, empresa: "Alorica", provincia: provinciaDe(p.location?.city, "Santo Domingo"), area: /agent|customer|servicio|representante/i.test(titulo) ? "Servicio al Cliente" : areaDe(titulo), modalidad: p.location?.remote ? "Remoto" : "Presencial", tipo: /part/i.test(p.typeOfEmployment?.label ?? "") ? "Medio tiempo" : "Tiempo completo", experiencia: experienciaDe(req || desc), descripcion: `${uno(desc).slice(0, 900)} Publicada el ${String(p.releasedDate ?? "").slice(0, 10)} en el portal oficial de empleos de Alorica; se aplica en línea.`, requisitos: requisitosDe(req).join(" | ") || "Ver requisitos en el sitio de Alorica", fuente: "Sitio de la empresa", fuente_url: url, aplicar: url, redes: "si" });
+    } catch (e) { log("alorica", p.id, String(e).slice(0, 80)); }
+  }
+  return filas;
+}
+
+/* ---------------- Marriott (hoteles en RD, por marca) ---------------- */
+async function marriott() {
+  const filas = [];
+  const base = "https://careers.marriott.com";
+  const marcas = ["w-hotels", "jw-marriott", "renaissance-hotels", "ac-hotels", "courtyard", "westin", "sheraton", "marriott-hotels", "autograph-collection", "aloft", "the-ritz-carlton", "st-regis", "tribute-portfolio", "luxury-collection", "moxy"];
+  const urls = new Set();
+  for (const m of marcas) {
+    try {
+      const h = await getText(`${base}/brands/${m}/jobs?location_name=Dominican+Republic&location_type=4`);
+      for (const x of h.matchAll(/href="((?:https:\/\/careers\.marriott\.com)?\/x\/job\/[^"?#]+)/g)) urls.add(x[1].startsWith("http") ? x[1] : base + x[1]);
+    } catch (e) { log("marriott marca", m, String(e).slice(0, 60)); }
+  }
+  for (const u of [...urls].slice(0, 60)) {
+    try {
+      const h = await getText(u);
+      const jp = jsonLd(h);
+      if (!jp) continue;
+      const loc = JSON.stringify(jp.jobLocation ?? "");
+      if (!/Dominican|Santo Domingo|Punta Cana|Cap Cana|Dominicana/i.test(loc + " " + (jp.title ?? ""))) continue;
+      const hotel = limpiar(jp.hiringOrganization?.name ?? "Marriott International");
+      const fila = filaDesdeJobPosting(jp, { empresa: hotel.slice(0, 100), url: u, fuenteTexto: "Vacante del hotel publicada en el portal oficial de empleos de Marriott International; se aplica en línea.", provDef: /punta cana|cap cana|bávaro|bavaro/i.test(loc) ? "La Altagracia (Punta Cana)" : "Santo Domingo" });
+      if (fila) { fila.area = "Hotelería y Turismo"; filas.push(fila); }
+    } catch (e) { log("marriott", u, String(e).slice(0, 60)); }
+  }
+  return filas;
+}
+
+/* ---------------- Citi (República Dominicana) ---------------- */
+async function citi() {
+  const filas = [];
+  const base = "https://jobs.citi.com";
+  const urls = new Set();
+  for (let p = 1; p <= 4; p++) {
+    try {
+      const h = await getText(`${base}/search-jobs/Dominican%20Republic?p=${p}`);
+      for (const x of h.matchAll(/href="(\/job\/[^"?#]+)"/g)) urls.add(base + x[1]);
+      if (!/\/job\//.test(h)) break;
+    } catch (e) { log("citi lista", p, String(e).slice(0, 60)); break; }
+  }
+  for (const u of [...urls].slice(0, 60)) {
+    try {
+      const jp = jsonLd(await getText(u));
+      if (!jp) continue;
+      const fila = filaDesdeJobPosting(jp, { empresa: "Citi", url: u, fuenteTexto: "Publicada en el portal oficial de empleos de Citi; se aplica en línea.", provDef: "Distrito Nacional" });
+      if (fila) { if (/bank|banc|financ|análisis|analyst|credit|treasury|risk/i.test(fila.titulo)) fila.area = "Contabilidad y Finanzas"; filas.push(fila); }
+    } catch (e) { log("citi", u, String(e).slice(0, 60)); }
+  }
+  return filas;
+}
+
+const fuentes = { aldaba, alorica, marriott, citi, medtronic, baxter, eaton };
 const resultado = [];
 const resumen = {};
 for (const [nombre, fn] of Object.entries(fuentes)) {
