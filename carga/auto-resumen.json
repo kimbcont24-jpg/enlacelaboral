@@ -1,10 +1,13 @@
 {
-  "fecha": "2026-11-02T00:52:21.307Z",
-  "total": 130,
+  "fecha": "2026-11-02T01:00:21.680Z",
+  "total": 201,
   "resumen": {
     "aldaba": 46,
-    "eaton": 76,
+    "alorica": 11,
+    "marriott": 0,
+    "citi": 60,
     "medtronic": 5,
-    "baxter": 3
+    "baxter": 3,
+    "eaton": 76
   }
 }
