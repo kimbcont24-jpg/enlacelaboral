@@ -53,7 +53,8 @@ async function aldaba() {
   const base = "https://www.aldaba.com/";
   const sec = (t, a, b) => { const i = t.search(new RegExp("\\n\\s*" + a + "\\s*\\n")); if (i < 0) return ""; const rest = t.slice(i + a.length + 2); const j = b ? rest.search(new RegExp("\\n\\s*(" + b + ")\\s*\\n")) : -1; return (j > 0 ? rest.slice(0, j) : rest).trim(); };
   let viejas = 0;
-  for (let off = 0; off < 210 && viejas < 8; off += 7) {
+  const maxOff = Math.min(1400, 70 * DIAS);
+  for (let off = 0; off < maxOff && viejas < 8; off += 7) {
     const html = await getText(`${base}ver_ofertas.php?offset=${off}&pais=Rep%FAblica+Dominicana&ln=4605&oby=dt&sel_ciudad=a%3A0%3A%7B%7D`, {}, true);
     const ids = [...new Set([...html.matchAll(/detalle_of\.php\?oferta=(\d+)/g)].map((m) => m[1]))];
     if (ids.length === 0) { log("aldaba sin ids en offset", off, "html", html.length, JSON.stringify(limpiar(html).slice(0, 400))); break; }

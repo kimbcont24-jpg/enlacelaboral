@@ -3,6 +3,10 @@ on:
   schedule:
     - cron: "45 9 * * *"   # 5:45 a. m. RD, todos los días
   workflow_dispatch:
+    inputs:
+      dias:
+        description: "Días hacia atrás (Aldaba)"
+        default: "3"
 jobs:
   recolectar:
     runs-on: ubuntu-latest
@@ -14,6 +18,8 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/recolectar.mjs
+        env:
+          DIAS: ${{ inputs.dias || '3' }}
       - run: |
           git config user.name "Recolector Enlace Laboral"
           git config user.email "bot@enlace-rd.vercel.app"
