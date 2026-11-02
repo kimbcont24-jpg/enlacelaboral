@@ -240,6 +240,7 @@ async function citi() {
     try {
       const jp = jsonLd(await getText(u));
       if (!jp) continue;
+      if (!/Dominican|Santo Domingo|Dominicana/i.test(JSON.stringify(jp.jobLocation ?? "") + " " + (jp.title ?? ""))) continue;
       const fila = filaDesdeJobPosting(jp, { empresa: "Citi", url: u, fuenteTexto: "Publicada en el portal oficial de empleos de Citi; se aplica en línea.", provDef: "Distrito Nacional" });
       if (fila) { if (/bank|banc|financ|análisis|analyst|credit|treasury|risk/i.test(fila.titulo)) fila.area = "Contabilidad y Finanzas"; filas.push(fila); }
     } catch (e) { log("citi", u, String(e).slice(0, 60)); }
