@@ -206,6 +206,10 @@ async function marriott() {
   for (const m of marcas) {
     try {
       const h = await getText(`${base}/brands/${m}/jobs?location_name=Dominican+Republic&location_type=4`);
+      const pm = h.match(/window\.__PRELOAD_STATE__\s*=\s*(\{[\s\S]*?\});?\s*<\/script>/);
+      const jobs = pm ? (JSON.parse(pm[1]).jobSearch?.jobs ?? []) : [];
+      if (jobs.length && urls.size === 0) log("marriott claves", Object.keys(jobs[0]).join(","), JSON.stringify(jobs[0]).slice(0, 300));
+      for (const j of jobs) { const id = j.externalID ?? j.jobID ?? j.id ?? j.sourceID; const u = j.url ?? j.jobUrl ?? j.applyUrl ?? (id ? `${base}/x/job/${id}` : null); if (u) urls.add(u.startsWith("http") ? u : base + u); }
       for (const x of h.matchAll(/href="((?:https:\/\/careers\.marriott\.com)?\/x\/job\/[^"?#]+)/g)) urls.add(x[1].startsWith("http") ? x[1] : base + x[1]);
     } catch (e) { log("marriott marca", m, String(e).slice(0, 60)); }
   }
@@ -231,7 +235,7 @@ async function citi() {
   const urls = new Set();
   for (let p = 1; p <= 4; p++) {
     try {
-      const h = await getText(`${base}/search-jobs/Dominican%20Republic?p=${p}`);
+      const h = await getText(`${base}/search-jobs/Dominican%20Republic/287/2/3508796/18x7357/-70x16265/50/${p}`);
       for (const x of h.matchAll(/href="(\/job\/[^"?#]+)"/g)) urls.add(base + x[1]);
       if (!/\/job\//.test(h)) break;
     } catch (e) { log("citi lista", p, String(e).slice(0, 60)); break; }
@@ -248,7 +252,43 @@ async function citi() {
   return filas;
 }
 
-const fuentes = { aldaba, alorica, marriott, citi, medtronic, baxter, eaton };
+
+/* ---------------- Computrabajo (solo ofertas con empresa visible, fuente visible) ---------------- */
+async function computrabajo() {
+  const filas = [];
+  const base = "https://do.computrabajo.com";
+  const urls = new Set();
+  const paginas = Math.min(12, 2 * DIAS);
+  for (let p = 1; p <= paginas; p++) {
+    try {
+      const h = await getText(`${base}/ofertas-de-trabajo/?p=${p}`);
+      for (const x of h.matchAll(/href="(\/ofertas-de-trabajo\/oferta-de-trabajo-de-[^"?#]+)"/g)) urls.add(base + x[1]);
+    } catch (e) { log("computrabajo lista", p, String(e).slice(0, 60)); break; }
+  }
+  log("computrabajo enlaces", urls.size);
+  for (const u of [...urls].slice(0, 140)) {
+    try {
+      const h = await getText(u);
+      const jp = jsonLd(h);
+      if (!jp) continue;
+      const empresa = limpiar(jp.hiringOrganization?.name ?? "");
+      if (!empresa || /confidencial|importante empresa|empresa l[ií]der|reclutador/i.test(empresa)) continue;
+      const d = jp.datePosted ? new Date(jp.datePosted) : null;
+      if (!reciente(d)) continue;
+      const f = filaDesdeJobPosting(jp, { empresa: empresa.slice(0, 100), url: u, fuenteTexto: `Publicada por la empresa en el portal Computrabajo${jp.datePosted ? " el " + String(jp.datePosted).slice(0, 10) : ""}; se aplica en la oferta original.`, provDef: "Santo Domingo" });
+      if (!f) continue;
+      f.fuente = "Computrabajo";
+      if (malo.test(f.descripcion)) f.descripcion = f.descripcion.replace(/[^.]*(edad|sexo|femenin|masculin|\bhombre|\bmujer)[^.]*\.?/gi, "").trim();
+      const sal = (jp.baseSalary?.value?.minValue ?? jp.baseSalary?.value?.value);
+      if (sal && Number(sal) >= 10000) f.salario_min = String(Math.round(Number(sal)));
+      if (jp.baseSalary?.value?.maxValue && Number(jp.baseSalary.value.maxValue) > Number(sal ?? 0)) f.salario_max = String(Math.round(Number(jp.baseSalary.value.maxValue)));
+      filas.push(f);
+    } catch (e) { log("computrabajo", u.slice(-40), String(e).slice(0, 60)); }
+  }
+  return filas;
+}
+
+const fuentes = { aldaba, computrabajo, alorica, marriott, citi, medtronic, baxter, eaton };
 const resultado = [];
 const resumen = {};
 for (const [nombre, fn] of Object.entries(fuentes)) {
