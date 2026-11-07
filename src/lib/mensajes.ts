@@ -7,10 +7,10 @@ const sinEmpresa = (e: string) => !e || /no indicada/i.test(e);
 /** Por dónde se aplica a una vacante, en una palabra. */
 export function viaAplicar(job: Pick<Vacante, "aplicar">): { clave: "whatsapp" | "correo" | "sitio" | "formulario" | "instrucciones"; texto: string } {
   const e = enlaceAplicar(job.aplicar);
-  if (!job.aplicar.trim()) return { clave: "formulario", texto: "Formulario aquí" };
+  if (!job.aplicar.trim()) return { clave: "formulario", texto: "Aplicas aquí mismo" };
   if (!e) return { clave: "instrucciones", texto: "Ver cómo aplicar" };
   if (e.href.startsWith("https://wa.me/")) return { clave: "whatsapp", texto: "Por WhatsApp" };
-  if (e.href.startsWith("mailto:")) return { clave: "correo", texto: "Por correo" };
+  if (e.href.startsWith("mailto:")) return { clave: "correo", texto: "Aplicas aquí mismo" };
   return { clave: "sitio", texto: "En el sitio de la empresa" };
 }
 

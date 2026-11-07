@@ -5,6 +5,7 @@ import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { BotonGuardar, ClaridadPill } from "@/components/site/JobCard";
 import { useApply } from "@/components/site/apply-context";
 import { diasRestantes, esNueva, venceTexto } from "@/lib/claridad";
+import { viaAplicar } from "@/lib/mensajes";
 import type { Vacante } from "@/lib/vacantes";
 
 /** Tarjeta compacta para cuadrículas (portada). */
@@ -36,7 +37,10 @@ export function VacanteTarjeta({ job }: { job: Vacante }) {
         {esNueva(job) && <span className="rounded-md bg-cta px-2 py-0.5 text-xs font-bold text-cta-foreground">Nueva</span>}
         {diasRestantes(job) <= 5 && <span className="text-xs font-bold text-destructive">{venceTexto(job)}</span>}
       </div>
-      <ClaridadPill job={job} className="mt-3 self-start" />
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <ClaridadPill job={job} />
+        <span className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted-foreground">{viaAplicar(job).texto}</span>
+      </div>
       <div className="relative z-10 mt-auto flex gap-2 pt-4">
         <button onClick={() => aplicar(job)} className="btn-aplicar h-11 flex-1 rounded-xl text-base">Aplicar</button>
         <div className="[&_button]:size-11"><BotonGuardar id={job.id} /></div>

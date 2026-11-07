@@ -67,7 +67,7 @@ function bloques(texto: string): Bloque[] {
 function comoAplicar(job: Vacante): { Icono: typeof Mail; texto: string } {
   const e = enlaceAplicar(job.aplicar);
   if (!e) return { Icono: FileText, texto: "Dejas tu nombre y tu contacto en un formulario corto. Puedes incluir tu CV. No necesitas crear cuenta." };
-  if (e.href.startsWith("mailto:")) return { Icono: Mail, texto: "Envías tu CV por correo a la empresa. Te mostramos a qué dirección." };
+  if (e.href.startsWith("mailto:")) return { Icono: Mail, texto: "Aplicas aquí mismo con un formulario corto y nosotros enviamos tu aplicación a la empresa. Sin cuenta." };
   if (e.href.includes("wa.me")) return { Icono: MessageCircle, texto: "Le escribes a la empresa por WhatsApp. Te abrimos el chat." };
   return { Icono: Link2, texto: "Sigues el enlace de la empresa para aplicar en su propio sitio." };
 }
