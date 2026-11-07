@@ -33,6 +33,7 @@ function Vacantes() {
   const [filtros, setFiltros] = useState<Filtros>({ ...filtrosVacios, area: search.area ?? "", provincia: search.provincia ?? "", modalidad: search.modalidad ?? "", tipo: search.tipo ?? "", experiencia: search.experiencia ?? "", salarioMin: search.salarioMin ?? "", fecha: "", conSalario: "" });
   const [orden, setOrden] = useState<"reciente" | "salario" | "claridad">("reciente");
   const [query, setQuery] = useState(search.q ?? "");
+  const [visibles, setVisibles] = useState(30);
 
   useEffect(() => {
     setFiltros((f) => ({ ...f, area: search.area ?? f.area, provincia: search.provincia ?? f.provincia, modalidad: search.modalidad ?? f.modalidad, experiencia: search.experiencia ?? f.experiencia }));
@@ -44,6 +45,9 @@ function Vacantes() {
     if (orden === "claridad") return [...list].sort((a, b) => claridad(b).puntos - claridad(a).puntos);
     return list;
   }, [jobs, filtros, query, orden]);
+
+  // Al cambiar filtros, búsqueda u orden se vuelve a las primeras 30.
+  useEffect(() => { setVisibles(30); }, [filtros, query, orden]);
 
   const buscar = () => {
     setQuery(puesto);
@@ -69,7 +73,10 @@ function Vacantes() {
         </div>
         <div className="mt-6 space-y-4">
           {cargando && (<div className="flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Cargando vacantes…</div>)}
-          {!cargando && resultados.map((job) => (<JobCard key={job.id} job={job} />))}
+          {!cargando && resultados.slice(0, visibles).map((job) => (<JobCard key={job.id} job={job} />))}
+          {!cargando && resultados.length > visibles && (
+            <button type="button" onClick={() => setVisibles((v) => v + 30)} className="mx-auto flex h-12 items-center justify-center rounded-xl border border-border bg-surface px-6 text-sm font-bold text-primary hover:border-primary">Ver {Math.min(30, resultados.length - visibles)} más ({resultados.length - visibles} sin mostrar)</button>
+          )}
           {!cargando && resultados.length === 0 && (<div className="rounded-2xl border border-dashed border-border p-12 text-center"><p className="font-bold">No encontramos vacantes con esos filtros</p><p className="mt-2 text-sm text-muted-foreground">Prueba con otra ubicación o limpia los filtros. O crea una alerta y te avisamos cuando salga una.</p></div>)}
         </div>
         <div className="mt-10 grid gap-4"><CanalWhatsApp /><AlertaForm areaInicial={filtros.area} provinciaInicial={filtros.provincia} /></div>
