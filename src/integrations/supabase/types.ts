@@ -3,7 +3,7 @@ export type Database = {
   public: {
     Tables: {
       aplicaciones: {
-        Row: { contacto: string; created_at: string; id: string; mensaje: string | null; nombre: string; vacante_id: string; enviada_at: string | null; etapa: string; nota: string | null; etapa_at: string | null };
+        Row: { contacto: string; created_at: string; id: string; mensaje: string | null; nombre: string; vacante_id: string; enviada_at: string | null; etapa: string; nota: string | null; etapa_at: string | null; puntaje: number | null; entrevista_at: string | null; entrevista_lugar: string | null; historial: unknown };
         Insert: { contacto: string; created_at?: string; id?: string; mensaje?: string | null; nombre: string; vacante_id: string };
         Update: { [k: string]: unknown };
         Relationships: [{ foreignKeyName: "aplicaciones_vacante_id_fkey"; columns: ["vacante_id"]; isOneToOne: false; referencedRelation: "vacantes"; referencedColumns: ["id"] }];
@@ -21,8 +21,14 @@ export type Database = {
         Relationships: [];
       };
       empresas: {
-        Row: { contacto_email: string | null; contacto_nombre: string | null; contacto_telefono: string | null; created_at: string; id: string; nombre: string; owner_id: string; provincia: string | null; rnc: string; sector: string | null; verificada: boolean };
+        Row: { contacto_email: string | null; contacto_nombre: string | null; contacto_telefono: string | null; created_at: string; id: string; nombre: string; owner_id: string; provincia: string | null; rnc: string; sector: string | null; verificada: boolean; plantillas: unknown; plan: string; plan_hasta: string | null; descripcion: string | null; sitio_web: string | null };
         Insert: { owner_id: string; nombre: string; rnc: string; [k: string]: unknown };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
+      solicitudes_empresa: {
+        Row: { id: string; empresa_id: string; owner_id: string; tipo: string; vacante_id: string | null; estado: string; created_at: string };
+        Insert: { empresa_id: string; tipo: string; owner_id?: string; vacante_id?: string | null; estado?: string };
         Update: { [k: string]: unknown };
         Relationships: [];
       };

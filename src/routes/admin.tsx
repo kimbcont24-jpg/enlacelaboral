@@ -49,6 +49,7 @@ function Admin() {
   const [pendientes, setPendientes] = useState(0);
   const [reportesNuevos, setReportesNuevos] = useState(0);
   const [porAprobar, setPorAprobar] = useState(0);
+  const [pedidosEmp, setPedidosEmp] = useState(0);
 
   const contar = useCallback(async () => {
     const [{ count }, { count: rep }, { count: rev }] = await Promise.all([
@@ -56,6 +57,8 @@ function Admin() {
       supabase.from("reportes").select("id", { count: "exact", head: true }).eq("estado", "nuevo"),
       supabase.from("vacantes").select("id", { count: "exact", head: true }).eq("estado", "revision"),
     ]);
+    const { count: pe } = await supabase.from("solicitudes_empresa").select("id", { count: "exact", head: true }).eq("estado", "nueva");
+    setPedidosEmp(pe ?? 0);
     setPendientes(count ?? 0);
     setReportesNuevos(rep ?? 0);
     setPorAprobar(rev ?? 0);
@@ -108,7 +111,7 @@ function Admin() {
         { id: "reportes", label: reportesNuevos ? `Reportes (${reportesNuevos})` : "Reportes" },
       ],
     },
-    { id: "negocio", label: "Negocio", tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: "Empresas" }, { id: "exportar", label: "Descargar datos" }] },
+    { id: "negocio", label: "Negocio", tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "exportar", label: "Descargar datos" }] },
     { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
     { id: "crecer", label: "Crecer", tabs: [{ id: "estudio", label: "Estudio viral" }] },
     { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }] },

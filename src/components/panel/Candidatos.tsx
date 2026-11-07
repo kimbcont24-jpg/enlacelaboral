@@ -1,171 +1,202 @@
-import { useMemo, useState } from "react";
-import { ChevronDown, Download, Mail, MessageCircle, Phone, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarClock, Columns3, Download, List, MessageCircle, Search, X } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
-import { hace, type Vacante } from "@/lib/vacantes";
-import { claveContacto, descargarCsv, enlaceContacto, ETAPAS, etapaDe, plantilla, telefono, type Candidato, type Etapa } from "@/lib/panel";
+import { usePanel } from "@/components/panel/contexto";
+import { btnLinea, Coincide, Estrellas, EtapaPill, Persona, Titulo, Vacio } from "@/components/panel/comun";
+import { claveContacto, coincidencia, descargarCsv, ETAPAS, etapaDe, horaCorta, partirMensaje, type Candidato, type Etapa } from "@/lib/panel";
+import { hace } from "@/lib/vacantes";
 
-type Props = {
-  candidatos: Candidato[];
-  vacantes: Vacante[];
-  empresa: string;
-  vacanteSel: string;
-  etapaSel: Etapa | "";
-  vistoAntes: number;
-  onFiltro: (vacante: string, etapa: Etapa | "") => void;
-  onCambio: (id: string, cambios: Partial<Candidato>) => void;
-};
+type Orden = "recientes" | "coincidencia" | "puntaje";
 
-export function Candidatos({ candidatos, vacantes, empresa, vacanteSel, etapaSel, vistoAntes, onFiltro, onCambio }: Props) {
+export function Candidatos() {
+  const p = usePanel();
+  const [vista, setVista] = useState<"tablero" | "lista">(() => {
+    const porDefecto = typeof window !== "undefined" && window.innerWidth < 900 ? "lista" : "tablero";
+    try { return (localStorage.getItem("panel-vista") as "tablero" | "lista") || porDefecto; } catch { return porDefecto; }
+  });
   const [q, setQ] = useState("");
-  const titulo = useMemo(() => new Map(vacantes.map((v) => [v.id, v.titulo])), [vacantes]);
+  const [orden, setOrden] = useState<Orden>("recientes");
+  const [sel, setSel] = useState<string[]>([]);
+  const [arrastrando, setArrastrando] = useState<string | null>(null);
+  const [sobre, setSobre] = useState<Etapa | null>(null);
+  useEffect(() => { try { localStorage.setItem("panel-vista", vista); } catch { /* sin almacenamiento */ } }, [vista]);
 
-  // La misma persona en varias vacantes de esta empresa.
-  const otras = useMemo(() => {
-    const m = new Map<string, Set<string>>();
-    for (const c of candidatos) {
-      const k = claveContacto(c.contacto);
-      if (!k) continue;
-      if (!m.has(k)) m.set(k, new Set());
-      m.get(k)!.add(c.vacante_id);
-    }
-    return m;
-  }, [candidatos]);
+  const { vacante: vacanteSel, etapa: etapaSel } = p.filtro;
 
-  const deVacante = candidatos.filter((c) => !vacanteSel || c.vacante_id === vacanteSel);
-  const lista = deVacante.filter((c) => (!etapaSel || c.etapa === etapaSel) && (!q || `${c.nombre} ${c.contacto} ${c.mensaje ?? ""} ${c.nota ?? ""}`.toLowerCase().includes(q.toLowerCase())));
+  // Coincidencia y "también aplicó a", calculados una vez por candidato.
+  const extra = useMemo(() => {
+    const por = new Map<string, Set<string>>();
+    for (const c of p.candidatos) { const k = claveContacto(c.contacto); if (k) { if (!por.has(k)) por.set(k, new Set()); por.get(k)!.add(c.vacante_id); } }
+    return new Map(p.candidatos.map((c) => {
+      const v = p.vacante(c.vacante_id);
+      const m = partirMensaje(c.mensaje);
+      return [c.id, { k: v ? coincidencia(`${m.mensaje}\n${m.cv}`, v.requisitos) : null, otras: [...(por.get(claveContacto(c.contacto)) ?? [])].filter((id) => id !== c.vacante_id).length, cv: !!m.cv }];
+    }));
+  }, [p]);
 
-  const exportar = () => {
-    descargarCsv(`candidatos-${new Date().toISOString().slice(0, 10)}.csv`, [
-      ["Nombre", "Contacto", "Vacante", "Etapa", "Aplicó", "Nota", "Mensaje y CV"],
-      ...lista.map((c) => [c.nombre, c.contacto, titulo.get(c.vacante_id) ?? "", etapaDe(c.etapa).corto, new Date(c.created_at).toLocaleDateString("es-DO"), c.nota ?? "", c.mensaje ?? ""]),
-    ]);
+  const base = p.candidatos.filter((c) => (!vacanteSel || c.vacante_id === vacanteSel) && (!q || `${c.nombre} ${c.contacto} ${c.mensaje ?? ""} ${c.nota ?? ""}`.toLowerCase().includes(q.toLowerCase())));
+  const ordenar = (xs: Candidato[]) => {
+    if (orden === "puntaje") return [...xs].sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0) || b.created_at.localeCompare(a.created_at));
+    if (orden === "coincidencia") { const r = (c: Candidato) => { const k = extra.get(c.id)?.k; return k ? k.ok.length / k.total : -1; }; return [...xs].sort((a, b) => r(b) - r(a)); }
+    return xs;
+  };
+  const lista = ordenar(base.filter((c) => !etapaSel || c.etapa === etapaSel));
+
+  const exportar = (cs: Candidato[]) => descargarCsv(`candidatos-${new Date().toISOString().slice(0, 10)}.csv`, [
+    ["Nombre", "Contacto", "Vacante", "Etapa", "Valoración", "Aplicó", "Entrevista", "Nota", "Mensaje y CV"],
+    ...cs.map((c) => [c.nombre, c.contacto, p.puesto(c.vacante_id), etapaDe(c.etapa).corto, c.puntaje ?? "", new Date(c.created_at).toLocaleDateString("es-DO"), c.entrevista_at ? new Date(c.entrevista_at).toLocaleString("es-DO") : "", c.nota ?? "", c.mensaje ?? ""]),
+  ]);
+
+  const moverGrupo = async (etapa: Etapa) => {
+    const cs = p.candidatos.filter((c) => sel.includes(c.id));
+    for (const c of cs) await p.mover(c, etapa, { silencioso: true });
+    toast.success(`${cs.length} ${cs.length === 1 ? "persona movida" : "personas movidas"} a ${etapaDe(etapa).label}.`);
+    setSel([]);
   };
 
-  if (!candidatos.length) {
+  const soltar = (etapa: Etapa) => {
+    const c = p.candidatos.find((x) => x.id === arrastrando);
+    setArrastrando(null); setSobre(null);
+    if (!c || c.etapa === etapa) return;
+    if (etapa === "entrevista") p.agendar(c); else void p.mover(c, etapa);
+  };
+
+  if (!p.candidatos.length) {
     return (
-      <div className="rounded-2xl border border-dashed border-border p-10 text-center">
-        <p className="text-lg font-bold">Aquí te llegan las personas que aplican</p>
-        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">Cuando alguien aplique a una de tus vacantes, lo verás en esta pestaña con su contacto y su CV. Puedes escribirle por WhatsApp con un toque.</p>
-      </div>
+      <>
+        <Titulo titulo="Candidatos" />
+        <Vacio titulo="Aquí te llegan las personas que aplican" texto="Cuando alguien aplique a tus vacantes lo verás aquí con su contacto y su CV. Comparte tu vacante para que llegue más gente.">
+          <button type="button" onClick={() => p.ir("vacantes")} className="btn-aplicar h-11 rounded-xl px-5">Ir a mis vacantes</button>
+        </Vacio>
+      </>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="grid gap-2 sm:flex">
-        <select value={vacanteSel} onChange={(e) => onFiltro(e.target.value, etapaSel)} aria-label="Vacante" className="h-11 w-full min-w-0 rounded-xl border border-border bg-surface px-3 text-sm font-semibold sm:max-w-xs">
-          <option value="">Todas mis vacantes ({candidatos.length})</option>
-          {vacantes.filter((v) => candidatos.some((c) => c.vacante_id === v.id)).map((v) => (
-            <option key={v.id} value={v.id}>{v.titulo} ({candidatos.filter((c) => c.vacante_id === v.id).length})</option>
-          ))}
-        </select>
-        <label className="relative min-w-0 sm:flex-1">
-          <span className="sr-only">Buscar candidato</span>
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por nombre, contacto o palabra del CV" className="h-11 w-full rounded-xl border border-border bg-surface pl-9 pr-3 text-sm" />
-        </label>
-        <button type="button" onClick={exportar} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold hover:border-primary hover:text-primary"><Download className="size-4" /> Descargar Excel</button>
-      </div>
-
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label="Etapas">
-        <Chip activo={!etapaSel} onClick={() => onFiltro(vacanteSel, "")} texto="Todos" n={deVacante.length} />
-        {ETAPAS.map((e) => <Chip key={e.id} activo={etapaSel === e.id} onClick={() => onFiltro(vacanteSel, e.id)} texto={e.label} n={deVacante.filter((c) => c.etapa === e.id).length} />)}
-      </div>
-
-      {lista.length === 0 && <p className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">No hay candidatos en esta etapa.</p>}
-      <ul className="space-y-3">
-        {lista.map((c) => (
-          <Tarjeta key={c.id} c={c} puesto={titulo.get(c.vacante_id) ?? "la vacante"} empresa={empresa} nuevo={new Date(c.created_at).getTime() > vistoAntes}
-            otras={[...(otras.get(claveContacto(c.contacto)) ?? [])].filter((id) => id !== c.vacante_id).map((id) => titulo.get(id) ?? "").filter(Boolean)}
-            onCambio={onCambio} />
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function Chip({ activo, onClick, texto, n }: { activo: boolean; onClick: () => void; texto: string; n: number }) {
-  return (
-    <button type="button" role="tab" aria-selected={activo} onClick={onClick} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-semibold ${activo ? "border-primary bg-primary text-primary-foreground" : "border-border bg-surface hover:border-primary"}`}>
-      {texto} <span className={`rounded-full px-1.5 text-xs tabular-nums ${activo ? "bg-white/20" : "bg-muted"}`}>{n}</span>
-    </button>
-  );
-}
-
-function Tarjeta({ c, puesto, empresa, nuevo, otras, onCambio }: { c: Candidato; puesto: string; empresa: string; nuevo: boolean; otras: string[]; onCambio: (id: string, cambios: Partial<Candidato>) => void }) {
-  const [abierto, setAbierto] = useState(false);
-  const [nota, setNota] = useState(c.nota ?? "");
-  const etapa = etapaDe(c.etapa);
-  const tel = telefono(c.contacto);
-
-  const guardar = async (cambios: Partial<Candidato>) => {
-    onCambio(c.id, cambios);
-    const { error } = await supabase.from("aplicaciones").update(cambios).eq("id", c.id);
-    if (error) { toast.error("No se pudo guardar. Intenta otra vez."); onCambio(c.id, { etapa: c.etapa, nota: c.nota, etapa_at: c.etapa_at }); return false; }
-    return true;
-  };
-
-  const abrir = (href: string) => window.open(href, "_blank", "noopener");
-
-  /** Mueve a la etapa y ofrece avisarle a la persona con el mensaje listo. */
-  const mover = async (nueva: Etapa) => {
-    if (nueva === c.etapa) return;
-    if (!(await guardar({ etapa: nueva, etapa_at: new Date().toISOString() }))) return;
-    const link = enlaceContacto(c, plantilla(nueva, c, puesto, empresa), puesto);
-    toast.success(`${c.nombre.split(" ")[0]}: ${etapaDe(nueva).corto}`, link && nueva !== "revision" && nueva !== "nuevo" ? { action: { label: link.tipo === "whatsapp" ? "Avisarle por WhatsApp" : "Avisarle por correo", onClick: () => abrir(link.href) } } : undefined);
-  };
-
-  /** Escribirle cuenta como revisarlo: sale de "Nuevos" solo. */
-  const contactar = (href: string) => {
-    abrir(href);
-    if (c.etapa === "nuevo") void guardar({ etapa: "revision", etapa_at: new Date().toISOString() });
-  };
-
-  const link = enlaceContacto(c, plantilla(c.etapa, c, puesto, empresa), puesto);
-  const msg = c.mensaje?.trim() ?? "";
-
-  return (
-    <li className={`rounded-2xl border bg-surface p-4 sm:p-5 ${nuevo && c.etapa === "nuevo" ? "border-cta" : "border-border"}`}>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="flex flex-wrap items-center gap-2 text-lg font-extrabold leading-tight">
-            {c.nombre}
-            <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${etapa.tono}`}>{etapa.corto}</span>
-          </p>
-          <p className="mt-0.5 text-sm text-muted-foreground">{puesto} · aplicó {hace(c.created_at)}</p>
-          <p className="mt-1 break-all text-sm font-semibold">{c.contacto}</p>
-          {otras.length > 0 && <p className="mt-1 text-xs font-semibold text-primary">También aplicó a: {otras.join(", ")}</p>}
-        </div>
+    <>
+      <Titulo titulo="Candidatos" sub={`${p.candidatos.length} en total · ${p.candidatos.filter((c) => c.etapa === "nuevo").length} sin revisar`}>
         <div className="flex gap-2">
-          {link && (
-            <button type="button" onClick={() => contactar(link.href)} className={`inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-bold text-white ${link.tipo === "whatsapp" ? "bg-[#1fa855] hover:bg-[#178c46]" : "bg-primary hover:opacity-90"}`}>
-              {link.tipo === "whatsapp" ? <MessageCircle className="size-4" /> : <Mail className="size-4" />} {link.tipo === "whatsapp" ? "WhatsApp" : "Correo"}
-            </button>
+          <div className="inline-flex rounded-xl border border-border bg-surface p-1" role="group" aria-label="Vista">
+            <button type="button" aria-pressed={vista === "tablero"} onClick={() => setVista("tablero")} className={`inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold ${vista === "tablero" ? "bg-[#0a2f5c] text-white" : "text-muted-foreground"}`}><Columns3 className="size-4" /> Tablero</button>
+            <button type="button" aria-pressed={vista === "lista"} onClick={() => setVista("lista")} className={`inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold ${vista === "lista" ? "bg-[#0a2f5c] text-white" : "text-muted-foreground"}`}><List className="size-4" /> Lista</button>
+          </div>
+          <button type="button" onClick={() => exportar(lista)} className={btnLinea} title="Descargar para abrir en Excel"><Download className="size-4" /><span className="hidden sm:inline">Excel</span></button>
+        </div>
+      </Titulo>
+
+      <div className="grid gap-2 sm:grid-cols-[minmax(0,16rem)_1fr_auto]">
+        <select value={vacanteSel} onChange={(e) => p.ir("candidatos", { vacante: e.target.value, etapa: etapaSel })} aria-label="Vacante" className="h-11 w-full rounded-xl border border-border bg-surface px-3 text-sm font-semibold">
+          <option value="">Todas las vacantes</option>
+          {p.vacantes.filter((v) => p.candidatos.some((c) => c.vacante_id === v.id)).map((v) => <option key={v.id} value={v.id}>{v.titulo} ({p.candidatos.filter((c) => c.vacante_id === v.id).length})</option>)}
+        </select>
+        <label className="relative">
+          <span className="sr-only">Buscar</span>
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar nombre, teléfono o palabra del CV (ej.: Excel)" className="h-11 w-full rounded-xl border border-border bg-surface pl-9 pr-9 text-sm" />
+          {q && <button type="button" onClick={() => setQ("")} aria-label="Borrar búsqueda" className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground"><X className="size-4" /></button>}
+        </label>
+        <select value={orden} onChange={(e) => setOrden(e.target.value as Orden)} aria-label="Ordenar" className="h-11 rounded-xl border border-border bg-surface px-3 text-sm font-semibold">
+          <option value="recientes">Más recientes</option>
+          <option value="coincidencia">Más requisitos encontrados</option>
+          <option value="puntaje">Mejor valorados</option>
+        </select>
+      </div>
+
+      {vista === "tablero" ? (
+        <div className="-mx-4 mt-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
+          <div className="grid grid-cols-[repeat(4,minmax(11.5rem,1fr))_minmax(10rem,0.8fr)] gap-3">
+            {ETAPAS.map((e) => {
+              const col = ordenar(base.filter((c) => c.etapa === e.id));
+              return (
+                <section key={e.id} aria-label={e.label}
+                  onDragOver={(ev) => { if (arrastrando) { ev.preventDefault(); setSobre(e.id); } }}
+                  onDragLeave={() => setSobre((s) => (s === e.id ? null : s))}
+                  onDrop={(ev) => { ev.preventDefault(); soltar(e.id); }}
+                  className={`flex min-h-[18rem] flex-col rounded-2xl p-2 transition-colors ${sobre === e.id ? "bg-[#1d6ff2]/10 ring-2 ring-[#1d6ff2]/40" : "bg-[#e9edf3]"}`}>
+                  <header className="flex items-center justify-between px-2 pb-2 pt-1">
+                    <span className="flex items-center gap-2 text-sm font-extrabold"><span className="size-2 rounded-full" style={{ backgroundColor: e.color }} />{e.label}</span>
+                    <span className="rounded-full bg-surface px-2 text-xs font-bold tabular-nums text-muted-foreground">{col.length}</span>
+                  </header>
+                  <ul className="flex flex-1 flex-col gap-2">
+                    {col.map((c) => {
+                      const x = extra.get(c.id);
+                      return (
+                        <li key={c.id} draggable onDragStart={(ev) => { setArrastrando(c.id); ev.dataTransfer.effectAllowed = "move"; }} onDragEnd={() => { setArrastrando(null); setSobre(null); }} className={arrastrando === c.id ? "opacity-40" : ""}>
+                          <button type="button" onClick={() => p.abrir(c.id)} className="w-full cursor-grab rounded-xl border border-transparent bg-surface p-3 text-left shadow-[0_1px_2px_rgb(20_33_58/0.08)] hover:border-[#1d6ff2]/50 active:cursor-grabbing">
+                            <span className="flex items-start gap-2.5">
+                              <Persona nombre={c.nombre} className="size-8 text-[11px]" />
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-sm font-bold">{c.nombre}</span>
+                                <span className="block truncate text-xs text-muted-foreground">{p.puesto(c.vacante_id)}</span>
+                              </span>
+                            </span>
+                            <span className="mt-2 flex flex-wrap items-center gap-1.5">
+                              {x?.k && <Coincide ok={x.k.ok.length} total={x.k.total} />}
+                              <Estrellas valor={c.puntaje} />
+                              {x && x.otras > 0 && <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-bold text-primary">+{x.otras} vacante{x.otras > 1 ? "s" : ""}</span>}
+                            </span>
+                            {c.entrevista_at && c.etapa === "entrevista" && <span className="mt-2 flex items-center gap-1 whitespace-nowrap rounded-lg bg-[#c27803]/10 px-2 py-1 text-[11px] font-bold text-[#8a5200]"><CalendarClock className="size-3 shrink-0" />{new Date(c.entrevista_at).toLocaleDateString("es-DO", { weekday: "short", day: "numeric", month: "short" })} · {horaCorta(c.entrevista_at)}</span>}
+                            <span className="mt-2 block text-[11px] text-muted-foreground">Aplicó {hace(c.created_at)}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                    {!col.length && <li className="grid flex-1 place-items-center rounded-xl border border-dashed border-[#c7cfdb] p-4 text-center text-xs text-muted-foreground">{arrastrando ? "Suelta aquí" : "Nadie en esta etapa"}</li>}
+                  </ul>
+                </section>
+              );
+            })}
+          </div>
+          <p className="mt-3 hidden text-xs text-muted-foreground lg:block">Arrastra una tarjeta a otra columna para cambiarla de etapa. Al soltarla en Entrevista te pedimos fecha y hora.</p>
+        </div>
+      ) : (
+        <>
+          <div className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1" role="tablist" aria-label="Etapas">
+            {[{ id: "" as const, label: "Todos" }, ...ETAPAS].map((e) => {
+              const n = e.id ? base.filter((c) => c.etapa === e.id).length : base.length;
+              const activo = etapaSel === e.id;
+              return <button key={e.id || "todos"} type="button" role="tab" aria-selected={activo} onClick={() => p.ir("candidatos", { vacante: vacanteSel, etapa: e.id })} className={`inline-flex h-9 shrink-0 items-center gap-2 rounded-full border px-3.5 text-sm font-semibold ${activo ? "border-[#0a2f5c] bg-[#0a2f5c] text-white" : "border-border bg-surface hover:border-primary"}`}>{e.label}<span className={`rounded-full px-1.5 text-xs tabular-nums ${activo ? "bg-white/20" : "bg-muted"}`}>{n}</span></button>;
+            })}
+          </div>
+
+          {sel.length > 0 && (
+            <div className="sticky top-16 z-20 mt-3 flex flex-wrap items-center gap-2 rounded-2xl border border-[#0a2f5c] bg-surface p-3 shadow-lg" role="toolbar" aria-label="Acciones para los elegidos">
+              <span className="mr-1 text-sm font-bold">{sel.length} elegidos:</span>
+              {(["revision", "descartado"] as const).map((e) => <button key={e} type="button" onClick={() => void moverGrupo(e)} className={btnLinea}>Mover a {etapaDe(e).label}</button>)}
+              <button type="button" onClick={() => exportar(p.candidatos.filter((c) => sel.includes(c.id)))} className={btnLinea}><Download className="size-4" /> Descargar</button>
+              <button type="button" onClick={() => setSel([])} className="ml-auto text-sm font-semibold text-muted-foreground hover:underline">Quitar selección</button>
+            </div>
           )}
-          {tel && <a href={`tel:+${tel}`} onClick={() => c.etapa === "nuevo" && void guardar({ etapa: "revision", etapa_at: new Date().toISOString() })} aria-label={`Llamar a ${c.nombre}`} className="inline-flex size-11 items-center justify-center rounded-xl border border-border hover:border-primary hover:text-primary"><Phone className="size-4" /></a>}
-        </div>
-      </div>
 
-      {msg && (
-        <div className="mt-3">
-          <p className={`whitespace-pre-line text-sm text-muted-foreground ${abierto ? "" : "line-clamp-3"}`}>{msg}</p>
-          {msg.length > 180 && <button type="button" onClick={() => setAbierto((x) => !x)} className="mt-1 inline-flex items-center gap-1 text-sm font-bold text-primary">{abierto ? "Ver menos" : msg.includes("--- CV ---") ? "Ver CV completo" : "Ver todo"} <ChevronDown className={`size-4 transition-transform ${abierto ? "rotate-180" : ""}`} /></button>}
-        </div>
+          {lista.length === 0 ? <p className="mt-4 rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">No hay candidatos con este filtro.</p> : (
+            <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-surface">
+              <label className="flex items-center gap-3 border-b border-border px-4 py-2.5 text-xs font-semibold text-muted-foreground">
+                <input type="checkbox" className="size-4" checked={lista.every((c) => sel.includes(c.id))} onChange={(e) => setSel(e.target.checked ? lista.map((c) => c.id) : [])} /> Elegir todos ({lista.length})
+              </label>
+              <ul className="divide-y divide-border">
+                {lista.map((c) => {
+                  const x = extra.get(c.id);
+                  return (
+                    <li key={c.id} className={`flex items-center gap-3 px-4 py-3 ${sel.includes(c.id) ? "bg-secondary/60" : ""}`}>
+                      <input type="checkbox" className="size-4 shrink-0" aria-label={`Elegir a ${c.nombre}`} checked={sel.includes(c.id)} onChange={() => setSel((s) => (s.includes(c.id) ? s.filter((i) => i !== c.id) : [...s, c.id]))} />
+                      <button type="button" onClick={() => p.abrir(c.id)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
+                        <Persona nombre={c.nombre} className="size-9 text-xs" />
+                        <span className="min-w-0 flex-1">
+                          <span className="flex flex-wrap items-center gap-2"><span className="truncate font-bold">{c.nombre}</span><EtapaPill etapa={c.etapa} /><Estrellas valor={c.puntaje} /></span>
+                          <span className="block truncate text-xs text-muted-foreground">{p.puesto(c.vacante_id)} · {hace(c.created_at)}{x?.cv ? " · con CV" : ""}</span>
+                        </span>
+                        {x?.k && <span className="hidden sm:inline"><Coincide ok={x.k.ok.length} total={x.k.total} /></span>}
+                      </button>
+                      <button type="button" onClick={() => p.contactar(c)} aria-label={`Escribir a ${c.nombre}`} className="grid size-9 shrink-0 place-items-center rounded-lg text-[#1fa855] hover:bg-[#1fa855]/10"><MessageCircle className="size-5" /></button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+        </>
       )}
-
-      <div className="mt-4 flex flex-wrap gap-1.5 border-t border-border pt-4" role="group" aria-label="Mover a etapa">
-        {ETAPAS.filter((e) => e.id !== "nuevo").map((e) => (
-          <button key={e.id} type="button" aria-pressed={c.etapa === e.id} onClick={() => void mover(e.id)} className={`h-9 rounded-lg border px-3 text-sm font-semibold ${c.etapa === e.id ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-primary"}`}>
-            {e.id === "entrevista" ? "Invitar a entrevista" : e.id === "contratado" ? "Contratar" : e.id === "descartado" ? "Descartar" : "Revisando"}
-          </button>
-        ))}
-      </div>
-      <label className="mt-3 block">
-        <span className="sr-only">Nota privada</span>
-        <textarea value={nota} onChange={(e) => setNota(e.target.value)} onBlur={() => { if (nota !== (c.nota ?? "")) void guardar({ nota: nota.trim() || null }).then((ok) => ok && toast.success("Nota guardada")); }} rows={1} maxLength={2000} placeholder="Nota privada (solo la ves tú): ej. Disponible lunes, pide 30 mil" className="w-full resize-y rounded-xl border border-border bg-background px-3 py-2 text-sm" />
-      </label>
-    </li>
+    </>
   );
 }

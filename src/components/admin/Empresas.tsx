@@ -6,16 +6,40 @@ import { Button } from "@/components/ui/button";
 import { Tarjeta, haceDesde } from "@/components/admin/comun";
 import { supabase } from "@/integrations/supabase/client";
 
-type E = { id: string; nombre: string; rnc: string; sector: string | null; provincia: string | null; contacto_nombre: string | null; contacto_email: string | null; contacto_telefono: string | null; verificada: boolean; created_at: string };
+type E = { id: string; nombre: string; rnc: string; sector: string | null; provincia: string | null; contacto_nombre: string | null; contacto_email: string | null; contacto_telefono: string | null; verificada: boolean; created_at: string; plan: string; plan_hasta: string | null };
+type S = { id: string; empresa_id: string; tipo: string; estado: string; created_at: string; vacante_id: string | null; vacantes: { titulo: string } | null };
 
 export function Empresas() {
   const [filas, setFilas] = useState<E[]>([]);
+  const [sol, setSol] = useState<S[]>([]);
   const [cargando, setCargando] = useState(true);
   const cargar = useCallback(async () => {
-    const { data } = await supabase.from("empresas").select("*").order("created_at", { ascending: false }).limit(300);
-    setFilas((data ?? []) as E[]);
+    const [{ data }, { data: s2 }] = await Promise.all([
+      supabase.from("empresas").select("*").order("created_at", { ascending: false }).limit(300),
+      supabase.from("solicitudes_empresa").select("id,empresa_id,tipo,estado,created_at,vacante_id,vacantes(titulo)").in("estado", ["nueva", "contactada"]).order("created_at", { ascending: false }).limit(100),
+    ]);
+    setFilas((data ?? []) as unknown as E[]);
+    setSol((s2 ?? []) as unknown as S[]);
     setCargando(false);
   }, []);
+
+  const darPlan = async (e: E, meses: number) => {
+    const hasta = new Date(); hasta.setMonth(hasta.getMonth() + meses);
+    const cambios = meses ? { plan: "empresa", plan_hasta: hasta.toISOString().slice(0, 10) } : { plan: "gratis", plan_hasta: null };
+    const { error } = await supabase.from("empresas").update(cambios).eq("id", e.id);
+    if (error) return void toast.error("No se pudo cambiar el plan");
+    toast.success(meses ? `${e.nombre}: Plan Empresa hasta ${hasta.toLocaleDateString("es-DO")}` : `${e.nombre}: plan gratis`);
+    await cargar();
+  };
+
+  const marcar = async (s: S, estado: string) => {
+    const { error } = await supabase.from("solicitudes_empresa").update({ estado }).eq("id", s.id);
+    if (error) return void toast.error("No se pudo cambiar");
+    if (estado === "pagada" && s.tipo === "destacar" && s.vacante_id) await supabase.from("vacantes").update({ destacada: true }).eq("id", s.vacante_id);
+    if (estado === "pagada" && s.tipo === "plan_empresa") { const e = filas.find((x) => x.id === s.empresa_id); if (e) await darPlan(e, 1); }
+    toast.success(estado === "pagada" ? (s.tipo === "destacar" ? "Pagada: vacante destacada." : "Pagada: plan activado 1 mes.") : "Listo");
+    await cargar();
+  };
   useEffect(() => { void cargar(); }, [cargar]);
 
   const cambiar = async (e: E) => {
@@ -29,6 +53,24 @@ export function Empresas() {
   return (
     <div className="space-y-3">
       <p className="rounded-xl border border-border bg-surface p-4 text-sm text-muted-foreground">Verifica una empresa solo cuando hayas confirmado que existe (por ejemplo con su RNC y un contacto real). Solo tú puedes cambiar esto: las empresas no pueden verificarse solas.</p>
+      {sol.length > 0 && (
+        <div className="space-y-2 rounded-2xl border-2 border-primary/40 bg-surface p-4">
+          <p className="font-bold">Pedidos de empresas ({sol.length})</p>
+          {sol.map((x) => {
+            const e = filas.find((f) => f.id === x.empresa_id);
+            return (
+              <div key={x.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-muted/50 p-3 text-sm">
+                <div className="min-w-0"><p className="font-bold">{x.tipo === "destacar" ? `Destacar: ${x.vacantes?.titulo ?? "vacante"}` : "Quiere el Plan Empresa"} · {e?.nombre ?? "Empresa"}</p><p className="text-muted-foreground">{[e?.contacto_nombre, e?.contacto_telefono, e?.contacto_email].filter(Boolean).join(" · ") || "Sin contacto"} · {haceDesde(x.created_at)}{x.estado === "contactada" ? " · ya contactada" : ""}</p></div>
+                <div className="flex gap-2">
+                  {x.estado === "nueva" && <Button size="sm" variant="outline" onClick={() => void marcar(x, "contactada")}>Ya la contacté</Button>}
+                  <Button size="sm" onClick={() => void marcar(x, "pagada")}>Pagó: activar</Button>
+                  <Button size="sm" variant="ghost" onClick={() => void marcar(x, "descartada")}>Descartar</Button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
       {filas.length === 0 && <p className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">Todavía no se ha registrado ninguna empresa con cuenta.</p>}
       {filas.map((e) => (
         <Tarjeta key={e.id}>
@@ -38,7 +80,10 @@ export function Empresas() {
               <p className="mt-1 text-sm text-muted-foreground">RNC {e.rnc}{e.sector ? ` · ${e.sector}` : ""}{e.provincia ? ` · ${e.provincia}` : ""}</p>
               <p className="mt-0.5 text-sm text-muted-foreground">{[e.contacto_nombre, e.contacto_email, e.contacto_telefono].filter(Boolean).join(" · ") || "Sin datos de contacto"} · registrada {haceDesde(e.created_at)}</p>
             </div>
-            <Button size="sm" variant={e.verificada ? "outline" : "default"} onClick={() => void cambiar(e)}>{e.verificada ? "Quitar verificación" : "Marcar como verificada"}</Button>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant={e.verificada ? "outline" : "default"} onClick={() => void cambiar(e)}>{e.verificada ? "Quitar verificación" : "Marcar como verificada"}</Button>
+              {e.plan === "empresa" ? <Button size="sm" variant="outline" onClick={() => void darPlan(e, 0)}>Plan Empresa{e.plan_hasta ? ` hasta ${e.plan_hasta}` : ""} · quitar</Button> : <Button size="sm" variant="outline" onClick={() => void darPlan(e, 1)}>Dar Plan Empresa 1 mes</Button>}
+            </div>
           </div>
         </Tarjeta>
       ))}

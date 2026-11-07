@@ -32,8 +32,9 @@ export function borradorDe(v: Vacante): Borrador {
   };
 }
 
-export function PublicarEmpresa({ empresa, uid, editar, onListo }: { empresa: EmpresaPerfil; uid: string; editar: Vacante | null; onListo: () => void }) {
-  const [b, setB] = useState<Borrador>(() => (editar ? borradorDe(editar) : { ...borradorVacio, empresa: empresa.nombre, fuente: FUENTE }));
+export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo }: { empresa: EmpresaPerfil; uid: string; base: Vacante | null; duplicar?: boolean; onListo: () => void }) {
+  const editar = duplicar ? null : base;
+  const [b, setB] = useState<Borrador>(() => (base ? borradorDe(base) : { ...borradorVacio, empresa: empresa.nombre, fuente: FUENTE }));
   const [guardando, setGuardando] = useState(false);
   const pon = <K extends keyof Borrador>(k: K, v: Borrador[K]) => setB((x) => ({ ...x, [k]: v }));
 

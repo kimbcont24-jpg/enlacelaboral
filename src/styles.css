@@ -180,3 +180,8 @@ html[data-entrada="1"] .robot { visibility: hidden; }
   :focus-visible { outline: 3px solid #f5b400; outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 }
+
+/* Panel de empresa: la ficha entra desde la derecha. */
+@keyframes ficha-entra { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.ficha-entra { animation: ficha-entra 0.28s var(--ease-out-expo) both; }
+@media (prefers-reduced-motion: reduce) { .ficha-entra { animation: none; } }
