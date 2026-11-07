@@ -7,6 +7,7 @@ import { useEsAdmin } from "@/components/site/AdminAcciones";
 import { useGuardados } from "@/lib/guardados";
 import { Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const nav = [
   { to: "/vacantes", label: "Empleos" },
@@ -21,6 +22,13 @@ const nav = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const admin = useEsAdmin();
+  // Empresas con sesión abierta van directo a su panel.
+  const [conSesion, setConSesion] = useState(false);
+  useEffect(() => {
+    void supabase.auth.getSession().then(({ data }) => setConSesion(!!data.session));
+    const { data } = supabase.auth.onAuthStateChange((_e, s) => setConSesion(!!s));
+    return () => data.subscription.unsubscribe();
+  }, []);
   const { ids } = useGuardados();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -41,6 +49,8 @@ export function Header() {
         <Link to="/guardadas" className="inline-flex items-center gap-1.5 transition-colors hover:text-primary" activeProps={{ className: "text-primary" }}><Bookmark className="size-4" aria-hidden="true" /> Guardadas{ids.length > 0 && <span className="rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground">{ids.length}</span>}</Link>
         {admin ? (
           <Link to="/admin" className="rounded-full bg-foreground px-5 py-2 text-background hover:bg-primary">Mi panel</Link>
+        ) : conSesion ? (
+          <Link to="/panel" className="rounded-full bg-foreground px-5 py-2 text-background hover:bg-primary">Mi panel</Link>
         ) : (
           <Link to="/empresas" className="btn-aplicar rounded-full px-5 py-2.5">Publicar vacante</Link>
         )}
@@ -49,6 +59,8 @@ export function Header() {
       <Link to="/guardadas" aria-label="Vacantes guardadas" className="relative grid size-10 place-items-center rounded-full border border-border"><Bookmark className="size-4" />{ids.length > 0 && <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{ids.length}</span>}</Link>
       {admin ? (
         <Link to="/admin" className="rounded-full bg-foreground px-4 py-2 text-sm font-bold text-background md:hidden">Mi panel</Link>
+      ) : conSesion ? (
+        <Link to="/panel" className="rounded-full bg-foreground px-4 py-2 text-sm font-bold text-background md:hidden">Mi panel</Link>
       ) : (
         <Link to="/vacantes" className="whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground md:hidden">Empleos</Link>
       )}

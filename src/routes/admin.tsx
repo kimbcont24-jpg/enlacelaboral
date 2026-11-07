@@ -48,14 +48,17 @@ function Admin() {
   const [desde, setDesde] = useState<BorradorRow | null>(null);
   const [pendientes, setPendientes] = useState(0);
   const [reportesNuevos, setReportesNuevos] = useState(0);
+  const [porAprobar, setPorAprobar] = useState(0);
 
   const contar = useCallback(async () => {
-    const [{ count }, { count: rep }] = await Promise.all([
+    const [{ count }, { count: rep }, { count: rev }] = await Promise.all([
       supabase.from("borradores").select("id", { count: "exact", head: true }).eq("estado", "pendiente"),
       supabase.from("reportes").select("id", { count: "exact", head: true }).eq("estado", "nuevo"),
+      supabase.from("vacantes").select("id", { count: "exact", head: true }).eq("estado", "revision"),
     ]);
     setPendientes(count ?? 0);
     setReportesNuevos(rep ?? 0);
+    setPorAprobar(rev ?? 0);
   }, []);
   useEffect(() => { if (estado === "si") void contar(); }, [estado, contar, tab]);
 
@@ -101,7 +104,7 @@ function Admin() {
         { id: "publicar", label: editar ? "Editando vacante" : "Publicar" },
         { id: "borradores", label: pendientes ? `Borradores (${pendientes})` : "Borradores" },
         { id: "masiva", label: "Carga masiva" },
-        { id: "vacantes", label: "Publicadas" },
+        { id: "vacantes", label: porAprobar ? `Publicadas (${porAprobar} por aprobar)` : "Publicadas" },
         { id: "reportes", label: reportesNuevos ? `Reportes (${reportesNuevos})` : "Reportes" },
       ],
     },
@@ -560,7 +563,9 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
   const cargar = useCallback(async () => {
     const { data, error } = await supabase.from("vacantes").select(SELECT).order("created_at", { ascending: false }).limit(500);
     if (error) toast.error("No se pudieron cargar las vacantes.");
-    setItems(((data ?? []) as unknown as VacanteRow[]).map(rowToVacante));
+    // Las que mandan las empresas y esperan aprobación van primero.
+    const vs = ((data ?? []) as unknown as VacanteRow[]).map(rowToVacante);
+    setItems([...vs.filter((v) => v.estado === "revision"), ...vs.filter((v) => v.estado !== "revision")]);
   }, []);
   useEffect(() => void cargar(), [cargar]);
 
@@ -653,11 +658,11 @@ function MisVacantes({ onEditar }: { onEditar: (v: Vacante) => void }) {
       )}
       {lista.map((v) => (
         <div key={v.id} className={`rounded-2xl border bg-surface p-4 ${sel.includes(v.id) ? "border-primary" : "border-border"}`}>
-          <p className="font-bold"><input type="checkbox" className="mr-2 size-4 align-middle" aria-label={`Elegir ${v.titulo}`} checked={sel.includes(v.id)} onChange={() => setSel((x) => (x.includes(v.id) ? x.filter((i) => i !== v.id) : [...x, v.id]))} />{v.titulo} {v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">Pausada</span>}{v.destacada && <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Destacada</span>}</p>
+          <p className="font-bold"><input type="checkbox" className="mr-2 size-4 align-middle" aria-label={`Elegir ${v.titulo}`} checked={sel.includes(v.id)} onChange={() => setSel((x) => (x.includes(v.id) ? x.filter((i) => i !== v.id) : [...x, v.id]))} />{v.titulo} {v.estado === "revision" ? <span className="ml-1 rounded-full bg-cta px-2 py-0.5 text-[10px] font-bold uppercase text-cta-foreground">Por aprobar (empresa)</span> : v.estado !== "publicada" && <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">{v.estado === "cerrada" ? "Cerrada" : "Pausada"}</span>}{v.destacada && <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">Destacada</span>}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{v.empresa} · {v.provincia} · {v.salario} · {v.publicado} · Fuente: {v.fuente}</p>
           <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
             <button type="button" onClick={() => onEditar(v)} className={`${accion} border-primary text-primary`}><Pencil className="size-4" /> Editar</button>
-            <button type="button" onClick={() => void alternar(v)} className={accion}>{v.estado === "publicada" ? <><Pause className="size-4" /> Pausar</> : <><Play className="size-4" /> Publicar</>}</button>
+            <button type="button" onClick={() => void alternar(v)} className={accion}>{v.estado === "publicada" ? <><Pause className="size-4" /> Pausar</> : <><Play className="size-4" /> {v.estado === "revision" ? "Aprobar" : "Publicar"}</>}</button>
             <button type="button" onClick={() => void destacar(v)} className={accion}><Star className={`size-4 ${v.destacada ? "fill-current" : ""}`} /> {v.destacada ? "Quitar" : "Destacar"}</button>
             <button type="button" onClick={() => void copiarWhatsApp(v)} className={accion}><Share2 className="size-4" /> WhatsApp</button>
             <a href={enlacePieza(v)} target="_blank" rel="noopener noreferrer" className={accion} title="Abre el generador de piezas con esta vacante cargada"><Instagram className="size-4" /> Instagram</a>

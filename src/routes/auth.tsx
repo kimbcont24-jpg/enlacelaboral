@@ -8,6 +8,7 @@ import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>): { modo?: "registro" } => (s["modo"] === "registro" ? { modo: "registro" } : {}),
   head: () => ({ meta: [{ title: "Iniciar sesión | Enlace Laboral" }, { name: "robots", content: "noindex" }] }),
   component: Auth,
 });
@@ -17,7 +18,8 @@ const soloDigitos = (v: string) => v.replace(/\D/g, "");
 function Auth() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [modo, setModo] = useState<"registro" | "login">("login");
+  const inicial = Route.useSearch().modo;
+  const [modo, setModo] = useState<"registro" | "login">(inicial ?? "login");
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [empresa, setEmpresa] = useState("");
