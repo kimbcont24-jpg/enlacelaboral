@@ -60,6 +60,11 @@ export function MiEmpresa() {
               {["Vacantes sin límite", "Tablero y ficha de candidatos", "Agenda de entrevistas", "Mensajes por WhatsApp listos", "Difusión en el canal y en Instagram"].map((b) => <li key={b} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#8ec1ff]" />{b}</li>)}
             </ul>
           </div>
+          <a href={`/empresa/${e.id}`} target="_blank" rel="noopener noreferrer" className="block rounded-2xl border border-border bg-surface p-5 text-sm hover:border-primary">
+            <p className="font-extrabold">Tu página de empresa</p>
+            <p className="mt-1 text-muted-foreground">Los candidatos ven tu descripción y todas tus vacantes abiertas. Compártela en tus redes.</p>
+            <p className="mt-2 font-bold text-[#1557c4]">Ver mi página</p>
+          </a>
           <div className="rounded-2xl border border-border bg-surface p-5 text-sm">
             <p className="font-extrabold">Consejo</p>
             <p className="mt-1 text-muted-foreground">Las empresas con descripción, sector y teléfono completos se verifican más rápido. Al verificarte, tus vacantes salen publicadas sin esperar revisión.</p>

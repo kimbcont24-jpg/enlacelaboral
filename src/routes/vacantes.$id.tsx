@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Briefcase, CalendarClock, CalendarDays, Calculator, ArrowLeft, Check, CheckCircle2, Circle, ExternalLink, FileText, GraduationCap, Layers, Link2, Mail, MapPin, MessageCircle, Monitor, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
+import { BadgeCheck, Briefcase, CalendarClock, CalendarDays, Calculator, ArrowLeft, Check, CheckCircle2, Circle, ExternalLink, FileText, GraduationCap, Layers, Link2, Mail, MapPin, MessageCircle, Monitor, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
 
 import { AdminAcciones } from "@/components/site/AdminAcciones";
 import { useApply } from "@/components/site/apply-context";
@@ -10,7 +10,9 @@ import { enlaceAplicar, fetchVacante, jobPostingLd, SITIO, useVacantes, type Vac
 import { claridad } from "@/lib/claridad";
 import { slug } from "@/lib/empleos";
 import { diasRestantes, esNueva, nivelDe, venceTexto } from "@/lib/claridad";
-import { BotonGuardar, ClaridadPill, JobCard } from "@/components/site/JobCard";
+import { BotonGuardar, ClaridadPill } from "@/components/site/JobCard";
+import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
+import { useEmpresaPublica } from "@/lib/empresa-publica";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { CompartirBoton } from "@/components/site/CompartirBoton";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
@@ -103,7 +105,7 @@ function Detalle() {
   const fecha = new Date(job.creado).toLocaleDateString("es-DO", { day: "numeric", month: "long", year: "numeric" });
   const c = claridad(job);
   const { jobs } = useVacantes();
-  const similares = jobs.filter((j) => j.id !== job.id && (j.area === job.area || j.provincia === job.provincia)).slice(0, 3);
+  const similares = jobs.filter((j) => j.id !== job.id && (j.area === job.area || j.provincia === job.provincia)).slice(0, 4);
   const { Icono: IconoAplicar, texto: textoAplicar } = comoAplicar(job);
   const sinEmpresa = job.empresa === "Empresa no indicada";
   const urgente = diasRestantes(job) <= 5;
@@ -256,10 +258,12 @@ function Detalle() {
 
           <div className="mt-8 lg:hidden"><CanalWhatsApp variante="tarjeta" /></div>
 
+          <SobreEmpresa vacanteId={job.id} />
+
           {similares.length > 0 && (
             <section className="mt-12">
               <h2 className="text-xl font-extrabold">Vacantes parecidas</h2>
-              <div className="mt-4 space-y-3">{similares.map((j) => <JobCard key={j.id} job={j} />)}</div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">{similares.map((j) => <VacanteTarjeta key={j.id} job={j} />)}</div>
             </section>
           )}
           <section className="mt-12"><AlertaForm areaInicial={job.area} provinciaInicial={job.provincia} /></section>
@@ -281,5 +285,24 @@ function Detalle() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+/** Para vacantes publicadas por una empresa con cuenta: quién es y sus otras vacantes. */
+function SobreEmpresa({ vacanteId }: { vacanteId: string }) {
+  const { data: e } = useEmpresaPublica({ vacante: vacanteId });
+  if (!e) return null;
+  return (
+    <section className="mt-10 rounded-2xl border border-border bg-surface p-5 sm:p-6">
+      <div className="flex items-start gap-4">
+        <EmpresaAvatar nombre={e.nombre} className="size-12 text-xl" />
+        <div className="min-w-0 flex-1">
+          <h2 className="flex flex-wrap items-center gap-2 text-lg font-extrabold">{e.nombre}{e.verificada && <span className="inline-flex items-center gap-1 rounded-full bg-success/12 px-2 py-0.5 text-xs font-bold text-success"><BadgeCheck className="size-3.5" /> Verificada</span>}</h2>
+          <p className="text-sm text-muted-foreground">{[e.sector, e.provincia].filter(Boolean).join(" · ") || "Publicada por la empresa"}</p>
+        </div>
+      </div>
+      {e.descripcion && <p className="mt-4 line-clamp-4 whitespace-pre-line text-[15px] leading-relaxed text-foreground/85">{e.descripcion}</p>}
+      <Link to="/empresa/$id" params={{ id: e.id }} className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-[#1557c4] hover:underline">{e.activas > 1 ? `Ver sus ${e.activas} vacantes` : "Ver la página de la empresa"}</Link>
+    </section>
   );
 }
