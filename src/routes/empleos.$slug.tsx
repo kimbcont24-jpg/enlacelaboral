@@ -46,7 +46,10 @@ function Empleos() {
         <div className="mt-8 grid gap-10 lg:grid-cols-12">
           <section className="min-w-0 lg:col-span-8" aria-label="Vacantes">
             {lista.length > 0 ? (
-              <div className="space-y-4">{lista.map((job) => <JobCard key={job.id} job={job} />)}</div>
+              <>
+                <div className="space-y-4">{lista.slice(0, 40).map((job) => <JobCard key={job.id} job={job} />)}</div>
+                {lista.length > 40 && <p className="mt-6 text-center text-sm text-muted-foreground">Mostrando 40 de {lista.length}. <Link to="/vacantes" className="font-semibold text-primary underline">Ver todas las vacantes</Link> y filtrar.</p>}
+              </>
             ) : (
               <div className="rounded-2xl border border-dashed border-border p-10 text-center">
                 <p className="font-bold">Ahora mismo no hay vacantes aquí</p>
