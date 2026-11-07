@@ -57,3 +57,21 @@ export function textoCV(cv: CV): string {
     cv.idiomas ? `Idiomas: ${cv.idiomas}` : "",
   ].filter((x) => x !== "").join("\n").trim();
 }
+
+/** Qué tan listo está el CV y qué le falta, en orden de importancia. */
+export function progresoCV(cv: CV | null): { pct: number; faltan: { t: string; tip: string }[] } {
+  const c = cv ?? cvVacio;
+  const exp = c.experiencia.filter((e) => e.puesto.trim());
+  const checks: [boolean, string, string][] = [
+    [c.nombre.trim().length > 3, "Tu nombre", "Escribe tu nombre completo."],
+    [c.telefono.trim().length > 6 || c.correo.includes("@"), "Cómo contactarte", "Pon tu WhatsApp o tu correo."],
+    [c.puesto.trim().length > 2, "Puesto que buscas", "Di qué trabajo buscas: así te recomendamos vacantes."],
+    [c.resumen.trim().length > 40, "Sobre ti", "Dos o tres líneas con lo que sabes hacer."],
+    [exp.length > 0, "Experiencia", "Agrega tu último trabajo, pasantía o voluntariado."],
+    [exp.some((e) => e.logros.trim().length > 25), "Logros", "En tu experiencia, cuenta qué lograste, con números si puedes."],
+    [c.educacion.some((e) => e.titulo.trim()), "Formación", "Agrega tu bachiller, técnico o carrera."],
+    [c.habilidades.split(",").filter((h) => h.trim()).length >= 3, "Habilidades", "Escribe al menos 3 habilidades, separadas por coma."],
+  ];
+  const ok = checks.filter(([v]) => v).length;
+  return { pct: Math.round((ok / checks.length) * 100), faltan: checks.filter(([v]) => !v).map(([, t, tip]) => ({ t, tip })) };
+}

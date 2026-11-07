@@ -57,7 +57,7 @@ export function Header() {
         {nav.map((item) => (
           <Link key={item.to} to={item.to} className="rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary xl:px-3.5" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link>
         ))}
-        <Link to="/guardadas" aria-label="Vacantes guardadas" className="relative ml-1 grid size-10 place-items-center rounded-full transition-colors hover:bg-secondary hover:text-primary" activeProps={{ className: "bg-secondary text-primary" }}><Bookmark className="size-[18px]" aria-hidden="true" />{ids.length > 0 && <span className="absolute -right-0.5 -top-0.5 rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{ids.length}</span>}</Link>
+        <Link to="/guardadas" aria-label="Mi búsqueda: guardadas y aplicaciones" title="Mi búsqueda" className="relative ml-1 grid size-10 place-items-center rounded-full transition-colors hover:bg-secondary hover:text-primary" activeProps={{ className: "bg-secondary text-primary" }}><Bookmark className="size-[18px]" aria-hidden="true" />{ids.length > 0 && <span className="absolute -right-0.5 -top-0.5 rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{ids.length}</span>}</Link>
         {cuenta ? (
           <Link to={cuenta.to} className="ml-2 rounded-full bg-foreground px-5 py-2.5 text-background hover:bg-primary">{cuenta.t}</Link>
         ) : (
@@ -73,6 +73,7 @@ export function Header() {
       {menu && (
         <>
           <div id="menu-movil" className="menu-baja absolute inset-x-0 top-full z-50 border-b border-border bg-surface px-4 pb-5 pt-2 shadow-xl sm:px-6 lg:hidden">
+            <Link to="/guardadas" onClick={() => setMenu(false)} className="mb-2 flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 font-bold text-primary"><Bookmark className="size-4" /> Mi búsqueda <span className="ml-auto text-xs font-semibold text-muted-foreground">guardadas y aplicaciones</span></Link>
             <ul className="grid grid-cols-2 gap-1.5">
               {nav.map((item) => (
                 <li key={item.to}><Link to={item.to} onClick={() => setMenu(false)} className="block rounded-xl px-4 py-3 text-[15px] font-semibold hover:bg-secondary" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link></li>

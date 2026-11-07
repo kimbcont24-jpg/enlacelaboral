@@ -4,11 +4,11 @@ import type { Vacante } from "@/lib/vacantes";
 
 /** Seguimiento de postulaciones. Vive solo en el navegador de la persona (sin cuenta). */
 export type EstadoPost = "aplique" | "entrevista" | "oferta" | "descartada";
-export const ESTADOS: { v: EstadoPost; t: string }[] = [
-  { v: "aplique", t: "Apliqué" },
-  { v: "entrevista", t: "Me llamaron" },
-  { v: "oferta", t: "Me ofrecieron" },
-  { v: "descartada", t: "No avanzó" },
+export const ESTADOS: { v: EstadoPost; t: string; color: string }[] = [
+  { v: "aplique", t: "Apliqué", color: "#1d6ff2" },
+  { v: "entrevista", t: "Entrevista", color: "#c27803" },
+  { v: "oferta", t: "Me ofrecieron", color: "#0f7a43" },
+  { v: "descartada", t: "No avanzó", color: "#9aa3b2" },
 ];
 
 export type Postulacion = {
@@ -21,6 +21,12 @@ export type Postulacion = {
   aplicar: string;
   fecha: string;
   estado: EstadoPost;
+  /** Fecha y hora de la entrevista, si la persona la anotó. */
+  entrevista?: string;
+  /** Nota privada: con quién habló, qué le dijeron, qué llevar. */
+  nota?: string;
+  /** Cuándo cambió de estado por última vez. */
+  cambio?: string;
 };
 
 const CLAVE = "enlace-postulaciones";
@@ -55,7 +61,8 @@ export function usePostulaciones() {
     if (actual.some((p) => p.id === job.id)) return;
     guardar([{ id: job.id, titulo: job.titulo, empresa: job.empresa, provincia: job.provincia, via, aplicar: job.aplicar, fecha: new Date().toISOString(), estado: "aplique" }, ...actual]);
   }, []);
-  const cambiar = useCallback((id: string, estado: EstadoPost) => guardar(leer().map((p) => (p.id === id ? { ...p, estado } : p))), []);
+  const cambiar = useCallback((id: string, estado: EstadoPost) => guardar(leer().map((p) => (p.id === id ? { ...p, estado, cambio: new Date().toISOString() } : p))), []);
+  const editar = useCallback((id: string, cambios: Partial<Pick<Postulacion, "entrevista" | "nota">>) => guardar(leer().map((p) => (p.id === id ? { ...p, ...cambios } : p))), []);
   const quitar = useCallback((id: string) => guardar(leer().filter((p) => p.id !== id)), []);
-  return { lista, yaAplico: (id: string) => lista.some((p) => p.id === id), registrar, cambiar, quitar };
+  return { lista, yaAplico: (id: string) => lista.some((p) => p.id === id), registrar, cambiar, editar, quitar };
 }
