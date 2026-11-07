@@ -14,7 +14,7 @@ export function ApplyProvider({ children }: { children: ReactNode }) {
   return (
     <ApplyContext.Provider value={setJob}>
       {children}
-      <ApplyDialog job={job} onClose={() => setJob(null)} />
+      <ApplyDialog job={job} onClose={() => setJob(null)} onCambiar={setJob} />
     </ApplyContext.Provider>
   );
 }
