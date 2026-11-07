@@ -1,109 +1,155 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { Bell, CalendarClock, Check, Columns3, FileText, MessageCircle, Megaphone, RefreshCw, Sparkles } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useControles } from "@/lib/controles";
-import { comparativa, planes, provincias, serviciosCandidato } from "@/lib/data";
+import { provincias } from "@/lib/data";
 
 export const Route = createFileRoute("/empresas")({
-  head: () => ({ meta: [{ title: "Publica vacantes gratis | Enlace Laboral" }] }),
+  head: () => ({ meta: [{ title: "Publica vacantes gratis y elige candidatos | Enlace Laboral" }, { name: "description", content: "Publica tus vacantes gratis en República Dominicana. Recibe candidatos en tu panel, agenda entrevistas y escríbeles por WhatsApp con un toque." }] }),
   component: Empresas,
 });
+
+const FUNCIONES = [
+  { I: Columns3, t: "Tablero de candidatos", d: "Cada persona en su etapa: nuevo, revisando, entrevista, contratado. La mueves arrastrando." },
+  { I: FileText, t: "CV y requisitos lado a lado", d: "Ves su CV ordenado y qué requisitos de tu vacante aparecen en lo que envió." },
+  { I: CalendarClock, t: "Agenda de entrevistas", d: "Eliges día y hora, y la cita queda en tu agenda y en tu calendario del celular." },
+  { I: MessageCircle, t: "WhatsApp con un toque", d: "Invitación, felicitación o descarte amable: el mensaje sale escrito con su nombre y la cita." },
+  { I: Bell, t: "Avisos en vivo", d: "Cuando alguien aplica, aparece en tu panel en ese momento. Puedes activar avisos del navegador." },
+  { I: Megaphone, t: "Difusión incluida", d: "Tu vacante sale en la página, en el canal de WhatsApp y en Instagram, con tu nombre." },
+];
 
 function Empresas() {
   const controles = useControles();
   const [enviado, setEnviado] = useState(false);
-  const [plan, setPlan] = useState(planes[0]!.nombre);
+  const plan = "Publicación Gratis";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <header className="mx-auto max-w-7xl px-6 pb-12 pt-16">
-                <h1 className="max-w-3xl text-balance text-4xl font-extrabold tracking-tight md:text-6xl">Publica tus vacantes gratis y llega a candidatos de todo el país</h1>
-        <p className="mt-4 max-w-2xl text-muted-foreground">Envía tu vacante y la publicamos sin costo. Los servicios extras son opcionales.</p>
-        <ul className="mt-6 grid max-w-3xl gap-3 text-sm sm:grid-cols-3">
-          <li className="rounded-2xl border border-border bg-surface p-4"><p className="font-bold">Tus candidatos en un panel</p><p className="mt-1 text-muted-foreground">Ves quién aplicó, su CV y su contacto. Los mueves a entrevista y les escribes por WhatsApp con un toque.</p></li>
-          <li className="rounded-2xl border border-border bg-surface p-4"><p className="font-bold">Difusión incluida</p><p className="mt-1 text-muted-foreground">Tu vacante sale en la página, en el canal de WhatsApp y en Instagram, con tu nombre de empresa.</p></li>
-          <li className="rounded-2xl border border-border bg-surface p-4"><p className="font-bold">O sin cuenta</p><p className="mt-1 text-muted-foreground">Usa el formulario de abajo. También puedes mandarla por correo a kimbcont24+vacantes@gmail.com.</p></li>
-        </ul>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link to="/auth" search={{ modo: "registro" }} className="btn-aplicar inline-flex h-12 items-center rounded-xl px-6 text-base">Crear cuenta de empresa gratis</Link>
-          <Link to="/auth" className="inline-flex h-12 items-center rounded-xl border border-border px-6 text-base font-bold hover:border-primary hover:text-primary">Ya tengo cuenta</Link>
+      <header className="hero-dark px-4 pb-16 pt-12 sm:px-6 md:pb-24 md:pt-16">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+          <div>
+            <p className="entra inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white/90"><Sparkles className="size-4 text-[#ffd84d]" /> Todo gratis para empresas</p>
+            <h1 className="entra mt-5 text-balance font-display text-[2rem] font-extrabold leading-[1.1] tracking-[-0.03em] [animation-delay:60ms] md:text-[2.75rem]">Publica tu vacante y elige a tu gente desde un solo lugar</h1>
+            <p className="entra mt-5 max-w-xl text-lg text-white/85 [animation-delay:120ms]">Los candidatos aplican sin crear cuenta y te llegan a tu panel con su CV. Tú decides, agendas la entrevista y les escribes por WhatsApp.</p>
+            <div className="entra mt-8 flex flex-wrap gap-3 [animation-delay:180ms]">
+              <Link to="/auth" search={{ modo: "registro" }} className="btn-aplicar inline-flex h-13 items-center rounded-2xl px-7 py-3.5 text-base">Crear cuenta de empresa</Link>
+              <Link to="/auth" className="inline-flex items-center rounded-2xl border border-white/30 px-6 py-3.5 text-base font-bold text-white hover:bg-white/10">Ya tengo cuenta</Link>
+            </div>
+            <p className="mt-4 text-sm text-white/70">¿Sin tiempo para crear cuenta? <a href="#publicar" className="font-bold text-white underline underline-offset-4">Envíanos la vacante aquí</a>.</p>
+          </div>
+          <MuestraPanel />
         </div>
       </header>
-      <section className="mx-auto max-w-7xl px-6 pb-16">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {planes.map((p) => (
-            <div key={p.nombre} className={p.popular ? "relative flex flex-col rounded-3xl border-2 border-primary bg-surface p-7" : "relative flex flex-col rounded-3xl border border-border bg-surface p-7"}>
-              
-              <h2 className="text-lg font-bold">{p.nombre}</h2>
-              <div className="mt-3 flex items-baseline gap-1"><span className="text-3xl font-extrabold">{p.precio}</span><span className="text-sm text-muted-foreground">{p.unidad}</span></div>
-              {"impulso" in p && p.impulso && (<p className="mt-3 rounded-lg bg-primary/10 px-3 py-2 text-xs font-bold text-primary">{p.impulso}</p>)}
-              <p className="mt-3 text-sm text-muted-foreground">{p.resumen}</p>
-              <ul className="mt-6 flex-1 space-y-2 text-sm">{p.beneficios.map((b) => (<li key={b} className="flex gap-2"><span className="text-primary">✓</span> {b}</li>))}</ul>
-              <button onClick={() => { setPlan(p.nombre); document.getElementById("publicar")?.scrollIntoView({ behavior: "smooth" }); }} className="mt-6 w-full rounded-xl border border-border py-3 font-bold hover:border-primary hover:text-primary">{p.cta}</button>
+
+      <section className="px-4 py-16 sm:px-6 md:py-24"><div className="mx-auto max-w-6xl">
+        <h2 className="max-w-2xl text-balance font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">Lo que hace tu panel, sin pagar nada</h2>
+        <div className="mt-10 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+          {FUNCIONES.map(({ I, t, d }) => (
+            <div key={t}>
+              <span className="grid size-11 place-items-center rounded-2xl bg-[#1d6ff2]/10 text-[#1557c4]"><I className="size-5" /></span>
+              <h3 className="mt-4 text-lg font-extrabold">{t}</h3>
+              <p className="mt-1.5 text-muted-foreground">{d}</p>
             </div>
           ))}
         </div>
-      </section>
-      <section className="mx-auto max-w-4xl px-6 pb-20">
-        <div className="rounded-3xl border border-border bg-surface p-7">
-          <h2 className="text-2xl font-extrabold tracking-tight">Gratis vs. Destacada por RD$500</h2>
-          <div className="mt-6 overflow-x-auto rounded-2xl border border-border">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/40"><tr><th className="px-4 py-3 text-left">Incluye</th><th className="px-4 py-3">Gratis</th><th className="px-4 py-3 text-primary">Destacada</th></tr></thead>
-              <tbody>{comparativa.map((c) => (<tr key={c.fila}><td className="px-4 py-3">{c.fila}</td><td className="px-4 py-3 text-center">{c.gratis ? "✓" : "—"}</td><td className="px-4 py-3 text-center text-primary">{c.destacada ? "✓" : "—"}</td></tr>))}</tbody>
-            </table>
+      </div></section>
+
+      <section className="border-y border-border bg-surface px-4 py-16 sm:px-6 md:py-20">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">Así de simple</h2>
+          <ol className="mt-10 grid gap-8 md:grid-cols-3">
+            {[["Crea tu cuenta", "Nombre de la empresa, RNC y correo. Dos minutos."], ["Publica la vacante", "Un formulario corto que te dice qué le falta para que se entienda bien."], ["Recibe y elige", "Las aplicaciones llegan a tu panel. Agenda, decide y avisa a cada persona."]].map(([t, d], i) => (
+              <li key={t} className="relative pl-14">
+                <span className="absolute left-0 top-0 grid size-10 place-items-center rounded-full bg-[#0a2f5c] font-display text-lg font-extrabold text-white">{i + 1}</span>
+                <h3 className="text-lg font-extrabold">{t}</h3>
+                <p className="mt-1 text-muted-foreground">{d}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl bg-background p-5 text-sm font-semibold">
+            {["Sin costo durante el lanzamiento", "Vacantes visibles 30 días y se renuevan con un toque", "Revisamos cada vacante para cuidar a los candidatos"].map((x) => <span key={x} className="flex items-center gap-2"><Check className="size-4 text-success" /> {x}</span>)}
           </div>
         </div>
       </section>
-      <section id="publicar" className="border-y border-border bg-surface px-6 py-20">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2">
+
+      <section id="publicar" className="scroll-mt-20 px-4 py-16 sm:px-6 md:py-20">
+        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
           <div>
-            <h2 className="text-3xl font-extrabold tracking-tight">Publica tu vacante</h2>
-            <p className="mt-3 text-muted-foreground">Completa el formulario. La revisamos y la publicamos.</p>
+            <h2 className="font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">¿Prefieres no crear cuenta?</h2>
+            <p className="mt-3 text-muted-foreground">Envíanos la vacante con este formulario y la publicamos nosotros. Puedes subir el flyer y lo llenamos por ti. Para ver y manejar a tus candidatos, crea tu cuenta gratis.</p>
+            <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground"><RefreshCw className="size-4" /> También por correo: kimbcont24+vacantes@gmail.com</p>
           </div>
           {enviado ? (
             <div className="rounded-3xl border border-primary/40 bg-primary/5 p-8">
               <h3 className="text-xl font-bold">¡Recibimos tu vacante!</h3>
-              <p className="mt-2 text-sm text-muted-foreground">La revisamos y te avisamos al correo cuando esté publicada. Plan: <strong>{plan}</strong>.</p>
+              <p className="mt-2 text-sm text-muted-foreground">La revisamos y te avisamos al correo cuando esté publicada.</p>
               <button onClick={() => setEnviado(false)} className="mt-6 rounded-xl border border-border px-4 py-2 text-sm font-bold">Enviar otra</button>
             </div>
           ) : !controles.activos.ctl_empresas ? (
-            <div className="rounded-3xl border border-border bg-background p-8 text-center">
+            <div className="rounded-3xl border border-border bg-surface p-8 text-center">
               <h3 className="text-xl font-bold">Recepción de vacantes en pausa</h3>
               <p className="mt-2 text-sm text-muted-foreground">Por ahora no estamos recibiendo vacantes nuevas. Vuelve en unas horas, o escríbenos por el canal de WhatsApp.</p>
             </div>
           ) : (
-            <FormVacante plan={plan} setPlan={setPlan} onListo={() => setEnviado(true)} />
+            <FormVacante plan={plan} onListo={() => setEnviado(true)} />
           )}
         </div>
-      </section>
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <h2 className="text-2xl font-bold">Servicios para candidatos</h2>
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {serviciosCandidato.map((s) => (
-            <div key={s.nombre} className="rounded-2xl border border-border bg-surface p-6">
-              <h3 className="font-bold">{s.nombre}</h3>
-              <p className="mt-2 text-2xl font-extrabold text-primary">{s.precio}</p>
-              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">{s.beneficios.map((b) => (<li key={b}>• {b}</li>))}</ul>
-            </div>
-          ))}
-        </div>
-        <Link to="/vacantes" className="mt-10 inline-block rounded-xl bg-foreground px-6 py-3 font-bold text-background">Explorar vacantes</Link>
       </section>
       <Footer />
     </div>
   );
 }
 
-const caja = "mt-1 w-full rounded-xl border border-border bg-surface px-4 py-3 outline-none focus:border-primary";
-const rotulo = "font-mono text-[10px] uppercase tracking-widest text-muted-foreground";
+/** Vista de muestra del panel (ilustración con nombres de ejemplo, no datos reales). */
+function MuestraPanel() {
+  const cols = [
+    { t: "Nuevos", c: "#1d6ff2", gente: [["Ana R.", "3/4 requisitos"], ["Luis M.", "2/4 requisitos"]] },
+    { t: "Entrevista", c: "#e0a106", gente: [["Carla P.", "Mañana · 10:00 a. m."]] },
+    { t: "Contratados", c: "#22c55e", gente: [["José D.", "¡Empieza el lunes!"]] },
+  ];
+  return (
+    <div className="entra relative [animation-delay:200ms]" aria-label="Ejemplo de cómo se ve el panel de empresa" role="img">
+      <div className="rounded-[1.75rem] bg-white/10 p-2 shadow-[0_40px_80px_-30px_rgba(0,0,0,.7)] ring-1 ring-white/15 backdrop-blur">
+        <div className="rounded-[1.4rem] bg-[#f4f6f9] p-4 text-foreground sm:p-5">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-extrabold">Auxiliar de almacén</p>
+            <span className="rounded-full bg-success/12 px-2 py-0.5 text-[11px] font-bold text-success">Activa</span>
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-2.5">
+            {cols.map((col) => (
+              <div key={col.t} className="rounded-xl bg-[#e6eaf1] p-2">
+                <p className="flex items-center gap-1.5 px-1 pb-2 text-[11px] font-extrabold"><span className="size-1.5 rounded-full" style={{ backgroundColor: col.c }} />{col.t}</p>
+                <div className="space-y-2">
+                  {col.gente.map(([n, d]) => (
+                    <div key={n} className="rounded-lg bg-white p-2 shadow-[0_1px_2px_rgb(20_33_58/.08)]">
+                      <p className="truncate text-xs font-bold">{n}</p>
+                      <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{d}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="absolute -bottom-6 -left-3 max-w-[15rem] rounded-2xl bg-white p-3 text-foreground shadow-xl sm:-left-8">
+        <div className="ml-auto rounded-xl rounded-tr-sm bg-[#d9fdd3] px-3 py-2 text-[12px] leading-snug text-[#111b21]">Hola Carla, te escribe Almacenes Ejemplo. Queremos invitarte a una entrevista mañana a las 10:00 a. m.</div>
+        <p className="mt-1.5 flex items-center gap-1 text-[10px] font-semibold text-muted-foreground"><MessageCircle className="size-3 text-[#1fa855]" /> Enviado por WhatsApp desde tu panel</p>
+      </div>
+    </div>
+  );
+}
 
-function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: string) => void; onListo: () => void }) {
+const caja = "mt-1 w-full rounded-xl border border-border bg-surface px-4 py-3 outline-none focus:border-primary";
+const rotulo = "text-sm font-bold";
+
+function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
   const [f, setF] = useState({ empresa: "", contacto: "", correo: "", telefono: "", titulo: "", provincia: provincias[1] ?? "Distrito Nacional", detalle: "", trampa: "", redes: false });
   const [enviando, setEnviando] = useState(false);
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF((x) => ({ ...x, [k]: e.target.value }));
@@ -173,7 +219,7 @@ function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: st
   };
 
   return (
-    <form onSubmit={(e) => void enviar(e)} className="space-y-4 rounded-3xl border border-border bg-background p-8">
+    <form onSubmit={(e) => void enviar(e)} className="space-y-4 rounded-3xl border border-border bg-surface p-6 shadow-[var(--shadow-soft)] sm:p-8">
       <div className="rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 p-4">
         <p className="font-bold">¿Ya tienes el flyer de la vacante?</p>
         <p className="mt-1 text-sm text-muted-foreground">Súbelo y llenamos el formulario por ti. La imagen se lee en tu dispositivo y no se guarda.</p>
@@ -191,7 +237,6 @@ function FormVacante({ plan, setPlan, onListo }: { plan: string; setPlan: (p: st
       <label className="block"><span className={rotulo}>Correo</span><input required type="email" maxLength={200} value={f.correo} onChange={set("correo")} placeholder="rrhh@empresa.do" className={caja} /></label>
       <label className="block"><span className={rotulo}>Título del puesto</span><input required maxLength={200} value={f.titulo} onChange={set("titulo")} placeholder="Ej. Cajero/a" className={caja} /></label>
       <label className="block"><span className={rotulo}>Ubicación</span><select required value={f.provincia} onChange={set("provincia")} className={caja}>{provincias.slice(1).map((p) => (<option key={p}>{p}</option>))}</select></label>
-      <label className="block"><span className={rotulo}>Plan</span><select value={plan} onChange={(e) => setPlan(e.target.value)} className={caja}>{planes.map((p) => (<option key={p.nombre} value={p.nombre}>{p.nombre} — {p.precio}</option>))}</select></label>
       <label className="block"><span className={rotulo}>Detalles</span><textarea required rows={5} maxLength={8000} value={f.detalle} onChange={set("detalle")} placeholder="Funciones, requisitos, horario, salario y beneficios. Si publicas el salario, tu vacante llama más la atención." className={caja} /></label>
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.redes} onChange={(e) => setF((x) => ({ ...x, redes: e.target.checked }))} className="mt-1 size-4" /><span>Autorizo que Enlace Laboral comparta esta vacante en sus redes (Telegram, Facebook, Instagram y WhatsApp). Es opcional y gratis.</span></label>
       <input tabIndex={-1} autoComplete="off" aria-hidden="true" value={f.trampa} onChange={set("trampa")} className="hidden" name="sitio_web" />

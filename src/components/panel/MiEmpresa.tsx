@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { BadgeCheck, Check, Clock, Crown } from "lucide-react";
+import { BadgeCheck, Check, Clock, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { usePanel } from "@/components/panel/contexto";
 import { campoPanel, Titulo } from "@/components/panel/comun";
 import { supabase } from "@/integrations/supabase/client";
-import { planes, provincias } from "@/lib/data";
-import { planActivo } from "@/lib/panel";
+import { provincias } from "@/lib/data";
 
 const SECTORES = ["Comercio", "Manufactura", "Turismo y hotelería", "Servicios", "Tecnología", "Salud", "Educación", "Construcción", "Logística y transporte", "Finanzas", "Zona franca", "Agropecuario", "Otro"];
 
@@ -16,9 +15,6 @@ export function MiEmpresa() {
   const [f, setF] = useState({ nombre: e.nombre, sector: e.sector ?? "", provincia: e.provincia ?? "", contacto_nombre: e.contacto_nombre ?? "", contacto_email: e.contacto_email ?? "", contacto_telefono: e.contacto_telefono ?? "", sitio_web: e.sitio_web ?? "", descripcion: e.descripcion ?? "" });
   const [guardando, setGuardando] = useState(false);
   const pon = (k: keyof typeof f, v: string) => setF((x) => ({ ...x, [k]: v }));
-  const activo = planActivo(e);
-  const plan = planes.find((x) => x.nombre === "Plan Empresa");
-  const pedido = p.solicitudes.some((s) => s.tipo === "plan_empresa" && (s.estado === "nueva" || s.estado === "contactada"));
 
   const guardar = async (ev: React.FormEvent) => {
     ev.preventDefault();
@@ -57,21 +53,17 @@ export function MiEmpresa() {
         </form>
 
         <aside className="h-fit space-y-4">
-          <div className={`rounded-2xl p-5 ${activo ? "bg-[#0a2f5c] text-white" : "border border-border bg-surface"}`}>
-            <p className="flex items-center gap-2 text-sm font-semibold opacity-80"><Crown className="size-4" /> Tu plan</p>
-            <p className="mt-1 font-display text-2xl font-extrabold">{activo ? "Plan Empresa" : "Gratis"}</p>
-            {activo && e.plan_hasta && <p className="mt-1 text-sm opacity-80">Activo hasta el {new Date(`${e.plan_hasta}T12:00:00`).toLocaleDateString("es-DO", { day: "numeric", month: "long", year: "numeric" })}</p>}
-            {!activo && <p className="mt-1 text-sm text-muted-foreground">Vacantes, candidatos, entrevistas y mensajes sin costo.</p>}
+          <div className="rounded-2xl bg-[#0a2f5c] p-5 text-white">
+            <p className="flex items-center gap-2 text-sm font-semibold text-white/75"><Sparkles className="size-4 text-[#ffd84d]" /> Tu cuenta</p>
+            <p className="mt-1 font-display text-2xl font-extrabold">Todo incluido, gratis</p>
+            <ul className="mt-4 space-y-2 text-sm text-white/85">
+              {["Vacantes sin límite", "Tablero y ficha de candidatos", "Agenda de entrevistas", "Mensajes por WhatsApp listos", "Difusión en el canal y en Instagram"].map((b) => <li key={b} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#8ec1ff]" />{b}</li>)}
+            </ul>
           </div>
-          {!activo && plan && (
-            <div className="rounded-2xl border-2 border-[#1d6ff2] bg-surface p-5">
-              <p className="font-extrabold">Plan Empresa</p>
-              <p className="mt-1"><span className="font-display text-2xl font-extrabold">{plan.precio}</span> <span className="text-sm text-muted-foreground">{plan.unidad}</span></p>
-              <ul className="mt-3 space-y-2 text-sm">{plan.beneficios.map((b) => <li key={b} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" />{b}</li>)}</ul>
-              <button type="button" disabled={pedido} onClick={() => void p.pedir("plan_empresa")} className="btn-aplicar mt-4 h-11 w-full rounded-xl text-sm disabled:opacity-60">{pedido ? "Solicitud enviada: te contactamos" : "Quiero el Plan Empresa"}</button>
-              <p className="mt-2 text-xs text-muted-foreground">No se cobra nada aquí. Te escribimos para coordinar el pago.</p>
-            </div>
-          )}
+          <div className="rounded-2xl border border-border bg-surface p-5 text-sm">
+            <p className="font-extrabold">Consejo</p>
+            <p className="mt-1 text-muted-foreground">Las empresas con descripción, sector y teléfono completos se verifican más rápido. Al verificarte, tus vacantes salen publicadas sin esperar revisión.</p>
+          </div>
         </aside>
       </div>
     </>

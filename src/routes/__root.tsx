@@ -5,18 +5,25 @@ import { type ReactNode } from "react";
 import { ApplyProvider } from "@/components/site/apply-context";
 import { EntradaLogo, scriptEntrada } from "@/components/site/EntradaLogo";
 import { RobotNexa } from "@/components/site/RobotNexa";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
+  const atajos = [["Ver todas las vacantes", "/vacantes"], ["Empleos desde casa", "/empleos/remoto"], ["Hacer mi CV gratis", "/cv"], ["Publicar una vacante", "/empresas"]] as const;
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold">404</h1>
-        <h2 className="mt-4 text-xl font-semibold">Página no encontrada</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Puede que la vacante ya no esté disponible.</p>
-        <Link to="/vacantes" className="mt-6 inline-flex rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Ver vacantes</Link>
-      </div>
+    <div className="min-h-screen bg-background text-foreground">
+      <Header />
+      <main className="mx-auto flex max-w-xl flex-col items-center px-4 py-20 text-center">
+        <p className="font-display text-6xl font-extrabold tracking-tight text-[#1d6ff2]">Ups</p>
+        <h1 className="mt-4 text-balance text-2xl font-extrabold">Esta página o vacante ya no está disponible</h1>
+        <p className="mt-2 text-muted-foreground">Puede que la empresa ya llenó el puesto o que el enlace esté incompleto. Hay muchas más esperándote.</p>
+        <div className="mt-8 grid w-full gap-2 sm:grid-cols-3">
+          {atajos.map(([t, href], i) => <a key={href} href={href} className={i === 0 ? "btn-aplicar grid h-12 place-items-center rounded-xl sm:col-span-3" : "grid h-12 place-items-center rounded-xl border border-border bg-surface font-bold hover:border-primary hover:text-primary"}>{t}</a>)}
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

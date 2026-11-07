@@ -5,7 +5,7 @@ import { AvisoGlobal } from "@/components/site/AvisoGlobal";
 import { Logo } from "@/components/site/Logo";
 import { useEsAdmin } from "@/components/site/AdminAcciones";
 import { useGuardados } from "@/lib/guardados";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -37,34 +37,54 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const [menu, setMenu] = useState(false);
+  useEffect(() => {
+    if (!menu) return;
+    const tecla = (e: KeyboardEvent) => { if (e.key === "Escape") setMenu(false); };
+    const fuera = (e: PointerEvent) => { if (!(e.target as HTMLElement).closest("nav")) setMenu(false); };
+    document.addEventListener("keydown", tecla);
+    document.addEventListener("pointerdown", fuera);
+    return () => { document.removeEventListener("keydown", tecla); document.removeEventListener("pointerdown", fuera); };
+  }, [menu]);
+  const cuenta = admin ? { to: "/admin" as const, t: "Mi panel" } : conSesion ? { to: "/panel" as const, t: "Mi panel" } : null;
+
   return (
     <>
     <AvisoGlobal />
-    <nav className={cn("sticky top-0 z-50 flex items-center justify-between gap-3 border-b px-4 transition-all duration-500 sm:px-6", scrolled ? "border-border/80 bg-surface/85 py-3 shadow-[var(--shadow-soft)] backdrop-blur-md" : "border-transparent bg-surface py-4")}>
+    <nav className={cn("sticky top-0 z-50 flex items-center justify-between gap-3 border-b px-4 transition-all duration-500 sm:px-6", scrolled || menu ? "border-border/80 bg-surface/90 py-3 shadow-[var(--shadow-soft)] backdrop-blur-md" : "border-transparent bg-surface py-4")}>
       <Logo cabecera />
-      <div className="hidden items-center gap-7 text-[15px] font-semibold md:flex">
+      <div className="hidden items-center gap-1 whitespace-nowrap text-[15px] font-semibold lg:flex">
         {nav.map((item) => (
-          <Link key={item.to} to={item.to} className="transition-colors hover:text-primary" activeProps={{ className: "text-primary" }}>{item.label}</Link>
+          <Link key={item.to} to={item.to} className="rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary xl:px-3.5" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link>
         ))}
-        <Link to="/guardadas" className="inline-flex items-center gap-1.5 transition-colors hover:text-primary" activeProps={{ className: "text-primary" }}><Bookmark className="size-4" aria-hidden="true" /> Guardadas{ids.length > 0 && <span className="rounded-full bg-primary px-1.5 text-xs font-bold text-primary-foreground">{ids.length}</span>}</Link>
-        {admin ? (
-          <Link to="/admin" className="rounded-full bg-foreground px-5 py-2 text-background hover:bg-primary">Mi panel</Link>
-        ) : conSesion ? (
-          <Link to="/panel" className="rounded-full bg-foreground px-5 py-2 text-background hover:bg-primary">Mi panel</Link>
+        <Link to="/guardadas" aria-label="Vacantes guardadas" className="relative ml-1 grid size-10 place-items-center rounded-full transition-colors hover:bg-secondary hover:text-primary" activeProps={{ className: "bg-secondary text-primary" }}><Bookmark className="size-[18px]" aria-hidden="true" />{ids.length > 0 && <span className="absolute -right-0.5 -top-0.5 rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{ids.length}</span>}</Link>
+        {cuenta ? (
+          <Link to={cuenta.to} className="ml-2 rounded-full bg-foreground px-5 py-2.5 text-background hover:bg-primary">{cuenta.t}</Link>
         ) : (
-          <Link to="/empresas" className="btn-aplicar rounded-full px-5 py-2.5">Publicar vacante</Link>
+          <Link to="/empresas" className="btn-aplicar ml-2 rounded-full px-5 py-2.5">Publicar vacante</Link>
         )}
       </div>
-      <div className="flex items-center gap-2 md:hidden">
-      <Link to="/guardadas" aria-label="Vacantes guardadas" className="relative grid size-10 place-items-center rounded-full border border-border"><Bookmark className="size-4" />{ids.length > 0 && <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{ids.length}</span>}</Link>
-      {admin ? (
-        <Link to="/admin" className="rounded-full bg-foreground px-4 py-2 text-sm font-bold text-background md:hidden">Mi panel</Link>
-      ) : conSesion ? (
-        <Link to="/panel" className="rounded-full bg-foreground px-4 py-2 text-sm font-bold text-background md:hidden">Mi panel</Link>
-      ) : (
-        <Link to="/vacantes" className="whitespace-nowrap rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground md:hidden">Empleos</Link>
-      )}
+      <div className="flex items-center gap-2 lg:hidden">
+        <Link to="/guardadas" aria-label="Vacantes guardadas" className="relative grid size-10 place-items-center rounded-full border border-border"><Bookmark className="size-4" />{ids.length > 0 && <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{ids.length}</span>}</Link>
+        <button type="button" onClick={() => setMenu((m) => !m)} aria-expanded={menu} aria-controls="menu-movil" aria-label={menu ? "Cerrar menú" : "Abrir menú"} className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground">
+          {menu ? <X className="size-5" /> : <Menu className="size-5" />}
+        </button>
       </div>
+      {menu && (
+        <>
+          <div id="menu-movil" className="menu-baja absolute inset-x-0 top-full z-50 border-b border-border bg-surface px-4 pb-5 pt-2 shadow-xl sm:px-6 lg:hidden">
+            <ul className="grid grid-cols-2 gap-1.5">
+              {nav.map((item) => (
+                <li key={item.to}><Link to={item.to} onClick={() => setMenu(false)} className="block rounded-xl px-4 py-3 text-[15px] font-semibold hover:bg-secondary" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link></li>
+              ))}
+            </ul>
+            <div className="mt-3 grid gap-2">
+              {cuenta ? <Link to={cuenta.to} onClick={() => setMenu(false)} className="grid h-12 place-items-center rounded-xl bg-foreground font-bold text-background">{cuenta.t}</Link>
+                : <Link to="/empresas" onClick={() => setMenu(false)} className="btn-aplicar grid h-12 place-items-center rounded-xl">Publicar vacante gratis</Link>}
+            </div>
+          </div>
+        </>
+      )}
     </nav>
     </>
   );

@@ -12,16 +12,19 @@ const populares = ["Recepcionista", "Cajero", "Call center", "Asistente administ
 
 type Props = { puesto: string; provincia: string; onPuesto: (v: string) => void; onProvincia: (v: string) => void; onBuscar: () => void; total: number; provincias: number; jobs?: Vacante[] };
 
-/** Vacante real que se muestra en la tarjeta de la portada: la destacada o, si no hay, la más reciente. */
-function elegirTarjeta(jobs: Vacante[]): Vacante | undefined {
-  return jobs.find((j) => j.destacada) ?? jobs[0];
+/** Vacantes reales para la portada: primero las destacadas y las que dicen el salario. */
+function elegirTarjetas(jobs: Vacante[]): Vacante[] {
+  const conSueldo = jobs.filter((j) => j.salarioMin > 0);
+  const orden = [...conSueldo.filter((j) => j.destacada), ...conSueldo.filter((j) => !j.destacada), ...jobs.filter((j) => j.salarioMin <= 0)];
+  const vistas = new Set<string>();
+  return orden.filter((j) => (vistas.has(j.empresa) ? false : (vistas.add(j.empresa), true))).slice(0, 3);
 }
 
 function TarjetaPortada({ job }: { job: Vacante }) {
   const aplicar = useApply();
   const conSueldo = job.salarioMin > 0;
   return (
-    <div className="entra w-full max-w-[19rem] rotate-[2.5deg] rounded-3xl border-t-[6px] border-t-[#ffd84d] bg-surface p-5 text-foreground shadow-[0_34px_60px_-26px_rgba(0,0,0,0.75)] [animation-delay:240ms]">
+    <div className="w-full rounded-3xl border-t-[6px] border-t-[#ffd84d] bg-surface p-5 text-foreground shadow-[0_34px_60px_-26px_rgba(0,0,0,0.75)]">
       {esNueva(job) && <span className="mb-3 inline-block rounded-full bg-cta px-2.5 py-0.5 text-xs font-bold text-cta-foreground">Nueva</span>}
       <div className="flex items-center gap-3">
         <EmpresaAvatar nombre={job.empresa} className="size-11 text-lg" />
@@ -43,7 +46,7 @@ function TarjetaPortada({ job }: { job: Vacante }) {
 }
 
 export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total, provincias, jobs = [] }: Props) {
-  const tarjeta = elegirTarjeta(jobs);
+  const tarjetas = elegirTarjetas(jobs);
   const t = useContenido();
   // Textos de versiones anteriores guardados en el panel: se reemplazan por los nuevos.
   const viejo = (v: string) => v.startsWith("Encuentra tu próximo empleo") || v.startsWith("Conectamos talento con oportunidades reales") || v.startsWith("Tu enlace con el empleo");
@@ -52,10 +55,9 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
 
   return (
     <header className="hero-dark px-4 pb-12 pt-10 sm:px-6 md:pb-16 md:pt-14">
-      <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 size-56 rounded-full bg-cta sm:size-[24rem] lg:-right-28 lg:-top-32 lg:size-[28rem]" />
-      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 right-6 hidden h-28 w-52 rounded-t-full bg-[#ffd84d] md:block lg:right-24 lg:h-40 lg:w-72" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-1/2 hidden size-[34rem] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(29_111_242/.55)_0%,rgb(29_111_242/0)_65%)] lg:block" />
       <div className="relative mx-auto max-w-6xl">
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_19rem]">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_21rem]">
         <div className="min-w-0">
         <h1 className="entra max-w-2xl text-balance font-display text-[1.9rem] font-extrabold leading-[1.14] tracking-[-0.03em] sm:text-[2rem] md:text-[2.35rem]">{titulo}</h1>
         <p className="entra mt-4 max-w-xl text-lg text-white/85 [animation-delay:80ms]">{subtitulo}</p>
@@ -75,10 +77,22 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
         </div>
 
         </div>
-        {tarjeta && <div className="hidden justify-center lg:flex"><TarjetaPortada job={tarjeta} /></div>}
+        {tarjetas.length > 0 && (
+          <div className="relative hidden h-[22rem] lg:block" aria-label="Vacantes recientes">
+            {tarjetas.slice(1).reverse().map((j, i, arr) => {
+              const pos = arr.length - i; // 2 = la de más atrás
+              return (
+                <div key={j.id} aria-hidden="true" className="absolute inset-x-0 top-6 origin-bottom" style={{ transform: `translate(${pos === 2 ? -38 : 30}px, ${pos * -16}px) rotate(${pos === 2 ? -8 : 6}deg) scale(${1 - pos * 0.05})` }}>
+                  <div className="entra pointer-events-none" style={{ animationDelay: `${120 + i * 80}ms` }}><div className={pos === 2 ? "opacity-60" : "opacity-85"}><TarjetaPortada job={j} /></div></div>
+                </div>
+              );
+            })}
+            <div className="absolute inset-x-0 top-8 rotate-[1.5deg]"><div className="entra [animation-delay:300ms]"><TarjetaPortada job={tarjetas[0]!} /></div></div>
+          </div>
+        )}
         </div>
 
-        <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-white/15 pt-6 lg:pr-80">
+        <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-white/15 pt-6">
           <ul className="flex flex-wrap gap-x-7 gap-y-3 text-sm font-semibold text-white/90">
             <li className="flex items-center gap-2"><Banknote className="size-4 text-[#8ec1ff]" aria-hidden="true" /> Salario visible cuando la empresa lo indica</li>
             <li className="flex items-center gap-2"><BadgeCheck className="size-4 text-[#8ec1ff]" aria-hidden="true" /> Aplicar es gratis</li>

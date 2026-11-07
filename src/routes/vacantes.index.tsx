@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { JobCard } from "@/components/site/JobCard";
+import { FilaVacante, VistaPrevia } from "@/components/site/VistaPrevia";
 import { SearchBar } from "@/components/site/SearchBar";
 import { FiltrosRapidos, filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { useVacantes } from "@/lib/vacantes";
@@ -34,6 +35,7 @@ function Vacantes() {
   const [orden, setOrden] = useState<"reciente" | "salario" | "claridad">("reciente");
   const [query, setQuery] = useState(search.q ?? "");
   const [visibles, setVisibles] = useState(30);
+  const [elegida, setElegida] = useState<string | null>(null);
 
   useEffect(() => {
     setFiltros((f) => ({ ...f, area: search.area ?? f.area, provincia: search.provincia ?? f.provincia, modalidad: search.modalidad ?? f.modalidad, experiencia: search.experiencia ?? f.experiencia }));
@@ -47,7 +49,8 @@ function Vacantes() {
   }, [jobs, filtros, query, orden]);
 
   // Al cambiar filtros, búsqueda u orden se vuelve a las primeras 30.
-  useEffect(() => { setVisibles(30); }, [filtros, query, orden]);
+  useEffect(() => { setVisibles(30); setElegida(null); }, [filtros, query, orden]);
+  const vista = resultados.find((j) => j.id === elegida) ?? resultados[0];
 
   const buscar = () => {
     setQuery(puesto);
@@ -71,11 +74,19 @@ function Vacantes() {
             <option value="claridad">Más completas primero</option>
           </select>
         </div>
+        {cargando && (<div className="mt-6 flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Cargando vacantes…</div>)}
+        {!cargando && resultados.length > 0 && (
+          <div className="mt-6 lg:grid lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start lg:gap-6 xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
+            {/* Celular y tableta: tarjetas completas */}
+            <div className="space-y-4 lg:hidden">{resultados.slice(0, visibles).map((job) => (<JobCard key={job.id} job={job} />))}</div>
+            {/* Computadora: lista a la izquierda y la vacante al lado */}
+            <div className="hidden space-y-2.5 lg:block">{resultados.slice(0, visibles).map((job) => (<FilaVacante key={job.id} job={job} activa={vista?.id === job.id} onElegir={() => setElegida(job.id)} />))}</div>
+            <div className="sticky top-24 hidden lg:block">{vista && <VistaPrevia job={vista} />}</div>
+          </div>
+        )}
         <div className="mt-6 space-y-4">
-          {cargando && (<div className="flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Cargando vacantes…</div>)}
-          {!cargando && resultados.slice(0, visibles).map((job) => (<JobCard key={job.id} job={job} />))}
           {!cargando && resultados.length > visibles && (
-            <button type="button" onClick={() => setVisibles((v) => v + 30)} className="mx-auto flex h-12 items-center justify-center rounded-xl border border-border bg-surface px-6 text-sm font-bold text-primary hover:border-primary">Ver {Math.min(30, resultados.length - visibles)} más ({resultados.length - visibles} sin mostrar)</button>
+            <button type="button" onClick={() => setVisibles((v) => v + 30)} className="mx-auto flex h-12 items-center justify-center rounded-xl border border-border bg-surface px-6 text-sm font-bold text-primary hover:border-primary lg:mx-0 lg:w-[26rem] xl:w-[28rem]">Ver {Math.min(30, resultados.length - visibles)} más ({resultados.length - visibles} sin mostrar)</button>
           )}
           {!cargando && resultados.length === 0 && (<div className="rounded-2xl border border-dashed border-border p-12 text-center"><p className="font-bold">No encontramos vacantes con esos filtros</p><p className="mt-2 text-sm text-muted-foreground">Prueba con otra ubicación o limpia los filtros. O crea una alerta y te avisamos cuando salga una.</p></div>)}
         </div>

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Copy, ExternalLink, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, Share2, Star, Users, XCircle } from "lucide-react";
+import { Copy, ExternalLink, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, Share2, Users, XCircle } from "lucide-react";
 
 import { usePanel } from "@/components/panel/contexto";
 import { btnLinea, Titulo, Vacio } from "@/components/panel/comun";
 import { Barra } from "@/components/panel/Inicio";
 import { ClaridadPill } from "@/components/site/JobCard";
 import { diasRestantes } from "@/lib/claridad";
-import { ETAPAS, estadoVacante, planActivo } from "@/lib/panel";
+import { ETAPAS, estadoVacante } from "@/lib/panel";
 import { enlaceWhatsApp, type Vacante } from "@/lib/vacantes";
 
 type Filtro = "abiertas" | "revision" | "cerradas";
@@ -46,8 +46,6 @@ function Tarjeta({ v }: { v: Vacante }) {
   const suyos = p.candidatos.filter((c) => c.vacante_id === v.id);
   const nuevos = suyos.filter((c) => c.etapa === "nuevo").length;
   const dias = diasRestantes(v);
-  const pedida = p.solicitudes.some((s) => s.tipo === "destacar" && s.vacante_id === v.id && (s.estado === "nueva" || s.estado === "contactada"));
-  const conPlan = planActivo(p.empresa);
 
   return (
     <li className="flex flex-col rounded-2xl border border-border bg-surface">
@@ -95,11 +93,6 @@ function Tarjeta({ v }: { v: Vacante }) {
         {(e.id === "vencida" || (e.id === "activa" && dias <= 5)) && <button type="button" onClick={() => void p.accionVacante(v, "renovar")} className={`${btnLinea} border-[#1d6ff2] text-[#1557c4]`}><RefreshCw className="size-4" /> Renovar</button>}
         {e.id === "activa" && <a href={enlaceWhatsApp(v)} target="_blank" rel="noopener noreferrer" className={btnLinea}><Share2 className="size-4" /> Compartir</a>}
         {e.id === "activa" && <Link to="/vacantes/$id" params={{ id: v.id }} target="_blank" className={btnLinea} aria-label="Ver como candidato"><ExternalLink className="size-4" /></Link>}
-        {e.id === "activa" && !v.destacada && (
-          <button type="button" disabled={pedida} onClick={() => void p.pedir("destacar", v.id)} className="ml-auto inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#ffd84d] px-3.5 text-sm font-extrabold text-[#3d2f00] hover:brightness-95 disabled:opacity-60">
-            <Star className="size-4" /> {pedida ? "Destacado pedido" : conPlan ? "Destacar (incluido)" : "Destacar"}
-          </button>
-        )}
       </div>
     </li>
   );

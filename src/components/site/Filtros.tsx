@@ -34,7 +34,7 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
   const activos = [value.area, value.provincia, value.salarioMin, value.tipo, value.fecha, value.nivel].filter(Boolean).length;
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
-      <div className="flex flex-wrap items-center justify-center gap-2" role="group" aria-label="Atajos">
+      <div className="flex flex-wrap items-center justify-start gap-2" role="group" aria-label="Atajos">
         <Chip activo={value.fecha === "1"} onClick={() => set("fecha")(value.fecha === "1" ? "" : "1")}>Publicadas hoy</Chip>
         <Chip activo={value.conSalario === "si"} onClick={() => set("conSalario")(value.conSalario === "si" ? "" : "si")}>Con salario visible</Chip>
         <Chip activo={value.nivel === "Primer empleo"} onClick={() => set("nivel")(value.nivel === "Primer empleo" ? "" : "Primer empleo")}>Primer empleo</Chip>
@@ -43,7 +43,7 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
       <button type="button" onClick={() => setMas((m) => !m)} aria-expanded={mas} className="mx-auto inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-primary md:hidden">
         <SlidersHorizontal className="size-4" aria-hidden="true" /> {mas ? "Ocultar filtros" : `Más filtros${activos ? ` (${activos})` : ""}`}
       </button>
-      <div className={`${mas ? "flex" : "hidden"} flex-wrap items-center justify-center gap-2 md:flex`}>
+      <div className={`${mas ? "flex" : "hidden"} flex-wrap items-center justify-start gap-2 md:flex`}>
       <Select label="Área" value={value.area} onChange={set("area")} options={areas.map((a) => ({ value: a, label: a }))} />
       <Select label="Ubicación" value={value.provincia} onChange={set("provincia")} options={provincias.slice(1).map((p) => ({ value: p, label: p }))} />
       <Select label="Salario" value={value.salarioMin} onChange={set("salarioMin")} options={rangosSalario.map((r) => ({ value: String(r.min), label: r.label }))} />
