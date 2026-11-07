@@ -121,10 +121,65 @@ async function telegram(): Promise<Response> {
   return json({ ok: errores.length === 0, pendientes: filas.length, enviadas, errores });
 }
 
+const limites = new Map<string, number[]>();
+const pasaLimite = (clave: string, max: number, ventanaMs: number) => {
+  const ahora = Date.now();
+  const lista = (limites.get(clave) ?? []).filter((t) => ahora - t < ventanaMs);
+  if (lista.length >= max) { limites.set(clave, lista); return false; }
+  lista.push(ahora); limites.set(clave, lista);
+  if (limites.size > 5000) limites.clear();
+  return true;
+};
+
+/** POST /api/aplicar → manda la aplicación al correo que la empresa puso en su vacante. Solo a ese correo. */
+async function aplicar(request: Request): Promise<Response> {
+  const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
+  let b: { vacante_id?: string; nombre?: string; contacto?: string; mensaje?: string };
+  try { b = (await request.json()) as typeof b; } catch { return json({ enviado: false, error: "datos" }, 400); }
+  const id = String(b.vacante_id ?? ""), nombre = String(b.nombre ?? "").trim().slice(0, 100), contacto = String(b.contacto ?? "").trim().slice(0, 150), mensaje = String(b.mensaje ?? "").trim().slice(0, 8000);
+  if (!/^[0-9a-f-]{36}$/i.test(id) || nombre.length < 2 || contacto.length < 5) return json({ enviado: false, error: "datos" }, 400);
+  const ip = (request.headers.get("x-forwarded-for") ?? "local").split(",")[0]!.trim();
+  if (!pasaLimite(`ip:${ip}`, 10, 3600e3) || !pasaLimite(`v:${id}:${contacto.toLowerCase()}`, 1, 24 * 3600e3)) return json({ enviado: false, error: "limite" }, 429);
+
+  const clave = process.env["RESEND_API_KEY"], desde = process.env["RESEND_FROM"];
+  if (!clave || !desde) return json({ enviado: false, motivo: "sin_proveedor" });
+
+  let fila: VacanteRow | null = null;
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,titulo,etiquetas,estado&id=eq.${id}&limit=1`, { headers: { apikey: SB_KEY } });
+    if (r.ok) fila = ((await r.json()) as VacanteRow[])[0] ?? null;
+  } catch { fila = null; }
+  if (!fila || fila.estado !== "publicada") return json({ enviado: false, error: "vacante" }, 404);
+  const { meta } = leerMeta(fila.etiquetas);
+  const correo = (meta["aplicar"] ?? "").match(/[\w.+-]+@[\w-]+\.[\w.-]+/)?.[0];
+  if (!correo) return json({ enviado: false, motivo: "sin_correo" });
+
+  const esCorreo = /^[\w.+-]+@[\w-]+\.[\w.-]+$/.test(contacto);
+  const cuerpo = [
+    `Hola, ${nombre} aplicó a tu vacante «${fila.titulo}» desde Enlace Laboral.`,
+    "",
+    `Nombre: ${nombre}`,
+    `Contacto: ${contacto}`,
+    "",
+    mensaje || "(Sin mensaje adicional)",
+    "",
+    "—",
+    esCorreo ? "Puedes responder directamente a este correo para contactar al candidato." : "Contacta al candidato con los datos de arriba.",
+    `Vacante: ${new URL(request.url).origin}/vacantes/${id}`,
+    "Enlace Laboral solo reenvía los datos que la persona escribió.",
+  ].join("\n");
+  try {
+    const r = await fetch("https://api.resend.com/emails", { method: "POST", headers: { authorization: `Bearer ${clave}`, "content-type": "application/json" }, body: JSON.stringify({ from: desde, to: [correo], subject: `Nueva aplicación: ${fila.titulo} — ${nombre}`, text: cuerpo, ...(esCorreo ? { reply_to: contacto } : {}) }) });
+    if (!r.ok) { console.error("resend", r.status, await r.text().catch(() => "")); return json({ enviado: false, motivo: "fallo_envio" }); }
+  } catch (e) { console.error(e); return json({ enviado: false, motivo: "fallo_envio" }); }
+  return json({ enviado: true });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
     if (url.pathname === "/api/telegram") return telegram();
+    if (url.pathname === "/api/aplicar" && request.method === "POST") return aplicar(request);
     if (url.pathname === "/sitemap.xml") return sitemap(url.origin);
     const og = url.pathname.match(/^\/og\/vacantes\/([0-9a-f-]{36})\.png$/i);
     if (og) return ogVacante(og[1]!, url.origin);

@@ -24,6 +24,7 @@ const campo = "w-full rounded-xl border border-border bg-background px-4 py-3.5 
 const botonGrande = "btn-aplicar flex h-14 w-full items-center justify-center gap-2 rounded-2xl text-lg disabled:opacity-70";
 
 type Estado = "listo" | "enviando" | "enviado";
+type Entrega = "empresa" | "guardada";
 
 export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; onClose: () => void; onCambiar: (j: Vacante) => void }) {
   const [estado, setEstado] = useState<Estado>("listo");
@@ -36,6 +37,7 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
   const [texto, setTexto] = useState("");
   const [editado, setEditado] = useState(false);
   const [copiado, setCopiado] = useState<"" | "mensaje" | "cv">("");
+  const [entrega, setEntrega] = useState<Entrega>("guardada");
   const { registrar, yaAplico } = usePostulaciones();
   const { jobs } = useVacantes();
 
@@ -112,7 +114,16 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
       return;
     }
     recordar();
-    registrar(job, "Formulario de Enlace Laboral");
+    registrar(job, via.clave === "correo" ? "Aplicación desde Enlace Laboral" : "Formulario de Enlace Laboral");
+    // Con correo de la empresa, además se lo mandamos desde aquí.
+    let llego = false;
+    if (via.clave === "correo") {
+      try {
+        const r = await fetch("/api/aplicar", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ vacante_id: job.id, nombre: nombre.trim(), contacto: contacto.trim(), mensaje: cuerpo }) });
+        llego = r.ok && ((await r.json()) as { enviado?: boolean }).enviado === true;
+      } catch { llego = false; }
+    }
+    setEntrega(llego ? "empresa" : "guardada");
     setEstado("enviado");
   };
 
@@ -133,14 +144,14 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
         </div>
 
         {estado === "enviado" ? (
-          <Enviado job={job} via={via.clave} parecidas={parecidas} onClose={onClose} onAplicar={onCambiar} enlace={enlace} />
+          <Enviado job={job} via={via.clave} entrega={entrega} parecidas={parecidas} onClose={onClose} onAplicar={onCambiar} enlace={enlace} />
         ) : (
           <div className="mt-5 space-y-4">
             {/* ---------- WhatsApp o correo: un nombre y un botón ---------- */}
-            {(via.clave === "whatsapp" || via.clave === "correo") && enlace && (
+            {via.clave === "whatsapp" && enlace && (
               <>
                 <p className="text-sm text-muted-foreground">
-                  {via.clave === "whatsapp" ? "Te abrimos el chat de la empresa con el mensaje ya escrito. Solo tocas enviar." : "Te abrimos tu correo con el mensaje ya escrito. Solo tocas enviar."}
+                  Te abrimos el chat de la empresa con el mensaje ya escrito. Solo tocas enviar.
                 </p>
                 <label className="block text-sm font-semibold">
                   Tu nombre <span className="font-normal text-muted-foreground">(opcional)</span>
@@ -159,9 +170,6 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
                     {cv && via.clave === "whatsapp" && <button type="button" onClick={() => void copiar("cv")} className="inline-flex items-center gap-1.5 py-1 text-xs font-semibold text-primary hover:underline"><Copy className="size-3.5" aria-hidden="true" /> {copiado === "cv" ? "¡Copiado!" : "Copiar mi CV"}</button>}
                   </div>
                 </details>
-                {via.clave === "correo" && cv && (
-                  <label className="flex items-start gap-2.5 text-sm"><input type="checkbox" checked={incluirCv} onChange={(e) => setIncluirCv(e.target.checked)} className="mt-0.5 size-4 accent-[var(--cta)]" /> <span>Pegar mi CV en el correo</span></label>
-                )}
                 {!cv && <SinCv />}
               </>
             )}
@@ -193,9 +201,9 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
             )}
 
             {/* ---------- Formulario de Enlace Laboral ---------- */}
-            {via.clave === "formulario" && (
+            {(via.clave === "formulario" || via.clave === "correo") && (
               <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); void enviarFormulario(); }}>
-                <p className="text-sm text-muted-foreground">Deja tus datos y los hacemos llegar a la empresa. Sin cuenta, sin costo.</p>
+                <p className="text-sm text-muted-foreground">{via.clave === "correo" ? "Aplicas aquí mismo y nosotros se lo enviamos a la empresa. Sin cuenta, sin costo." : "Deja tus datos y los hacemos llegar a la empresa. Sin cuenta, sin costo."}</p>
                 <input required value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" placeholder="Tu nombre completo" aria-label="Tu nombre completo" className={campo} />
                 <input required value={contacto} onChange={(e) => setContacto(e.target.value)} autoComplete="tel" placeholder="Tu WhatsApp o correo" aria-label="Tu WhatsApp o correo" className={campo} />
                 {cv ? (
@@ -207,8 +215,9 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
                 </details>
                 {error && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
                 <button type="submit" disabled={estado === "enviando"} className={botonGrande}>
-                  {estado === "enviando" ? (<><Loader2 className="size-5 animate-spin" aria-hidden="true" /> Enviando…</>) : "Enviar mis datos"}
+                  {estado === "enviando" ? (<><Loader2 className="size-5 animate-spin" aria-hidden="true" /> Enviando…</>) : via.clave === "correo" ? "Enviar mi aplicación" : "Enviar mis datos"}
                 </button>
+                <p className="text-center text-xs text-muted-foreground">Al enviar, compartes tu nombre, contacto y CV con {conEmpresa ? job.empresa : "la empresa"}.</p>
               </form>
             )}
 
@@ -232,21 +241,23 @@ function SinCv() {
 }
 
 /** Pantalla final: confirma, y deja a un toque la siguiente vacante. */
-function Enviado({ job, via, parecidas, onClose, onAplicar, enlace }: { job: Vacante; via: string; parecidas: Vacante[]; onClose: () => void; onAplicar: (j: Vacante) => void; enlace: { href: string; label: string } | null }) {
-  const externo = via === "whatsapp" || via === "correo" || via === "sitio";
+function Enviado({ job, via, entrega, parecidas, onClose, onAplicar, enlace }: { job: Vacante; via: string; entrega: Entrega; parecidas: Vacante[]; onClose: () => void; onAplicar: (j: Vacante) => void; enlace: { href: string; label: string } | null }) {
+  const externo = via === "whatsapp" || via === "sitio";
   return (
     <div className="mt-5">
       <div className="rounded-2xl border border-success/30 bg-success/10 p-5 text-center">
         <CheckCircle2 className="mx-auto size-11 text-success" aria-hidden="true" />
-        <p className="mt-3 text-lg font-extrabold">{externo ? "¡Vas por buen camino!" : "¡Recibimos tus datos!"}</p>
+        <p className="mt-3 text-lg font-extrabold">{externo ? "¡Vas por buen camino!" : via === "correo" && entrega === "empresa" ? "¡Aplicación enviada!" : "¡Recibimos tus datos!"}</p>
         <p className="mt-1 text-sm text-muted-foreground">
           {via === "whatsapp" && "Envía el mensaje en WhatsApp y listo. "}
-          {via === "correo" && "Envía el correo y listo. "}
           {via === "sitio" && "Termina tu solicitud en el sitio de la empresa. "}
           {via === "formulario" && "Si hay avances, te contactan por el medio que dejaste. "}
+          {via === "correo" && entrega === "empresa" && `Le llegó a ${job.empresa !== "Empresa no indicada" ? job.empresa : "la empresa"}; si les interesa, te contactan por el medio que dejaste. `}
+          {via === "correo" && entrega === "guardada" && "Guardamos tus datos. Para asegurar que le lleguen, envíalos también por correo con un toque. "}
           Quedó anotada en <Link to="/guardadas" search={{ ver: "postulaciones" }} onClick={onClose} className="font-semibold text-primary underline">Mis postulaciones</Link>.
         </p>
         {externo && enlace && <a href={enlace.href} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-xs font-semibold text-primary hover:underline">¿No se abrió? Toca aquí</a>}
+        {via === "correo" && entrega === "guardada" && enlace && <a href={enlace.href} target="_blank" rel="noopener noreferrer" className="btn-aplicar mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-base"><Mail className="size-5" aria-hidden="true" /> Enviar también por correo</a>}
       </div>
 
       {parecidas.length > 0 && (
