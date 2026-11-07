@@ -198,33 +198,49 @@ async function alorica() {
 }
 
 /* ---------------- Marriott (hoteles en RD, por marca) ---------------- */
+function estadoPrecargado(html) {
+  const i = html.indexOf("window.__PRELOAD_STATE__");
+  if (i < 0) return null;
+  const ini = html.indexOf("{", i);
+  let prof = 0, enTexto = false, esc = false;
+  for (let k = ini; k < html.length; k++) {
+    const c = html[k];
+    if (enTexto) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') enTexto = false; continue; }
+    if (c === '"') enTexto = true; else if (c === "{") prof++; else if (c === "}" && --prof === 0) { try { return JSON.parse(html.slice(ini, k + 1)); } catch { return null; } }
+  }
+  return null;
+}
 async function marriott() {
   const filas = [];
   const base = "https://careers.marriott.com";
-  const marcas = ["w-hotels", "jw-marriott", "renaissance-hotels", "ac-hotels", "courtyard", "westin", "sheraton", "marriott-hotels", "autograph-collection", "aloft", "the-ritz-carlton", "st-regis", "tribute-portfolio", "luxury-collection", "moxy"];
-  const urls = new Set();
+  const marcas = ["w-hotels", "jw-marriott", "renaissance-hotels", "ac-hotels", "courtyard", "westin", "sheraton", "marriott-hotels", "autograph-collection", "aloft", "the-ritz-carlton", "st-regis", "tribute-portfolio", "luxury-collection", "moxy", "four-points", "element", "residence-inn", "fairfield"];
+  const vistos = new Set();
   for (const m of marcas) {
+    let jobs = [];
     try {
       const h = await getText(`${base}/brands/${m}/jobs?location_name=Dominican+Republic&location_type=4`);
-      const pm = h.match(/window\.__PRELOAD_STATE__\s*=\s*(\{[\s\S]*?\});?\s*<\/script>/);
-      const jobs = pm ? (JSON.parse(pm[1]).jobSearch?.jobs ?? []) : [];
-      if (jobs.length && urls.size === 0) log("marriott claves", Object.keys(jobs[0]).join(","), JSON.stringify(jobs[0]).slice(0, 300));
-      for (const j of jobs) { const id = j.externalID ?? j.jobID ?? j.id ?? j.sourceID; const u = j.url ?? j.jobUrl ?? j.applyUrl ?? (id ? `${base}/x/job/${id}` : null); if (u) urls.add(u.startsWith("http") ? u : base + u); }
-      for (const x of h.matchAll(/href="((?:https:\/\/careers\.marriott\.com)?\/x\/job\/[^"?#]+)/g)) urls.add(x[1].startsWith("http") ? x[1] : base + x[1]);
-    } catch (e) { log("marriott marca", m, String(e).slice(0, 60)); }
+      jobs = estadoPrecargado(h)?.jobSearch?.jobs ?? [];
+    } catch (e) { log("marriott marca", m, String(e).slice(0, 50)); continue; }
+    for (const j of jobs) {
+      const ref = j.reference ?? j.requisitionID;
+      if (!ref || vistos.has(ref)) continue;
+      const loc = (j.locations ?? [])[0] ?? {};
+      if (!/Dominican|^DO$/i.test(`${loc.country ?? ""} ${loc.countryAbbr ?? ""}`)) continue;
+      vistos.add(ref);
+      const url = `${base}/x/job/${ref}`;
+      let desc = "", req = "";
+      try {
+        const jp = jsonLd(await getText(url));
+        if (jp) { desc = limpiar(jp.description ?? ""); const q = desc.search(/Qualifications|Requirements|Requisitos|Candidate Profile/i); if (q > 0) { req = desc.slice(q, q + 800); } }
+      } catch { /* sin detalle: se usa lo básico */ }
+      const hotel = (loc.locationName ?? j.brandName ?? "Marriott International").slice(0, 100);
+      const titulo = tituloBonito(j.title ?? "");
+      if (!titulo) continue;
+      const ciudad = `${loc.city ?? ""} ${loc.locationText ?? ""}`;
+      filas.push({ titulo, empresa: hotel, provincia: /punta cana|cap cana|bávaro|bavaro|uvero|higüey/i.test(ciudad) ? "La Altagracia (Punta Cana)" : provinciaDe(ciudad, "Santo Domingo"), area: "Hotelería y Turismo", modalidad: "Presencial", tipo: /part/i.test((j.employmentType ?? []).join(" ")) ? "Medio tiempo" : "Tiempo completo", experiencia: experienciaDe(req || desc), descripcion: `${desc ? uno(desc).slice(0, 900) + " " : ""}Vacante de ${hotel}, publicada en el portal oficial de empleos de Marriott International; se aplica en línea.`, requisitos: requisitosDe(req).join(" | ") || "Ver requisitos en el sitio de Marriott", fuente: "Sitio de la empresa", fuente_url: url, aplicar: url, redes: "si" });
+    }
   }
-  for (const u of [...urls].slice(0, 60)) {
-    try {
-      const h = await getText(u);
-      const jp = jsonLd(h);
-      if (!jp) continue;
-      const loc = JSON.stringify(jp.jobLocation ?? "");
-      if (!/Dominican|Santo Domingo|Punta Cana|Cap Cana|Dominicana/i.test(loc + " " + (jp.title ?? ""))) continue;
-      const hotel = limpiar(jp.hiringOrganization?.name ?? "Marriott International");
-      const fila = filaDesdeJobPosting(jp, { empresa: hotel.slice(0, 100), url: u, fuenteTexto: "Vacante del hotel publicada en el portal oficial de empleos de Marriott International; se aplica en línea.", provDef: /punta cana|cap cana|bávaro|bavaro/i.test(loc) ? "La Altagracia (Punta Cana)" : "Santo Domingo" });
-      if (fila) { fila.area = "Hotelería y Turismo"; filas.push(fila); }
-    } catch (e) { log("marriott", u, String(e).slice(0, 60)); }
-  }
+  log("marriott únicas", vistos.size);
   return filas;
 }
 
@@ -262,7 +278,7 @@ async function computrabajo() {
   for (let p = 1; p <= paginas; p++) {
     try {
       const h = await getText(`${base}/ofertas-de-trabajo/?p=${p}`);
-      for (const x of h.matchAll(/href="(\/ofertas-de-trabajo\/oferta-de-trabajo-de-[^"?#]+)"/g)) urls.add(base + x[1]);
+      for (const x of h.matchAll(/href="(\/ofertas-de-trabajo\/oferta-de-trabajo-de-[^"?#]+)(?:[?#][^"]*)?"/g)) urls.add(base + x[1]);
     } catch (e) { log("computrabajo lista", p, String(e).slice(0, 60)); break; }
   }
   log("computrabajo enlaces", urls.size);
