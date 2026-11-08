@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BarChart3, Bell, BellOff, Crown, Briefcase, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, Users } from "lucide-react";
+import { BarChart3, Bell, BellOff, Crown, Briefcase, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, UserSearch, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -18,6 +18,7 @@ import { Mensajes } from "@/components/panel/Mensajes";
 import { MiEmpresa } from "@/components/panel/MiEmpresa";
 import { Planes } from "@/components/panel/Planes";
 import { Informe } from "@/components/panel/Informe";
+import { Talento } from "@/components/panel/Talento";
 import { leerRespuestas } from "@/lib/preguntas";
 import { cargarVistas, type Vistas } from "@/lib/vistas";
 import { Titulo } from "@/components/panel/comun";
@@ -26,7 +27,7 @@ import { diasRestantes } from "@/lib/claridad";
 import { CAMPOS_CANDIDATO, CAMPOS_EMPRESA, enlaceContacto, etapaDe, mensajePara, planActivo, type Candidato, type EmpresaPerfil, type Etapa, type Evento } from "@/lib/panel";
 import { rowToVacante, SELECT, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
-const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "informe", "mas"];
+const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "informe", "talento", "mas"];
 type Search = { s?: Seccion; c?: string };
 
 export const Route = createFileRoute("/panel")({
@@ -235,6 +236,7 @@ function Panel() {
     { id: "candidatos", label: "Candidatos", Icono: Users, badge: nuevos },
     { id: "agenda", label: "Entrevistas", Icono: CalendarDays, badge: citasHoy },
     { id: "vacantes", label: "Vacantes", Icono: Briefcase },
+    { id: "talento", label: "Buscar talento", Icono: UserSearch },
     { id: "mensajes", label: "Mensajes", Icono: MessageSquareText },
     { id: "informe", label: "Informe", Icono: BarChart3 },
     { id: "empresa", label: "Mi empresa", Icono: Settings },
@@ -289,11 +291,13 @@ function Panel() {
           {seccion === "empresa" && <MiEmpresa />}
           {seccion === "planes" && <Planes />}
           {seccion === "informe" && <Informe />}
+          {seccion === "talento" && <Talento />}
           {seccion === "mas" && (
             <>
               <Titulo titulo="Más" />
               <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface">
                 {[
+                  { t: "Buscar talento", I: UserSearch, f: () => ir("talento") },
                   { t: "Mensajes a candidatos", I: MessageSquareText, f: () => ir("mensajes") },
                   { t: "Informe para gerencia", I: BarChart3, f: () => ir("informe") },
                   { t: "Mi empresa", I: Settings, f: () => ir("empresa") },
@@ -310,7 +314,7 @@ function Panel() {
         {/* Navegación de abajo (celular) */}
         <nav className="fixed inset-x-0 bottom-0 z-40 grid print:!hidden grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="Panel">
           {[...nav.slice(0, 4), { id: "mas" as Seccion, label: "Más", Icono: Menu }].map(({ id, label, Icono, badge }: { id: Seccion; label: string; Icono: typeof Home; badge?: number }) => {
-            const activo = seccion === id || (id === "mas" && (seccion === "mensajes" || seccion === "empresa" || seccion === "planes" || seccion === "informe"));
+            const activo = seccion === id || (id === "mas" && (seccion === "mensajes" || seccion === "empresa" || seccion === "planes" || seccion === "informe" || seccion === "talento"));
             return (
               <button key={id} type="button" onClick={() => ir(id)} aria-current={activo ? "page" : undefined} className={`relative flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold ${activo ? "text-[#1557c4]" : "text-muted-foreground"}`}>
                 <Icono className="size-5" />{label}

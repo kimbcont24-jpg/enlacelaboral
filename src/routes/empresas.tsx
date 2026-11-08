@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { Bell, CalendarClock, Check, Columns3, Crown, FileText, MessageCircle, Megaphone, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
+import { Bell, CalendarClock, Check, Columns3, Crown, FileText, Link2, MessageCircle, Megaphone, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -20,12 +20,13 @@ const FUNCIONES = [
   { I: CalendarClock, t: "Agenda de entrevistas", d: "Eliges día y hora, y la cita queda en tu agenda y en tu calendario del celular." },
   { I: MessageCircle, t: "WhatsApp con un toque", d: "Invitación, felicitación o descarte amable: el mensaje sale escrito con su nombre y la cita." },
   { I: Bell, t: "Avisos en vivo", d: "Cuando alguien aplica, aparece en tu panel en ese momento. Puedes activar avisos del navegador." },
+  { I: Link2, t: "Banco de talento", d: "Encuentra personas que pidieron ser encontradas e invítalas a tu vacante. Si aceptan, te llegan con su CV." },
   { I: Megaphone, t: "Difusión incluida", d: "Tu vacante sale en la página, en el canal de WhatsApp y en Instagram, con tu nombre." },
 ];
 
 const PRECIOS = [
-  { n: "Gratis", p: "RD$0", u: "siempre", d: "Todo lo que necesitas para publicar y contratar.", b: ["Vacantes sin límite", "Tablero, agenda y mensajes por WhatsApp", "Preguntas de filtro y salario del mercado", "Cuánta gente vio cada vacante"], cta: "Crear cuenta gratis" },
-  { n: "Plan Empresa", p: "RD$1,900", u: "al mes", d: "Para quien contrata seguido y quiere llenar puestos más rápido.", b: ["Todo lo de Gratis", "Destaca hasta 4 vacantes a la vez, tú mismo", "Primero en el listado y en nuestros canales", "Informe para gerencia (imprimir o PDF)", "Una reclutadora revisa tus vacantes", "Atención directa por WhatsApp"], cta: "Probar 14 días gratis", top: true },
+  { n: "Gratis", p: "RD$0", u: "siempre", d: "Todo lo que necesitas para publicar y contratar.", b: ["Vacantes sin límite", "Tablero, agenda y mensajes por WhatsApp", "Preguntas de filtro y salario del mercado", "Banco de talento: 5 invitaciones al mes", "Cartel con QR para tu local"], cta: "Crear cuenta gratis" },
+  { n: "Plan Empresa", p: "RD$1,900", u: "al mes", d: "Para quien contrata seguido y quiere llenar puestos más rápido.", b: ["Todo lo de Gratis", "Invitaciones al banco de talento sin límite", "Destaca hasta 4 vacantes a la vez, tú mismo", "Primero en el listado y en nuestros canales", "Informe para gerencia (imprimir o PDF)", "Una reclutadora revisa tus vacantes", "Atención directa por WhatsApp"], cta: "Probar 14 días gratis", top: true },
   { n: "Reclutamiento asistido", p: "RD$5,900", u: "por puesto cubierto", d: "Hacemos el proceso por ti y te presentamos a los mejores tres.", b: ["Filtro de candidatos por una reclutadora", "Entrevistas por competencias", "Pagas solo si contratas"], cta: "Pedirlo desde mi panel" },
 ];
 

@@ -7,6 +7,7 @@ import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { GuardarNube } from "@/components/site/GuardarNube";
+import { EnlaceTalento } from "@/components/site/EnlaceTalento";
 import { diasRestantes } from "@/lib/claridad";
 import { EVENTO_CV_REMOTO, leerCV, progresoCV, type CV } from "@/lib/cv";
 import { useNube } from "@/lib/nube";
@@ -84,6 +85,7 @@ function MiBusqueda() {
 
       <main className="px-4 pb-20 pt-6 sm:px-6"><div className="mx-auto max-w-6xl">
         <GuardarNube compacto className="mb-6" />
+        <EnlaceTalento />
         {proximas.length > 0 && (
           <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-[#c27803]/30 bg-[#c27803]/[0.07] p-4">
             <CalendarClock className="size-5 text-[#8a5200]" />

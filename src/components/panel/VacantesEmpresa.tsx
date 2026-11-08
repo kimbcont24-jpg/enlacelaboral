@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Copy, ExternalLink, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, Share2, Star, Users, XCircle } from "lucide-react";
+import { Copy, ExternalLink, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, QrCode, Share2, Star, Users, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import { imprimirCartel } from "@/lib/cartel";
 
 import { usePanel } from "@/components/panel/contexto";
 import { btnLinea, Titulo, Vacio } from "@/components/panel/comun";
@@ -83,6 +84,7 @@ function Tarjeta({ v }: { v: Vacante }) {
                   {[
                     { t: "Editar", I: Pencil, f: () => p.editarVacante(v) },
                     { t: "Duplicar como nueva", I: Copy, f: () => p.editarVacante(v, true) },
+                    e.id === "activa" ? { t: "Cartel con QR para imprimir", I: QrCode, f: () => void imprimirCartel(v, p.empresa.nombre).then((ok) => { if (!ok) toast.error("Permite las ventanas emergentes para ver el cartel."); }) } : null,
                     e.id === "activa" ? { t: "Pausar", I: Pause, f: () => void p.accionVacante(v, "pausar") } : null,
                     e.id === "pausada" || e.id === "cerrada" ? { t: "Volver a publicar", I: Play, f: () => void p.accionVacante(v, "reactivar") } : null,
                     e.id !== "cerrada" ? { t: "Cerrar (ya la llené)", I: XCircle, f: () => void p.accionVacante(v, "cerrar") } : null,

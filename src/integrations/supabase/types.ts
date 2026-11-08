@@ -1,3 +1,5 @@
+export type Talento = { id: string; nombre: string; puesto: string | null; ciudad: string | null; resumen: string | null; habilidades: string | null; idiomas: string | null; disponibilidad: string | null; licencia: string | null; experiencia: { puesto: string; empresa: string; desde: string; hasta: string }[]; educacion: { titulo: string; centro: string }[]; actualizado: string; invitado: boolean };
+export type MiInvitacion = { id: string; estado: string; created_at: string; mensaje: string | null; empresa: string; verificada: boolean; vacante_id: string; titulo: string; provincia: string; salario_min: number; salario_max: number | null };
 export type Database = {
   __InternalSupabase: { PostgrestVersion: "14.5" };
   public: {
@@ -27,8 +29,14 @@ export type Database = {
         Relationships: [];
       };
       candidatos: {
-        Row: { user_id: string; cv: unknown; plantilla: string | null; guardadas: unknown; postulaciones: unknown; versiones: unknown; updated_at: string; created_at: string };
+        Row: { user_id: string; cv: unknown; plantilla: string | null; guardadas: unknown; postulaciones: unknown; versiones: unknown; updated_at: string; created_at: string; visible: boolean; visible_at: string | null };
         Insert: { user_id: string; cv?: unknown; plantilla?: string | null; guardadas?: unknown; postulaciones?: unknown; versiones?: unknown; updated_at?: string };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
+      invitaciones: {
+        Row: { id: string; empresa_id: string; owner_id: string; candidato_id: string; vacante_id: string; mensaje: string | null; estado: string; created_at: string; respondida_at: string | null };
+        Insert: { [k: string]: unknown };
         Update: { [k: string]: unknown };
         Relationships: [];
       };
@@ -77,6 +85,10 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      talento_buscar: { Args: { p_q?: string | null; p_provincia?: string | null }; Returns: Talento[] };
+      invitar_candidato: { Args: { p_candidato: string; p_vacante: string; p_mensaje?: string | null }; Returns: number };
+      responder_invitacion: { Args: { p_id: string; p_acepta: boolean; p_mensaje?: string | null }; Returns: undefined };
+      mis_invitaciones: { Args: Record<string, never>; Returns: MiInvitacion[] };
       iniciar_prueba: { Args: Record<string, never>; Returns: string };
       registrar_vista: { Args: { p_vacante: string }; Returns: undefined };
       vistas_mis_vacantes: { Args: { p_dias?: number }; Returns: { vacante_id: string; dia: string; n: number }[] };
