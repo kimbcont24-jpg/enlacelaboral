@@ -46,10 +46,14 @@ export type EmpresaPerfil = {
   sitio_web: string | null;
   plan: "gratis" | "empresa";
   plan_hasta: string | null;
+  prueba_usada?: boolean;
   plantillas: Plantillas;
 };
-export const CAMPOS_EMPRESA = "id,nombre,verificada,contacto_nombre,contacto_email,contacto_telefono,sector,provincia,descripcion,sitio_web,plan,plan_hasta,plantillas";
+export const CAMPOS_EMPRESA = "id,nombre,verificada,contacto_nombre,contacto_email,contacto_telefono,sector,provincia,descripcion,sitio_web,plan,plan_hasta,prueba_usada,plantillas";
 
+/** Días que le quedan al plan (null si no tiene fecha de fin). */
+export const diasPlan = (e: Pick<EmpresaPerfil, "plan_hasta">) => (e.plan_hasta ? Math.max(0, Math.ceil((new Date(`${e.plan_hasta}T23:59:59`).getTime() - Date.now()) / 864e5)) : null);
+export const MAX_DESTACADAS = 4;
 export const planActivo = (e: Pick<EmpresaPerfil, "plan" | "plan_hasta">) => e.plan === "empresa" && (!e.plan_hasta || new Date(`${e.plan_hasta}T23:59:59`) >= new Date());
 
 /* ───────── Contacto ───────── */

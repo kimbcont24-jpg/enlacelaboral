@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export type EmpresaPublica = { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number };
+export type EmpresaPublica = { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number; pro?: boolean };
 
 /** Datos públicos de una empresa con cuenta (no aparecen las vacantes que carga Enlace Laboral). */
 export function useEmpresaPublica(p: { empresa?: string; vacante?: string }) {

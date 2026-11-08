@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Copy, ExternalLink, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, Share2, Users, XCircle } from "lucide-react";
+import { Copy, ExternalLink, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, Share2, Star, Users, XCircle } from "lucide-react";
+import { toast } from "sonner";
+
+import { supabase } from "@/integrations/supabase/client";
 
 import { usePanel } from "@/components/panel/contexto";
 import { btnLinea, Titulo, Vacio } from "@/components/panel/comun";
 import { Barra } from "@/components/panel/Inicio";
 import { ClaridadPill } from "@/components/site/JobCard";
 import { diasRestantes } from "@/lib/claridad";
-import { ETAPAS, estadoVacante } from "@/lib/panel";
+import { ETAPAS, estadoVacante, MAX_DESTACADAS, planActivo } from "@/lib/panel";
 import { enlaceWhatsApp, type Vacante } from "@/lib/vacantes";
 
 type Filtro = "abiertas" | "revision" | "cerradas";
@@ -46,6 +49,21 @@ function Tarjeta({ v }: { v: Vacante }) {
   const suyos = p.candidatos.filter((c) => c.vacante_id === v.id);
   const nuevos = suyos.filter((c) => c.etapa === "nuevo").length;
   const dias = diasRestantes(v);
+  const vistas = p.vistas[v.id];
+  const pro = planActivo(p.empresa);
+  const pedida = p.solicitudes.some((s) => s.tipo === "destacar" && s.vacante_id === v.id && (s.estado === "nueva" || s.estado === "contactada"));
+  const [cambiando, setCambiando] = useState(false);
+
+  // Con el plan, la empresa destaca o quita el destacado al momento (la base de datos limita a 4 a la vez).
+  const destacar = async (si: boolean) => {
+    if (si && p.vacantes.filter((x) => x.destacada && estadoVacante(x).id === "activa").length >= MAX_DESTACADAS) return void toast.error(`Ya tienes ${MAX_DESTACADAS} destacadas. Quita una para destacar esta.`);
+    setCambiando(true);
+    const { data, error } = await supabase.from("vacantes").update({ destacada: si }).eq("id", v.id).select("destacada").maybeSingle();
+    setCambiando(false);
+    if (error || !data || data.destacada !== si) return void toast.error("No se pudo cambiar. Intenta otra vez.");
+    toast.success(si ? "Destacada: ya sale primero en el listado." : "Quitamos el destacado.");
+    await p.recargar();
+  };
 
   return (
     <li className="flex flex-col rounded-2xl border border-border bg-surface">
@@ -77,20 +95,26 @@ function Tarjeta({ v }: { v: Vacante }) {
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-          <div className="rounded-xl bg-background py-2.5"><p className="text-xl font-extrabold tabular-nums">{suyos.length}</p><p className="text-[11px] text-muted-foreground">candidatos</p></div>
+        <div className="mt-4 grid grid-cols-4 gap-2 text-center">
+          <div className="rounded-xl bg-background py-2.5" title="Personas que abrieron la vacante en los últimos 30 días"><p className="text-xl font-extrabold tabular-nums">{vistas?.total ?? 0}</p><p className="text-[11px] text-muted-foreground">la vieron</p></div>
+          <div className="rounded-xl bg-background py-2.5"><p className="text-xl font-extrabold tabular-nums">{suyos.length}</p><p className="text-[11px] text-muted-foreground">aplicaron</p></div>
           <div className="rounded-xl bg-background py-2.5"><p className="text-xl font-extrabold tabular-nums">{suyos.filter((c) => c.etapa === "entrevista").length}</p><p className="text-[11px] text-muted-foreground">en entrevista</p></div>
           <div className="rounded-xl bg-background py-2.5"><p className={`text-xl font-extrabold tabular-nums ${e.id === "activa" && dias <= 5 ? "text-destructive" : ""}`}>{e.id === "activa" ? dias : "—"}</p><p className="text-[11px] text-muted-foreground">días visible</p></div>
         </div>
         {suyos.length > 0 && (
           <div className="mt-3 flex items-center gap-3"><Barra candidatos={suyos} /><span className="text-xs text-muted-foreground">{ETAPAS.filter((x) => suyos.some((c) => c.etapa === x.id)).map((x) => `${suyos.filter((c) => c.etapa === x.id).length} ${x.corto.toLowerCase()}`).join(" · ")}</span></div>
         )}
+        {e.id === "activa" && (vistas?.total ?? 0) >= 10 && <p className="mt-3 text-xs text-muted-foreground">{Math.round((suyos.length / vistas!.total) * 100)}% de quienes la vieron aplicaron{vistas!.semana ? ` · ${vistas!.semana} vistas esta semana` : ""}.{suyos.length / vistas!.total < 0.05 ? (v.salario ? " Requisitos cortos y claros suelen subir este número." : " Poner el salario suele subir este número.") : ""}</p>}
         {e.id === "revision" && <p className="mt-3 rounded-xl bg-[#c27803]/10 p-3 text-sm text-[#8a5200]">La estamos revisando. Sale publicada en cuanto la aprobemos.</p>}
       </div>
 
       <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-border px-5 py-3.5">
         <button type="button" onClick={() => p.ir("candidatos", { vacante: v.id, etapa: "" })} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#0a2f5c] px-4 text-sm font-bold text-white"><Users className="size-4" /> Ver candidatos{nuevos > 0 && <span className="rounded-full bg-[#1d6ff2] px-1.5 text-xs">{nuevos}</span>}</button>
         {(e.id === "vencida" || (e.id === "activa" && dias <= 5)) && <button type="button" onClick={() => void p.accionVacante(v, "renovar")} className={`${btnLinea} border-[#1d6ff2] text-[#1557c4]`}><RefreshCw className="size-4" /> Renovar</button>}
+        {e.id === "activa" && (pro ? (
+          <button type="button" disabled={cambiando} onClick={() => void destacar(!v.destacada)} className={`${btnLinea} ${v.destacada ? "border-[#e0b400] bg-[#ffd84d]/20 text-[#6b5000]" : "border-[#e0b400] text-[#6b5000]"}`}><Star className={`size-4 ${v.destacada ? "fill-current" : ""}`} /> {v.destacada ? "Quitar destacado" : "Destacar"}</button>
+        ) : !v.destacada && (pedida ? <span className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-[#ffd84d]/20 px-3 text-sm font-semibold text-[#6b5000]"><Star className="size-4" /> Destacado pedido</span>
+          : <button type="button" onClick={() => void p.pedir("destacar", v.id)} className={`${btnLinea} border-[#e0b400] text-[#6b5000]`} title="Sale primero 7 días y la compartimos en nuestros canales. Pagas cuando esté activa."><Star className="size-4" /> Destacar · RD$500</button>))}
         {e.id === "activa" && <a href={enlaceWhatsApp(v)} target="_blank" rel="noopener noreferrer" className={btnLinea}><Share2 className="size-4" /> Compartir</a>}
         {e.id === "activa" && <Link to="/vacantes/$id" params={{ id: v.id }} target="_blank" className={btnLinea} aria-label="Ver como candidato"><ExternalLink className="size-4" /></Link>}
       </div>

@@ -7,7 +7,7 @@ import { Tarjeta, haceDesde } from "@/components/admin/comun";
 import { supabase } from "@/integrations/supabase/client";
 
 type E = { id: string; nombre: string; rnc: string; sector: string | null; provincia: string | null; contacto_nombre: string | null; contacto_email: string | null; contacto_telefono: string | null; verificada: boolean; created_at: string; plan: string; plan_hasta: string | null };
-type S = { id: string; empresa_id: string; tipo: string; estado: string; created_at: string; vacante_id: string | null; vacantes: { titulo: string } | null };
+type S = { id: string; empresa_id: string; tipo: string; estado: string; created_at: string; vacante_id: string | null; detalle: string | null; vacantes: { titulo: string } | null };
 
 export function Empresas() {
   const [filas, setFilas] = useState<E[]>([]);
@@ -16,19 +16,19 @@ export function Empresas() {
   const cargar = useCallback(async () => {
     const [{ data }, { data: s2 }] = await Promise.all([
       supabase.from("empresas").select("*").order("created_at", { ascending: false }).limit(300),
-      supabase.from("solicitudes_empresa").select("id,empresa_id,tipo,estado,created_at,vacante_id,vacantes(titulo)").in("estado", ["nueva", "contactada"]).order("created_at", { ascending: false }).limit(100),
+      supabase.from("solicitudes_empresa").select("id,empresa_id,tipo,estado,created_at,vacante_id,detalle,vacantes(titulo)").in("estado", ["nueva", "contactada"]).order("created_at", { ascending: false }).limit(100),
     ]);
     setFilas((data ?? []) as unknown as E[]);
     setSol((s2 ?? []) as unknown as S[]);
     setCargando(false);
   }, []);
 
-  const darPlan = async (e: E, meses: number) => {
-    const hasta = new Date(); hasta.setMonth(hasta.getMonth() + meses);
-    const cambios = meses ? { plan: "empresa", plan_hasta: hasta.toISOString().slice(0, 10) } : { plan: "gratis", plan_hasta: null };
+  const darPlan = async (e: E, meses: number, dias = 0) => {
+    const hasta = new Date(); hasta.setMonth(hasta.getMonth() + meses); hasta.setDate(hasta.getDate() + dias);
+    const cambios = meses || dias ? { plan: "empresa", plan_hasta: hasta.toISOString().slice(0, 10) } : { plan: "gratis", plan_hasta: null };
     const { error } = await supabase.from("empresas").update(cambios).eq("id", e.id);
     if (error) return void toast.error("No se pudo cambiar el plan");
-    toast.success(meses ? `${e.nombre}: Plan Empresa hasta ${hasta.toLocaleDateString("es-DO")}` : `${e.nombre}: plan gratis`);
+    toast.success(meses || dias ? `${e.nombre}: Plan Empresa hasta ${hasta.toLocaleDateString("es-DO")}` : `${e.nombre}: plan gratis`);
     await cargar();
   };
 
@@ -36,8 +36,10 @@ export function Empresas() {
     const { error } = await supabase.from("solicitudes_empresa").update({ estado }).eq("id", s.id);
     if (error) return void toast.error("No se pudo cambiar");
     if (estado === "pagada" && s.tipo === "destacar" && s.vacante_id) await supabase.from("vacantes").update({ destacada: true }).eq("id", s.vacante_id);
-    if (estado === "pagada" && s.tipo === "plan_empresa") { const e = filas.find((x) => x.id === s.empresa_id); if (e) await darPlan(e, 1); }
-    toast.success(estado === "pagada" ? (s.tipo === "destacar" ? "Pagada: vacante destacada." : "Pagada: plan activado 1 mes.") : "Listo");
+    const emp = filas.find((x) => x.id === s.empresa_id);
+    if (estado === "pagada" && s.tipo === "plan_empresa" && emp) await darPlan(emp, 1);
+    if (estado === "pagada" && s.tipo === "prueba" && emp) await darPlan(emp, 0, 14);
+    if (estado !== "pagada" || s.tipo === "asistido" || s.tipo === "destacar") toast.success(estado === "pagada" ? (s.tipo === "destacar" ? "Pagada: vacante destacada." : "Marcada como cerrada.") : "Listo");
     await cargar();
   };
   useEffect(() => { void cargar(); }, [cargar]);
@@ -60,10 +62,10 @@ export function Empresas() {
             const e = filas.find((f) => f.id === x.empresa_id);
             return (
               <div key={x.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-muted/50 p-3 text-sm">
-                <div className="min-w-0"><p className="font-bold">{x.tipo === "destacar" ? `Destacar: ${x.vacantes?.titulo ?? "vacante"}` : "Quiere el Plan Empresa"} · {e?.nombre ?? "Empresa"}</p><p className="text-muted-foreground">{[e?.contacto_nombre, e?.contacto_telefono, e?.contacto_email].filter(Boolean).join(" · ") || "Sin contacto"} · {haceDesde(x.created_at)}{x.estado === "contactada" ? " · ya contactada" : ""}</p></div>
+                <div className="min-w-0"><p className="font-bold">{x.tipo === "destacar" ? `Destacar: ${x.vacantes?.titulo ?? "vacante"}` : x.tipo === "prueba" ? "Quiere probar Plan Empresa 14 días" : x.tipo === "asistido" ? "Quiere Reclutamiento Asistido" : "Quiere el Plan Empresa"} · {e?.nombre ?? "Empresa"}</p><p className="text-muted-foreground">{[e?.contacto_nombre, e?.contacto_telefono, e?.contacto_email].filter(Boolean).join(" · ") || "Sin contacto"} · {haceDesde(x.created_at)}{x.estado === "contactada" ? " · ya contactada" : ""}</p>{x.detalle && <p className="mt-1 whitespace-pre-wrap">{x.detalle}</p>}</div>
                 <div className="flex gap-2">
                   {x.estado === "nueva" && <Button size="sm" variant="outline" onClick={() => void marcar(x, "contactada")}>Ya la contacté</Button>}
-                  <Button size="sm" onClick={() => void marcar(x, "pagada")}>Pagó: activar</Button>
+                  <Button size="sm" onClick={() => void marcar(x, "pagada")}>{x.tipo === "prueba" ? "Activar prueba 14 días" : x.tipo === "asistido" ? "Ya lo acordamos" : "Pagó: activar"}</Button>
                   <Button size="sm" variant="ghost" onClick={() => void marcar(x, "descartada")}>Descartar</Button>
                 </div>
               </div>

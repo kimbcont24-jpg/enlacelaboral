@@ -9,12 +9,13 @@ import { diasRestantes, esNueva, venceTexto } from "@/lib/claridad";
 import { viaAplicar } from "@/lib/mensajes";
 import { usePostulaciones } from "@/lib/postulaciones";
 import type { Vacante } from "@/lib/vacantes";
+import { registrarVista } from "@/lib/vistas";
 
 /** Fila compacta del listado en computadora: al tocarla se ve la vacante al lado. */
 export function FilaVacante({ job, activa, onElegir }: { job: Vacante; activa: boolean; onElegir: () => void }) {
   const { yaAplico } = usePostulaciones();
   return (
-    <button type="button" onClick={onElegir} aria-pressed={activa} className={`group relative w-full rounded-2xl border bg-surface p-4 text-left transition-[border-color,box-shadow] ${activa ? "border-[#1d6ff2] shadow-[0_0_0_3px_rgb(29_111_242/0.15)]" : "border-border hover:border-[#1d6ff2]/50"}`}>
+    <button type="button" onClick={() => { registrarVista(job.id, job.estado); onElegir(); }} aria-pressed={activa} className={`group relative w-full rounded-2xl border bg-surface p-4 text-left transition-[border-color,box-shadow] ${activa ? "border-[#1d6ff2] shadow-[0_0_0_3px_rgb(29_111_242/0.15)]" : "border-border hover:border-[#1d6ff2]/50"}`}>
       {job.destacada && <span aria-hidden="true" className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-[#ffd84d]" />}
       <span className="flex items-start gap-3">
         <EmpresaAvatar nombre={job.empresa} className="size-11 text-lg" />

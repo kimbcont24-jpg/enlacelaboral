@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { Bell, CalendarClock, Check, Columns3, FileText, MessageCircle, Megaphone, RefreshCw, Sparkles } from "lucide-react";
+import { Bell, CalendarClock, Check, Columns3, Crown, FileText, MessageCircle, Megaphone, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -23,6 +23,12 @@ const FUNCIONES = [
   { I: Megaphone, t: "Difusión incluida", d: "Tu vacante sale en la página, en el canal de WhatsApp y en Instagram, con tu nombre." },
 ];
 
+const PRECIOS = [
+  { n: "Gratis", p: "RD$0", u: "siempre", d: "Todo lo que necesitas para publicar y contratar.", b: ["Vacantes sin límite", "Tablero, agenda y mensajes por WhatsApp", "Cuánta gente vio cada vacante", "Difusión en nuestra página"], cta: "Crear cuenta gratis" },
+  { n: "Plan Empresa", p: "RD$1,900", u: "al mes", d: "Para quien contrata seguido y quiere llenar puestos más rápido.", b: ["Todo lo de Gratis", "Destaca hasta 4 vacantes a la vez, tú mismo", "Primero en el listado y en nuestros canales", "Una reclutadora revisa tus vacantes", "Atención directa por WhatsApp"], cta: "Probar 14 días gratis", top: true },
+  { n: "Reclutamiento asistido", p: "RD$5,900", u: "por puesto cubierto", d: "Hacemos el proceso por ti y te presentamos a los mejores tres.", b: ["Filtro de candidatos por una reclutadora", "Entrevistas por competencias", "Pagas solo si contratas"], cta: "Pedirlo desde mi panel" },
+];
+
 function Empresas() {
   const controles = useControles();
   const [enviado, setEnviado] = useState(false);
@@ -34,7 +40,7 @@ function Empresas() {
       <header className="hero-dark px-4 pb-16 pt-12 sm:px-6 md:pb-24 md:pt-16">
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           <div>
-            <p className="entra inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white/90"><Sparkles className="size-4 text-[#ffd84d]" /> Todo gratis para empresas</p>
+            <p className="entra inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white/90"><Sparkles className="size-4 text-[#ffd84d]" /> Publicar y elegir candidatos es gratis</p>
             <h1 className="entra mt-5 text-balance font-display text-[2rem] font-extrabold leading-[1.1] tracking-[-0.03em] [animation-delay:60ms] md:text-[2.75rem]">Publica tu vacante y elige a tu gente desde un solo lugar</h1>
             <p className="entra mt-5 max-w-xl text-lg text-white/85 [animation-delay:120ms]">Los candidatos aplican sin crear cuenta y te llegan a tu panel con su CV. Tú decides, agendas la entrevista y les escribes por WhatsApp.</p>
             <div className="entra mt-8 flex flex-wrap gap-3 [animation-delay:180ms]">
@@ -73,7 +79,30 @@ function Empresas() {
             ))}
           </ol>
           <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl bg-background p-5 text-sm font-semibold">
-            {["Sin costo durante el lanzamiento", "Vacantes visibles 30 días y se renuevan con un toque", "Revisamos cada vacante para cuidar a los candidatos"].map((x) => <span key={x} className="flex items-center gap-2"><Check className="size-4 text-success" /> {x}</span>)}
+            {["Publicar es gratis, siempre", "Vacantes visibles 30 días y se renuevan con un toque", "Revisamos cada vacante para cuidar a los candidatos"].map((x) => <span key={x} className="flex items-center gap-2"><Check className="size-4 text-success" /> {x}</span>)}
+          </div>
+        </div>
+      </section>
+
+      <section id="precios" aria-labelledby="t-precios" className="scroll-mt-20 px-4 py-16 sm:px-6 md:py-20">
+        <div className="mx-auto max-w-6xl">
+          <h2 id="t-precios" className="max-w-2xl text-balance font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">Empieza gratis. Paga solo si quieres llegar más lejos.</h2>
+          <p className="mt-3 max-w-2xl text-muted-foreground">Sin contrato, sin tarjeta y sin cobros automáticos. Primero lo activamos y después pagas por transferencia.</p>
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+            {PRECIOS.map((x) => (
+              <div key={x.n} className={`relative flex flex-col rounded-3xl p-7 ${x.top ? "bg-[#0a2f5c] text-white shadow-2xl lg:-my-3 lg:py-10" : "border border-border bg-surface"}`}>
+                {x.top && <span className="absolute -top-3 left-7 inline-flex items-center gap-1 rounded-full bg-[#ffd84d] px-3 py-1 text-xs font-extrabold text-[#3d2f00]"><Crown className="size-3.5" /> 14 días gratis</span>}
+                <h3 className="text-lg font-extrabold">{x.n}</h3>
+                <p className="mt-3"><span className="font-display text-4xl font-extrabold tracking-tight">{x.p}</span> <span className={`text-sm font-semibold ${x.top ? "text-white/70" : "text-muted-foreground"}`}>{x.u}</span></p>
+                <p className={`mt-2 text-sm ${x.top ? "text-white/80" : "text-muted-foreground"}`}>{x.d}</p>
+                <ul className="mt-5 space-y-2.5 text-sm">{x.b.map((b) => <li key={b} className="flex gap-2"><Check className={`mt-0.5 size-4 shrink-0 ${x.top ? "text-[#8ec1ff]" : "text-success"}`} />{b}</li>)}</ul>
+                <Link to="/auth" search={{ modo: "registro" }} className={`mt-auto pt-7`}><span className={`flex h-12 items-center justify-center rounded-xl text-sm font-bold ${x.top ? "btn-aplicar" : "border border-border hover:border-primary"}`}>{x.cta}</span></Link>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-center text-sm text-muted-foreground">¿Solo una vacante urgente? <strong className="text-foreground">Destácala 7 días por RD$500</strong> desde tu panel.</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm font-semibold">
+            {["Sin contrato ni permanencia", "Pagas después de activarlo", "Si dejas de pagar, sigues en Gratis con todo tu historial"].map((t) => <span key={t} className="inline-flex items-center gap-2"><ShieldCheck className="size-4 text-success" /> {t}</span>)}
           </div>
         </div>
       </section>

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { BadgeCheck, Check, Clock, Sparkles } from "lucide-react";
+import { BadgeCheck, Check, Clock, Crown, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { usePanel } from "@/components/panel/contexto";
 import { campoPanel, Titulo } from "@/components/panel/comun";
 import { supabase } from "@/integrations/supabase/client";
 import { provincias } from "@/lib/data";
+import { diasPlan, planActivo } from "@/lib/panel";
 
 const SECTORES = ["Comercio", "Manufactura", "Turismo y hotelería", "Servicios", "Tecnología", "Salud", "Educación", "Construcción", "Logística y transporte", "Finanzas", "Zona franca", "Agropecuario", "Otro"];
 
@@ -53,13 +54,15 @@ export function MiEmpresa() {
         </form>
 
         <aside className="h-fit space-y-4">
-          <div className="rounded-2xl bg-[#0a2f5c] p-5 text-white">
-            <p className="flex items-center gap-2 text-sm font-semibold text-white/75"><Sparkles className="size-4 text-[#ffd84d]" /> Tu cuenta</p>
-            <p className="mt-1 font-display text-2xl font-extrabold">Todo incluido, gratis</p>
+          <button type="button" onClick={() => p.ir("planes")} className="block w-full rounded-2xl bg-[#0a2f5c] p-5 text-left text-white">
+            <p className="flex items-center gap-2 text-sm font-semibold text-white/75">{planActivo(e) ? <Crown className="size-4 text-[#ffd84d]" /> : <Sparkles className="size-4 text-[#ffd84d]" />} Tu plan</p>
+            <p className="mt-1 font-display text-2xl font-extrabold">{planActivo(e) ? "Plan Empresa" : "Gratis"}</p>
+            <p className="mt-1 text-sm text-white/75">{planActivo(e) ? (diasPlan(e) !== null ? `Activo · ${diasPlan(e)} días restantes` : "Activo") : "Vacantes sin límite, tablero, agenda y mensajes."}</p>
             <ul className="mt-4 space-y-2 text-sm text-white/85">
-              {["Vacantes sin límite", "Tablero y ficha de candidatos", "Agenda de entrevistas", "Mensajes por WhatsApp listos", "Difusión en el canal y en Instagram"].map((b) => <li key={b} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#8ec1ff]" />{b}</li>)}
+              {(planActivo(e) ? ["Destaca hasta 4 vacantes a la vez", "Prioridad en nuestros canales", "Atención directa por WhatsApp"] : ["Todo lo que usas sigue gratis", "Destaca vacantes desde RD$500", e.prueba_usada ? "Plan Empresa RD$1,900 al mes" : "Prueba el Plan Empresa 14 días gratis"]).map((b) => <li key={b} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#8ec1ff]" />{b}</li>)}
             </ul>
-          </div>
+            <p className="mt-4 text-sm font-bold text-[#8ec1ff]">{planActivo(e) ? "Ver mi plan" : "Ver planes"}</p>
+          </button>
           <a href={`/empresa/${e.id}`} target="_blank" rel="noopener noreferrer" className="block rounded-2xl border border-border bg-surface p-5 text-sm hover:border-primary">
             <p className="font-extrabold">Tu página de empresa</p>
             <p className="mt-1 text-muted-foreground">Los candidatos ven tu descripción y todas tus vacantes abiertas. Compártela en tus redes.</p>

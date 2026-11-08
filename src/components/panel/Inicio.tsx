@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { AlertCircle, CalendarClock, ChevronRight, Clock3, Plus } from "lucide-react";
+import { AlertCircle, CalendarClock, ChevronRight, Clock3, Crown, Eye, Plus } from "lucide-react";
 
 import { usePanel } from "@/components/panel/contexto";
 import { Coincide, Persona, Vacio } from "@/components/panel/comun";
-import { coincidencia, ETAPAS, estadoVacante, horaCorta, horasRespuesta, partirMensaje, pendientesDe, textoHoras, type Pendiente } from "@/lib/panel";
+import { coincidencia, diasPlan, ETAPAS, estadoVacante, planActivo, horaCorta, horasRespuesta, partirMensaje, pendientesDe, textoHoras, type Pendiente } from "@/lib/panel";
 
 const saludo = () => { const h = new Date().getHours(); return h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches"; };
 
@@ -25,6 +25,11 @@ export function Inicio() {
   }), [candidatos]);
   const maxDia = Math.max(1, ...dias.map((x) => x.n));
   const semana = dias.slice(7).reduce((a, b) => a + b.n, 0), semanaAntes = dias.slice(0, 7).reduce((a, b) => a + b.n, 0);
+  const vistasSemana = Object.values(p.vistas).reduce((a, v) => a + v.semana, 0);
+  const pro = planActivo(p.empresa);
+  const quedan = diasPlan(p.empresa);
+  // Sugerencia honesta: la vacante abierta con menos aplicaciones, si no está destacada.
+  const floja = vacantes.filter((v) => estadoVacante(v).id === "activa" && !v.destacada).map((v) => ({ v, n: candidatos.filter((c) => c.vacante_id === v.id).length })).sort((a, b) => a.n - b.n)[0];
 
   // Mejores perfiles sin revisar: más requisitos encontrados primero.
   const destacados = useMemo(() => nuevos.map((c) => {
@@ -129,8 +134,9 @@ export function Inicio() {
             ))}
           </div>
           <div className="mt-2 flex justify-between text-[11px] text-muted-foreground"><span>{dias[0]!.d.toLocaleDateString("es-DO", { day: "numeric", month: "short" })}</span><span>Hoy</span></div>
-          <div className="mt-5 grid grid-cols-3 gap-3 border-t border-border pt-4 text-sm">
+          <div className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-4 text-sm sm:grid-cols-4">
             <div><p className="text-muted-foreground">Respondes en</p><p className="mt-0.5 font-bold">{h === null ? "—" : textoHoras(h)}</p></div>
+            <div><p className="text-muted-foreground">Vieron tus vacantes</p><p className="mt-0.5 font-bold tabular-nums">{vistasSemana} <span className="font-normal text-muted-foreground">esta semana</span></p></div>
             <div><p className="text-muted-foreground">Total recibidos</p><p className="mt-0.5 font-bold tabular-nums">{candidatos.length}</p></div>
             <div><p className="text-muted-foreground">Contratados</p><p className="mt-0.5 font-bold tabular-nums">{candidatos.filter((c) => c.etapa === "contratado").length}</p></div>
           </div>
@@ -151,6 +157,21 @@ export function Inicio() {
         </section>
       </div>
 
+      {pro && quedan !== null && quedan <= 5 ? (
+        <button type="button" onClick={() => p.ir("planes")} className="flex w-full items-center gap-4 rounded-2xl border border-[#e0b400]/50 bg-[#ffd84d]/15 p-4 text-left">
+          <Crown className="size-6 shrink-0 text-[#a37f00]" />
+          <span className="min-w-0 flex-1 text-sm"><span className="block font-extrabold">Tu Plan Empresa termina en {quedan === 1 ? "1 día" : `${quedan} días`}</span><span className="text-muted-foreground">Después vuelves a Gratis sin perder nada. Si quieres seguir, avísanos desde aquí.</span></span>
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+        </button>
+      ) : !pro && floja && floja.n < 5 ? (
+        <button type="button" onClick={() => p.ir("planes")} className="flex w-full items-center gap-4 rounded-2xl border border-border bg-surface p-4 text-left hover:border-[#e0b400]">
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#ffd84d]/30 text-[#6b5000]"><Eye className="size-5" /></span>
+          <span className="min-w-0 flex-1 text-sm"><span className="block font-extrabold">«{floja.v.titulo}» tiene {floja.n === 0 ? "pocas aplicaciones" : `${floja.n} ${floja.n === 1 ? "aplicación" : "aplicaciones"}`}{p.vistas[floja.v.id]?.total ? ` y ${p.vistas[floja.v.id]!.total} vistas` : ""}</span><span className="text-muted-foreground">Destacada sale primero en el listado y la compartimos en nuestros canales. {p.empresa.prueba_usada ? "Desde RD$500." : "Pruébalo 14 días gratis."}</span></span>
+          <span className="hidden shrink-0 text-sm font-bold text-[#1557c4] sm:inline">Ver opciones</span>
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+        </button>
+      ) : null}
+
       {destacados.length > 0 && (
         <section aria-label="Perfiles que más coinciden">
           <h2 className="mb-3 text-base font-extrabold">Sin revisar que más se acercan a lo que pides</h2>
@@ -169,7 +190,7 @@ export function Inicio() {
         <div className="mb-3 flex items-center justify-between"><h2 className="text-base font-extrabold">Cómo va cada vacante</h2><button type="button" onClick={() => p.ir("vacantes")} className="text-sm font-bold text-[#1557c4]">Ver todas</button></div>
         <div className="overflow-x-auto rounded-2xl border border-border bg-surface">
           <table className="w-full min-w-[34rem] text-sm">
-            <thead><tr className="border-b border-border text-left text-xs text-muted-foreground"><th className="px-4 py-3 font-semibold">Vacante</th><th className="px-3 py-3 font-semibold">Estado</th><th className="px-3 py-3 font-semibold">Proceso</th><th className="px-3 py-3 text-right font-semibold">Candidatos</th></tr></thead>
+            <thead><tr className="border-b border-border text-left text-xs text-muted-foreground"><th className="px-4 py-3 font-semibold">Vacante</th><th className="px-3 py-3 font-semibold">Estado</th><th className="px-3 py-3 font-semibold">Proceso</th><th className="px-3 py-3 text-right font-semibold">Vistas</th><th className="px-3 py-3 text-right font-semibold">Candidatos</th></tr></thead>
             <tbody>
               {vacantes.filter((v) => estadoVacante(v).id !== "cerrada").slice(0, 8).map((v) => {
                 const suyos = candidatos.filter((c) => c.vacante_id === v.id);
@@ -179,6 +200,7 @@ export function Inicio() {
                     <td className="max-w-[16rem] truncate px-4 py-3 font-semibold">{v.titulo}</td>
                     <td className="px-3 py-3"><span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${e.tono}`}>{e.label}</span></td>
                     <td className="px-3 py-3"><Barra candidatos={suyos} /></td>
+                    <td className="px-3 py-3 text-right tabular-nums text-muted-foreground">{p.vistas[v.id]?.total ?? 0}</td>
                     <td className="px-3 py-3 text-right font-bold tabular-nums">{suyos.length}{suyos.some((c) => c.etapa === "nuevo") && <span className="ml-1.5 rounded-full bg-[#1d6ff2] px-1.5 text-[10px] text-white">{suyos.filter((c) => c.etapa === "nuevo").length}</span>}</td>
                   </tr>
                 );

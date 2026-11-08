@@ -18,6 +18,7 @@ import { CompartirBoton } from "@/components/site/CompartirBoton";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { ReportarVacante } from "@/components/site/ReportarVacante";
+import { registrarVista } from "@/lib/vistas";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -110,6 +111,9 @@ function Detalle() {
   const sinEmpresa = job.empresa === "Empresa no indicada";
   const urgente = diasRestantes(job) <= 5;
   const secciones = job.descripcion ? bloques(job.descripcion) : [];
+
+  // Cuenta una vista por persona y sesión, para que la empresa vea cuánta gente vio su vacante.
+  useEffect(() => registrarVista(job.id, job.estado), [job.id, job.estado]);
 
   // La barra de abajo (celular) aparece solo cuando el botón grande ya no se ve.
   const botonRef = useRef<HTMLButtonElement>(null);

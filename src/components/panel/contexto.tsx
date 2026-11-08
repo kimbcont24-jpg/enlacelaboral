@@ -2,8 +2,10 @@ import { createContext, useContext } from "react";
 
 import type { Candidato, EmpresaPerfil, Etapa, Evento } from "@/lib/panel";
 import type { Vacante } from "@/lib/vacantes";
+import type { Vistas } from "@/lib/vistas";
 
-export type Seccion = "inicio" | "candidatos" | "agenda" | "vacantes" | "publicar" | "mensajes" | "empresa" | "mas";
+export type Seccion = "inicio" | "candidatos" | "agenda" | "vacantes" | "publicar" | "mensajes" | "empresa" | "planes" | "mas";
+export type TipoPedido = "plan_empresa" | "destacar" | "prueba" | "asistido";
 export type AccionVacante = "renovar" | "pausar" | "reactivar" | "cerrar";
 
 export type PanelApi = {
@@ -12,6 +14,7 @@ export type PanelApi = {
   vacantes: Vacante[];
   candidatos: Candidato[];
   solicitudes: { tipo: string; vacante_id: string | null; estado: string }[];
+  vistas: Record<string, Vistas>;
   puesto: (vacanteId: string) => string;
   vacante: (vacanteId: string) => Vacante | undefined;
   ir: (s: Seccion, filtro?: { vacante?: string; etapa?: Etapa | "" }) => void;
@@ -23,7 +26,7 @@ export type PanelApi = {
   agendar: (c: Candidato) => void;
   accionVacante: (v: Vacante, a: AccionVacante) => Promise<void>;
   editarVacante: (v: Vacante, duplicar?: boolean) => void;
-  pedir: (tipo: "plan_empresa" | "destacar", vacanteId?: string) => Promise<void>;
+  pedir: (tipo: TipoPedido, vacanteId?: string, detalle?: string) => Promise<boolean>;
   recargar: () => Promise<void>;
   setEmpresa: (e: EmpresaPerfil) => void;
 };

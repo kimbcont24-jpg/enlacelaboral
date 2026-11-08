@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Bell, BellOff, Briefcase, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, Users } from "lucide-react";
+import { Bell, BellOff, Crown, Briefcase, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -16,13 +16,15 @@ import { VacantesEmpresa } from "@/components/panel/VacantesEmpresa";
 import { PublicarEmpresa } from "@/components/panel/PublicarEmpresa";
 import { Mensajes } from "@/components/panel/Mensajes";
 import { MiEmpresa } from "@/components/panel/MiEmpresa";
+import { Planes } from "@/components/panel/Planes";
+import { cargarVistas, type Vistas } from "@/lib/vistas";
 import { Titulo } from "@/components/panel/comun";
 import { supabase } from "@/integrations/supabase/client";
 import { diasRestantes } from "@/lib/claridad";
-import { CAMPOS_CANDIDATO, CAMPOS_EMPRESA, enlaceContacto, etapaDe, mensajePara, type Candidato, type EmpresaPerfil, type Etapa, type Evento } from "@/lib/panel";
+import { CAMPOS_CANDIDATO, CAMPOS_EMPRESA, enlaceContacto, etapaDe, mensajePara, planActivo, type Candidato, type EmpresaPerfil, type Etapa, type Evento } from "@/lib/panel";
 import { rowToVacante, SELECT, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
-const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "mas"];
+const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "mas"];
 type Search = { s?: Seccion; c?: string };
 
 export const Route = createFileRoute("/panel")({
@@ -46,6 +48,7 @@ function Panel() {
   const [vacantes, setVacantes] = useState<Vacante[]>([]);
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
+  const [vistas, setVistas] = useState<Record<string, Vistas>>({});
   const [filtro, setFiltro] = useState<{ vacante: string; etapa: Etapa | "" }>({ vacante: "", etapa: "" });
   const [base, setBase] = useState<{ v: Vacante | null; duplicar: boolean }>({ v: null, duplicar: false });
   const [agendando, setAgendando] = useState<Candidato | null>(null);
@@ -92,10 +95,12 @@ function Panel() {
   }, [avisarNuevos]);
 
   const cargarTodo = useCallback(async (id: string) => {
-    const [{ data }, { data: sol }] = await Promise.all([
+    const [{ data }, { data: sol }, vs30] = await Promise.all([
       supabase.from("vacantes").select(SELECT).eq("owner_id", id).order("created_at", { ascending: false }).limit(1000),
       supabase.from("solicitudes_empresa").select("tipo,vacante_id,estado").eq("owner_id", id).order("created_at", { ascending: false }).limit(100),
+      cargarVistas(),
     ]);
+    setVistas(vs30);
     const vs = ((data ?? []) as unknown as VacanteRow[]).map(rowToVacante);
     misVacantes.current = new Set(vs.map((v) => v.id));
     setVacantes(vs);
@@ -190,23 +195,24 @@ function Panel() {
     await qc.invalidateQueries({ queryKey: ["vacantes"] });
   }, [uid, cargarTodo, qc]);
 
-  const pedir = useCallback<PanelApi["pedir"]>(async (tipo, vacanteId) => {
-    if (!empresa) return;
-    const { error } = await supabase.from("solicitudes_empresa").insert({ empresa_id: empresa.id, owner_id: uid, tipo, vacante_id: vacanteId ?? null });
-    if (error) return void toast.error("No se pudo enviar la solicitud. Intenta otra vez.");
+  const pedir = useCallback<PanelApi["pedir"]>(async (tipo, vacanteId, detalle) => {
+    if (!empresa) return false;
+    const { error } = await supabase.from("solicitudes_empresa").insert({ empresa_id: empresa.id, owner_id: uid, tipo, vacante_id: vacanteId ?? null, detalle: detalle?.trim().slice(0, 500) || null });
+    if (error) { toast.error("No se pudo enviar la solicitud. Intenta otra vez."); return false; }
     setSolicitudes((s) => [{ tipo, vacante_id: vacanteId ?? null, estado: "nueva" }, ...s]);
-    toast.success(tipo === "destacar" ? "Pedido recibido. Te contactamos para activar el destacado." : "Solicitud recibida. Te contactamos para activar tu plan.");
+    toast.success({ destacar: "Pedido recibido. Te escribimos hoy para activarlo. Pagas solo cuando esté activo.", prueba: "¡Listo! Activamos tu prueba de 14 días y te avisamos. No pagas nada.", asistido: "Recibido. Te escribimos para conocer el puesto. Pagas solo si contratas.", plan_empresa: "Solicitud recibida. Te escribimos para activar tu plan." }[tipo]);
+    return true;
   }, [empresa, uid]);
 
   const api = useMemo<PanelApi | null>(() => (empresa ? {
-    uid, empresa, vacantes, candidatos, solicitudes, filtro, puesto,
+    uid, empresa, vacantes, candidatos, solicitudes, vistas, filtro, puesto,
     vacante: (id) => vacantes.find((v) => v.id === id),
     ir, abrir, actualizar, mover, contactar, accionVacante, pedir,
     agendar: (c) => setAgendando(c),
     editarVacante: (v, duplicar = false) => { setBase({ v, duplicar }); void navigate({ search: (x: Search) => ({ ...x, s: "publicar" }) }); window.scrollTo({ top: 0 }); },
     recargar: () => cargarTodo(uid),
     setEmpresa: (e) => setEmpresa(e),
-  } : null), [uid, empresa, vacantes, candidatos, solicitudes, filtro, puesto, ir, abrir, actualizar, mover, contactar, accionVacante, pedir, navigate, cargarTodo]);
+  } : null), [uid, empresa, vacantes, candidatos, solicitudes, vistas, filtro, puesto, ir, abrir, actualizar, mover, contactar, accionVacante, pedir, navigate, cargarTodo]);
 
   const salir = async () => { await supabase.auth.signOut(); await navigate({ to: "/auth" }); };
   const pedirAvisos = async () => {
@@ -229,6 +235,7 @@ function Panel() {
     { id: "vacantes", label: "Vacantes", Icono: Briefcase },
     { id: "mensajes", label: "Mensajes", Icono: MessageSquareText },
     { id: "empresa", label: "Mi empresa", Icono: Settings },
+    { id: "planes", label: planActivo(empresa) ? "Mi plan" : "Planes", Icono: Crown },
   ];
   const abierto = search.c ? candidatos.find((c) => c.id === search.c) : undefined;
 
@@ -277,13 +284,15 @@ function Panel() {
           )}
           {seccion === "mensajes" && <Mensajes />}
           {seccion === "empresa" && <MiEmpresa />}
+          {seccion === "planes" && <Planes />}
           {seccion === "mas" && (
             <>
               <Titulo titulo="Más" />
               <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface">
                 {[
                   { t: "Mensajes a candidatos", I: MessageSquareText, f: () => ir("mensajes") },
-                  { t: "Mi empresa y plan", I: Settings, f: () => ir("empresa") },
+                  { t: "Mi empresa", I: Settings, f: () => ir("empresa") },
+                  { t: planActivo(empresa) ? "Mi plan" : "Planes y servicios", I: Crown, f: () => ir("planes") },
                   { t: avisos === "granted" ? "Avisos activados" : "Activar avisos en este teléfono", I: Bell, f: () => void pedirAvisos() },
                   { t: "Ver la página de empleos", I: ExternalLink, f: () => void navigate({ to: "/" }) },
                   { t: "Salir", I: LogOut, f: () => void salir() },
@@ -296,7 +305,7 @@ function Panel() {
         {/* Navegación de abajo (celular) */}
         <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="Panel">
           {[...nav.slice(0, 4), { id: "mas" as Seccion, label: "Más", Icono: Menu }].map(({ id, label, Icono, badge }: { id: Seccion; label: string; Icono: typeof Home; badge?: number }) => {
-            const activo = seccion === id || (id === "mas" && (seccion === "mensajes" || seccion === "empresa"));
+            const activo = seccion === id || (id === "mas" && (seccion === "mensajes" || seccion === "empresa" || seccion === "planes"));
             return (
               <button key={id} type="button" onClick={() => ir(id)} aria-current={activo ? "page" : undefined} className={`relative flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold ${activo ? "text-[#1557c4]" : "text-muted-foreground"}`}>
                 <Icono className="size-5" />{label}

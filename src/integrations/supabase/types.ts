@@ -21,7 +21,7 @@ export type Database = {
         Relationships: [];
       };
       empresas: {
-        Row: { contacto_email: string | null; contacto_nombre: string | null; contacto_telefono: string | null; created_at: string; id: string; nombre: string; owner_id: string; provincia: string | null; rnc: string; sector: string | null; verificada: boolean; plantillas: unknown; plan: string; plan_hasta: string | null; descripcion: string | null; sitio_web: string | null };
+        Row: { contacto_email: string | null; contacto_nombre: string | null; contacto_telefono: string | null; created_at: string; id: string; nombre: string; owner_id: string; provincia: string | null; rnc: string; sector: string | null; verificada: boolean; plantillas: unknown; plan: string; plan_hasta: string | null; descripcion: string | null; sitio_web: string | null; prueba_usada: boolean };
         Insert: { owner_id: string; nombre: string; rnc: string; [k: string]: unknown };
         Update: { [k: string]: unknown };
         Relationships: [];
@@ -33,8 +33,8 @@ export type Database = {
         Relationships: [];
       };
       solicitudes_empresa: {
-        Row: { id: string; empresa_id: string; owner_id: string; tipo: string; vacante_id: string | null; estado: string; created_at: string };
-        Insert: { empresa_id: string; tipo: string; owner_id?: string; vacante_id?: string | null; estado?: string };
+        Row: { id: string; empresa_id: string; owner_id: string; tipo: string; vacante_id: string | null; estado: string; created_at: string; detalle: string | null };
+        Insert: { empresa_id: string; tipo: string; owner_id?: string; vacante_id?: string | null; estado?: string; detalle?: string | null };
         Update: { [k: string]: unknown };
         Relationships: [];
       };
@@ -77,7 +77,10 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
-      empresa_publica: { Args: { p_empresa?: string | null; p_vacante?: string | null }; Returns: { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number }[] };
+      iniciar_prueba: { Args: Record<string, never>; Returns: string };
+      registrar_vista: { Args: { p_vacante: string }; Returns: undefined };
+      vistas_mis_vacantes: { Args: { p_dias?: number }; Returns: { vacante_id: string; dia: string; n: number }[] };
+      empresa_publica: { Args: { p_empresa?: string | null; p_vacante?: string | null }; Returns: { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number; pro: boolean }[] };
       suscribir_alerta: { Args: { p_email: string; p_area?: string | null; p_provincia?: string | null }; Returns: string };
       crear_pedido: { Args: { p_paquete: string; p_nombre: string; p_contacto: string; p_correo: string | null; p_puesto: string | null; p_cv: string | null; p_notas: string | null }; Returns: { codigo: string; precio: number } };
       importar_vacantes_admin: { Args: { p_filas: unknown }; Returns: { creadas: number; actualizadas: number; cerradas: number; omitidas: { fila: number; motivo: string }[] } };
