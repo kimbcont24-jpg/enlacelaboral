@@ -9,10 +9,10 @@ import { Bookmark, ChevronDown, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
-const PRINCIPALES: string[] = ["/vacantes", "/jornadas", "/empresas", "/cv"];
+const PRINCIPALES: string[] = ["/vacantes", "/alianzas", "/empresas", "/cv"];
 const nav = [
   { to: "/vacantes", label: "Empleos" },
-  { to: "/jornadas", label: "Jornadas" },
+  { to: "/alianzas", label: "Alianzas" },
   { to: "/empleo-para-todos", label: "Empleo para todos" },
   { to: "/descubrir", label: "Descubrir" },
   { to: "/empresas", label: "Empresas" },
@@ -20,7 +20,7 @@ const nav = [
   { to: "/cv", label: "Mi CV" },
   { to: "/impulso", label: "Impulso" },
   { to: "/herramientas", label: "Herramientas" },
-  { to: "/alianzas", label: "Alianzas" },
+  { to: "/jornadas", label: "Jornadas" },
 ];
 
 export function Header() {
