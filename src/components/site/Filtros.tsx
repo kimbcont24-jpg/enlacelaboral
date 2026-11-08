@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 
 import { NIVELES, nivelDe } from "@/lib/claridad";
+import { COMPROMISOS } from "@/lib/inclusion";
 import { areas, modalidades, nivelesExperiencia, provincias, rangosSalario, tiposEmpleo } from "@/lib/data";
 
 export type Filtros = { area: string; provincia: string; salarioMin: string; modalidad: string; experiencia: string; tipo: string; fecha: string; conSalario: string; nivel: string; incl?: string };
@@ -31,14 +32,14 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
   const set = (k: keyof Filtros) => (v: string) => onChange({ ...value, [k]: v });
   const hayFiltros = Object.values(value).some((v) => v !== "");
   const [mas, setMas] = useState(false);
-  const activos = [value.area, value.provincia, value.salarioMin, value.tipo, value.fecha, value.nivel].filter(Boolean).length;
+  const activos = [value.area, value.provincia, value.salarioMin, value.tipo, value.fecha, value.nivel, value.incl].filter(Boolean).length;
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
       <div className="flex flex-wrap items-center justify-start gap-2" role="group" aria-label="Atajos">
         <Chip activo={value.fecha === "1"} onClick={() => set("fecha")(value.fecha === "1" ? "" : "1")}>Publicadas hoy</Chip>
         <Chip activo={value.conSalario === "si"} onClick={() => set("conSalario")(value.conSalario === "si" ? "" : "si")}>Con salario visible</Chip>
         <Chip activo={value.nivel === "Primer empleo"} onClick={() => set("nivel")(value.nivel === "Primer empleo" ? "" : "Primer empleo")}>Primer empleo</Chip>
-        <Chip activo={value.incl === "todas"} onClick={() => set("incl")(value.incl === "todas" ? "" : "todas")}>Empleo inclusivo</Chip>
+        <Chip activo={value.incl === "discapacidad"} onClick={() => set("incl")(value.incl === "discapacidad" ? "" : "discapacidad")}>Inclusiva discapacidad</Chip>
         <Chip activo={value.modalidad === "Remoto"} onClick={() => set("modalidad")(value.modalidad === "Remoto" ? "" : "Remoto")}>Desde casa</Chip>
       </div>
       <button type="button" onClick={() => setMas((m) => !m)} aria-expanded={mas} className="mx-auto inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-primary md:hidden">
@@ -52,6 +53,7 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
       <Select label="Nivel profesional" value={value.nivel} onChange={set("nivel")} options={NIVELES.map((n) => ({ value: n, label: n }))} />
       <Select label="Experiencia" value={value.experiencia} onChange={set("experiencia")} options={nivelesExperiencia.map((n) => ({ value: n, label: n }))} />
       <Select label="Tipo de empleo" value={value.tipo} onChange={set("tipo")} options={tiposEmpleo.map((t) => ({ value: t, label: t }))} />
+      <Select label="Inclusión" value={value.incl ?? ""} onChange={set("incl")} options={[{ value: "todas", label: "Cualquier compromiso de inclusión" }, ...COMPROMISOS.map((c) => ({ value: c.id, label: c.t }))]} />
       <Select label="Fecha de publicación" value={value.fecha} onChange={set("fecha")} options={fechas} />
       {hayFiltros && (<button type="button" onClick={() => onChange(filtrosVacios)} className="rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-primary hover:underline">Limpiar filtros</button>)}
       </div>
@@ -67,11 +69,11 @@ export function filtrarJobs<T extends { area: string; provincia: string; modalid
     if (f.provincia && j.provincia !== f.provincia) return false;
     if (f.modalidad && j.modalidad !== f.modalidad) return false;
     if (f.experiencia && j.experiencia !== f.experiencia) return false;
-    if (f.nivel && nivelDe(j) !== f.nivel) return false;
+    if (f.nivel && nivelDe(j) !== f.nivel && !(f.nivel === "Primer empleo" && j.categorias.includes("incl:primer-empleo"))) return false;
     if (f.tipo && j.tipo !== f.tipo) return false;
     if (f.salarioMin && j.salarioMin < Number(f.salarioMin)) return false;
     if (f.conSalario && j.salarioMin <= 0) return false;
-    if (f.incl && !j.categorias.some((c) => c.startsWith(f.incl === "todas" ? "incl:" : `incl:${f.incl}`))) return false;
+    if (f.incl && !j.categorias.some((c) => (f.incl === "todas" ? c.startsWith("incl:") : c === `incl:${f.incl}`))) return false;
     if (f.fecha && Date.now() - new Date(j.creado).getTime() > Number(f.fecha) * 864e5) return false;
     return true;
   });

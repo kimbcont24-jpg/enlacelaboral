@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Borrador } from "@/lib/extraer";
 import type { Vacante } from "@/lib/vacantes";
+import { COMPROMISOS } from "@/lib/inclusion";
 
 /** Convierte el formulario de una vacante en la fila que se guarda. */
 export function filaDesde(b: Borrador) {
@@ -13,6 +14,7 @@ export function filaDesde(b: Borrador) {
     b.aplicar.trim() && `m:aplicar:${b.aplicar.trim()}`,
     b.redes && "m:redes:si",
     b.imagen && `m:imagen:${b.imagen}`,
+    ...(b.compromisos ?? []).filter((c) => COMPROMISOS.some((x) => x.id === c)).map((c) => `incl:${c}`),
   ].filter(Boolean) as string[];
   return {
     titulo: b.titulo.trim(),

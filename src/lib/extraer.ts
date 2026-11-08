@@ -1,5 +1,6 @@
 export type Borrador = {
   redes?: boolean;
+  compromisos?: string[];
   imagen?: string;
   titulo: string;
   empresa: string;

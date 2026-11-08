@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { COMPROMISOS } from "@/lib/inclusion";
 import { RefreshCw, ExternalLink, Eye, ImageUp, Inbox, Instagram, Share2, Star, Loader2, LogOut, Pause, Pencil, Play, Save, Send, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -192,6 +193,7 @@ function aBorrador(v: Vacante): Borrador {
     fuente: v.fuente === "Enlace Laboral" ? "" : v.fuente,
     fuenteUrl: v.fuenteUrl,
     redes: !!v.redes,
+    compromisos: v.categorias.filter((c) => c.startsWith("incl:")).map((c) => c.slice(5)),
     imagen: v.imagen || "",
   };
 }
@@ -270,6 +272,7 @@ function desdeBorradorRow(r: BorradorRow): Borrador {
     fuente: r.fuente?.trim() || b.fuente || (r.origen === "correo" ? "Correo recibido" : ""),
     fuenteUrl: r.fuente_url?.trim() || b.fuenteUrl,
     redes: /Autoriza compartir en redes: s[ií]/i.test(r.texto),
+    compromisos: COMPROMISOS.filter((c) => new RegExp(`Compromisos de inclusi[oó]n:[^\\n]*\\b${c.id}\\b`, "i").test(r.texto)).map((c) => c.id),
   };
 }
 
@@ -432,6 +435,7 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
           <label className="block"><span className={etiqueta}>Fuente (dónde la viste) *</span><input value={b.fuente} onChange={set("fuente")} className={campo} placeholder="Ej. LinkedIn, Instagram de la empresa…" /></label>
           <label className="block"><span className={etiqueta}>Enlace de la fuente</span><input value={b.fuenteUrl} onChange={set("fuenteUrl")} className={campo} placeholder="https://…" /></label>
         </div>
+        <fieldset className="mt-4 rounded-xl border border-border p-3"><legend className="px-1 text-sm font-bold">Compromisos de inclusión (para que la gente filtre)</legend><div className="mt-1 grid gap-1.5 sm:grid-cols-2">{COMPROMISOS.map((c) => { const on = (b.compromisos ?? []).includes(c.id); return <label key={c.id} className="flex items-start gap-2 text-sm"><input type="checkbox" checked={on} onChange={() => setB((x) => ({ ...x, compromisos: on ? (x.compromisos ?? []).filter((y) => y !== c.id) : [...(x.compromisos ?? []), c.id] }))} className="mt-1 size-4" /><span><strong>{c.t}</strong></span></label>; })}</div></fieldset>
         <label className="mt-4 flex items-start gap-2 text-sm"><input type="checkbox" checked={!!b.redes} onChange={(e) => setB((x) => ({ ...x, redes: e.target.checked }))} className="mt-1 size-4" /><span>La empresa o quien la envió <strong>autoriza compartirla en las redes de Enlace Laboral</strong> (Telegram, Facebook, Instagram, WhatsApp). Sin esto, no se comparte sola.</span></label>
         <Button type="button" onClick={() => void publicar()} disabled={guardando} className="mt-6 h-12 w-full text-base font-bold sm:w-auto sm:px-8">
           {guardando ? <Loader2 className="animate-spin" /> : editar ? <Save /> : <Send />} {editar ? "Guardar cambios" : "Publicar vacante"}
