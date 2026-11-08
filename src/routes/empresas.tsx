@@ -24,8 +24,8 @@ const FUNCIONES = [
 ];
 
 const PRECIOS = [
-  { n: "Gratis", p: "RD$0", u: "siempre", d: "Todo lo que necesitas para publicar y contratar.", b: ["Vacantes sin límite", "Tablero, agenda y mensajes por WhatsApp", "Cuánta gente vio cada vacante", "Difusión en nuestra página"], cta: "Crear cuenta gratis" },
-  { n: "Plan Empresa", p: "RD$1,900", u: "al mes", d: "Para quien contrata seguido y quiere llenar puestos más rápido.", b: ["Todo lo de Gratis", "Destaca hasta 4 vacantes a la vez, tú mismo", "Primero en el listado y en nuestros canales", "Una reclutadora revisa tus vacantes", "Atención directa por WhatsApp"], cta: "Probar 14 días gratis", top: true },
+  { n: "Gratis", p: "RD$0", u: "siempre", d: "Todo lo que necesitas para publicar y contratar.", b: ["Vacantes sin límite", "Tablero, agenda y mensajes por WhatsApp", "Preguntas de filtro y salario del mercado", "Cuánta gente vio cada vacante"], cta: "Crear cuenta gratis" },
+  { n: "Plan Empresa", p: "RD$1,900", u: "al mes", d: "Para quien contrata seguido y quiere llenar puestos más rápido.", b: ["Todo lo de Gratis", "Destaca hasta 4 vacantes a la vez, tú mismo", "Primero en el listado y en nuestros canales", "Informe para gerencia (imprimir o PDF)", "Una reclutadora revisa tus vacantes", "Atención directa por WhatsApp"], cta: "Probar 14 días gratis", top: true },
   { n: "Reclutamiento asistido", p: "RD$5,900", u: "por puesto cubierto", d: "Hacemos el proceso por ti y te presentamos a los mejores tres.", b: ["Filtro de candidatos por una reclutadora", "Entrevistas por competencias", "Pagas solo si contratas"], cta: "Pedirlo desde mi panel" },
 ];
 

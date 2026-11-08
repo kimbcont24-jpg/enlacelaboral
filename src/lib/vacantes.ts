@@ -1,3 +1,4 @@
+import { leerPreguntas, type Pregunta } from "@/lib/preguntas";
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +36,7 @@ export type Vacante = {
   destacada: boolean;
   redes?: boolean;
   imagen?: string;
+  preguntas?: Pregunta[];
 };
 
 export type VacanteRow = {
@@ -53,9 +55,10 @@ export type VacanteRow = {
   estado: string;
   created_at: string;
   destacada?: boolean | null;
+  preguntas?: unknown;
 };
 
-export const SELECT = "id,titulo,area,provincia,modalidad,tipo,experiencia,salario_min,salario_max,descripcion,requisitos,etiquetas,estado,created_at,destacada";
+export const SELECT = "id,titulo,area,provincia,modalidad,tipo,experiencia,salario_min,salario_max,descripcion,requisitos,etiquetas,estado,created_at,destacada,preguntas";
 
 const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
 
@@ -110,6 +113,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
     destacada: !!r.destacada,
     redes: meta["redes"] === "si",
     imagen: meta["imagen"] || "",
+    preguntas: leerPreguntas(r.preguntas),
   };
 }
 

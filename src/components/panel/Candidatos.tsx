@@ -1,13 +1,14 @@
+import { cumple, textoRespuesta } from "@/lib/preguntas";
 import { useEffect, useMemo, useState } from "react";
 import { CalendarClock, Columns3, Download, List, MessageCircle, Search, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { usePanel } from "@/components/panel/contexto";
-import { btnLinea, Coincide, Estrellas, EtapaPill, Persona, Titulo, Vacio } from "@/components/panel/comun";
+import { btnLinea, Coincide, Filtro, Estrellas, EtapaPill, Persona, Titulo, Vacio } from "@/components/panel/comun";
 import { claveContacto, coincidencia, descargarCsv, ETAPAS, etapaDe, horaCorta, partirMensaje, type Candidato, type Etapa } from "@/lib/panel";
 import { hace } from "@/lib/vacantes";
 
-type Orden = "recientes" | "coincidencia" | "puntaje";
+type Orden = "recientes" | "coincidencia" | "puntaje" | "filtros";
 
 export function Candidatos() {
   const p = usePanel();
@@ -31,12 +32,13 @@ export function Candidatos() {
     return new Map(p.candidatos.map((c) => {
       const v = p.vacante(c.vacante_id);
       const m = partirMensaje(c.mensaje);
-      return [c.id, { k: v ? coincidencia(`${m.mensaje}\n${m.cv}`, v.requisitos) : null, otras: [...(por.get(claveContacto(c.contacto)) ?? [])].filter((id) => id !== c.vacante_id).length, cv: !!m.cv }];
+      return [c.id, { k: v ? coincidencia(`${m.mensaje}\n${m.cv}`, v.requisitos) : null, otras: [...(por.get(claveContacto(c.contacto)) ?? [])].filter((id) => id !== c.vacante_id).length, cv: !!m.cv, f: cumple(c.respuestas ?? []) }];
     }));
   }, [p]);
 
   const base = p.candidatos.filter((c) => (!vacanteSel || c.vacante_id === vacanteSel) && (!q || `${c.nombre} ${c.contacto} ${c.mensaje ?? ""} ${c.nota ?? ""}`.toLowerCase().includes(q.toLowerCase())));
   const ordenar = (xs: Candidato[]) => {
+    if (orden === "filtros") { const r = (c: Candidato) => { const f = extra.get(c.id)?.f; return f ? f.ok / f.total : -1; }; return [...xs].sort((a, b) => r(b) - r(a) || b.created_at.localeCompare(a.created_at)); }
     if (orden === "puntaje") return [...xs].sort((a, b) => (b.puntaje ?? 0) - (a.puntaje ?? 0) || b.created_at.localeCompare(a.created_at));
     if (orden === "coincidencia") { const r = (c: Candidato) => { const k = extra.get(c.id)?.k; return k ? k.ok.length / k.total : -1; }; return [...xs].sort((a, b) => r(b) - r(a)); }
     return xs;
@@ -44,8 +46,8 @@ export function Candidatos() {
   const lista = ordenar(base.filter((c) => !etapaSel || c.etapa === etapaSel));
 
   const exportar = (cs: Candidato[]) => descargarCsv(`candidatos-${new Date().toISOString().slice(0, 10)}.csv`, [
-    ["Nombre", "Contacto", "Vacante", "Etapa", "Valoración", "Aplicó", "Entrevista", "Nota", "Mensaje y CV"],
-    ...cs.map((c) => [c.nombre, c.contacto, p.puesto(c.vacante_id), etapaDe(c.etapa).corto, c.puntaje ?? "", new Date(c.created_at).toLocaleDateString("es-DO"), c.entrevista_at ? new Date(c.entrevista_at).toLocaleString("es-DO") : "", c.nota ?? "", c.mensaje ?? ""]),
+    ["Nombre", "Contacto", "Vacante", "Etapa", "Valoración", "Aplicó", "Entrevista", "Nota", "Respuestas", "Mensaje y CV"],
+    ...cs.map((c) => [c.nombre, c.contacto, p.puesto(c.vacante_id), etapaDe(c.etapa).corto, c.puntaje ?? "", new Date(c.created_at).toLocaleDateString("es-DO"), c.entrevista_at ? new Date(c.entrevista_at).toLocaleString("es-DO") : "", c.nota ?? "", (c.respuestas ?? []).map((r) => `${r.texto} ${textoRespuesta(r)}`).join(" | "), c.mensaje ?? ""]),
   ]);
 
   const moverGrupo = async (etapa: Etapa) => {
@@ -99,6 +101,7 @@ export function Candidatos() {
         <select value={orden} onChange={(e) => setOrden(e.target.value as Orden)} aria-label="Ordenar" className="h-11 rounded-xl border border-border bg-surface px-3 text-sm font-semibold">
           <option value="recientes">Más recientes</option>
           <option value="coincidencia">Más requisitos encontrados</option>
+          {p.candidatos.some((c) => c.respuestas?.length) && <option value="filtros">Cumplen mis filtros primero</option>}
           <option value="puntaje">Mejor valorados</option>
         </select>
       </div>
@@ -132,6 +135,7 @@ export function Candidatos() {
                               </span>
                             </span>
                             <span className="mt-2 flex flex-wrap items-center gap-1.5">
+                              {x?.f && <Filtro ok={x.f.ok} total={x.f.total} />}
                               {x?.k && <Coincide ok={x.k.ok.length} total={x.k.total} />}
                               <Estrellas valor={c.puntaje} />
                               {x && x.otras > 0 && <span className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-bold text-primary">+{x.otras} vacante{x.otras > 1 ? "s" : ""}</span>}
@@ -186,6 +190,7 @@ export function Candidatos() {
                           <span className="flex flex-wrap items-center gap-2"><span className="truncate font-bold">{c.nombre}</span><EtapaPill etapa={c.etapa} /><Estrellas valor={c.puntaje} /></span>
                           <span className="block truncate text-xs text-muted-foreground">{p.puesto(c.vacante_id)} · {hace(c.created_at)}{x?.cv ? " · con CV" : ""}</span>
                         </span>
+                        {x?.f && <Filtro ok={x.f.ok} total={x.f.total} />}
                         {x?.k && <span className="hidden sm:inline"><Coincide ok={x.k.ok.length} total={x.k.total} /></span>}
                       </button>
                       <button type="button" onClick={() => p.contactar(c)} aria-label={`Escribir a ${c.nombre}`} className="grid size-9 shrink-0 place-items-center rounded-lg text-[#1fa855] hover:bg-[#1fa855]/10"><MessageCircle className="size-5" /></button>

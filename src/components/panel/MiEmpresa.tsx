@@ -59,7 +59,7 @@ export function MiEmpresa() {
             <p className="mt-1 font-display text-2xl font-extrabold">{planActivo(e) ? "Plan Empresa" : "Gratis"}</p>
             <p className="mt-1 text-sm text-white/75">{planActivo(e) ? (diasPlan(e) !== null ? `Activo · ${diasPlan(e)} días restantes` : "Activo") : "Vacantes sin límite, tablero, agenda y mensajes."}</p>
             <ul className="mt-4 space-y-2 text-sm text-white/85">
-              {(planActivo(e) ? ["Destaca hasta 4 vacantes a la vez", "Prioridad en nuestros canales", "Atención directa por WhatsApp"] : ["Todo lo que usas sigue gratis", "Destaca vacantes desde RD$500", e.prueba_usada ? "Plan Empresa RD$1,900 al mes" : "Prueba el Plan Empresa 14 días gratis"]).map((b) => <li key={b} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#8ec1ff]" />{b}</li>)}
+              {(planActivo(e) ? ["Destaca hasta 4 vacantes a la vez", "Informe para gerencia", "Prioridad en nuestros canales", "Atención directa por WhatsApp"] : ["Todo lo que usas sigue gratis", "Destaca vacantes desde RD$500", e.prueba_usada ? "Plan Empresa RD$1,900 al mes" : "Prueba el Plan Empresa 14 días gratis"]).map((b) => <li key={b} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#8ec1ff]" />{b}</li>)}
             </ul>
             <p className="mt-4 text-sm font-bold text-[#8ec1ff]">{planActivo(e) ? "Ver mi plan" : "Ver planes"}</p>
           </button>

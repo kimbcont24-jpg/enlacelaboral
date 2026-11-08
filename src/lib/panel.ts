@@ -1,3 +1,4 @@
+import type { Respuesta } from "@/lib/preguntas";
 import { diasRestantes } from "@/lib/claridad";
 import type { Vacante } from "@/lib/vacantes";
 
@@ -29,8 +30,9 @@ export type Candidato = {
   entrevista_at: string | null;
   entrevista_lugar: string | null;
   historial: Evento[];
+  respuestas: Respuesta[];
 };
-export const CAMPOS_CANDIDATO = "id,vacante_id,nombre,contacto,mensaje,created_at,etapa,nota,etapa_at,puntaje,entrevista_at,entrevista_lugar,historial";
+export const CAMPOS_CANDIDATO = "id,vacante_id,nombre,contacto,mensaje,created_at,etapa,nota,etapa_at,puntaje,entrevista_at,entrevista_lugar,historial,respuestas";
 
 export type Plantillas = Partial<Record<ClavePlantilla, string>>;
 export type EmpresaPerfil = {

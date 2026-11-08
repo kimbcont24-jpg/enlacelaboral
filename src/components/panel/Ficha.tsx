@@ -1,9 +1,10 @@
+import { cumple, textoRespuesta } from "@/lib/preguntas";
 import { useEffect, useRef, useState } from "react";
 import { CalendarClock, CalendarPlus, Check, ChevronLeft, ChevronRight, Copy, Mail, MapPin, MessageCircle, Phone, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { usePanel } from "@/components/panel/contexto";
-import { Coincide, Estrellas, EtapaPill, Persona } from "@/components/panel/comun";
+import { Coincide, Estrellas, Filtro, EtapaPill, Persona } from "@/components/panel/comun";
 import { claveContacto, coincidencia, correoDe, descargarIcs, enlaceGoogleCalendar, ETAPAS, fechaLarga, horaCorta, partirMensaje, telefono, type Candidato, type Etapa } from "@/lib/panel";
 import { hace } from "@/lib/vacantes";
 
@@ -104,6 +105,20 @@ export function Ficha({ id, onCerrar, onOtro }: { id: string; onCerrar: () => vo
                 <a href={enlaceGoogleCalendar(c, puesto) ?? "#"} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-surface px-3 py-1.5 hover:underline">Google Calendar</a>
                 <button type="button" onClick={() => descargarIcs(c, puesto)} className="rounded-lg bg-surface px-3 py-1.5 hover:underline">Outlook / iPhone</button>
               </div>
+            </section>
+          )}
+
+          {c.respuestas?.length > 0 && (
+            <section className="px-5 pt-5" aria-label="Preguntas de filtro">
+              <h3 className="flex items-center gap-2 text-sm font-extrabold">Sus respuestas {cumple(c.respuestas) && <Filtro ok={cumple(c.respuestas)!.ok} total={cumple(c.respuestas)!.total} />}</h3>
+              <ul className="mt-3 space-y-2 text-sm">
+                {c.respuestas.map((r) => (
+                  <li key={r.id} className="rounded-xl bg-surface p-3">
+                    <p className="text-muted-foreground">{r.texto}</p>
+                    <p className={`mt-0.5 flex items-center gap-1.5 font-bold ${r.ok === false ? "text-destructive" : ""}`}>{r.ok === true && <Check className="size-4 text-success" />}{r.ok === false && <X className="size-4" />}{textoRespuesta(r)}</p>
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
 

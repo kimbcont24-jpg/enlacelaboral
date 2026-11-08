@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cvCompleto, leerCV, textoCV, type CV } from "@/lib/cv";
 import { enlaceConMensaje, mensajeAplicacion, viaAplicar } from "@/lib/mensajes";
 import { usePostulaciones } from "@/lib/postulaciones";
+import { responder } from "@/lib/preguntas";
 import { enlaceAplicar, useVacantes, type Vacante } from "@/lib/vacantes";
 
 /** Lo que la persona escribió la última vez: la próxima aplicación ya sale rellena. */
@@ -39,13 +40,14 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
   const [editado, setEditado] = useState(false);
   const [copiado, setCopiado] = useState<"" | "mensaje" | "cv">("");
   const [entrega, setEntrega] = useState<Entrega>("guardada");
+  const [resp, setResp] = useState<Record<string, string>>({});
   const { registrar, yaAplico } = usePostulaciones();
   const { jobs } = useVacantes();
 
   // Cada vez que se abre una vacante: pantalla limpia y datos recordados.
   useEffect(() => {
     if (!job) return;
-    setEstado("listo"); setError(null); setEditado(false); setCopiado(""); setMensaje("");
+    setEstado("listo"); setError(null); setEditado(false); setCopiado(""); setMensaje(""); setResp({});
     const g = leerCV();
     const completo = cvCompleto(g);
     setCv(completo ? g : null);
@@ -104,11 +106,14 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
     setEstado("enviado");
   };
 
+  const preguntas = job.preguntas ?? [];
   const enviarFormulario = async () => {
+    const falta = preguntas.find((q) => !(resp[q.id] ?? "").trim());
+    if (falta) { setError(`Responde: «${falta.texto}»`); return; }
     setEstado("enviando");
     setError(null);
     const cuerpo = [mensaje.trim(), cv && incluirCv ? `--- CV ---\n${textoCV(cv)}` : ""].filter(Boolean).join("\n\n");
-    const { error: err } = await supabase.from("aplicaciones").insert({ vacante_id: job.id, nombre: nombre.trim(), contacto: contacto.trim(), mensaje: cuerpo || null });
+    const { error: err } = await supabase.from("aplicaciones").insert({ vacante_id: job.id, nombre: nombre.trim(), contacto: contacto.trim(), mensaje: cuerpo || null, ...(preguntas.length ? { respuestas: responder(preguntas, resp) } : {}) });
     if (err) {
       setError("No pudimos enviar tus datos. Revisa tu internet e intenta de nuevo.");
       setEstado("listo");
@@ -207,6 +212,22 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
                 <p className="text-sm text-muted-foreground">{via.clave === "correo" ? "Aplicas aquí mismo y nosotros se lo enviamos a la empresa. Sin cuenta, sin costo." : "Deja tus datos y los hacemos llegar a la empresa. Sin cuenta, sin costo."}</p>
                 <input required value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" placeholder="Tu nombre completo" aria-label="Tu nombre completo" className={campo} />
                 <input required value={contacto} onChange={(e) => setContacto(e.target.value)} autoComplete="tel" placeholder="Tu WhatsApp o correo" aria-label="Tu WhatsApp o correo" className={campo} />
+                {preguntas.length > 0 && (
+                  <fieldset className="space-y-3 rounded-2xl border border-border p-4">
+                    <legend className="px-1 text-sm font-bold">La empresa pregunta</legend>
+                    {preguntas.map((q) => (
+                      <div key={q.id}>
+                        <p className="text-sm font-semibold">{q.texto}</p>
+                        {q.tipo === "si_no" ? (
+                          <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label={q.texto}>
+                            {(["si", "no"] as const).map((v) => <button key={v} type="button" role="radio" aria-checked={resp[q.id] === v} onClick={() => setResp((r) => ({ ...r, [q.id]: v }))} className={`h-11 rounded-xl border text-sm font-bold transition-colors ${resp[q.id] === v ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background hover:border-primary"}`}>{v === "si" ? "Sí" : "No"}</button>)}
+                          </div>
+                        ) : <input value={resp[q.id] ?? ""} onChange={(e) => setResp((r) => ({ ...r, [q.id]: e.target.value }))} maxLength={300} aria-label={q.texto} placeholder="Tu respuesta" className={`${campo} mt-2 py-3`} />}
+                      </div>
+                    ))}
+                    <p className="text-xs text-muted-foreground">Responde con la verdad: así llegas a los puestos que sí son para ti.</p>
+                  </fieldset>
+                )}
                 {cv ? (
                   <label className="flex items-start gap-2.5 rounded-xl bg-secondary px-4 py-3 text-sm"><input type="checkbox" checked={incluirCv} onChange={(e) => setIncluirCv(e.target.checked)} className="mt-0.5 size-4 accent-[var(--cta)]" /> <span>Incluir mi CV ({cv.nombre}). <Link to="/cv" onClick={onClose} className="font-semibold text-primary underline">Editarlo</Link></span></label>
                 ) : <SinCv />}

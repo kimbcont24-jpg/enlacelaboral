@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, Circle, Loader2 } from "lucide-react";
+import { CheckCircle2, Circle, ListChecks, Loader2, Plus, TrendingUp, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,10 @@ import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from 
 import { borradorVacio, type Borrador } from "@/lib/extraer";
 import type { EmpresaPerfil } from "@/lib/panel";
 import { filaDesde } from "@/lib/publicar";
-import type { Vacante } from "@/lib/vacantes";
+import { useVacantes, type Vacante } from "@/lib/vacantes";
+import { salarioMercado } from "@/lib/mercado";
+import { PLANTILLAS_VACANTE } from "@/lib/plantillas-vacante";
+import { nuevaId, SUGERIDAS, type Pregunta } from "@/lib/preguntas";
 
 const FUENTE = "Publicada por la empresa";
 const campo = "h-12 w-full rounded-xl border border-border bg-background px-3.5 text-base outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
@@ -36,6 +39,13 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
   const editar = duplicar ? null : base;
   const [b, setB] = useState<Borrador>(() => (base ? borradorDe(base) : { ...borradorVacio, empresa: empresa.nombre, fuente: FUENTE }));
   const [guardando, setGuardando] = useState(false);
+  const [preguntas, setPreguntas] = useState<Pregunta[]>(() => base?.preguntas ?? []);
+  const { jobs } = useVacantes();
+  const mercado = b.titulo.trim().length >= 4 ? salarioMercado(b.titulo, b.provincia, jobs, editar?.id) : null;
+  const miSalario = (Number(b.salarioMin) || 0) && (Number(b.salarioMax) ? (Number(b.salarioMin) + Number(b.salarioMax)) / 2 : Number(b.salarioMin));
+  const usarPlantilla = (t: (typeof PLANTILLAS_VACANTE)[number]) => setB((x) => ({ ...x, titulo: t.puesto, area: t.area, descripcion: t.descripcion, requisitos: t.requisitos.join("\n") }));
+  const ponPregunta = (id: string, cambios: Partial<Pregunta>) => setPreguntas((ps) => ps.map((q) => (q.id === id ? { ...q, ...cambios } : q)));
+  const agregarPregunta = (q?: Omit<Pregunta, "id">) => setPreguntas((ps) => (ps.length >= 3 ? ps : [...ps, { id: nuevaId(), ...(q ?? { texto: "", tipo: "si_no", esperada: "si" }) }]));
   const pon = <K extends keyof Borrador>(k: K, v: Borrador[K]) => setB((x) => ({ ...x, [k]: v }));
 
   // Vista de claridad en vivo: la misma medida que ven los candidatos.
@@ -57,7 +67,8 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
     if (max && min && max < min) return void toast.error("El salario máximo no puede ser menor que el mínimo.");
     setGuardando(true);
     // Sin "cómo aplicar": la gente aplica en Enlace Laboral y llega a este panel.
-    const fila = filaDesde({ ...b, empresa: empresa.nombre, fuente: FUENTE, fuenteUrl: "", aplicar: "", redes: false, imagen: "" });
+    const limpias = preguntas.map((q) => ({ ...q, texto: q.texto.trim().slice(0, 200) })).filter((q) => q.texto.length >= 5);
+    const fila = { ...filaDesde({ ...b, empresa: empresa.nombre, fuente: FUENTE, fuenteUrl: "", aplicar: "", redes: false, imagen: "" }), preguntas: limpias };
     const q = editar
       ? supabase.from("vacantes").update(fila).eq("id", editar.id).select("estado").single()
       : supabase.from("vacantes").insert({ ...fila, empresa_id: empresa.id, owner_id: uid, estado: "publicada" }).select("estado").single();
@@ -72,6 +83,13 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
   return (
     <form onSubmit={(e) => void guardar(e)} className="grid gap-6 lg:grid-cols-[1fr_18rem]">
       <div className="space-y-5 rounded-2xl border border-border bg-surface p-5 sm:p-6">
+        {!editar && !b.descripcion.trim() && (
+          <div className="rounded-2xl bg-[#1d6ff2]/[0.06] p-4">
+            <p className="flex items-center gap-2 text-sm font-extrabold"><Wand2 className="size-4 text-[#1d6ff2]" /> Empieza con un ejemplo</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">Llenamos funciones y requisitos. Tú cambias lo que quieras.</p>
+            <div className="mt-3 flex flex-wrap gap-2">{PLANTILLAS_VACANTE.map((t) => <button key={t.puesto} type="button" onClick={() => usarPlantilla(t)} className="rounded-full border border-border bg-surface px-3 py-1.5 text-[13px] font-semibold hover:border-[#1d6ff2] hover:text-[#1557c4]">{t.puesto}</button>)}</div>
+          </div>
+        )}
         <div>
           <label className={etiqueta} htmlFor="p-titulo">Puesto</label>
           <input id="p-titulo" value={b.titulo} onChange={(e) => pon("titulo", e.target.value)} placeholder="Ej.: Auxiliar de almacén" className={campo} maxLength={120} required />
@@ -89,7 +107,16 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
             <input inputMode="numeric" aria-label="Salario desde" value={b.salarioMin} onChange={(e) => pon("salarioMin", e.target.value.replace(/\D/g, ""))} placeholder="Desde" className={campo} />
             <input inputMode="numeric" aria-label="Salario hasta" value={b.salarioMax} onChange={(e) => pon("salarioMax", e.target.value.replace(/\D/g, ""))} placeholder="Hasta (opcional)" className={campo} />
           </div>
-          <p className="mt-1.5 text-xs text-muted-foreground">Las vacantes con salario se entienden mejor y atraen gente que sí puede aceptar la oferta.</p>
+          {mercado ? (
+            <div className="mt-2.5 rounded-xl border border-border bg-background p-3.5">
+              <p className="flex items-center gap-1.5 text-sm font-extrabold"><TrendingUp className="size-4 text-[#1d6ff2]" /> Lo que pagan puestos parecidos{mercado.provincia ? ` en ${b.provincia}` : ""}</p>
+              <div className="relative mt-3 h-2 rounded-full bg-gradient-to-r from-[#1d6ff2]/20 via-[#1d6ff2]/60 to-[#1d6ff2]/20">
+                {miSalario > 0 && <span className="absolute top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#0a2f5c] shadow" style={{ left: `${Math.min(100, Math.max(0, ((miSalario - mercado.bajo * 0.8) / (mercado.alto * 1.2 - mercado.bajo * 0.8)) * 100))}%` }} title="Tu oferta" />}
+              </div>
+              <div className="mt-1.5 flex justify-between text-xs tabular-nums text-muted-foreground"><span>RD${mercado.bajo.toLocaleString("es-DO")}</span><span className="font-bold text-foreground">RD${mercado.medio.toLocaleString("es-DO")}</span><span>RD${mercado.alto.toLocaleString("es-DO")}</span></div>
+              <p className="mt-2 text-xs text-muted-foreground">La mitad de {mercado.n} vacantes parecidas en Enlace Laboral paga entre RD${mercado.bajo.toLocaleString("es-DO")} y RD${mercado.alto.toLocaleString("es-DO")}.{miSalario > 0 ? (miSalario < mercado.bajo ? " Tu oferta está por debajo: puede que lleguen menos personas." : miSalario > mercado.alto ? " Tu oferta está por encima: buena para atraer a los mejores." : " Tu oferta está dentro de lo normal.") : ""}</p>
+            </div>
+          ) : <p className="mt-1.5 text-xs text-muted-foreground">Las vacantes con salario se entienden mejor y atraen gente que sí puede aceptar la oferta.</p>}
         </fieldset>
         <div>
           <label className={etiqueta} htmlFor="p-desc">Qué hará la persona</label>
@@ -100,6 +127,40 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
           <textarea id="p-req" value={b.requisitos} onChange={(e) => pon("requisitos", e.target.value)} rows={4} maxLength={3000} placeholder={"Bachiller\nManejo de Excel\nDisponibilidad de horario"} className={`${campo} h-auto py-3`} />
           <p className="mt-1.5 text-xs text-muted-foreground">No pidas edad, sexo, foto ni estado civil: pide lo que necesita el trabajo.</p>
         </div>
+        <fieldset className="rounded-2xl border border-border p-4">
+          <legend className="px-1 text-sm font-bold"><span className="inline-flex items-center gap-1.5"><ListChecks className="size-4 text-[#1d6ff2]" /> Preguntas de filtro <span className="font-normal text-muted-foreground">(opcional, hasta 3)</span></span></legend>
+          <p className="text-xs text-muted-foreground">El candidato las responde al aplicar. En tu panel ves al instante quién cumple lo indispensable.</p>
+          <ul className="mt-3 space-y-3">
+            {preguntas.map((q, i) => (
+              <li key={q.id} className="rounded-xl bg-background p-3">
+                <div className="flex items-start gap-2">
+                  <span className="mt-2.5 text-xs font-bold text-muted-foreground">{i + 1}.</span>
+                  <input value={q.texto} onChange={(e) => ponPregunta(q.id, { texto: e.target.value })} maxLength={200} placeholder="Escribe la pregunta" aria-label={`Pregunta ${i + 1}`} className={`${campo} h-11 bg-surface`} />
+                  <button type="button" onClick={() => setPreguntas((ps) => ps.filter((x) => x.id !== q.id))} aria-label="Quitar pregunta" className="mt-1 grid size-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-muted"><X className="size-4" /></button>
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2 pl-5 text-[13px]">
+                  <select value={q.tipo} onChange={(e) => ponPregunta(q.id, { tipo: e.target.value as Pregunta["tipo"], esperada: e.target.value === "si_no" ? "si" : undefined })} aria-label="Tipo de respuesta" className="h-9 rounded-lg border border-border bg-surface px-2 font-semibold">
+                    <option value="si_no">Respuesta Sí / No</option>
+                    <option value="texto">Respuesta escrita</option>
+                  </select>
+                  {q.tipo === "si_no" && (
+                    <label className="inline-flex items-center gap-1.5">Busco que responda
+                      <select value={q.esperada ?? ""} onChange={(e) => ponPregunta(q.id, { esperada: (e.target.value || undefined) as Pregunta["esperada"] })} className="h-9 rounded-lg border border-border bg-surface px-2 font-semibold">
+                        <option value="si">Sí</option><option value="no">No</option><option value="">Cualquiera</option>
+                      </select>
+                    </label>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+          {preguntas.length < 3 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {SUGERIDAS.filter((sq) => !preguntas.some((q) => q.texto === sq.texto)).slice(0, 4).map((sq) => <button key={sq.texto} type="button" onClick={() => agregarPregunta(sq)} className="rounded-full border border-dashed border-border px-3 py-1.5 text-left text-[12.5px] font-semibold text-muted-foreground hover:border-[#1d6ff2] hover:text-[#1557c4]">+ {sq.texto}</button>)}
+              <button type="button" onClick={() => agregarPregunta()} className="inline-flex items-center gap-1 rounded-full bg-[#0a2f5c] px-3 py-1.5 text-[12.5px] font-bold text-white"><Plus className="size-3.5" /> Escribir la mía</button>
+            </div>
+          )}
+        </fieldset>
         <button type="submit" disabled={guardando} className="btn-aplicar flex h-12 w-full items-center justify-center gap-2 rounded-xl text-base sm:w-auto sm:px-8">
           {guardando && <Loader2 className="size-4 animate-spin" />} {editar ? "Guardar cambios" : "Publicar vacante"}
         </button>

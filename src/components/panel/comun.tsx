@@ -33,6 +33,12 @@ export function Estrellas({ valor, onCambio, tam = "size-4" }: { valor: number |
   );
 }
 
+/** Resultado de las preguntas de filtro: cuántas respuestas son las que busca la empresa. */
+export function Filtro({ ok, total }: { ok: number; total: number }) {
+  const todo = ok === total;
+  return <span title="Respuestas a tus preguntas de filtro" className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums ${todo ? "bg-[#0a2f5c] text-white" : "bg-destructive/10 text-destructive"}`}>{todo ? "Cumple filtros" : `No cumple ${total - ok}`}</span>;
+}
+
 export function Coincide({ ok, total }: { ok: number; total: number }) {
   const r = ok / total;
   const tono = r >= 0.7 ? "bg-success/12 text-success" : r >= 0.4 ? "bg-[#c27803]/12 text-[#8a5200]" : "bg-muted text-muted-foreground";

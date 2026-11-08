@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Bell, BellOff, Crown, Briefcase, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, Users } from "lucide-react";
+import { BarChart3, Bell, BellOff, Crown, Briefcase, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -17,6 +17,8 @@ import { PublicarEmpresa } from "@/components/panel/PublicarEmpresa";
 import { Mensajes } from "@/components/panel/Mensajes";
 import { MiEmpresa } from "@/components/panel/MiEmpresa";
 import { Planes } from "@/components/panel/Planes";
+import { Informe } from "@/components/panel/Informe";
+import { leerRespuestas } from "@/lib/preguntas";
 import { cargarVistas, type Vistas } from "@/lib/vistas";
 import { Titulo } from "@/components/panel/comun";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +26,7 @@ import { diasRestantes } from "@/lib/claridad";
 import { CAMPOS_CANDIDATO, CAMPOS_EMPRESA, enlaceContacto, etapaDe, mensajePara, planActivo, type Candidato, type EmpresaPerfil, type Etapa, type Evento } from "@/lib/panel";
 import { rowToVacante, SELECT, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
-const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "mas"];
+const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "informe", "mas"];
 type Search = { s?: Seccion; c?: string };
 
 export const Route = createFileRoute("/panel")({
@@ -69,7 +71,7 @@ function Panel() {
 
   /* ───── Carga ───── */
 
-  const aCandidato = (r: Record<string, unknown>): Candidato => ({ ...(r as unknown as Candidato), historial: Array.isArray(r["historial"]) ? (r["historial"] as Evento[]) : [] });
+  const aCandidato = (r: Record<string, unknown>): Candidato => ({ ...(r as unknown as Candidato), historial: Array.isArray(r["historial"]) ? (r["historial"] as Evento[]) : [], respuestas: leerRespuestas(r["respuestas"]) });
 
   const avisarNuevos = useCallback((nuevos: Candidato[]) => {
     if (!nuevos.length) return;
@@ -234,6 +236,7 @@ function Panel() {
     { id: "agenda", label: "Entrevistas", Icono: CalendarDays, badge: citasHoy },
     { id: "vacantes", label: "Vacantes", Icono: Briefcase },
     { id: "mensajes", label: "Mensajes", Icono: MessageSquareText },
+    { id: "informe", label: "Informe", Icono: BarChart3 },
     { id: "empresa", label: "Mi empresa", Icono: Settings },
     { id: "planes", label: planActivo(empresa) ? "Mi plan" : "Planes", Icono: Crown },
   ];
@@ -241,9 +244,9 @@ function Panel() {
 
   return (
     <PanelCtx.Provider value={api}>
-      <div className="min-h-screen bg-background text-foreground lg:pl-64">
+      <div className="min-h-screen bg-background text-foreground lg:pl-64 print:bg-white print:pl-0">
         {/* Barra lateral (computadora) */}
-        <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col bg-[#0a2f5c] text-white lg:flex">
+        <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 print:!hidden flex-col bg-[#0a2f5c] text-white lg:flex">
           <div className="px-5 pb-5 pt-6"><Logo invertido tamano="text-[19px]" /></div>
           <div className="mx-3 flex items-center gap-3 rounded-2xl bg-white/[0.07] p-3">
             <EmpresaAvatar nombre={empresa.nombre} className="size-10 text-base" claro />
@@ -266,12 +269,12 @@ function Panel() {
         </aside>
 
         {/* Barra superior (celular) */}
-        <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-border bg-surface/95 px-4 py-2.5 backdrop-blur lg:hidden">
+        <header className="sticky top-0 z-30 flex print:!hidden items-center justify-between gap-3 border-b border-border bg-surface/95 px-4 py-2.5 backdrop-blur lg:hidden">
           <div className="flex min-w-0 items-center gap-2.5"><EmpresaAvatar nombre={empresa.nombre} className="size-9 text-sm" /><p className="truncate text-sm font-extrabold">{empresa.nombre}</p></div>
           <button type="button" onClick={() => ir("publicar")} className="btn-aplicar inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-3 text-sm"><Plus className="size-4" /> Publicar</button>
         </header>
 
-        <main className="mx-auto max-w-6xl px-4 pb-28 pt-6 sm:px-6 lg:px-8 lg:pb-12 lg:pt-8">
+        <main className="mx-auto max-w-6xl px-4 pb-28 pt-6 print:max-w-none print:p-0 sm:px-6 lg:px-8 lg:pb-12 lg:pt-8">
           {seccion === "inicio" && <Inicio />}
           {seccion === "candidatos" && <Candidatos />}
           {seccion === "agenda" && <Agenda />}
@@ -285,12 +288,14 @@ function Panel() {
           {seccion === "mensajes" && <Mensajes />}
           {seccion === "empresa" && <MiEmpresa />}
           {seccion === "planes" && <Planes />}
+          {seccion === "informe" && <Informe />}
           {seccion === "mas" && (
             <>
               <Titulo titulo="Más" />
               <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-surface">
                 {[
                   { t: "Mensajes a candidatos", I: MessageSquareText, f: () => ir("mensajes") },
+                  { t: "Informe para gerencia", I: BarChart3, f: () => ir("informe") },
                   { t: "Mi empresa", I: Settings, f: () => ir("empresa") },
                   { t: planActivo(empresa) ? "Mi plan" : "Planes y servicios", I: Crown, f: () => ir("planes") },
                   { t: avisos === "granted" ? "Avisos activados" : "Activar avisos en este teléfono", I: Bell, f: () => void pedirAvisos() },
@@ -303,9 +308,9 @@ function Panel() {
         </main>
 
         {/* Navegación de abajo (celular) */}
-        <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="Panel">
+        <nav className="fixed inset-x-0 bottom-0 z-40 grid print:!hidden grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="Panel">
           {[...nav.slice(0, 4), { id: "mas" as Seccion, label: "Más", Icono: Menu }].map(({ id, label, Icono, badge }: { id: Seccion; label: string; Icono: typeof Home; badge?: number }) => {
-            const activo = seccion === id || (id === "mas" && (seccion === "mensajes" || seccion === "empresa" || seccion === "planes"));
+            const activo = seccion === id || (id === "mas" && (seccion === "mensajes" || seccion === "empresa" || seccion === "planes" || seccion === "informe"));
             return (
               <button key={id} type="button" onClick={() => ir(id)} aria-current={activo ? "page" : undefined} className={`relative flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold ${activo ? "text-[#1557c4]" : "text-muted-foreground"}`}>
                 <Icono className="size-5" />{label}

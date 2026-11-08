@@ -3,8 +3,8 @@ export type Database = {
   public: {
     Tables: {
       aplicaciones: {
-        Row: { contacto: string; created_at: string; id: string; mensaje: string | null; nombre: string; vacante_id: string; enviada_at: string | null; etapa: string; nota: string | null; etapa_at: string | null; puntaje: number | null; entrevista_at: string | null; entrevista_lugar: string | null; historial: unknown };
-        Insert: { contacto: string; created_at?: string; id?: string; mensaje?: string | null; nombre: string; vacante_id: string };
+        Row: { contacto: string; created_at: string; id: string; mensaje: string | null; nombre: string; vacante_id: string; enviada_at: string | null; etapa: string; nota: string | null; etapa_at: string | null; puntaje: number | null; entrevista_at: string | null; entrevista_lugar: string | null; historial: unknown; respuestas: unknown };
+        Insert: { contacto: string; created_at?: string; id?: string; mensaje?: string | null; nombre: string; vacante_id: string; respuestas?: unknown };
         Update: { [k: string]: unknown };
         Relationships: [{ foreignKeyName: "aplicaciones_vacante_id_fkey"; columns: ["vacante_id"]; isOneToOne: false; referencedRelation: "vacantes"; referencedColumns: ["id"] }];
       };
@@ -45,7 +45,7 @@ export type Database = {
         Relationships: [];
       };
       hojas_vacantes: {
-        Row: { id: string; nombre: string; url: string; activa: boolean; ultima_sync: string | null; resultado: string | null; created_at: string };
+        Row: { id: string; nombre: string; url: string; activa: boolean; ultima_sync: string | null; resultado: string | null; created_at: string; preguntas: unknown };
         Insert: { nombre: string; url: string; activa?: boolean };
         Update: { [k: string]: unknown };
         Relationships: [];

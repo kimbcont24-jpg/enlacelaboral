@@ -18,6 +18,7 @@ const FILAS: { t: string; gratis: boolean | string; pro: boolean | string }[] = 
   { t: "Primero en el listado y con la etiqueta Destacada", gratis: false, pro: true },
   { t: "Tus vacantes primero en nuestro canal de WhatsApp e Instagram", gratis: false, pro: true },
   { t: "Una reclutadora revisa tus vacantes para que atraigan más gente", gratis: false, pro: true },
+  { t: "Informe para gerencia, listo para imprimir o PDF", gratis: false, pro: true },
   { t: "Atención directa por WhatsApp", gratis: false, pro: true },
 ];
 
