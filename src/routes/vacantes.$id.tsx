@@ -12,7 +12,7 @@ import { slug } from "@/lib/empleos";
 import { diasRestantes, esNueva, nivelDe, venceTexto } from "@/lib/claridad";
 import { BotonGuardar, ClaridadPill } from "@/components/site/JobCard";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
-import { useEmpresaPublica } from "@/lib/empresa-publica";
+import { senalesEmpresa, useEmpresaPublica } from "@/lib/empresa-publica";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { CompartirBoton } from "@/components/site/CompartirBoton";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
@@ -305,6 +305,7 @@ function SobreEmpresa({ vacanteId }: { vacanteId: string }) {
           <p className="text-sm text-muted-foreground">{[e.sector, e.provincia].filter(Boolean).join(" · ") || "Publicada por la empresa"}</p>
         </div>
       </div>
+      {senalesEmpresa(e).length > 0 && <ul className="mt-4 flex flex-wrap gap-2">{senalesEmpresa(e).map((t) => <li key={t} className="inline-flex items-center gap-1.5 rounded-full bg-[#1d6ff2]/10 px-3 py-1 text-xs font-bold text-[#1557c4]"><CheckCircle2 className="size-3.5" /> {t}</li>)}</ul>}
       {e.descripcion && <p className="mt-4 line-clamp-4 whitespace-pre-line text-[15px] leading-relaxed text-foreground/85">{e.descripcion}</p>}
       <Link to="/empresa/$id" params={{ id: e.id }} className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-[#1557c4] hover:underline">{e.activas > 1 ? `Ver sus ${e.activas} vacantes` : "Ver la página de la empresa"}</Link>
     </section>

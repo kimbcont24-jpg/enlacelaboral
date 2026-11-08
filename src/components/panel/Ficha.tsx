@@ -39,7 +39,7 @@ export function Ficha({ id, onCerrar, onOtro }: { id: string; onCerrar: () => vo
 
   const copiar = async (t: string) => { try { await navigator.clipboard.writeText(t); toast.success("Copiado"); } catch { toast.error("No se pudo copiar"); } };
   const indice = ETAPAS.findIndex((e) => e.id === c.etapa);
-  const linea = [{ t: c.created_at, texto: `Aplicó a ${puesto}` }, ...c.historial.map((h) => ({ t: h.t, texto: h.texto }))].reverse();
+  const linea = [{ t: c.created_at, texto: `Aplicó a ${puesto}` }, ...c.historial.map((h) => ({ t: h.t, texto: h.por ? `${h.texto} (${h.por})` : h.texto }))].reverse();
 
   const elegir = (e: Etapa) => { if (e === "entrevista" && c.etapa !== "entrevista") p.agendar(c); else void p.mover(c, e); };
 

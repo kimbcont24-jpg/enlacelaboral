@@ -99,6 +99,11 @@ export type Database = {
     Functions: {
       jornadas_publicas: { Args: { p_id?: string | null }; Returns: unknown[] };
       inscribirse_jornada: { Args: { p_jornada: string; p_nombre: string; p_contacto: string; p_puesto?: string | null; p_mensaje?: string | null }; Returns: number };
+      mi_dueno: { Args: Record<string, never>; Returns: string | null };
+      equipo_aceptar: { Args: Record<string, never>; Returns: string | null };
+      equipo_lista: { Args: Record<string, never>; Returns: { id: string; email: string; nombre: string | null; estado: string; created_at: string; soy_yo: boolean; dueno: boolean }[] };
+      equipo_invitar: { Args: { p_email: string; p_nombre?: string | null }; Returns: string };
+      equipo_quitar: { Args: { p_id: string }; Returns: undefined };
       talento_buscar: { Args: { p_q?: string | null; p_provincia?: string | null }; Returns: Talento[] };
       invitar_candidato: { Args: { p_candidato: string; p_vacante: string; p_mensaje?: string | null }; Returns: number };
       responder_invitacion: { Args: { p_id: string; p_acepta: boolean; p_mensaje?: string | null }; Returns: undefined };
@@ -106,7 +111,7 @@ export type Database = {
       iniciar_prueba: { Args: Record<string, never>; Returns: string };
       registrar_vista: { Args: { p_vacante: string }; Returns: undefined };
       vistas_mis_vacantes: { Args: { p_dias?: number }; Returns: { vacante_id: string; dia: string; n: number }[] };
-      empresa_publica: { Args: { p_empresa?: string | null; p_vacante?: string | null }; Returns: { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number; pro: boolean }[] };
+      empresa_publica: { Args: { p_empresa?: string | null; p_vacante?: string | null }; Returns: { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number; pro: boolean; responde_pct: number | null; responde_horas: number | null; contratados: number }[] };
       suscribir_alerta: { Args: { p_email: string; p_area?: string | null; p_provincia?: string | null }; Returns: string };
       crear_pedido: { Args: { p_paquete: string; p_nombre: string; p_contacto: string; p_correo: string | null; p_puesto: string | null; p_cv: string | null; p_notas: string | null }; Returns: { codigo: string; precio: number } };
       importar_vacantes_admin: { Args: { p_filas: unknown }; Returns: { creadas: number; actualizadas: number; cerradas: number; omitidas: { fila: number; motivo: string }[] } };

@@ -30,7 +30,7 @@ export function Header() {
     // Solo las empresas ven "Mi panel"; un candidato con cuenta sigue viendo el sitio normal.
     const revisar = async (uid: string | undefined) => {
       if (!uid) return setConSesion(false);
-      const { count } = await supabase.from("empresas").select("id", { count: "exact", head: true }).eq("owner_id", uid);
+      const { data: dueno } = await supabase.rpc("mi_dueno"); const count = dueno ? 1 : 0;
       setConSesion(!!count);
     };
     void supabase.auth.getSession().then(({ data }) => revisar(data.session?.user.id));

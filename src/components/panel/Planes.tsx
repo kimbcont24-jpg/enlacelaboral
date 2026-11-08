@@ -16,6 +16,7 @@ const FILAS: { t: string; gratis: boolean | string; pro: boolean | string }[] = 
   { t: "Cuánta gente vio cada vacante", gratis: true, pro: true },
   { t: "Invitar personas del banco de talento", gratis: "5 al mes", pro: "Sin límite" },
   { t: "Jornadas de empleo próximas", gratis: "1 a la vez", pro: "Sin límite" },
+  { t: "Personas de tu equipo en el panel", gratis: "Tú + 1", pro: "Tú + 10" },
   { t: "Destacar vacantes tú mismo, sin esperar", gratis: false, pro: `Hasta ${MAX_DESTACADAS}` },
   { t: "Primero en el listado y con la etiqueta Destacada", gratis: false, pro: true },
   { t: "Tus vacantes primero en nuestro canal de WhatsApp e Instagram", gratis: false, pro: true },

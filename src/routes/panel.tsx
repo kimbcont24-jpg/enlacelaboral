@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BarChart3, Bell, BellOff, Crown, Briefcase, CalendarCheck, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, UserSearch, Users } from "lucide-react";
+import { BarChart3, Bell, BellOff, Crown, Briefcase, CalendarCheck, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, UserSearch, Users, UsersRound } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -20,6 +20,7 @@ import { Planes } from "@/components/panel/Planes";
 import { Informe } from "@/components/panel/Informe";
 import { Talento } from "@/components/panel/Talento";
 import { JornadasEmpresa } from "@/components/panel/JornadasEmpresa";
+import { Equipo } from "@/components/panel/Equipo";
 import { leerRespuestas } from "@/lib/preguntas";
 import { cargarVistas, type Vistas } from "@/lib/vistas";
 import { Titulo } from "@/components/panel/comun";
@@ -28,7 +29,7 @@ import { diasRestantes } from "@/lib/claridad";
 import { CAMPOS_CANDIDATO, CAMPOS_EMPRESA, enlaceContacto, etapaDe, mensajePara, planActivo, type Candidato, type EmpresaPerfil, type Etapa, type Evento } from "@/lib/panel";
 import { rowToVacante, SELECT, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
-const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "informe", "talento", "jornadas", "mas"];
+const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "informe", "talento", "jornadas", "equipo", "mas"];
 type Search = { s?: Seccion; c?: string };
 
 export const Route = createFileRoute("/panel")({
@@ -48,6 +49,7 @@ function Panel() {
   const seccion = search.s ?? "inicio";
   const qc = useQueryClient();
   const [uid, setUid] = useState("");
+  const [yo, setYo] = useState<PanelApi["yo"]>({ id: "", correo: "", dueno: true });
   const [empresa, setEmpresa] = useState<EmpresaPerfil | null | undefined>(undefined);
   const [vacantes, setVacantes] = useState<Vacante[]>([]);
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
@@ -117,16 +119,21 @@ function Panel() {
       const { data } = await supabase.auth.getSession();
       const id = data.session?.user.id;
       if (!id) { await navigate({ to: "/auth" }); return; }
-      setUid(id);
       if (typeof Notification !== "undefined") setAvisos(Notification.permission);
-      const { data: e } = await supabase.from("empresas").select(CAMPOS_EMPRESA).eq("owner_id", id).limit(1).maybeSingle();
+      // Equipo: si la invitaron con su correo queda unida; el panel trabaja con los datos del dueño de la empresa.
+      await supabase.rpc("equipo_aceptar");
+      const { data: duenoId } = await supabase.rpc("mi_dueno");
+      const dueno = (duenoId as string | null) ?? id;
+      setUid(dueno);
+      setYo({ id, correo: data.session?.user.email ?? "", dueno: dueno === id });
+      const { data: e } = await supabase.from("empresas").select(CAMPOS_EMPRESA).eq("owner_id", dueno).limit(1).maybeSingle();
       if (!e) {
         // Candidatos con cuenta (guardaron su CV) no tienen panel de empresa: van a su búsqueda.
         const { count } = await supabase.from("candidatos").select("user_id", { count: "exact", head: true }).eq("user_id", id);
         if (count) { await navigate({ to: "/guardadas" }); return; }
       }
       setEmpresa(e ? ({ ...(e as unknown as EmpresaPerfil), plantillas: ((e as unknown as Record<string, unknown>)["plantillas"] ?? {}) as EmpresaPerfil["plantillas"] }) : null);
-      await cargarTodo(id);
+      await cargarTodo(dueno);
     })();
   }, [navigate, cargarTodo]);
 
@@ -151,7 +158,7 @@ function Panel() {
   const actualizar = useCallback<PanelApi["actualizar"]>(async (c, cambios, evento) => {
     const actual = candidatosRef.current.find((x) => x.id === c.id) ?? c;
     const completo: Partial<Candidato> = { ...cambios };
-    if (evento) completo.historial = [...actual.historial, { t: new Date().toISOString(), ...evento }].slice(-200);
+    if (evento) completo.historial = [...actual.historial, { t: new Date().toISOString(), ...evento, ...(yo.dueno ? {} : { por: yo.correo.split("@")[0] }) }].slice(-200);
     setCandidatos((xs) => xs.map((x) => (x.id === c.id ? { ...x, ...completo } : x)));
     const { error } = await supabase.from("aplicaciones").update(completo).eq("id", c.id);
     if (error) {
@@ -160,7 +167,7 @@ function Panel() {
       return false;
     }
     return true;
-  }, []);
+  }, [yo]);
 
   const puesto = useCallback((id: string) => vacantes.find((v) => v.id === id)?.titulo ?? "la vacante", [vacantes]);
 
@@ -209,14 +216,14 @@ function Panel() {
   }, [empresa, uid]);
 
   const api = useMemo<PanelApi | null>(() => (empresa ? {
-    uid, empresa, vacantes, candidatos, solicitudes, vistas, filtro, puesto,
+    uid, yo, empresa, vacantes, candidatos, solicitudes, vistas, filtro, puesto,
     vacante: (id) => vacantes.find((v) => v.id === id),
     ir, abrir, actualizar, mover, contactar, accionVacante, pedir,
     agendar: (c) => setAgendando(c),
     editarVacante: (v, duplicar = false) => { setBase({ v, duplicar }); void navigate({ search: (x: Search) => ({ ...x, s: "publicar" }) }); window.scrollTo({ top: 0 }); },
     recargar: () => cargarTodo(uid),
     setEmpresa: (e) => setEmpresa(e),
-  } : null), [uid, empresa, vacantes, candidatos, solicitudes, vistas, filtro, puesto, ir, abrir, actualizar, mover, contactar, accionVacante, pedir, navigate, cargarTodo]);
+  } : null), [uid, yo, empresa, vacantes, candidatos, solicitudes, vistas, filtro, puesto, ir, abrir, actualizar, mover, contactar, accionVacante, pedir, navigate, cargarTodo]);
 
   const salir = async () => { await supabase.auth.signOut(); await navigate({ to: "/auth" }); };
   const pedirAvisos = async () => {
@@ -242,6 +249,7 @@ function Panel() {
     { id: "mensajes", label: "Mensajes", Icono: MessageSquareText },
     { id: "informe", label: "Informe", Icono: BarChart3 },
     { id: "empresa", label: "Mi empresa", Icono: Settings },
+    { id: "equipo", label: "Equipo", Icono: UsersRound },
     { id: "planes", label: planActivo(empresa) ? "Mi plan" : "Planes", Icono: Crown },
   ];
   const abierto = search.c ? candidatos.find((c) => c.id === search.c) : undefined;
@@ -257,7 +265,7 @@ function Panel() {
             <div className="min-w-0"><p className="truncate text-sm font-bold">{empresa.nombre}</p><p className="text-xs text-white/60">{empresa.verificada ? "Verificada" : "Verificación pendiente"}</p></div>
           </div>
           <button type="button" onClick={() => ir("publicar")} className="btn-aplicar mx-3 mt-4 inline-flex h-11 items-center justify-center gap-2 rounded-xl text-sm"><Plus className="size-4" /> Publicar vacante</button>
-          <nav className="mt-5 flex-1 space-y-0.5 px-3" aria-label="Panel">
+          <nav className="mt-5 flex-1 space-y-0.5 overflow-y-auto px-3" aria-label="Panel">
             {nav.map(({ id, label, Icono, badge }) => (
               <button key={id} type="button" onClick={() => ir(id)} aria-current={seccion === id ? "page" : undefined} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${seccion === id ? "bg-white text-[#0a2f5c]" : "text-white/75 hover:bg-white/10 hover:text-white"}`}>
                 <Icono className="size-[18px]" /> <span className="flex-1 text-left">{label}</span>
@@ -295,6 +303,7 @@ function Panel() {
           {seccion === "informe" && <Informe />}
           {seccion === "talento" && <Talento />}
           {seccion === "jornadas" && <JornadasEmpresa />}
+          {seccion === "equipo" && <Equipo />}
           {seccion === "mas" && (
             <>
               <Titulo titulo="Más" />
@@ -305,6 +314,7 @@ function Panel() {
                   { t: "Mensajes a candidatos", I: MessageSquareText, f: () => ir("mensajes") },
                   { t: "Informe para gerencia", I: BarChart3, f: () => ir("informe") },
                   { t: "Mi empresa", I: Settings, f: () => ir("empresa") },
+                  { t: "Equipo", I: UsersRound, f: () => ir("equipo") },
                   { t: planActivo(empresa) ? "Mi plan" : "Planes y servicios", I: Crown, f: () => ir("planes") },
                   { t: avisos === "granted" ? "Avisos activados" : "Activar avisos en este teléfono", I: Bell, f: () => void pedirAvisos() },
                   { t: "Ver la página de empleos", I: ExternalLink, f: () => void navigate({ to: "/" }) },
@@ -318,7 +328,7 @@ function Panel() {
         {/* Navegación de abajo (celular) */}
         <nav className="fixed inset-x-0 bottom-0 z-40 grid print:!hidden grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="Panel">
           {[...nav.slice(0, 4), { id: "mas" as Seccion, label: "Más", Icono: Menu }].map(({ id, label, Icono, badge }: { id: Seccion; label: string; Icono: typeof Home; badge?: number }) => {
-            const activo = seccion === id || (id === "mas" && (seccion === "mensajes" || seccion === "empresa" || seccion === "planes" || seccion === "informe" || seccion === "talento" || seccion === "jornadas"));
+            const activo = seccion === id || (id === "mas" && (seccion === "mensajes" || seccion === "empresa" || seccion === "planes" || seccion === "informe" || seccion === "talento" || seccion === "jornadas" || seccion === "equipo"));
             return (
               <button key={id} type="button" onClick={() => ir(id)} aria-current={activo ? "page" : undefined} className={`relative flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold ${activo ? "text-[#1557c4]" : "text-muted-foreground"}`}>
                 <Icono className="size-5" />{label}

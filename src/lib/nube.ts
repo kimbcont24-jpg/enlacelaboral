@@ -93,7 +93,7 @@ export function iniciarNube() {
     esEmpresa = false;
     if (uid) {
       // Las empresas usan su panel; la copia del candidato es solo para quien no tiene empresa.
-      const { count } = await supabase.from("empresas").select("id", { count: "exact", head: true }).eq("owner_id", uid);
+      const { data: dueno } = await supabase.rpc("mi_dueno"); const count = dueno ? 1 : 0;
       if (count) { usuario = null; esEmpresa = true; window.dispatchEvent(new Event(EV_NUBE)); return; }
       await mezclar(uid);
     }

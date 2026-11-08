@@ -8,7 +8,11 @@ import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): { modo?: "registro" } => (s["modo"] === "registro" ? { modo: "registro" } : {}),
+  validateSearch: (s: Record<string, unknown>): { modo?: "registro" | "equipo"; correo?: string; empresa?: string } => ({
+    ...(s["modo"] === "registro" || s["modo"] === "equipo" ? { modo: s["modo"] } : {}),
+    ...(typeof s["correo"] === "string" ? { correo: s["correo"].slice(0, 160) } : {}),
+    ...(typeof s["empresa"] === "string" ? { empresa: s["empresa"].slice(0, 120) } : {}),
+  }),
   head: () => ({ meta: [{ title: "Iniciar sesión | Enlace Laboral" }, { name: "robots", content: "noindex" }] }),
   component: Auth,
 });
@@ -18,17 +22,20 @@ const soloDigitos = (v: string) => v.replace(/\D/g, "");
 function Auth() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const inicial = Route.useSearch().modo;
-  const [modo, setModo] = useState<"registro" | "login">(inicial ?? "login");
+  const search = Route.useSearch();
+  const inicial = search.modo;
+  const [modo, setModo] = useState<"registro" | "login" | "equipo">(inicial ?? "login");
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [empresa, setEmpresa] = useState("");
   const [rnc, setRnc] = useState("");
   const [nombre, setNombre] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(search.correo ?? "");
   const [clave, setClave] = useState("");
 
   const ir = async (uid: string) => {
+    // Si una empresa la invitó a su equipo con este correo, queda unida al entrar.
+    await supabase.rpc("equipo_aceptar");
     const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", uid).eq("role", "admin");
     await qc.invalidateQueries({ queryKey: ["es-admin"] });
     await navigate({ to: roles && roles.length ? "/admin" : "/panel" });
@@ -48,7 +55,13 @@ function Auth() {
     }
     setCargando(true);
     try {
-      if (modo === "registro") {
+      if (modo === "equipo") {
+        const { data, error: err } = await supabase.auth.signUp({ email, password: clave, options: { emailRedirectTo: `${window.location.origin}/panel`, data: { nombre } } });
+        if (err) throw err;
+        if (data.session && data.user) { await ir(data.user.id); return; }
+        setError("Revisa tu correo para confirmar la cuenta y luego inicia sesión aquí mismo.");
+        setModo("login");
+      } else if (modo === "registro") {
         const { data, error: err } = await supabase.auth.signUp({ email, password: clave, options: { emailRedirectTo: `${window.location.origin}/panel`, data: { nombre } } });
         if (err) throw err;
         const userId = data.user?.id;
@@ -65,7 +78,7 @@ function Auth() {
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Algo salió mal";
-      setError(msg.includes("Invalid login") ? "Correo o contraseña incorrectos." : msg);
+      setError(msg.includes("Invalid login") ? "Correo o contraseña incorrectos." : /already registered|already exists/i.test(msg) ? "Ese correo ya tiene cuenta. Toca «Iniciar sesión» y entra con tu contraseña." : msg);
     } finally {
       setCargando(false);
     }
@@ -82,9 +95,14 @@ function Auth() {
           <p className="mt-6 text-sm text-muted-foreground">¿Buscas empleo? No necesitas cuenta. <Link to="/vacantes" className="font-semibold text-primary">Mira las vacantes</Link>.</p>
         </div>
         <form onSubmit={enviar} className="space-y-3 self-start rounded-3xl border border-border bg-surface p-7">
+          {modo === "equipo" ? (
+            <div className="rounded-2xl bg-secondary p-4 text-sm"><p className="font-extrabold">Te invitaron al equipo{search.empresa ? ` de ${search.empresa}` : ""}</p><p className="mt-1 text-muted-foreground">Crea tu contraseña con el correo donde te invitaron y entrarás al panel de la empresa. ¿Ya tienes cuenta? <button type="button" onClick={() => setModo("login")} className="font-bold text-primary">Inicia sesión</button>.</p></div>
+          ) : (
           <div className="flex rounded-full border border-border p-1 text-sm font-semibold">
             {(["login", "registro"] as const).map((m) => (<button key={m} type="button" onClick={() => setModo(m)} className={modo === m ? "flex-1 rounded-full bg-primary py-2 text-primary-foreground" : "flex-1 rounded-full py-2 text-muted-foreground"}>{m === "registro" ? "Crear cuenta" : "Iniciar sesión"}</button>))}
           </div>
+          )}
+          {modo === "equipo" && <input required className={input} value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre" />}
           {modo === "registro" && (
             <>
               <input required className={input} value={empresa} onChange={(e) => setEmpresa(e.target.value)} placeholder="Nombre de la empresa" />
@@ -97,7 +115,7 @@ function Auth() {
           {error && (<p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>)}
           <button type="submit" disabled={cargando} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-bold text-primary-foreground disabled:opacity-70">
             {cargando && <Loader2 className="size-4 animate-spin" />}
-            {modo === "registro" ? "Crear cuenta" : "Entrar"}
+            {modo === "registro" ? "Crear cuenta" : modo === "equipo" ? "Entrar al equipo" : "Entrar"}
           </button>
         </form>
       </main>

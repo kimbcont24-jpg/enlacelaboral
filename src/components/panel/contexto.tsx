@@ -4,12 +4,15 @@ import type { Candidato, EmpresaPerfil, Etapa, Evento } from "@/lib/panel";
 import type { Vacante } from "@/lib/vacantes";
 import type { Vistas } from "@/lib/vistas";
 
-export type Seccion = "inicio" | "candidatos" | "agenda" | "vacantes" | "publicar" | "mensajes" | "empresa" | "planes" | "informe" | "talento" | "jornadas" | "mas";
+export type Seccion = "inicio" | "candidatos" | "agenda" | "vacantes" | "publicar" | "mensajes" | "empresa" | "planes" | "informe" | "talento" | "jornadas" | "equipo" | "mas";
 export type TipoPedido = "plan_empresa" | "destacar" | "prueba" | "asistido";
 export type AccionVacante = "renovar" | "pausar" | "reactivar" | "cerrar";
 
 export type PanelApi = {
+  /** Id del dueño de la empresa: con él se buscan y guardan los datos (el equipo trabaja sobre lo mismo). */
   uid: string;
+  /** Quién está conectado ahora mismo. */
+  yo: { id: string; correo: string; dueno: boolean };
   empresa: EmpresaPerfil;
   vacantes: Vacante[];
   candidatos: Candidato[];

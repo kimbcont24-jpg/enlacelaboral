@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { BadgeCheck, Briefcase, Globe, Loader2, MapPin } from "lucide-react";
+import { BadgeCheck, Briefcase, CheckCircle2, Globe, Loader2, MapPin } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { supabase } from "@/integrations/supabase/client";
-import { sitioSeguro, useEmpresaPublica } from "@/lib/empresa-publica";
+import { senalesEmpresa, sitioSeguro, useEmpresaPublica } from "@/lib/empresa-publica";
 import { rowToVacante, SELECT, type VacanteRow } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/empresa/$id")({
@@ -54,6 +54,7 @@ function PaginaEmpresa() {
                 <p className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-white/85">
                   {e.sector && <span className="inline-flex items-center gap-1.5"><Briefcase className="size-4" /> {e.sector}</span>}
                   {e.provincia && <span className="inline-flex items-center gap-1.5"><MapPin className="size-4" /> {e.provincia}</span>}
+                  {senalesEmpresa(e).map((t) => <span key={t} className="inline-flex items-center gap-1.5 font-semibold text-white"><CheckCircle2 className="size-4 text-[#7ee2a8]" /> {t}</span>)}
                   {web && <a href={web} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex items-center gap-1.5 underline-offset-4 hover:underline"><Globe className="size-4" /> {new URL(web).hostname.replace(/^www\./, "")}</a>}
                 </p>
               </div>

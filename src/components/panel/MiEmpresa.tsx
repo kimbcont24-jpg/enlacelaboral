@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BadgeCheck, Check, Clock, Code2, Copy, Crown, Link2, QrCode, Sparkles } from "lucide-react";
+import { BadgeCheck, Check, Clock, ShieldCheck, Code2, Copy, Crown, Link2, QrCode, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { usePanel } from "@/components/panel/contexto";
@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { provincias } from "@/lib/data";
 import { diasPlan, planActivo } from "@/lib/panel";
 import { SITIO } from "@/lib/vacantes";
+import { senalesEmpresa, useEmpresaPublica } from "@/lib/empresa-publica";
 
 const SECTORES = ["Comercio", "Manufactura", "Turismo y hotelería", "Servicios", "Tecnología", "Salud", "Educación", "Construcción", "Logística y transporte", "Finanzas", "Zona franca", "Agropecuario", "Otro"];
 
@@ -69,6 +70,7 @@ export function MiEmpresa() {
             <p className="mt-1 text-muted-foreground">Los candidatos ven tu descripción y todas tus vacantes abiertas. Compártela en tus redes.</p>
             <p className="mt-2 font-bold text-[#1557c4]">Ver mi página</p>
           </a>
+          <Reputacion id={e.id} />
           <TrabajaConNosotros id={e.id} nombre={e.nombre} />
           <div className="rounded-2xl border border-border bg-surface p-5 text-sm">
             <p className="font-extrabold">Consejo</p>
@@ -101,6 +103,21 @@ function TrabajaConNosotros({ id, nombre }: { id: string; nombre: string }) {
         <button type="button" onClick={() => void copiar(html, "Botón para tu web")} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border font-semibold"><Code2 className="size-4" /> Botón para tu página web</button>
         <button type="button" onClick={() => void qr()} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border font-semibold"><QrCode className="size-4" /> Descargar código QR</button>
       </div>
+    </div>
+  );
+}
+
+/** Lo que ven los candidatos sobre la empresa: se gana respondiendo. */
+function Reputacion({ id }: { id: string }) {
+  const { data: pub } = useEmpresaPublica({ empresa: id });
+  if (!pub) return null;
+  const senales = senalesEmpresa(pub);
+  return (
+    <div className="rounded-2xl border border-border bg-surface p-5 text-sm">
+      <p className="flex items-center gap-2 font-extrabold"><ShieldCheck className="size-4 text-success" /> Lo que ven los candidatos</p>
+      {senales.length ? <ul className="mt-2 space-y-1.5">{senales.map((t) => <li key={t} className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-success" />{t}</li>)}</ul>
+        : <p className="mt-1 text-muted-foreground">Cuando revises a la mitad o más de quienes aplican, tus vacantes muestran «Revisa al X% de quienes aplican». Los candidatos prefieren empresas que responden.</p>}
+      {pub.responde_pct != null && pub.responde_pct < 50 && <p className="mt-2 text-muted-foreground">Hoy revisas al {pub.responde_pct}%. Mueve a tus candidatos nuevos de etapa para subirlo.</p>}
     </div>
   );
 }

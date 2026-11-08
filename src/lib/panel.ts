@@ -14,7 +14,7 @@ export const ETAPAS = [
 export type Etapa = (typeof ETAPAS)[number]["id"];
 export const etapaDe = (id: string) => ETAPAS.find((e) => e.id === id) ?? ETAPAS[0];
 
-export type Evento = { t: string; tipo: "etapa" | "mensaje" | "entrevista" | "puntaje"; texto: string };
+export type Evento = { t: string; tipo: "etapa" | "mensaje" | "entrevista" | "puntaje"; texto: string; por?: string };
 
 export type Candidato = {
   id: string;

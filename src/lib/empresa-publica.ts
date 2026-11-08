@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export type EmpresaPublica = { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number; pro?: boolean };
+export type EmpresaPublica = { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number; pro?: boolean; responde_pct?: number | null; responde_horas?: number | null; contratados?: number };
 
 /** Datos públicos de una empresa con cuenta (no aparecen las vacantes que carga Enlace Laboral). */
 export function useEmpresaPublica(p: { empresa?: string; vacante?: string }) {
@@ -16,6 +16,14 @@ export function useEmpresaPublica(p: { empresa?: string; vacante?: string }) {
       return ((data ?? []) as EmpresaPublica[])[0] ?? null;
     },
   });
+}
+
+/** Señales de confianza reales, calculadas con su actividad en el panel. */
+export function senalesEmpresa(e: EmpresaPublica): string[] {
+  const out: string[] = [];
+  if (e.responde_pct != null && e.responde_pct >= 50) out.push(`Revisa al ${e.responde_pct}% de quienes aplican`);
+  if (e.contratados && e.contratados > 0) out.push(`Ya contrató ${e.contratados === 1 ? "1 persona" : `${e.contratados} personas`} por Enlace Laboral`);
+  return out;
 }
 
 export const sitioSeguro = (u: string | null) => {
