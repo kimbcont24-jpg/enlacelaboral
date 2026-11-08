@@ -8,6 +8,7 @@ import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { Hero } from "@/components/site/Hero";
+import { JornadasProximas } from "@/components/site/JornadasProximas";
 import { AreasGrid } from "@/components/site/AreasGrid";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { consejos } from "@/lib/data";
@@ -97,6 +98,7 @@ function Home() {
         </div>
       </section>
 
+      <JornadasProximas />
       <section className="px-4 pb-12 sm:px-6"><div className="mx-auto grid max-w-6xl gap-4"><CanalWhatsApp /><AlertaForm /></div></section>
 
       <AreasGrid jobs={jobs} />

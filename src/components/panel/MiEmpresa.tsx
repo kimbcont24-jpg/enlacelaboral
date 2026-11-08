@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BadgeCheck, Check, Clock, Crown, Sparkles } from "lucide-react";
+import { BadgeCheck, Check, Clock, Code2, Copy, Crown, Link2, QrCode, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { usePanel } from "@/components/panel/contexto";
@@ -7,6 +7,7 @@ import { campoPanel, Titulo } from "@/components/panel/comun";
 import { supabase } from "@/integrations/supabase/client";
 import { provincias } from "@/lib/data";
 import { diasPlan, planActivo } from "@/lib/panel";
+import { SITIO } from "@/lib/vacantes";
 
 const SECTORES = ["Comercio", "Manufactura", "Turismo y hotelería", "Servicios", "Tecnología", "Salud", "Educación", "Construcción", "Logística y transporte", "Finanzas", "Zona franca", "Agropecuario", "Otro"];
 
@@ -68,6 +69,7 @@ export function MiEmpresa() {
             <p className="mt-1 text-muted-foreground">Los candidatos ven tu descripción y todas tus vacantes abiertas. Compártela en tus redes.</p>
             <p className="mt-2 font-bold text-[#1557c4]">Ver mi página</p>
           </a>
+          <TrabajaConNosotros id={e.id} nombre={e.nombre} />
           <div className="rounded-2xl border border-border bg-surface p-5 text-sm">
             <p className="font-extrabold">Consejo</p>
             <p className="mt-1 text-muted-foreground">Las empresas con descripción, sector y teléfono completos se verifican más rápido. Al verificarte, tus vacantes salen publicadas sin esperar revisión.</p>
@@ -75,5 +77,30 @@ export function MiEmpresa() {
         </aside>
       </div>
     </>
+  );
+}
+
+/** Enlace para la web, Instagram o el letrero de la empresa: lleva a todas sus vacantes abiertas. */
+function TrabajaConNosotros({ id, nombre }: { id: string; nombre: string }) {
+  const url = `${SITIO}/empresa/${id}`;
+  const html = `<a href="${url}" target="_blank" rel="noopener" style="display:inline-block;background:#1d6ff2;color:#fff;font:700 15px system-ui,sans-serif;padding:12px 22px;border-radius:12px;text-decoration:none">Trabaja con nosotros</a>`;
+  const copiar = async (t: string, que: string) => { try { await navigator.clipboard.writeText(t); toast.success(`${que} copiado.`); } catch { toast.error("No se pudo copiar."); } };
+  const qr = async () => {
+    const QR = (await import("qrcode")).default;
+    const a = document.createElement("a");
+    a.href = await QR.toDataURL(url, { margin: 2, width: 1024, color: { dark: "#0a2f5c", light: "#ffffff" } });
+    a.download = `qr-empleos-${nombre.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.png`;
+    a.click();
+  };
+  return (
+    <div className="rounded-2xl border border-border bg-surface p-5 text-sm">
+      <p className="flex items-center gap-2 font-extrabold"><Link2 className="size-4 text-[#1d6ff2]" /> «Trabaja con nosotros»</p>
+      <p className="mt-1 text-muted-foreground">Pon este enlace en tu web, tu Instagram o tu letrero. Siempre muestra tus vacantes abiertas.</p>
+      <div className="mt-3 grid gap-2">
+        <button type="button" onClick={() => void copiar(url, "Enlace")} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#0a2f5c] font-bold text-white"><Copy className="size-4" /> Copiar enlace</button>
+        <button type="button" onClick={() => void copiar(html, "Botón para tu web")} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border font-semibold"><Code2 className="size-4" /> Botón para tu página web</button>
+        <button type="button" onClick={() => void qr()} className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-border font-semibold"><QrCode className="size-4" /> Descargar código QR</button>
+      </div>
+    </div>
   );
 }

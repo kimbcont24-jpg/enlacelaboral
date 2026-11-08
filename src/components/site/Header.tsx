@@ -5,12 +5,14 @@ import { AvisoGlobal } from "@/components/site/AvisoGlobal";
 import { Logo } from "@/components/site/Logo";
 import { useEsAdmin } from "@/components/site/AdminAcciones";
 import { useGuardados } from "@/lib/guardados";
-import { Bookmark, Menu, X } from "lucide-react";
+import { Bookmark, ChevronDown, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
+const PRINCIPALES: string[] = ["/vacantes", "/jornadas", "/empresas", "/cv"];
 const nav = [
   { to: "/vacantes", label: "Empleos" },
+  { to: "/jornadas", label: "Jornadas" },
   { to: "/descubrir", label: "Descubrir" },
   { to: "/empresas", label: "Empresas" },
   { to: "/recursos", label: "Consejos" },
@@ -60,9 +62,15 @@ export function Header() {
     <nav className={cn("sticky top-0 z-50 flex items-center justify-between gap-3 border-b px-4 transition-all duration-500 sm:px-6", scrolled || menu ? "border-border/80 bg-surface/90 py-3 shadow-[var(--shadow-soft)] backdrop-blur-md" : "border-transparent bg-surface py-4")}>
       <Logo cabecera />
       <div className="hidden items-center gap-1 whitespace-nowrap text-[15px] font-semibold lg:flex">
-        {nav.map((item) => (
+        {nav.filter((item) => PRINCIPALES.includes(item.to)).map((item) => (
           <Link key={item.to} to={item.to} className="rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary xl:px-3.5" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link>
         ))}
+        <details className="group relative">
+          <summary className="flex cursor-pointer list-none items-center gap-1 rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary [&::-webkit-details-marker]:hidden">Más <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
+          <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-2xl border border-border bg-surface py-1.5 shadow-xl">
+            {nav.filter((item) => !PRINCIPALES.includes(item.to)).map((item) => <Link key={item.to} to={item.to} onClick={(e) => (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open")} className="block px-4 py-2.5 hover:bg-secondary hover:text-primary" activeProps={{ className: "text-primary" }}>{item.label}</Link>)}
+          </div>
+        </details>
         <Link to="/guardadas" aria-label="Mi búsqueda: guardadas y aplicaciones" title="Mi búsqueda" className="relative ml-1 grid size-10 place-items-center rounded-full transition-colors hover:bg-secondary hover:text-primary" activeProps={{ className: "bg-secondary text-primary" }}><Bookmark className="size-[18px]" aria-hidden="true" />{ids.length > 0 && <span className="absolute -right-0.5 -top-0.5 rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{ids.length}</span>}</Link>
         {cuenta ? (
           <Link to={cuenta.to} className="ml-2 rounded-full bg-foreground px-5 py-2.5 text-background hover:bg-primary">{cuenta.t}</Link>

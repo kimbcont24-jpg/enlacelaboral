@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { Bell, CalendarClock, Check, Columns3, Crown, FileText, Link2, MessageCircle, Megaphone, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
+import { Bell, CalendarCheck, CalendarClock, Check, Columns3, Crown, FileText, Link2, MessageCircle, Megaphone, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -21,6 +21,7 @@ const FUNCIONES = [
   { I: MessageCircle, t: "WhatsApp con un toque", d: "Invitación, felicitación o descarte amable: el mensaje sale escrito con su nombre y la cita." },
   { I: Bell, t: "Avisos en vivo", d: "Cuando alguien aplica, aparece en tu panel en ese momento. Puedes activar avisos del navegador." },
   { I: Link2, t: "Banco de talento", d: "Encuentra personas que pidieron ser encontradas e invítalas a tu vacante. Si aceptan, te llegan con su CV." },
+  { I: CalendarCheck, t: "Jornadas de empleo", d: "Anuncia tu jornada de reclutamiento. La gente se apunta con su CV, le recuerdas por WhatsApp y marcas quién vino." },
   { I: Megaphone, t: "Difusión incluida", d: "Tu vacante sale en la página, en el canal de WhatsApp y en Instagram, con tu nombre." },
 ];
 

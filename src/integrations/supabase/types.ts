@@ -34,6 +34,18 @@ export type Database = {
         Update: { [k: string]: unknown };
         Relationships: [];
       };
+      jornadas: {
+        Row: { id: string; empresa_id: string; owner_id: string; titulo: string; descripcion: string | null; fecha: string; hasta: string | null; lugar: string; provincia: string; puestos: string[]; llevar: string | null; cupo: number | null; estado: string; created_at: string };
+        Insert: { empresa_id: string; titulo: string; fecha: string; lugar: string; provincia: string; [k: string]: unknown };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
+      inscripciones_jornada: {
+        Row: { id: string; jornada_id: string; nombre: string; contacto: string; puesto: string | null; mensaje: string | null; asistio: boolean | null; created_at: string };
+        Insert: { [k: string]: unknown };
+        Update: { asistio?: boolean | null };
+        Relationships: [];
+      };
       invitaciones: {
         Row: { id: string; empresa_id: string; owner_id: string; candidato_id: string; vacante_id: string; mensaje: string | null; estado: string; created_at: string; respondida_at: string | null };
         Insert: { [k: string]: unknown };
@@ -85,6 +97,8 @@ export type Database = {
     };
     Views: { [_ in never]: never };
     Functions: {
+      jornadas_publicas: { Args: { p_id?: string | null }; Returns: unknown[] };
+      inscribirse_jornada: { Args: { p_jornada: string; p_nombre: string; p_contacto: string; p_puesto?: string | null; p_mensaje?: string | null }; Returns: number };
       talento_buscar: { Args: { p_q?: string | null; p_provincia?: string | null }; Returns: Talento[] };
       invitar_candidato: { Args: { p_candidato: string; p_vacante: string; p_mensaje?: string | null }; Returns: number };
       responder_invitacion: { Args: { p_id: string; p_acepta: boolean; p_mensaje?: string | null }; Returns: undefined };

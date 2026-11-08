@@ -4,7 +4,7 @@ import type { Candidato, EmpresaPerfil, Etapa, Evento } from "@/lib/panel";
 import type { Vacante } from "@/lib/vacantes";
 import type { Vistas } from "@/lib/vistas";
 
-export type Seccion = "inicio" | "candidatos" | "agenda" | "vacantes" | "publicar" | "mensajes" | "empresa" | "planes" | "informe" | "talento" | "mas";
+export type Seccion = "inicio" | "candidatos" | "agenda" | "vacantes" | "publicar" | "mensajes" | "empresa" | "planes" | "informe" | "talento" | "jornadas" | "mas";
 export type TipoPedido = "plan_empresa" | "destacar" | "prueba" | "asistido";
 export type AccionVacante = "renovar" | "pausar" | "reactivar" | "cerrar";
 
