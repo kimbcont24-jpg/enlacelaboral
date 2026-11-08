@@ -27,14 +27,35 @@ export function leerCV(): CV | null {
   }
 }
 
+export const CV_EDITADO = "enlace-cv-editado";
+export const EVENTO_CV = "enlace-cv-cambio";
+export const EVENTO_CV_REMOTO = "enlace-cv-remoto";
+
 export function guardarCV(cv: CV) {
-  try { localStorage.setItem(CLAVE, JSON.stringify(cv)); } catch { /* sin almacenamiento */ }
+  try {
+    const nuevo = JSON.stringify(cv);
+    if (localStorage.getItem(CLAVE) === nuevo) return;
+    localStorage.setItem(CLAVE, nuevo);
+    localStorage.setItem(CV_EDITADO, new Date().toISOString());
+  } catch { /* sin almacenamiento */ }
+  window.dispatchEvent(new Event(EVENTO_CV));
+}
+
+/** Escribe el CV que llegó de la cuenta (sin marcarlo como editado aquí). */
+export function aplicarCVRemoto(cv: CV, editado: string) {
+  try { localStorage.setItem(CLAVE, JSON.stringify(cv)); localStorage.setItem(CV_EDITADO, editado); } catch { /* sin almacenamiento */ }
+  window.dispatchEvent(new Event(EVENTO_CV_REMOTO));
 }
 
 export function useCV() {
   const [cv, setCV] = useState<CV>(cvVacio);
   const [cargado, setCargado] = useState(false);
-  useEffect(() => { const g = leerCV(); if (g) setCV(g); setCargado(true); }, []);
+  useEffect(() => {
+    const g = leerCV(); if (g) setCV(g); setCargado(true);
+    const remoto = () => { const r = leerCV(); if (r) setCV(r); };
+    window.addEventListener(EVENTO_CV_REMOTO, remoto);
+    return () => window.removeEventListener(EVENTO_CV_REMOTO, remoto);
+  }, []);
   useEffect(() => { if (cargado) guardarCV(cv); }, [cv, cargado]);
   return { cv, setCV, cargado };
 }

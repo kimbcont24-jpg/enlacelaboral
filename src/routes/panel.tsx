@@ -111,6 +111,11 @@ function Panel() {
       setUid(id);
       if (typeof Notification !== "undefined") setAvisos(Notification.permission);
       const { data: e } = await supabase.from("empresas").select(CAMPOS_EMPRESA).eq("owner_id", id).limit(1).maybeSingle();
+      if (!e) {
+        // Candidatos con cuenta (guardaron su CV) no tienen panel de empresa: van a su búsqueda.
+        const { count } = await supabase.from("candidatos").select("user_id", { count: "exact", head: true }).eq("user_id", id);
+        if (count) { await navigate({ to: "/guardadas" }); return; }
+      }
       setEmpresa(e ? ({ ...(e as unknown as EmpresaPerfil), plantillas: ((e as unknown as Record<string, unknown>)["plantillas"] ?? {}) as EmpresaPerfil["plantillas"] }) : null);
       await cargarTodo(id);
     })();

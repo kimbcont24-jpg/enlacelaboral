@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, Link, createRootRouteWithContext, HeadContent, Scripts } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 
 import { ApplyProvider } from "@/components/site/apply-context";
 import { EntradaLogo, scriptEntrada } from "@/components/site/EntradaLogo";
@@ -8,6 +8,7 @@ import { RobotNexa } from "@/components/site/RobotNexa";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { iniciarNube } from "@/lib/nube";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -63,6 +64,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => iniciarNube(), []);
   return (
     <QueryClientProvider client={queryClient}>
       <ApplyProvider>

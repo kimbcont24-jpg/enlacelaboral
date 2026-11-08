@@ -6,8 +6,10 @@ import { toast } from "sonner";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
+import { GuardarNube } from "@/components/site/GuardarNube";
 import { diasRestantes } from "@/lib/claridad";
-import { leerCV, progresoCV, type CV } from "@/lib/cv";
+import { EVENTO_CV_REMOTO, leerCV, progresoCV, type CV } from "@/lib/cv";
+import { useNube } from "@/lib/nube";
 import { useGuardados } from "@/lib/guardados";
 import { mensajeSeguimiento } from "@/lib/mensajes";
 import { ESTADOS, diasDesde, usePostulaciones, type EstadoPost, type Postulacion } from "@/lib/postulaciones";
@@ -29,7 +31,13 @@ function MiBusqueda() {
   const { lista: posts } = usePostulaciones();
   const { jobs, cargando } = useVacantes();
   const [cv, setCv] = useState<CV | null>(null);
-  useEffect(() => { setCv(leerCV()); }, []);
+  useEffect(() => {
+    setCv(leerCV());
+    const r = () => setCv(leerCV());
+    window.addEventListener(EVENTO_CV_REMOTO, r);
+    return () => window.removeEventListener(EVENTO_CV_REMOTO, r);
+  }, []);
+  const nube = useNube();
 
   const guardadas = ids.map((id) => jobs.find((j) => j.id === id)).filter((j): j is NonNullable<typeof j> => Boolean(j)).sort((a, b) => diasRestantes(a) - diasRestantes(b));
   const recomendadas = useMemo(() => recomendar(cv, jobs, new Set([...posts.map((p) => p.id)]), 8), [cv, jobs, posts]);
@@ -51,7 +59,7 @@ function MiBusqueda() {
       <Header />
       <header className="hero-dark px-4 pb-8 pt-10 sm:px-6 md:pt-12">
         <div className="relative mx-auto max-w-6xl">
-          <p className="text-sm font-semibold text-white/70">Se guarda en este teléfono o computadora. Sin cuenta.</p>
+          <p className="text-sm font-semibold text-white/70">{nube.correo ? "Guardado en tu cuenta. Igual en todos tus teléfonos." : "Se guarda en este teléfono o computadora. Sin cuenta."}</p>
           <h1 className="mt-1 font-display text-[1.8rem] font-extrabold tracking-tight md:text-[2.2rem]">{cv?.nombre.trim() ? `Hola, ${cv.nombre.trim().split(/\s+/)[0]}` : "Mi búsqueda de empleo"}</h1>
           <div className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="grid grid-cols-2 overflow-hidden rounded-2xl bg-white/[0.07] ring-1 ring-white/10 sm:grid-cols-4">
@@ -75,6 +83,7 @@ function MiBusqueda() {
       </header>
 
       <main className="px-4 pb-20 pt-6 sm:px-6"><div className="mx-auto max-w-6xl">
+        <GuardarNube compacto className="mb-6" />
         {proximas.length > 0 && (
           <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-[#c27803]/30 bg-[#c27803]/[0.07] p-4">
             <CalendarClock className="size-5 text-[#8a5200]" />

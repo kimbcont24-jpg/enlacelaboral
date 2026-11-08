@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { GuardarNube } from "@/components/site/GuardarNube";
 import { cvVacio, progresoCV, textoCV, useCV, type CV, type Educacion, type Experiencia } from "@/lib/cv";
 
 type Plantilla = "clasico" | "moderno" | "compacto";
@@ -82,6 +83,8 @@ function CrearCV() {
                 </ul>
               )}
             </section>
+
+            <GuardarNube />
             <section className="rounded-2xl border border-border bg-surface p-5">
               <h2 className="font-extrabold">Tus datos</h2>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -145,7 +148,7 @@ function CrearCV() {
             </section>
 
             <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
-              <p>Se guarda solo en este dispositivo. {cargado && cv.nombre && "Guardado ✓"}</p>
+              <p>Se guarda en este dispositivo{cargado && cv.nombre ? " ✓" : ""}. Para no perderlo, guárdalo con tu correo.</p>
               <button type="button" onClick={limpiar} className="font-semibold hover:text-destructive">Empezar de cero</button>
             </div>
           </form>

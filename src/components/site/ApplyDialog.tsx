@@ -1,3 +1,4 @@
+import { GuardarNube } from "@/components/site/GuardarNube";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, ChevronDown, Copy, ExternalLink, FileText, Loader2, Mail, MessageCircle, ShieldCheck, X } from "lucide-react";
@@ -254,10 +255,11 @@ function Enviado({ job, via, entrega, parecidas, onClose, onAplicar, enlace }: {
           {via === "formulario" && "Si hay avances, te contactan por el medio que dejaste. "}
           {via === "correo" && entrega === "empresa" && `Le llegó a ${job.empresa !== "Empresa no indicada" ? job.empresa : "la empresa"}; si les interesa, te contactan por el medio que dejaste. `}
           {via === "correo" && entrega === "guardada" && "Guardamos tus datos. Para asegurar que le lleguen, envíalos también por correo con un toque. "}
-          Quedó anotada en <Link to="/guardadas" search={{ ver: "postulaciones" }} onClick={onClose} className="font-semibold text-primary underline">Mis postulaciones</Link>.
+          Quedó anotada en <Link to="/guardadas" search={{ ver: "postulaciones" }} onClick={onClose} className="font-semibold text-primary underline">Mi búsqueda</Link>.
         </p>
         {externo && enlace && <a href={enlace.href} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-xs font-semibold text-primary hover:underline">¿No se abrió? Toca aquí</a>}
         {via === "correo" && entrega === "guardada" && enlace && <a href={enlace.href} target="_blank" rel="noopener noreferrer" className="btn-aplicar mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-base"><Mail className="size-5" aria-hidden="true" /> Enviar también por correo</a>}
+        <GuardarNube compacto className="mt-4 text-left" />
       </div>
 
       {parecidas.length > 0 && (

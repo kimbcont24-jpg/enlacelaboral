@@ -26,6 +26,12 @@ export type Database = {
         Update: { [k: string]: unknown };
         Relationships: [];
       };
+      candidatos: {
+        Row: { user_id: string; cv: unknown; plantilla: string | null; guardadas: unknown; postulaciones: unknown; updated_at: string; created_at: string };
+        Insert: { user_id: string; cv?: unknown; plantilla?: string | null; guardadas?: unknown; postulaciones?: unknown; updated_at?: string };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
       solicitudes_empresa: {
         Row: { id: string; empresa_id: string; owner_id: string; tipo: string; vacante_id: string | null; estado: string; created_at: string };
         Insert: { empresa_id: string; tipo: string; owner_id?: string; vacante_id?: string | null; estado?: string };
