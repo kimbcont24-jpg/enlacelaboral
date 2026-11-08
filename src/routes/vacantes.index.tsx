@@ -13,12 +13,12 @@ import { AlertaForm } from "@/components/site/AlertaForm";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { claridad } from "@/lib/claridad";
 
-type Search = { q?: string; provincia?: string; area?: string; modalidad?: string; tipo?: string; experiencia?: string; salarioMin?: string };
+type Search = { q?: string; provincia?: string; area?: string; modalidad?: string; tipo?: string; experiencia?: string; salarioMin?: string; incl?: string };
 
 const str = (v: unknown) => (typeof v === "string" && v ? v : undefined);
 
 export const Route = createFileRoute("/vacantes/")({
-  validateSearch: (s: Record<string, unknown>): Search => ({ q: str(s["q"]), provincia: str(s["provincia"]), area: str(s["area"]), modalidad: str(s["modalidad"]), tipo: str(s["tipo"]), experiencia: str(s["experiencia"]), salarioMin: str(s["salarioMin"]) }),
+  validateSearch: (s: Record<string, unknown>): Search => ({ q: str(s["q"]), provincia: str(s["provincia"]), area: str(s["area"]), modalidad: str(s["modalidad"]), tipo: str(s["tipo"]), experiencia: str(s["experiencia"]), salarioMin: str(s["salarioMin"]), incl: str(s["incl"]) }),
   head: () => ({ meta: [{ title: "Vacantes en República Dominicana | Enlace Laboral" }, { name: "description", content: "Busca vacantes en toda República Dominicana. Filtra por área, ubicación, salario y modalidad." }] }),
   component: Vacantes,
 });
@@ -31,7 +31,7 @@ function Vacantes() {
   const { jobs, cargando } = useVacantes();
   const [puesto, setPuesto] = useState(search.q ?? "");
   const [provinciaBuscador, setProvinciaBuscador] = useState(search.provincia ?? TODAS);
-  const [filtros, setFiltros] = useState<Filtros>({ ...filtrosVacios, area: search.area ?? "", provincia: search.provincia ?? "", modalidad: search.modalidad ?? "", tipo: search.tipo ?? "", experiencia: search.experiencia ?? "", salarioMin: search.salarioMin ?? "", fecha: "", conSalario: "" });
+  const [filtros, setFiltros] = useState<Filtros>({ ...filtrosVacios, area: search.area ?? "", provincia: search.provincia ?? "", modalidad: search.modalidad ?? "", tipo: search.tipo ?? "", experiencia: search.experiencia ?? "", salarioMin: search.salarioMin ?? "", incl: search.incl ?? "", fecha: "", conSalario: "" });
   const [orden, setOrden] = useState<"reciente" | "salario" | "claridad">("reciente");
   const [query, setQuery] = useState(search.q ?? "");
   const [visibles, setVisibles] = useState(30);

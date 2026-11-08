@@ -191,3 +191,20 @@ html[data-entrada="1"] .robot { visibility: hidden; }
 @keyframes vista-entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .vista-entra { animation: vista-entra 0.25s var(--ease-out-expo) both; }
 @media (prefers-reduced-motion: reduce) { .vista-entra { animation: none; } }
+
+/* ───────── Accesibilidad (panel «Accesibilidad»): letra grande, alto contraste, enlaces subrayados, sin animaciones, lectura fácil ───────── */
+html.a11y-letra-1 { font-size: 112.5%; }
+html.a11y-letra-2 { font-size: 125%; }
+html.a11y-letra-3 { font-size: 140%; }
+html.a11y-contraste {
+  --background: #ffffff; --foreground: #000000; --surface: #ffffff; --muted: #f2f2f2; --muted-foreground: #1a1a1a;
+  --secondary: #eaeaea; --secondary-foreground: #000000; --border: #000000; --input: #000000; --primary: #00224d; --cta: #0040b8; --cta-hover: #00308a;
+}
+html.a11y-contraste body { color: #000; }
+html.a11y-contraste .text-muted-foreground { color: #1a1a1a !important; }
+html.a11y-contraste .hero-dark { background: #00142e !important; }
+html.a11y-contraste :focus-visible { outline: 3px solid #ffbf00 !important; outline-offset: 2px; }
+html.a11y-enlaces a { text-decoration: underline !important; text-underline-offset: 3px; }
+html.a11y-quieto *, html.a11y-quieto *::before, html.a11y-quieto *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html.a11y-lectura body { letter-spacing: 0.03em; word-spacing: 0.12em; line-height: 1.75; }
+html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }

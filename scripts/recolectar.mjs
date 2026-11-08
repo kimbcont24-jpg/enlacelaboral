@@ -318,6 +318,12 @@ const SOLO_CONTACTO = process.env.SOLO_CONTACTO === "1" || false;
 const PORTALES = /@(aldaba|computrabajo|marriott|citi|eaton|medtronic|baxter|alorica|smartrecruiters|myworkdayjobs|workday)\./i;
 const correoDe = (t) => (String(t ?? "").match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g) ?? []).find((c) => !PORTALES.test(c) && !/\.(png|jpe?g|gif|webp)$/i.test(c));
 const whatsappDe = (t) => { const m = String(t ?? "").match(/(?:whats?app|wa\.me\/|escr[ií]benos al|env[ií]a(?:r)? (?:tu|el) cv al)\D{0,15}(\+?1?[\s-]?\(?8[024]9\)?[\s.-]?\d{3}[\s.-]?\d{4})/i); return m ? m[1].replace(/\D/g, "").replace(/^(8[024]9)/, "1$1") : null; };
+// Cero discriminación: fuera pedidos de sexo, edad, foto, estado civil o apariencia (Código de Trabajo, Principio VII).
+const EXCLUYE = /(\bedad\b.*\d{2}|\b\d{2}\s*(a|y|-|–)\s*\d{2}\s*años(?!\s*de\s*experiencia)|\bsexo\b|preferiblemente\s+(hombre|mujer|masculino|femenin)|\b(solo|sólo)\s+(hombres|mujeres|damas|caballeros)\b|buena presencia|\bfoto|estado civil|\bsolter[oa]|\bcasad[oa]\b|estatura|\bpeso\b|menor(es)? de \d{2} años)/i;
+for (const f of resultado) {
+  f.titulo = String(f.titulo).replace(/\s*[(\-–]?\s*(masculino|femenina|femenino)\s*\)?\s*$/i, "").trim();
+  f.requisitos = String(f.requisitos ?? "").split(" | ").filter((x) => x && !EXCLUYE.test(x)).join(" | ") || "Ver requisitos en la oferta original";
+}
 const conContacto = [];
 let sinContacto = 0;
 for (const f of resultado) {

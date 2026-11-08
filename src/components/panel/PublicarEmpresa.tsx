@@ -12,6 +12,7 @@ import { useVacantes, type Vacante } from "@/lib/vacantes";
 import { salarioMercado } from "@/lib/mercado";
 import { PLANTILLAS_VACANTE } from "@/lib/plantillas-vacante";
 import { nuevaId, SUGERIDAS, type Pregunta } from "@/lib/preguntas";
+import { COMPROMISOS, etiquetaCompromiso, revisarDiscriminacion, type Compromiso } from "@/lib/inclusion";
 
 const FUENTE = "Publicada por la empresa";
 const campo = "h-12 w-full rounded-xl border border-border bg-background px-3.5 text-base outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
@@ -40,6 +41,8 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
   const [b, setB] = useState<Borrador>(() => (base ? borradorDe(base) : { ...borradorVacio, empresa: empresa.nombre, fuente: FUENTE }));
   const [guardando, setGuardando] = useState(false);
   const [preguntas, setPreguntas] = useState<Pregunta[]>(() => base?.preguntas ?? []);
+  const [compromisos, setCompromisos] = useState<Compromiso[]>(() => COMPROMISOS.filter((c) => base?.categorias.includes(etiquetaCompromiso(c.id))).map((c) => c.id));
+  const exclusiones = revisarDiscriminacion(`${b.titulo}\n${b.descripcion}\n${b.requisitos}\n${preguntas.map((q) => q.texto).join("\n")}`);
   const { jobs } = useVacantes();
   const mercado = b.titulo.trim().length >= 4 ? salarioMercado(b.titulo, b.provincia, jobs, editar?.id) : null;
   const miSalario = (Number(b.salarioMin) || 0) && (Number(b.salarioMax) ? (Number(b.salarioMin) + Number(b.salarioMax)) / 2 : Number(b.salarioMin));
@@ -65,10 +68,12 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
     if (b.descripcion.trim().length < 30) return void toast.error("Cuenta un poco más qué hará la persona (mínimo 30 letras).");
     const min = Number(b.salarioMin) || 0, max = Number(b.salarioMax) || 0;
     if (max && min && max < min) return void toast.error("El salario máximo no puede ser menor que el mínimo.");
+    if (exclusiones.length) return void toast.error(`Quita «${exclusiones[0]!.frase}»: ${exclusiones[0]!.motivo} En Enlace Laboral no se publican avisos que excluyen.`);
     setGuardando(true);
     // Sin "cómo aplicar": la gente aplica en Enlace Laboral y llega a este panel.
     const limpias = preguntas.map((q) => ({ ...q, texto: q.texto.trim().slice(0, 200) })).filter((q) => q.texto.length >= 5);
-    const fila = { ...filaDesde({ ...b, empresa: empresa.nombre, fuente: FUENTE, fuenteUrl: "", aplicar: "", redes: false, imagen: "" }), preguntas: limpias };
+    const basica = filaDesde({ ...b, empresa: empresa.nombre, fuente: FUENTE, fuenteUrl: "", aplicar: "", redes: false, imagen: "" });
+    const fila = { ...basica, etiquetas: [...basica.etiquetas, ...compromisos.map(etiquetaCompromiso)], preguntas: limpias };
     const q = editar
       ? supabase.from("vacantes").update(fila).eq("id", editar.id).select("estado").single()
       : supabase.from("vacantes").insert({ ...fila, empresa_id: empresa.id, owner_id: uid, estado: "publicada" }).select("estado").single();
@@ -126,7 +131,29 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
           <label className={etiqueta} htmlFor="p-req">Requisitos <span className="font-normal text-muted-foreground">(uno por línea)</span></label>
           <textarea id="p-req" value={b.requisitos} onChange={(e) => pon("requisitos", e.target.value)} rows={4} maxLength={3000} placeholder={"Bachiller\nManejo de Excel\nDisponibilidad de horario"} className={`${campo} h-auto py-3`} />
           <p className="mt-1.5 text-xs text-muted-foreground">No pidas edad, sexo, foto ni estado civil: pide lo que necesita el trabajo.</p>
+          {exclusiones.length > 0 && (
+            <div role="alert" className="mt-3 rounded-xl border border-destructive/30 bg-destructive/5 p-3.5 text-sm">
+              <p className="font-extrabold text-destructive">Cambia esto antes de publicar</p>
+              <ul className="mt-1.5 space-y-1">{exclusiones.map((x) => <li key={x.frase}><strong>«{x.frase}»</strong>: {x.motivo}</li>)}</ul>
+              <p className="mt-2 text-xs text-muted-foreground">El Código de Trabajo (Principio VII) prohíbe excluir por sexo, edad, raza, color, origen, religión u opinión. Pide lo que el puesto necesita de verdad: así te llegan más personas buenas.</p>
+            </div>
+          )}
         </div>
+        <fieldset className="rounded-2xl border border-border p-4">
+          <legend className="px-1 text-sm font-bold">Compromisos de inclusión <span className="font-normal text-muted-foreground">(opcional)</span></legend>
+          <p className="text-xs text-muted-foreground">Se muestran en tu vacante y ayudan a que te encuentren personas que muchas veces no se atreven a aplicar.</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {COMPROMISOS.map((c) => {
+              const on = compromisos.includes(c.id);
+              return (
+                <label key={c.id} className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3 text-sm transition-colors ${on ? "border-success bg-success/5" : "border-border hover:border-success/50"}`}>
+                  <input type="checkbox" checked={on} onChange={() => setCompromisos((xs) => (on ? xs.filter((x) => x !== c.id) : [...xs, c.id]))} className="mt-0.5 size-4 accent-[var(--success)]" />
+                  <span><span className="block font-bold">{c.t}</span><span className="text-xs text-muted-foreground">{c.d}</span></span>
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
         <fieldset className="rounded-2xl border border-border p-4">
           <legend className="px-1 text-sm font-bold"><span className="inline-flex items-center gap-1.5"><ListChecks className="size-4 text-[#1d6ff2]" /> Preguntas de filtro <span className="font-normal text-muted-foreground">(opcional, hasta 3)</span></span></legend>
           <p className="text-xs text-muted-foreground">El candidato las responde al aplicar. En tu panel ves al instante quién cumple lo indispensable.</p>

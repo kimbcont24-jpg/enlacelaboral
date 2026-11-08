@@ -34,6 +34,9 @@ export function Footer() {
             <li><Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} className="hover:text-white">Primer empleo</Link></li>
             <li><Link to="/vacantes" search={{ modalidad: "Remoto" }} className="hover:text-white">Trabajo desde casa</Link></li>
             <li><Link to="/guardadas" className="hover:text-white">Mi búsqueda</Link></li>
+            <li><Link to="/empleo-para-todos" className="hover:text-white">Empleo para todas las personas</Link></li>
+            <li><Link to="/jornadas" className="hover:text-white">Jornadas de empleo</Link></li>
+            <li><Link to="/alianzas" className="hover:text-white">Alianzas: universidades y fundaciones</Link></li>
             <li><Link to="/empresas" className="hover:text-white">Publicar una vacante</Link></li>
             <li><Link to="/recursos" className="hover:text-white">Consejos y guías</Link></li>
             <li><Link to="/herramientas/salario-neto" className="hover:text-white">Calculadora de salario neto</Link></li>

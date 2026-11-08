@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { BotonGuardar, ClaridadPill } from "@/components/site/JobCard";
+import { InclusionPills } from "@/components/site/InclusionPills";
 import { useApply } from "@/components/site/apply-context";
 import { diasRestantes, esNueva, venceTexto } from "@/lib/claridad";
 import { viaAplicar } from "@/lib/mensajes";
@@ -39,6 +40,7 @@ export function VacanteTarjeta({ job }: { job: Vacante }) {
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <ClaridadPill job={job} />
+        <InclusionPills categorias={job.categorias} />
         <span className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted-foreground">{viaAplicar(job).texto}</span>
       </div>
       <div className="relative z-10 mt-auto flex gap-2 pt-4">

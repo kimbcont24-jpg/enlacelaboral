@@ -5,6 +5,7 @@ import { type ReactNode, useEffect } from "react";
 import { ApplyProvider } from "@/components/site/apply-context";
 import { EntradaLogo, scriptEntrada } from "@/components/site/EntradaLogo";
 import { RobotNexa } from "@/components/site/RobotNexa";
+import { Accesibilidad } from "@/components/site/Accesibilidad";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
@@ -71,6 +72,7 @@ function RootComponent() {
         <EntradaLogo />
         <Outlet />
         <RobotNexa />
+        <Accesibilidad />
         <Toaster richColors position="top-center" />
       </ApplyProvider>
     </QueryClientProvider>

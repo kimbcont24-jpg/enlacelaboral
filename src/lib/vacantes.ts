@@ -85,13 +85,17 @@ export function hace(fecha: string) {
   return d === 1 ? "hace 1 día" : `hace ${d} días`;
 }
 
+// Cero discriminación al mostrar: fuera el sexo pegado al puesto y los requisitos de edad, sexo, foto, estado civil o apariencia.
+const SEXO_EN_TITULO = /\s*[(\-–]?\s*(masculino|femenina|femenino)\s*\)?\s*$/i;
+const REQUISITO_EXCLUYE = /(\bedad\b.*\d{2}|\b\d{2}\s*(a|y|-|–)\s*\d{2}\s*años(?!\s*de\s*experiencia)|\bsexo\b|preferiblemente\s+(hombre|mujer|masculino|femenin)|\b(solo|sólo)\s+(hombres|mujeres|damas|caballeros)\b|buena presencia|\bfoto|estado civil|\bsolter[oa]|\bcasad[oa]\b|estatura|\bpeso\b|menor(es)? de \d{2} años)/i;
+
 export function rowToVacante(r: VacanteRow): Vacante {
   const { meta, tags } = leerMeta(r.etiquetas);
   const max = r.salario_max && r.salario_max > r.salario_min ? r.salario_max : null;
   const salario = r.salario_min > 0 ? (max ? `${pesos(r.salario_min)} - ${pesos(max)}` : pesos(r.salario_min)) : "";
   return {
     id: r.id,
-    titulo: r.titulo,
+    titulo: r.titulo.replace(SEXO_EN_TITULO, "").trim() || r.titulo,
     empresa: meta["empresa"] || "Empresa no indicada",
     provincia: r.provincia,
     modalidad: r.modalidad,
@@ -102,7 +106,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
     salarioMax: max,
     salario,
     descripcion: r.descripcion,
-    requisitos: (r.requisitos ?? []).filter((x) => !/^[\p{Lu}\s]{6,}:\s*$|^[^.]{3,40}:\s*$/u.test(x.trim())),
+    requisitos: (r.requisitos ?? []).filter((x) => !/^[\p{Lu}\s]{6,}:\s*$|^[^.]{3,40}:\s*$/u.test(x.trim()) && !REQUISITO_EXCLUYE.test(x)),
     fuente: meta["fuente"] || "Enlace Laboral",
     fuenteUrl: meta["fuente_url"] || "",
     aplicar: meta["aplicar"] || "",

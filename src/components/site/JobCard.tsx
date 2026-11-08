@@ -1,3 +1,4 @@
+import { InclusionPills } from "@/components/site/InclusionPills";
 import { Link } from "@tanstack/react-router";
 import { Bookmark, Briefcase, Clock, MapPin, Monitor } from "lucide-react";
 
@@ -77,6 +78,7 @@ export function JobCard({ job }: { job: Vacante }) {
 
       <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
         <ClaridadPill job={job} />
+        <InclusionPills categorias={job.categorias} />
         <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-primary">{nivelDe(job)}</span>
         <span className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted-foreground">{via.texto}</span>
         <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Clock className="size-3.5" aria-hidden="true" /> {job.publicado}</span>

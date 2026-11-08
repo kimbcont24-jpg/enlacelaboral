@@ -13,13 +13,16 @@ export function Empresas() {
   const [filas, setFilas] = useState<E[]>([]);
   const [sol, setSol] = useState<S[]>([]);
   const [cargando, setCargando] = useState(true);
+  const [ali, setAli] = useState<{ id: string; tipo: string; institucion: string; contacto_nombre: string; contacto_cargo: string | null; correo: string; telefono: string | null; provincia: string | null; interes: string[]; mensaje: string | null; created_at: string }[]>([]);
   const [jor, setJor] = useState<{ id: string; titulo: string; fecha: string; lugar: string; provincia: string; empresa_id: string }[]>([]);
   const cargar = useCallback(async () => {
-    const [{ data }, { data: s2 }, { data: j2 }] = await Promise.all([
+    const [{ data }, { data: s2 }, { data: j2 }, { data: a2 }] = await Promise.all([
       supabase.from("empresas").select("*").order("created_at", { ascending: false }).limit(300),
       supabase.from("solicitudes_empresa").select("id,empresa_id,tipo,estado,created_at,vacante_id,detalle,vacantes(titulo)").in("estado", ["nueva", "contactada"]).order("created_at", { ascending: false }).limit(100),
       supabase.from("jornadas").select("id,titulo,fecha,lugar,provincia,empresa_id").eq("estado", "revision").order("fecha").limit(50),
+      supabase.from("alianzas").select("*").in("estado", ["nueva", "contactada"]).order("created_at", { ascending: false }).limit(50),
     ]);
+    setAli((a2 ?? []) as typeof ali);
     setJor((j2 ?? []) as typeof jor);
     setFilas((data ?? []) as unknown as E[]);
     setSol((s2 ?? []) as unknown as S[]);
@@ -58,6 +61,21 @@ export function Empresas() {
   return (
     <div className="space-y-3">
       <p className="rounded-xl border border-border bg-surface p-4 text-sm text-muted-foreground">Verifica una empresa solo cuando hayas confirmado que existe (por ejemplo con su RNC y un contacto real). Solo tú puedes cambiar esto: las empresas no pueden verificarse solas.</p>
+      {ali.length > 0 && (
+        <div className="space-y-2 rounded-2xl border-2 border-success/40 bg-surface p-4">
+          <p className="font-bold">Solicitudes de alianza ({ali.length})</p>
+          {ali.map((a) => (
+            <div key={a.id} className="flex flex-wrap items-start justify-between gap-2 rounded-xl bg-muted/50 p-3 text-sm">
+              <div className="min-w-0"><p className="font-bold">{a.institucion} <span className="font-normal text-muted-foreground">· {a.tipo}{a.provincia ? ` · ${a.provincia}` : ""}</span></p><p className="text-muted-foreground">{a.contacto_nombre}{a.contacto_cargo ? ` (${a.contacto_cargo})` : ""} · {a.correo}{a.telefono ? ` · ${a.telefono}` : ""} · {haceDesde(a.created_at)}</p>{a.interes.length > 0 && <p className="mt-1">{a.interes.join(" · ")}</p>}{a.mensaje && <p className="mt-1 whitespace-pre-wrap">{a.mensaje}</p>}</div>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => void supabase.from("alianzas").update({ estado: "contactada" }).eq("id", a.id).then(() => void cargar())}>Ya la contacté</Button>
+                <Button size="sm" onClick={() => void supabase.from("alianzas").update({ estado: "activa" }).eq("id", a.id).then(() => { toast.success("Alianza activa"); void cargar(); })}>Activa</Button>
+                <Button size="sm" variant="ghost" onClick={() => void supabase.from("alianzas").update({ estado: "descartada" }).eq("id", a.id).then(() => void cargar())}>Descartar</Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       {jor.length > 0 && (
         <div className="space-y-2 rounded-2xl border-2 border-[#c27803]/40 bg-surface p-4">
           <p className="font-bold">Jornadas de empleo por aprobar ({jor.length})</p>

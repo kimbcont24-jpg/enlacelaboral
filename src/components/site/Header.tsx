@@ -13,12 +13,14 @@ const PRINCIPALES: string[] = ["/vacantes", "/jornadas", "/empresas", "/cv"];
 const nav = [
   { to: "/vacantes", label: "Empleos" },
   { to: "/jornadas", label: "Jornadas" },
+  { to: "/empleo-para-todos", label: "Empleo para todos" },
   { to: "/descubrir", label: "Descubrir" },
   { to: "/empresas", label: "Empresas" },
   { to: "/recursos", label: "Consejos" },
   { to: "/cv", label: "Mi CV" },
   { to: "/impulso", label: "Impulso" },
   { to: "/herramientas", label: "Herramientas" },
+  { to: "/alianzas", label: "Alianzas" },
 ];
 
 export function Header() {

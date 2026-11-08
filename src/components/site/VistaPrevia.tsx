@@ -3,6 +3,7 @@ import { ArrowUpRight, Briefcase, Check, Clock, GraduationCap, MapPin, Monitor }
 
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { BotonGuardar, ClaridadPill } from "@/components/site/JobCard";
+import { InclusionBloque, InclusionPills } from "@/components/site/InclusionPills";
 import { CompartirBoton } from "@/components/site/CompartirBoton";
 import { useApply } from "@/components/site/apply-context";
 import { diasRestantes, esNueva, venceTexto } from "@/lib/claridad";
@@ -67,7 +68,8 @@ export function VistaPrevia({ job }: { job: Vacante }) {
         <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground"><span>{via.texto}</span><span className="inline-flex items-center gap-1"><Clock className="size-3" /> {job.publicado}</span><span className={pronto ? "font-bold text-destructive" : ""}>{venceTexto(job)}</span></p>
       </header>
       <div className="flex-1 overflow-y-auto p-6">
-        <ClaridadPill job={job} />
+        <div className="flex flex-wrap gap-1.5"><ClaridadPill job={job} /><InclusionPills categorias={job.categorias} max={5} /></div>
+        <InclusionBloque categorias={job.categorias} />
         {job.requisitos.length > 0 && (
           <section className="mt-5">
             <h3 className="font-extrabold">Lo que piden</h3>

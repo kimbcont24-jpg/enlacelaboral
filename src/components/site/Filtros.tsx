@@ -4,7 +4,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { NIVELES, nivelDe } from "@/lib/claridad";
 import { areas, modalidades, nivelesExperiencia, provincias, rangosSalario, tiposEmpleo } from "@/lib/data";
 
-export type Filtros = { area: string; provincia: string; salarioMin: string; modalidad: string; experiencia: string; tipo: string; fecha: string; conSalario: string; nivel: string };
+export type Filtros = { area: string; provincia: string; salarioMin: string; modalidad: string; experiencia: string; tipo: string; fecha: string; conSalario: string; nivel: string; incl?: string };
 
 export const filtrosVacios: Filtros = { area: "", provincia: "", salarioMin: "", modalidad: "", experiencia: "", tipo: "", fecha: "", conSalario: "", nivel: "" };
 
@@ -38,6 +38,7 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
         <Chip activo={value.fecha === "1"} onClick={() => set("fecha")(value.fecha === "1" ? "" : "1")}>Publicadas hoy</Chip>
         <Chip activo={value.conSalario === "si"} onClick={() => set("conSalario")(value.conSalario === "si" ? "" : "si")}>Con salario visible</Chip>
         <Chip activo={value.nivel === "Primer empleo"} onClick={() => set("nivel")(value.nivel === "Primer empleo" ? "" : "Primer empleo")}>Primer empleo</Chip>
+        <Chip activo={value.incl === "todas"} onClick={() => set("incl")(value.incl === "todas" ? "" : "todas")}>Empleo inclusivo</Chip>
         <Chip activo={value.modalidad === "Remoto"} onClick={() => set("modalidad")(value.modalidad === "Remoto" ? "" : "Remoto")}>Desde casa</Chip>
       </div>
       <button type="button" onClick={() => setMas((m) => !m)} aria-expanded={mas} className="mx-auto inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-primary md:hidden">
@@ -70,6 +71,7 @@ export function filtrarJobs<T extends { area: string; provincia: string; modalid
     if (f.tipo && j.tipo !== f.tipo) return false;
     if (f.salarioMin && j.salarioMin < Number(f.salarioMin)) return false;
     if (f.conSalario && j.salarioMin <= 0) return false;
+    if (f.incl && !j.categorias.some((c) => c.startsWith(f.incl === "todas" ? "incl:" : `incl:${f.incl}`))) return false;
     if (f.fecha && Date.now() - new Date(j.creado).getTime() > Number(f.fecha) * 864e5) return false;
     return true;
   });

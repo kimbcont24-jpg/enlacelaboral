@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { BadgeCheck, Briefcase, CalendarClock, CalendarDays, Calculator, ArrowLeft, Check, CheckCircle2, Circle, ExternalLink, FileText, GraduationCap, Layers, Link2, Mail, MapPin, MessageCircle, Monitor, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
 
 import { AdminAcciones } from "@/components/site/AdminAcciones";
+import { InclusionBloque } from "@/components/site/InclusionPills";
 import { useApply } from "@/components/site/apply-context";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -233,6 +234,8 @@ function Detalle() {
               <p className="mt-2 text-sm text-muted-foreground">Toca la imagen para verla completa.</p>
             </section>
           )}
+
+          <InclusionBloque categorias={job.categorias} />
 
           <section className="mt-10 rounded-2xl bg-secondary/70 p-5 sm:p-6" aria-labelledby="seguro">
             <h2 id="seguro" className="flex items-center gap-2 text-lg font-extrabold"><ShieldCheck className="size-5 text-primary" aria-hidden="true" /> Antes de aplicar</h2>
