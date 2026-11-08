@@ -311,8 +311,10 @@ for (const [nombre, fn] of Object.entries(fuentes)) {
   try { const f = await fn(); resumen[nombre] = f.length; resultado.push(...f); log(nombre, f.length); }
   catch (e) { resumen[nombre] = `error: ${String(e).slice(0, 120)}`; log(nombre, "ERROR", String(e).slice(0, 200)); }
 }
-// Regla de Kim (8 nov 2026): la gente aplica DESDE Enlace Laboral. Solo se cargan vacantes que dan un correo
-// (o WhatsApp) de la empresa para recibir CV; las que solo se aplican en otro portal ya no se cargan.
+// Regla de Kim (8 nov 2026): mientras no haya dominio se siguen cargando las de otros portales.
+// Cuando compre el dominio (correos con Resend), poner SOLO_CONTACTO = true: entonces solo pasan las que traen
+// correo o WhatsApp de la empresa, para que la gente aplique DESDE Enlace Laboral.
+const SOLO_CONTACTO = process.env.SOLO_CONTACTO === "1" || false;
 const PORTALES = /@(aldaba|computrabajo|marriott|citi|eaton|medtronic|baxter|alorica|smartrecruiters|myworkdayjobs|workday)\./i;
 const correoDe = (t) => (String(t ?? "").match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g) ?? []).find((c) => !PORTALES.test(c) && !/\.(png|jpe?g|gif|webp)$/i.test(c));
 const whatsappDe = (t) => { const m = String(t ?? "").match(/(?:whats?app|wa\.me\/|escr[ií]benos al|env[ií]a(?:r)? (?:tu|el) cv al)\D{0,15}(\+?1?[\s-]?\(?8[024]9\)?[\s.-]?\d{3}[\s.-]?\d{4})/i); return m ? m[1].replace(/\D/g, "").replace(/^(8[024]9)/, "1$1") : null; };
@@ -322,13 +324,14 @@ for (const f of resultado) {
   const texto = `${f.descripcion} ${f.requisitos} ${f._texto ?? ""}`;
   const correo = correoDe(texto), wa = correo ? null : whatsappDe(texto);
   delete f._texto;
-  if (!correo && !wa) { sinContacto++; continue; }
+  if (!correo && !wa) { sinContacto++; if (!SOLO_CONTACTO) conContacto.push(f); continue; }
+  // Si la oferta trae correo o WhatsApp de la empresa, se aplica aquí mismo aunque venga de un portal.
   f.aplicar = correo ?? `https://wa.me/${wa}`;
   f.descripcion = f.descripcion.replace(/;? ?se aplica (?:en línea|en la oferta original)\.?/i, ". Aplica desde Enlace Laboral.");
   conContacto.push(f);
 }
-log("con correo o WhatsApp", conContacto.length, "sin contacto (no se cargan)", sinContacto);
+log("cargadas", conContacto.length, "sin correo ni WhatsApp", sinContacto, SOLO_CONTACTO ? "(no se cargan)" : "(se cargan con enlace al portal)");
 mkdirSync("carga", { recursive: true });
 writeFileSync("carga/auto-latest.json", JSON.stringify(conContacto.slice(0, 300)));
-writeFileSync("carga/auto-resumen.json", JSON.stringify({ fecha: hoy.toISOString(), total: conContacto.length, revisadas: resultado.length, sin_contacto: sinContacto, regla: "solo vacantes con correo o WhatsApp de la empresa (se aplica desde Enlace Laboral)", resumen }, null, 2));
+writeFileSync("carga/auto-resumen.json", JSON.stringify({ fecha: hoy.toISOString(), total: conContacto.length, revisadas: resultado.length, sin_contacto: sinContacto, regla: SOLO_CONTACTO ? "solo vacantes con correo o WhatsApp de la empresa" : "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral", resumen }, null, 2));
 log("TOTAL", resultado.length, JSON.stringify(resumen));
