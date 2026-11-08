@@ -27,8 +27,8 @@ export type Database = {
         Relationships: [];
       };
       candidatos: {
-        Row: { user_id: string; cv: unknown; plantilla: string | null; guardadas: unknown; postulaciones: unknown; updated_at: string; created_at: string };
-        Insert: { user_id: string; cv?: unknown; plantilla?: string | null; guardadas?: unknown; postulaciones?: unknown; updated_at?: string };
+        Row: { user_id: string; cv: unknown; plantilla: string | null; guardadas: unknown; postulaciones: unknown; versiones: unknown; updated_at: string; created_at: string };
+        Insert: { user_id: string; cv?: unknown; plantilla?: string | null; guardadas?: unknown; postulaciones?: unknown; versiones?: unknown; updated_at?: string };
         Update: { [k: string]: unknown };
         Relationships: [];
       };

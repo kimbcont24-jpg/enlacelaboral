@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Send, Upload, AlertTriangle, ArrowDown, ArrowUp, Briefcase, Check, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Eye, FileText, GraduationCap, Lightbulb, ListChecks, MessageCircle, Palette, Pencil, Plus, Search, Sparkles, Target, Trash2, User, Wrench, X } from "lucide-react";
+import { Expand, Layers, Mic, Wand2, Send, Upload, AlertTriangle, ArrowDown, ArrowUp, Briefcase, Check, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Eye, FileText, GraduationCap, Lightbulb, ListChecks, MessageCircle, Palette, Pencil, Plus, Search, Sparkles, Target, Trash2, User, Wrench, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Footer } from "@/components/site/Footer";
@@ -8,6 +8,9 @@ import { Header } from "@/components/site/Header";
 import { GuardarNube } from "@/components/site/GuardarNube";
 import { COLORES, FUENTES, HojaCV, PLANTILLAS, type Color, type Fuente, type Plantilla } from "@/components/cv/Hojas";
 import { EnviarCV } from "@/components/cv/EnviarCV";
+import { Entrevista } from "@/components/cv/Entrevista";
+import { mejorarLogro, perfilDesdeDatos } from "@/lib/cv-redactar";
+import { useVersiones } from "@/lib/cv-versiones";
 import { Importar } from "@/components/cv/Importar";
 import { useApply } from "@/components/site/apply-context";
 import { descargarImagen, descargarWord } from "@/lib/cv-archivos";
@@ -19,6 +22,7 @@ import { coincidencia } from "@/lib/panel";
 import { useVacantes, type Vacante } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/cv")({
+  validateSearch: (s: Record<string, unknown>): { h?: "entrevista" | "comparar" | "importar" } => (s["h"] === "entrevista" || s["h"] === "comparar" || s["h"] === "importar" ? { h: s["h"] } : {}),
   head: () => ({
     meta: [
       { title: "Crea tu CV gratis, profesional y en minutos | Enlace Laboral" },
@@ -56,10 +60,16 @@ function leerEstilo(): Estilo {
 
 function CrearCV() {
   const { cv, setCV, cargado } = useCV();
+  const { versiones, cambiar, crear, renombrar, borrar } = useVersiones(cv, setCV, cargado);
+  const [menuVersiones, setMenuVersiones] = useState(false);
+  const [menuHerr, setMenuHerr] = useState(false);
+  const [ampliar, setAmpliar] = useState(false);
+  const busqueda = Route.useSearch();
   const [paso, setPaso] = useState<Paso>("datos");
   const [vistaMovil, setVistaMovil] = useState<"editar" | "ver">("editar");
   const [estilo, setEstilo] = useState<Estilo>({ plantilla: "clasico", color: "marino", fuente: "s" });
-  const [herramienta, setHerramienta] = useState<"comparar" | "carta" | "importar" | null>(null);
+  const [herramienta, setHerramienta] = useState<"comparar" | "carta" | "importar" | "entrevista" | null>(null);
+  useEffect(() => { if (busqueda.h) setHerramienta(busqueda.h); }, [busqueda.h]);
   const [menuBajar, setMenuBajar] = useState(false);
   const aplicar = useApply();
   const [imprimir, setImprimir] = useState<"cv" | "carta">("cv");
@@ -110,15 +120,58 @@ function CrearCV() {
       <div className="no-print border-b border-border bg-surface">
         <div className="mx-auto flex max-w-[90rem] flex-wrap items-center gap-3 px-4 py-4 sm:px-6">
           <div className="min-w-0 flex-1">
-            <h1 className="font-display text-xl font-extrabold tracking-tight sm:text-2xl">Tu CV profesional</h1>
-            <p className="text-sm text-muted-foreground">Gratis de verdad: 6 diseños, PDF, Word e imagen, sin marca de agua. Y aplicas a vacantes con un toque.</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="font-display text-xl font-extrabold tracking-tight sm:text-2xl">Tu CV profesional</h1>
+              {versiones && (
+                <div className="relative">
+                  <button type="button" onClick={() => setMenuVersiones((x) => !x)} aria-expanded={menuVersiones} className="inline-flex h-8 max-w-[14rem] items-center gap-1.5 rounded-full border border-border bg-background px-3 text-sm font-semibold hover:border-[#1d6ff2]"><Layers className="size-3.5 shrink-0 text-[#1557c4]" /><span className="truncate">{versiones.lista.find((x) => x.id === versiones.activo)?.nombre}</span>{versiones.lista.length > 1 && <span className="rounded-full bg-[#1d6ff2] px-1.5 text-[10px] font-bold text-white">{versiones.lista.length}</span>}<ChevronRight className="size-3.5 rotate-90" /></button>
+                  {menuVersiones && (
+                    <>
+                      <button type="button" aria-hidden="true" tabIndex={-1} onClick={() => setMenuVersiones(false)} className="fixed inset-0 z-30 cursor-default" />
+                      <div className="absolute left-0 z-40 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-surface shadow-xl">
+                        <p className="border-b border-border px-4 py-2.5 text-xs text-muted-foreground">Ten un CV distinto para cada tipo de trabajo. El que eliges es el que se envía al aplicar.</p>
+                        <ul className="max-h-72 overflow-y-auto py-1">
+                          {versiones.lista.map((x) => (
+                            <li key={x.id} className={`flex items-center gap-2 px-3 py-1.5 ${x.id === versiones.activo ? "bg-secondary/70" : ""}`}>
+                              <button type="button" onClick={() => { cambiar(x.id); setMenuVersiones(false); }} className="min-w-0 flex-1 rounded-lg px-1 py-1 text-left"><span className="flex items-center gap-1.5 text-sm font-bold">{x.id === versiones.activo && <Check className="size-3.5 text-[#1557c4]" />}<span className="truncate">{x.nombre}</span></span><span className="block truncate text-xs text-muted-foreground">{x.cv.puesto || "Sin puesto"} · editado {new Date(x.editado).toLocaleDateString("es-DO", { day: "numeric", month: "short" })}</span></button>
+                              <button type="button" onClick={() => { const n = prompt("Nombre de este CV", x.nombre); if (n) renombrar(x.id, n); }} aria-label={`Renombrar ${x.nombre}`} className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-muted"><Pencil className="size-3.5" /></button>
+                              {versiones.lista.length > 1 && <button type="button" onClick={() => { if (confirm(`¿Borrar «${x.nombre}»? No se puede deshacer.`)) borrar(x.id); }} aria-label={`Borrar ${x.nombre}`} className="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-destructive"><Trash2 className="size-3.5" /></button>}
+                            </li>
+                          ))}
+                        </ul>
+                        {versiones.lista.length < 8 && (
+                          <div className="grid grid-cols-2 gap-2 border-t border-border p-3">
+                            <button type="button" onClick={() => { const n = prompt("Nombre del nuevo CV (ej.: Para ventas)", `${cv.puesto || "Mi CV"} (copia)`); if (n !== null) { crear(n, "copia"); setMenuVersiones(false); toast.success("Copia creada. Ajusta lo que necesites para ese tipo de trabajo."); } }} className="h-10 rounded-xl bg-[#0a2f5c] text-sm font-bold text-white">Duplicar este</button>
+                            <button type="button" onClick={() => { const n = prompt("Nombre del nuevo CV (ej.: Para call center)", "Nuevo CV"); if (n !== null) { crear(n, "vacio"); setMenuVersiones(false); setPaso("perfil"); } }} className="h-10 rounded-xl border border-border text-sm font-bold">Nuevo</button>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+            <p className="mt-0.5 text-sm text-muted-foreground">Gratis de verdad: 6 diseños, PDF, Word e imagen, sin marca de agua. Y aplicas a vacantes con un toque.</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => setHerramienta("importar")} className="inline-flex h-10 items-center gap-2 rounded-xl border border-border px-3.5 text-sm font-semibold hover:border-[#1d6ff2] hover:text-[#1557c4]"><Upload className="size-4" /> <span className="hidden sm:inline">Importar mi CV</span><span className="sm:hidden">Importar</span></button>
-            <button type="button" onClick={() => setHerramienta("comparar")} className="inline-flex h-10 items-center gap-2 rounded-xl border border-border px-3.5 text-sm font-semibold hover:border-[#1d6ff2] hover:text-[#1557c4]"><Target className="size-4" /> <span className="hidden sm:inline">Comparar con una vacante</span><span className="sm:hidden">Comparar</span></button>
-            <button type="button" onClick={() => { setCartaPara({ puesto: "", empresa: "" }); setTextoCarta(carta(cv, "", "")); setHerramienta("carta"); }} className="inline-flex h-10 items-center gap-2 rounded-xl border border-border px-3.5 text-sm font-semibold hover:border-[#1d6ff2] hover:text-[#1557c4]"><FileText className="size-4" /> Carta</button>
-            <button type="button" onClick={() => void copiar()} aria-label="Copiar como texto" className="grid size-10 place-items-center rounded-xl border border-border hover:border-[#1d6ff2]"><Copy className="size-4" /></button>
-            <a href={`https://wa.me/?text=${encodeURIComponent(textoCV(cv))}`} target="_blank" rel="noopener noreferrer" aria-label="Enviar por WhatsApp" className="grid size-10 place-items-center rounded-xl border border-border text-[#1fa855] hover:border-[#1fa855]"><MessageCircle className="size-4" /></a>
+            <div className="relative">
+              <button type="button" onClick={() => setMenuHerr((x) => !x)} aria-expanded={menuHerr} className="inline-flex h-10 items-center gap-2 rounded-xl border border-border px-3.5 text-sm font-semibold hover:border-[#1d6ff2] hover:text-[#1557c4]"><Sparkles className="size-4" /> Herramientas</button>
+              {menuHerr && (
+                <>
+                  <button type="button" aria-hidden="true" tabIndex={-1} onClick={() => setMenuHerr(false)} className="fixed inset-0 z-30 cursor-default" />
+                  <div className="absolute right-0 z-40 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-surface py-1.5 shadow-xl" role="menu">
+                    {[
+                      { I: Target, t: "Comparar con una vacante", d: "Qué requisitos tienes y cuáles te faltan", f: () => setHerramienta("comparar") },
+                      { I: FileText, t: "Carta de presentación", d: "Lista para cada vacante, con tus datos", f: () => { setCartaPara({ puesto: "", empresa: "" }); setTextoCarta(carta(cv, "", "")); setHerramienta("carta"); } },
+                      { I: Mic, t: "Practicar entrevista", d: "Preguntas para tu puesto, con consejos", f: () => setHerramienta("entrevista") },
+                      { I: Copy, t: "Copiar como texto", d: "Para pegarlo en un formulario o correo", f: () => void copiar() },
+                      { I: MessageCircle, t: "Enviar por WhatsApp", d: "Manda tu CV en texto a un contacto", f: () => window.open(`https://wa.me/?text=${encodeURIComponent(textoCV(cv))}`, "_blank", "noopener") },
+                    ].map(({ I, t, d, f }) => <button key={t} type="button" role="menuitem" onClick={() => { setMenuHerr(false); f(); }} className="flex w-full items-start gap-3 px-4 py-2.5 text-left hover:bg-secondary"><I className="mt-0.5 size-4 shrink-0 text-[#1557c4]" /><span><span className="block text-sm font-bold">{t}</span><span className="block text-xs text-muted-foreground">{d}</span></span></button>)}
+                  </div>
+                </>
+              )}
+            </div>
             <div className="relative">
               <button type="button" onClick={() => setMenuBajar((x) => !x)} aria-expanded={menuBajar} className="btn-aplicar inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm"><Download className="size-4" /> Descargar</button>
               {menuBajar && (
@@ -164,7 +217,7 @@ function CrearCV() {
           </aside>
 
           {/* Editor */}
-          <main className={`no-print min-w-0 ${vistaMovil === "ver" ? "hidden lg:block" : ""}`}>
+          <main lang="es" spellCheck className={`no-print min-w-0 ${vistaMovil === "ver" ? "hidden lg:block" : ""}`}>
             <div className="mb-4 xl:hidden"><Revisor r={revision} onIr={(s) => setPaso(s as Paso)} compacto /></div>
             <div className="rounded-3xl border border-border bg-surface p-5 sm:p-6">
               <div className="mb-5 flex items-center justify-between gap-3">
@@ -183,7 +236,7 @@ function CrearCV() {
               {paso === "formacion" && <PasoFormacion cv={cv} setCV={setCV} />}
               {paso === "habilidades" && <PasoHabilidades cv={cv} setCV={setCV} rol={rol} />}
               {paso === "otros" && <PasoOtros cv={cv} setCV={setCV} />}
-              {paso === "diseno" && <PasoDiseno cv={cv} estilo={estilo} onEstilo={guardarEstilo} />}
+              {paso === "diseno" && <PasoDiseno cv={cv} estilo={estilo} onEstilo={guardarEstilo} onCV={setCV} />}
               <div className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-5">
                 <button type="button" disabled={i === 0} onClick={() => setPaso(PASOS[i - 1]!.id)} className="inline-flex h-11 items-center gap-1 rounded-xl px-3 text-sm font-semibold text-muted-foreground hover:text-foreground disabled:invisible"><ChevronLeft className="size-4" /> Anterior</button>
                 {i < PASOS.length - 1
@@ -201,7 +254,7 @@ function CrearCV() {
           {/* Vista previa */}
           <div id="cv-vista" className={`min-w-0 ${vistaMovil === "editar" ? "hidden lg:block" : ""}`}>
             <div className="lg:sticky lg:top-24">
-              <Vista cv={cv} estilo={estilo} />
+              <Vista cv={cv} estilo={estilo} onAmpliar={() => setAmpliar(true)} />
               <a href="#enviar-cv" className="no-print mt-3 flex items-center justify-center gap-2 rounded-xl bg-[#0a2f5c] px-4 py-3 text-sm font-bold text-white"><Send className="size-4" /> Enviar mi CV a vacantes</a>
             </div>
           </div>
@@ -210,6 +263,15 @@ function CrearCV() {
       </div>
 
       {herramienta === "comparar" && <Comparar cv={cv} setCV={setCV} onAplicar={(v) => { setHerramienta(null); aplicar(v); }} onCerrar={() => setHerramienta(null)} onCarta={(v) => { const empresa = v.empresa === "Empresa no indicada" ? "" : v.empresa; setCartaPara({ puesto: v.titulo, empresa }); setTextoCarta(carta(cv, v.titulo, empresa)); setHerramienta("carta"); }} />}
+      {herramienta === "entrevista" && <Entrevista rol={rol} onCerrar={() => setHerramienta(null)} />}
+      {ampliar && (
+        <div className="no-print fixed inset-0 z-[70] overflow-y-auto bg-[#0a1a33]/80 p-4 sm:p-8" role="dialog" aria-modal="true" aria-label="Tu CV en grande" onClick={() => setAmpliar(false)}>
+          <div className="mx-auto max-w-[820px]" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-3 flex items-center justify-between text-white"><p className="font-bold">Así lo verá la empresa</p><button type="button" onClick={() => setAmpliar(false)} className="inline-flex items-center gap-1 rounded-lg bg-white/10 px-3 py-1.5 text-sm font-bold hover:bg-white/20"><X className="size-4" /> Cerrar</button></div>
+            <Vista cv={cv} estilo={estilo} />
+          </div>
+        </div>
+      )}
       {herramienta === "importar" && <Importar actual={cv} onUsar={(nuevo) => { setCV(nuevo); setPaso("datos"); setHerramienta(null); toast.success("Listo. Revisa cada paso: lo que no reconocimos, agrégalo a mano."); }} onCerrar={() => setHerramienta(null)} />}
       {herramienta === "carta" && <Carta inicial={cartaPara} texto={textoCarta} setTexto={setTextoCarta} cv={cv} onCerrar={() => setHerramienta(null)} onDescargar={() => descargar("carta")} />}
       <div id="carta-imprimir" className="hidden whitespace-pre-line p-0 text-[15px] leading-relaxed" style={{ fontFamily: "Figtree, system-ui, sans-serif" }}>{textoCarta}</div>
@@ -238,7 +300,7 @@ function CrearCV() {
 /* ───────── Vista previa a escala, con aviso de una página ───────── */
 
 const ANCHO = 794; // A4 a 96 ppp
-function Vista({ cv, estilo }: { cv: CV; estilo: Estilo }) {
+function Vista({ cv, estilo, onAmpliar }: { cv: CV; estilo: Estilo; onAmpliar?: () => void }) {
   const marco = useRef<HTMLDivElement>(null);
   const hoja = useRef<HTMLDivElement>(null);
   const [escala, setEscala] = useState(1);
@@ -256,7 +318,7 @@ function Vista({ cv, estilo }: { cv: CV; estilo: Estilo }) {
   return (
     <div>
       <div className="no-print mb-2 flex items-center justify-between gap-2 text-sm">
-        <span className="font-bold text-muted-foreground">Así queda</span>
+        <span className="flex items-center gap-2"><span className="font-bold text-muted-foreground">Así queda</span>{onAmpliar && <button type="button" onClick={onAmpliar} className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold text-[#1557c4] hover:bg-secondary"><Expand className="size-3.5" /> Ampliar</button>}</span>
         {paginas > 1.02 ? <span className="inline-flex items-center gap-1.5 rounded-full bg-[#c27803]/12 px-2.5 py-1 text-xs font-bold text-[#8a5200]"><AlertTriangle className="size-3.5" /> Pasa de una página: acorta o usa «Compacto»</span>
           : <span className="inline-flex items-center gap-1.5 rounded-full bg-success/12 px-2.5 py-1 text-xs font-bold text-success"><CheckCircle2 className="size-3.5" /> Cabe en una página</span>}
       </div>
@@ -342,6 +404,20 @@ function PasoPerfil({ cv, setCV, rol, rolElegido, setRol }: P & { rol: Rol | nul
         <textarea id="cv-resumen" value={cv.resumen} onChange={(e) => setCV({ ...cv, resumen: e.target.value })} rows={5} className={area} placeholder="Qué sabes hacer, cuánta experiencia tienes y qué buscas." />
         <p className={`mt-1 text-right text-xs ${n > 450 ? "font-bold text-[#8a5200]" : "text-muted-foreground"}`}>{n} caracteres {n > 450 ? "· muy largo" : n >= 120 ? "· buen largo" : ""}</p>
       </div>
+      {(cv.experiencia.some((e) => e.puesto.trim()) || cv.puesto.trim()) && (
+        <div className="rounded-2xl border border-[#1d6ff2]/25 bg-[#1d6ff2]/[0.04] p-4">
+          <p className="flex items-center gap-1.5 text-sm font-extrabold text-[#1557c4]"><Wand2 className="size-4" /> Escrito con tus propios datos</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Lo armamos con tu puesto, tus años de experiencia, tus empresas, tus habilidades y tus logros. Revísalo y ajústalo.</p>
+          <ul className="mt-3 space-y-2">
+            {perfilDesdeDatos(cv).map((r) => (
+              <li key={r} className="rounded-xl border border-border bg-surface p-3 text-[14px] leading-relaxed">
+                <Corchetes texto={r} />
+                <button type="button" onClick={() => { setCV({ ...cv, resumen: r }); toast.success("Perfil puesto. Puedes editarlo arriba."); }} className="mt-2 block text-sm font-bold text-[#1557c4] hover:underline">Usar este</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="rounded-2xl bg-background p-4">
         <SelectorRol rol={rol} rolElegido={rolElegido} setRol={setRol} />
         {rol ? (
@@ -355,6 +431,22 @@ function PasoPerfil({ cv, setCV, rol, rolElegido, setRol }: P & { rol: Rol | nul
           </ul>
         ) : <p className="mt-2 text-sm text-muted-foreground">Escribe en «Tus datos» el puesto que buscas, o elige tu área, y te mostramos ejemplos.</p>}
       </div>
+    </div>
+  );
+}
+
+/** Botón «Mejorar redacción» de un logro: propone versiones con verbo de acción y pide el número que falta. */
+function Mejorar({ texto, onUsar }: { texto: string; onUsar: (t: string) => void }) {
+  const [abierto, setAbierto] = useState(false);
+  const ops = abierto ? mejorarLogro(texto) : [];
+  return (
+    <div className="mt-1">
+      <button type="button" onClick={() => setAbierto((x) => !x)} className="inline-flex items-center gap-1 text-xs font-bold text-[#1557c4] hover:underline"><Wand2 className="size-3.5" /> {abierto ? "Ocultar ideas" : "Mejorar redacción"}</button>
+      {abierto && (ops.length ? (
+        <ul className="mt-1.5 space-y-1.5 rounded-xl border border-[#1d6ff2]/25 bg-surface p-2">
+          {ops.map((o) => <li key={o.texto}><button type="button" onClick={() => { onUsar(o.texto); setAbierto(false); }} className="w-full rounded-lg p-2 text-left text-[13px] hover:bg-secondary"><span className="block"><Corchetes texto={o.texto} /></span><span className="mt-0.5 block text-[11px] font-semibold text-muted-foreground">{o.razon}</span></button></li>)}
+        </ul>
+      ) : <p className="mt-1 text-xs text-success">Este logro ya está bien escrito.</p>)}
     </div>
   );
 }
@@ -399,7 +491,10 @@ function PasoExperiencia({ cv, setCV, rol }: P & { rol: Rol | null }) {
                     {logros.map((l, k) => (
                       <li key={k} className="flex items-start gap-2">
                         <span aria-hidden="true" className="mt-4 size-1.5 shrink-0 rounded-full bg-[#1d6ff2]" />
-                        <textarea value={l} onChange={(ev) => setLogro(k, ev.target.value.replace(/\n/g, " "))} rows={2} className={`${area} text-[14px]`} placeholder="Ej.: Atendía 60 clientes al día y bajé las quejas a la mitad." />
+                        <div className="min-w-0 flex-1">
+                          <textarea value={l} onChange={(ev) => setLogro(k, ev.target.value.replace(/\n/g, " "))} rows={2} className={`${area} text-[14px]`} placeholder="Ej.: Atendía 60 clientes al día y bajé las quejas a la mitad." />
+                          {l.trim().length > 6 && <Mejorar texto={l} onUsar={(t) => setLogro(k, t)} />}
+                        </div>
                         {logros.length > 1 && <button type="button" onClick={() => setExp(j, { logros: logros.filter((_, m) => m !== k).join("\n") })} aria-label="Quitar logro" className="mt-2 grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:text-destructive"><X className="size-4" /></button>}
                       </li>
                     ))}
@@ -517,7 +612,7 @@ function PasoOtros({ cv, setCV }: P) {
   );
 }
 
-function PasoDiseno({ cv, estilo, onEstilo }: { cv: CV; estilo: Estilo; onEstilo: (e: Estilo) => void }) {
+function PasoDiseno({ cv, estilo, onEstilo, onCV }: { cv: CV; estilo: Estilo; onEstilo: (e: Estilo) => void; onCV: (cv: CV) => void }) {
   return (
     <div className="space-y-6">
       <div>
@@ -543,6 +638,13 @@ function PasoDiseno({ cv, estilo, onEstilo }: { cv: CV; estilo: Estilo; onEstilo
         <div className="inline-flex flex-wrap gap-1 rounded-xl border border-border bg-background p-1">
           {FUENTES.map((f) => <button key={f.id} type="button" onClick={() => onEstilo({ ...estilo, fuente: f.id })} aria-pressed={estilo.fuente === f.id} className={`rounded-lg px-4 py-2 text-sm font-semibold ${estilo.fuente === f.id ? "bg-[#0a2f5c] text-white" : "text-muted-foreground hover:text-foreground"}`} style={{ fontFamily: f.css }}>{f.t}</button>)}
         </div>
+      <div>
+        <p className={etiqueta}>Orden de las secciones</p>
+        <div className="inline-flex flex-wrap gap-1 rounded-xl border border-border bg-background p-1">
+          {([[false, "Experiencia primero"], [true, "Estudios primero"]] as const).map(([v, t]) => <button key={t} type="button" onClick={() => onCV({ ...cv, formacionPrimero: v })} aria-pressed={!!cv.formacionPrimero === v} className={`rounded-lg px-4 py-2 text-sm font-semibold ${!!cv.formacionPrimero === v ? "bg-[#0a2f5c] text-white" : "text-muted-foreground hover:text-foreground"}`}>{t}</button>)}
+        </div>
+        <p className="mt-1.5 text-xs text-muted-foreground">Si estás empezando o eres estudiante, pon tus estudios primero.</p>
+      </div>
       </div>
       </div>
       <p className="flex items-start gap-2 rounded-xl bg-secondary/60 p-3 text-[13px] text-muted-foreground"><Lightbulb className="mt-0.5 size-4 shrink-0 text-[#1557c4]" /> Todos los diseños los leen bien los sistemas que usan las empresas para filtrar CV. Si es para un banco o una oficina formal, «Clásico» o «Elegante» son apuestas seguras.</p>

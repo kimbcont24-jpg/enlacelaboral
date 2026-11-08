@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { aplicarCVRemoto, CV_EDITADO, cvVacio, EVENTO_CV, leerCV, type CV } from "@/lib/cv";
+import { EV_VERSIONES, guardarVersiones, K_VERSIONES, leerVersiones, type Versiones } from "@/lib/cv-versiones";
 
 /**
  * Copia opcional en la cuenta del candidato: CV, diseño del CV, guardadas y aplicaciones.
@@ -15,7 +16,7 @@ const EV_POSTS = "enlace-postulaciones-cambio";
 export const EV_NUBE = "enlace-nube-estado";
 
 type Post = { id: string; fecha?: string; cambio?: string; [k: string]: unknown };
-type Fila = { cv: Partial<CV>; plantilla: string | null; guardadas: string[]; postulaciones: Post[]; updated_at: string };
+type Fila = { cv: Partial<CV>; plantilla: string | null; guardadas: string[]; postulaciones: Post[]; versiones: Partial<Versiones> | null; updated_at: string };
 
 const leerJSON = <T,>(k: string, d: T): T => { try { const v = JSON.parse(localStorage.getItem(k) ?? "null") as T | null; return v ?? d; } catch { return d; } };
 const tieneCV = (cv: Partial<CV> | null | undefined) => !!cv && !!(cv.nombre?.trim() || cv.resumen?.trim() || cv.puesto?.trim());
@@ -32,19 +33,20 @@ function local() {
     plantilla: (() => { try { return localStorage.getItem(K_PLANTILLA); } catch { return null; } })(),
     guardadas: leerJSON<string[]>(K_GUARDADAS, []).filter((x) => typeof x === "string"),
     postulaciones: leerJSON<Post[]>(K_POSTS, []).filter((x) => x && typeof x.id === "string"),
+    versiones: leerVersiones(),
   };
 }
 
 async function subir() {
   if (!usuario || aplicando) return;
   const l = local();
-  await supabase.from("candidatos").upsert({ user_id: usuario, cv: (l.cv ?? {}) as unknown as Record<string, unknown>, plantilla: l.plantilla, guardadas: l.guardadas.slice(0, 200), postulaciones: l.postulaciones.slice(0, 300), updated_at: new Date().toISOString() });
+  await supabase.from("candidatos").upsert({ user_id: usuario, cv: (l.cv ?? {}) as unknown as Record<string, unknown>, plantilla: l.plantilla, guardadas: l.guardadas.slice(0, 200), postulaciones: l.postulaciones.slice(0, 300), versiones: (l.versiones ?? {}) as unknown as Record<string, unknown>, updated_at: new Date().toISOString() });
 }
 const subirLuego = () => { window.clearTimeout(temporizador); temporizador = window.setTimeout(() => void subir(), 1500); };
 
 /** Junta lo del teléfono con lo de la cuenta: nada se pierde. */
 async function mezclar(uid: string) {
-  const { data } = await supabase.from("candidatos").select("cv,plantilla,guardadas,postulaciones,updated_at").eq("user_id", uid).maybeSingle();
+  const { data } = await supabase.from("candidatos").select("cv,plantilla,guardadas,postulaciones,versiones,updated_at").eq("user_id", uid).maybeSingle();
   const r = data as unknown as Fila | null;
   const l = local();
   aplicando = true;
@@ -64,6 +66,16 @@ async function mezclar(uid: string) {
       }
       const posts = [...porId.values()].sort((a, b) => String(b.fecha ?? "").localeCompare(String(a.fecha ?? ""))).slice(0, 300);
       localStorage.setItem(K_POSTS, JSON.stringify(posts));
+      // Versiones del CV: se juntan por id; gana la editada último.
+      const rv = r.versiones && Array.isArray(r.versiones.lista) ? (r.versiones as Versiones) : null;
+      if (rv) {
+        const lv = leerVersiones();
+        const m = new Map((lv?.lista ?? []).map((x) => [x.id, x]));
+        for (const x of rv.lista) { const y = m.get(x.id); if (!y || x.editado > y.editado) m.set(x.id, x); }
+        const lista = [...m.values()].slice(0, 8);
+        const activo = lv && lista.some((x) => x.id === lv.activo) ? lv.activo : rv.activo;
+        guardarVersiones({ activo: lista.some((x) => x.id === activo) ? activo : lista[0]!.id, lista });
+      }
       window.dispatchEvent(new Event(EV_GUARDADAS));
       window.dispatchEvent(new Event(EV_POSTS));
     }
@@ -74,7 +86,7 @@ async function mezclar(uid: string) {
 /** Se monta una vez en la raíz: escucha la sesión y sube los cambios solo. */
 export function iniciarNube() {
   const alCambiar = () => { if (usuario && !aplicando) subirLuego(); };
-  for (const ev of [EVENTO_CV, EV_GUARDADAS, EV_POSTS]) window.addEventListener(ev, alCambiar);
+  for (const ev of [EVENTO_CV, EV_GUARDADAS, EV_POSTS, EV_VERSIONES]) window.addEventListener(ev, alCambiar);
   const revisar = async (uid: string | null) => {
     if (uid === usuario && !esEmpresa) return;
     usuario = uid;
@@ -89,7 +101,7 @@ export function iniciarNube() {
   };
   void supabase.auth.getSession().then(({ data }) => revisar(data.session?.user.id ?? null));
   const { data } = supabase.auth.onAuthStateChange((_e, s) => { void revisar(s?.user.id ?? null); });
-  return () => { for (const ev of [EVENTO_CV, EV_GUARDADAS, EV_POSTS]) window.removeEventListener(ev, alCambiar); data.subscription.unsubscribe(); };
+  return () => { for (const ev of [EVENTO_CV, EV_GUARDADAS, EV_POSTS, EV_VERSIONES]) window.removeEventListener(ev, alCambiar); data.subscription.unsubscribe(); };
 }
 
 export type EstadoNube = { listo: boolean; correo: string | null; empresa: boolean };
@@ -119,7 +131,7 @@ export function useNube() {
   const salir = async (borrarTelefono = false) => {
     await supabase.auth.signOut();
     if (borrarTelefono) {
-      try { for (const k of ["enlace-cv", CV_EDITADO, K_GUARDADAS, K_POSTS, K_PLANTILLA, "enlace-aplicante"]) localStorage.removeItem(k); } catch { /* sin almacenamiento */ }
+      try { for (const k of ["enlace-cv", CV_EDITADO, K_GUARDADAS, K_POSTS, K_PLANTILLA, "enlace-aplicante", K_VERSIONES, "enlace-entrevista"]) localStorage.removeItem(k); } catch { /* sin almacenamiento */ }
       window.location.reload();
     }
   };

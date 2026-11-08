@@ -212,7 +212,8 @@ export function revisar(cv: CV): { puntos: number; avisos: Aviso[] } {
     else if (!logros.some((l) => /\d/.test(l))) avisos.push({ tipo: "mejora", seccion: "experiencia", texto: "Pon números en tus logros (clientes por día, metas, %). Llaman mucho la atención." });
     if (logros.some((l) => /\[[^\]]+\]/.test(l))) avisos.push({ tipo: "error", seccion: "experiencia", texto: "Algunos logros tienen [corchetes]: cámbialos por tus números reales o bórralos." });
     if (exp.some((e) => !e.desde.trim())) avisos.push({ tipo: "mejora", seccion: "experiencia", texto: "Pon desde cuándo estuviste en cada trabajo." });
-    if (logros.length && logros.every((l) => /^(encargad|responsable de|me encargaba)/i.test(sinAcentos(l)))) avisos.push({ tipo: "mejora", seccion: "experiencia", texto: "Empieza cada logro con un verbo de acción: Atendí, Logré, Reduje…" });
+    if (logros.some((l) => /^(encargad|responsable|me encargaba|ayudaba|mis funciones|funciones|tareas)/i.test(sinAcentos(l)))) avisos.push({ tipo: "mejora", seccion: "experiencia", texto: "Algunos logros empiezan con «encargado de…». Toca «Mejorar redacción» para empezar con un verbo de acción." });
+    else if (logros.some((l) => /^[a-záéíóúñ]/.test(l))) avisos.push({ tipo: "mejora", seccion: "experiencia", texto: "Empieza cada logro con mayúscula." });
   }
   if (!cv.educacion.some((e) => e.titulo.trim())) avisos.push({ tipo: "mejora", seccion: "formacion", texto: "Agrega tu formación (bachiller, técnico o carrera)." });
   const hab = cv.habilidades.split(",").map((h) => h.trim()).filter(Boolean);

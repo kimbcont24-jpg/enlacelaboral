@@ -70,7 +70,11 @@ function Cuerpo({ d, cv, color, estilo, compacto = false }: { d: Datos; cv: CV; 
     <>
       {cv.resumen && <p className={`mt-5 leading-relaxed ${txt}`}>{cv.resumen}</p>}
       {d.vacio && <p className="mt-6 text-sm text-[#5b6678]">Llena el formulario y tu CV aparece aquí al instante.</p>}
-      {d.exp.length > 0 && (
+{cv.formacionPrimero ? <>{d.edu.length > 0 && (
+        <Seccion titulo="Formación" color={color} estilo={estilo}>
+          <ul className={`space-y-1.5 ${txt}`}>{d.edu.map((e, i) => <li key={i} className="flex flex-wrap items-baseline justify-between gap-x-4"><span><span className="font-bold">{e.titulo}</span>{e.centro && <span className="text-[#5b6678]"> · {e.centro}</span>}</span>{e.anio && <span className="text-[12.5px] text-[#5b6678]">{e.anio}</span>}</li>)}</ul>
+        </Seccion>
+      )}{d.exp.length > 0 && (
         <Seccion titulo="Experiencia" color={color} estilo={estilo}>
           <div className={compacto ? "space-y-3" : "space-y-4"}>
             {d.exp.map((e, i) => (
@@ -84,12 +88,25 @@ function Cuerpo({ d, cv, color, estilo, compacto = false }: { d: Datos; cv: CV; 
             ))}
           </div>
         </Seccion>
-      )}
-      {d.edu.length > 0 && (
+      )}</> : <>{d.exp.length > 0 && (
+        <Seccion titulo="Experiencia" color={color} estilo={estilo}>
+          <div className={compacto ? "space-y-3" : "space-y-4"}>
+            {d.exp.map((e, i) => (
+              <div key={i} className="break-inside-avoid">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+                  <p className="font-bold">{e.puesto}{e.empresa && <span className="font-semibold text-[#5b6678]"> · {e.empresa}</span>}</p>
+                  {(e.desde || e.hasta) && <p className="text-[12.5px] text-[#5b6678]">{fechas(e.desde, e.hasta)}</p>}
+                </div>
+                <Logros texto={e.logros} className={txt} />
+              </div>
+            ))}
+          </div>
+        </Seccion>
+      )}{d.edu.length > 0 && (
         <Seccion titulo="Formación" color={color} estilo={estilo}>
           <ul className={`space-y-1.5 ${txt}`}>{d.edu.map((e, i) => <li key={i} className="flex flex-wrap items-baseline justify-between gap-x-4"><span><span className="font-bold">{e.titulo}</span>{e.centro && <span className="text-[#5b6678]"> · {e.centro}</span>}</span>{e.anio && <span className="text-[12.5px] text-[#5b6678]">{e.anio}</span>}</li>)}</ul>
         </Seccion>
-      )}
+      )}</>}
       {d.cursos.length > 0 && (
         <Seccion titulo="Cursos y certificaciones" color={color} estilo={estilo}>
           <ul className={`space-y-1 ${txt}`}>{d.cursos.map((c, i) => <li key={i}><span className="font-semibold">{c.nombre}</span>{c.centro && <span className="text-[#5b6678]"> · {c.centro}</span>}{c.anio && <span className="text-[#5b6678]"> · {c.anio}</span>}</li>)}</ul>
@@ -186,8 +203,7 @@ export function HojaCV({ cv, plantilla, color: colorId, fuente = "s" }: { cv: CV
         {cv.puesto && <p className="mt-2 text-[15px] text-[#5b6678]">{cv.puesto}</p>}
         {d.contacto.length > 0 && <p className="mt-3 flex flex-wrap gap-x-4 text-[13px] text-[#5b6678]">{d.contacto.map((x) => <span key={x}>{x}</span>)}</p>}
         {cv.resumen && <Fila t="Perfil"><p className="leading-relaxed">{cv.resumen}</p></Fila>}
-        {d.exp.length > 0 && <Fila t="Experiencia"><div className="space-y-4">{d.exp.map((e, i) => <div key={i} className="break-inside-avoid"><p className="font-bold">{e.puesto}{e.empresa && <span className="font-normal text-[#5b6678]">, {e.empresa}</span>}</p>{(e.desde || e.hasta) && <p className="text-[12.5px] text-[#5b6678]">{fechas(e.desde, e.hasta)}</p>}<Logros texto={e.logros} /></div>)}</div></Fila>}
-        {d.edu.length > 0 && <Fila t="Formación"><ul className="space-y-1">{d.edu.map((e, i) => <li key={i}><span className="font-semibold">{e.titulo}</span>{e.centro && `, ${e.centro}`}{e.anio && <span className="text-[#5b6678]"> · {e.anio}</span>}</li>)}</ul></Fila>}
+        {cv.formacionPrimero ? <>{d.edu.length > 0 && <Fila t="Formación"><ul className="space-y-1">{d.edu.map((e, i) => <li key={i}><span className="font-semibold">{e.titulo}</span>{e.centro && `, ${e.centro}`}{e.anio && <span className="text-[#5b6678]"> · {e.anio}</span>}</li>)}</ul></Fila>}{d.exp.length > 0 && <Fila t="Experiencia"><div className="space-y-4">{d.exp.map((e, i) => <div key={i} className="break-inside-avoid"><p className="font-bold">{e.puesto}{e.empresa && <span className="font-normal text-[#5b6678]">, {e.empresa}</span>}</p>{(e.desde || e.hasta) && <p className="text-[12.5px] text-[#5b6678]">{fechas(e.desde, e.hasta)}</p>}<Logros texto={e.logros} /></div>)}</div></Fila>}</> : <>{d.exp.length > 0 && <Fila t="Experiencia"><div className="space-y-4">{d.exp.map((e, i) => <div key={i} className="break-inside-avoid"><p className="font-bold">{e.puesto}{e.empresa && <span className="font-normal text-[#5b6678]">, {e.empresa}</span>}</p>{(e.desde || e.hasta) && <p className="text-[12.5px] text-[#5b6678]">{fechas(e.desde, e.hasta)}</p>}<Logros texto={e.logros} /></div>)}</div></Fila>}{d.edu.length > 0 && <Fila t="Formación"><ul className="space-y-1">{d.edu.map((e, i) => <li key={i}><span className="font-semibold">{e.titulo}</span>{e.centro && `, ${e.centro}`}{e.anio && <span className="text-[#5b6678]"> · {e.anio}</span>}</li>)}</ul></Fila>}</>}
         {d.cursos.length > 0 && <Fila t="Cursos"><ul className="space-y-1">{d.cursos.map((c, i) => <li key={i}>{c.nombre}{c.centro && `, ${c.centro}`}{c.anio && <span className="text-[#5b6678]"> · {c.anio}</span>}</li>)}</ul></Fila>}
         {d.habilidades.length > 0 && <Fila t="Habilidades"><p>{d.habilidades.join(" · ")}</p></Fila>}
         {(d.idiomas.length > 0 || d.extras.length > 0) && <Fila t="Otros"><ul className="space-y-1">{d.idiomas.length > 0 && <li>Idiomas: {d.idiomas.join(", ")}</li>}{d.extras.map((x) => <li key={x}>{x}</li>)}</ul></Fila>}

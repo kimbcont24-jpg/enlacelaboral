@@ -20,6 +20,8 @@ export type CV = {
   disponibilidad: string;
   /** Muestra «Referencias disponibles a solicitud». */
   referencias: boolean;
+  /** Para quien empieza: estudios antes que experiencia. */
+  formacionPrimero?: boolean;
 };
 
 export const cvVacio: CV = { nombre: "", puesto: "", telefono: "", correo: "", ciudad: "", resumen: "", experiencia: [{ puesto: "", empresa: "", desde: "", hasta: "", logros: "" }], educacion: [{ titulo: "", centro: "", anio: "" }], habilidades: "", idiomas: "", cursos: [], linkedin: "", licencia: "", disponibilidad: "", referencias: true };

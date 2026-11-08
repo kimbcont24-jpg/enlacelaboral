@@ -88,7 +88,7 @@ function MiBusqueda() {
           <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-[#c27803]/30 bg-[#c27803]/[0.07] p-4">
             <CalendarClock className="size-5 text-[#8a5200]" />
             <p className="min-w-0 flex-1 text-sm"><b>Próxima entrevista:</b> {proximas[0]!.titulo} en {proximas[0]!.empresa}, {new Date(proximas[0]!.entrevista!).toLocaleString("es-DO", { weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit" })}</p>
-            <Link to="/recursos" className="text-sm font-bold text-[#8a5200] underline-offset-4 hover:underline">Cómo prepararme</Link>
+            <Link to="/cv" search={{ h: "entrevista" }} className="text-sm font-bold text-[#8a5200] underline-offset-4 hover:underline">Practicar la entrevista</Link>
           </div>
         )}
 
@@ -241,7 +241,7 @@ function Aplicacion({ p, nombre }: { p: Postulacion; nombre: string }) {
             <input type="datetime-local" value={local(p.entrevista)} onChange={(ev) => editar(p.id, { entrevista: ev.target.value ? new Date(ev.target.value).toISOString() : undefined })} className="rounded-lg border border-border bg-surface px-2 py-1 text-sm text-foreground" />
           </label>
           {p.entrevista && <a href={gcal(p)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg bg-surface px-2.5 py-1.5 text-xs font-bold hover:underline"><CalendarPlus className="size-3.5" /> Guardar en mi calendario</a>}
-          <Link to="/recursos" className="ml-auto text-xs font-bold text-[#8a5200] hover:underline">Consejos para la entrevista</Link>
+          <Link to="/cv" search={{ h: "entrevista" }} className="ml-auto text-xs font-bold text-[#8a5200] hover:underline">Practicar la entrevista</Link>
         </div>
       )}
       {p.estado === "oferta" && <p className="mt-3 rounded-xl bg-success/[0.08] p-3 text-sm text-success"><b>¡Felicidades!</b> Antes de aceptar, confirma el salario, el horario y que te inscriban en la TSS. <Link to="/herramientas/salario-neto" className="font-bold underline">Calcula cuánto te llega</Link>.</p>}
