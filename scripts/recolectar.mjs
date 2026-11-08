@@ -78,7 +78,7 @@ async function aldaba() {
         let descripcion = uno(desc).slice(0, 900);
         if (malo.test(descripcion)) descripcion = descripcion.replace(/[^.]*(edad|sexo|femenin|masculin)[^.]*\.?/gi, "").trim();
         const sal = (desc + " " + req).match(/RD\$\s?([\d,.]{5,9})/);
-        const fila = { titulo: tituloBonito(puesto), empresa: empresa.slice(0, 100), provincia: provinciaDe(ciudad.split("\n")[0]), area: areaDe(area, puesto), modalidad: /remoto|teletrabajo/i.test(desc) ? "Remoto" : "Presencial", tipo: /parcial/i.test(sec(t, "Jornada", "")) ? "Medio tiempo" : "Tiempo completo", experiencia: experienciaDe(ind + " " + req + " " + desc), descripcion: `${descripcion} Publicada por la empresa en el portal Aldaba el ${f}; se aplica en la oferta original.`, requisitos: [...requisitosDe(req), ...requisitosDe(ind.replace(/•/g, "\n")).filter((x) => !/^(solo candidatos|palabra|residente)/i.test(x) && x.length < 120)].slice(0, 7).join(" | ") || "Ver requisitos en la oferta original", fuente: "Aldaba", fuente_url: `${base}detalle_of.php?oferta=${id}`, aplicar: `${base}detalle_of.php?oferta=${id}`, redes: "si" };
+        const fila = { titulo: tituloBonito(puesto), empresa: empresa.slice(0, 100), provincia: provinciaDe(ciudad.split("\n")[0]), area: areaDe(area, puesto), modalidad: /remoto|teletrabajo/i.test(desc) ? "Remoto" : "Presencial", tipo: /parcial/i.test(sec(t, "Jornada", "")) ? "Medio tiempo" : "Tiempo completo", experiencia: experienciaDe(ind + " " + req + " " + desc), descripcion: `${descripcion} Publicada por la empresa en el portal Aldaba el ${f}; se aplica en la oferta original.`, requisitos: [...requisitosDe(req), ...requisitosDe(ind.replace(/•/g, "\n")).filter((x) => !/^(solo candidatos|palabra|residente)/i.test(x) && x.length < 120)].slice(0, 7).join(" | ") || "Ver requisitos en la oferta original", fuente: "Aldaba", fuente_url: `${base}detalle_of.php?oferta=${id}`, aplicar: `${base}detalle_of.php?oferta=${id}`, redes: "si", _texto: t };
         if (sal) fila.salario_min = sal[1].replace(/[,.]/g, "");
         filas.push(fila);
       } catch (e) { log("aldaba detalle", id, String(e).slice(0, 80)); }
@@ -175,7 +175,7 @@ function filaDesdeJobPosting(jp, { empresa, url, fuenteTexto, provDef = "Santo D
   const titulo = tituloBonito(limpiar(jp.title ?? ""));
   if (!titulo || !d) return null;
   const f = jp.datePosted ? ` Publicada el ${String(jp.datePosted).slice(0, 10)}` : "";
-  return { titulo, empresa, provincia: provinciaDe(loc, provDef), area: areaDe(titulo), modalidad: /remote|remoto/i.test(jp.jobLocationType ?? "") ? "Remoto" : /hybrid|híbrid/i.test(d) ? "Híbrido" : "Presencial", tipo: /part[- ]time|medio tiempo/i.test(jp.employmentType ?? "") ? "Medio tiempo" : /intern|pasant/i.test(titulo) ? "Pasantía" : "Tiempo completo", experiencia: experienciaDe(q || d), descripcion: `${uno(d).slice(0, 900)}${f} ${fuenteTexto}`, requisitos: requisitosDe(q).join(" | ") || `Ver requisitos en el sitio de ${empresa}`, fuente: "Sitio de la empresa", fuente_url: url, aplicar: url, redes: "si" };
+  return { titulo, empresa, provincia: provinciaDe(loc, provDef), area: areaDe(titulo), modalidad: /remote|remoto/i.test(jp.jobLocationType ?? "") ? "Remoto" : /hybrid|híbrid/i.test(d) ? "Híbrido" : "Presencial", tipo: /part[- ]time|medio tiempo/i.test(jp.employmentType ?? "") ? "Medio tiempo" : /intern|pasant/i.test(titulo) ? "Pasantía" : "Tiempo completo", experiencia: experienciaDe(q || d), descripcion: `${uno(d).slice(0, 900)}${f} ${fuenteTexto}`, requisitos: requisitosDe(q).join(" | ") || `Ver requisitos en el sitio de ${empresa}`, fuente: "Sitio de la empresa", fuente_url: url, aplicar: url, redes: "si", _texto: d };
 }
 
 /* ---------------- Alorica (SmartRecruiters, API pública) ---------------- */
@@ -311,7 +311,24 @@ for (const [nombre, fn] of Object.entries(fuentes)) {
   try { const f = await fn(); resumen[nombre] = f.length; resultado.push(...f); log(nombre, f.length); }
   catch (e) { resumen[nombre] = `error: ${String(e).slice(0, 120)}`; log(nombre, "ERROR", String(e).slice(0, 200)); }
 }
+// Regla de Kim (8 nov 2026): la gente aplica DESDE Enlace Laboral. Solo se cargan vacantes que dan un correo
+// (o WhatsApp) de la empresa para recibir CV; las que solo se aplican en otro portal ya no se cargan.
+const PORTALES = /@(aldaba|computrabajo|marriott|citi|eaton|medtronic|baxter|alorica|smartrecruiters|myworkdayjobs|workday)\./i;
+const correoDe = (t) => (String(t ?? "").match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g) ?? []).find((c) => !PORTALES.test(c) && !/\.(png|jpe?g|gif|webp)$/i.test(c));
+const whatsappDe = (t) => { const m = String(t ?? "").match(/(?:whats?app|wa\.me\/|escr[ií]benos al|env[ií]a(?:r)? (?:tu|el) cv al)\D{0,15}(\+?1?[\s-]?\(?8[024]9\)?[\s.-]?\d{3}[\s.-]?\d{4})/i); return m ? m[1].replace(/\D/g, "").replace(/^(8[024]9)/, "1$1") : null; };
+const conContacto = [];
+let sinContacto = 0;
+for (const f of resultado) {
+  const texto = `${f.descripcion} ${f.requisitos} ${f._texto ?? ""}`;
+  const correo = correoDe(texto), wa = correo ? null : whatsappDe(texto);
+  delete f._texto;
+  if (!correo && !wa) { sinContacto++; continue; }
+  f.aplicar = correo ?? `https://wa.me/${wa}`;
+  f.descripcion = f.descripcion.replace(/;? ?se aplica (?:en línea|en la oferta original)\.?/i, ". Aplica desde Enlace Laboral.");
+  conContacto.push(f);
+}
+log("con correo o WhatsApp", conContacto.length, "sin contacto (no se cargan)", sinContacto);
 mkdirSync("carga", { recursive: true });
-writeFileSync("carga/auto-latest.json", JSON.stringify(resultado.slice(0, 300)));
-writeFileSync("carga/auto-resumen.json", JSON.stringify({ fecha: hoy.toISOString(), total: resultado.length, resumen }, null, 2));
+writeFileSync("carga/auto-latest.json", JSON.stringify(conContacto.slice(0, 300)));
+writeFileSync("carga/auto-resumen.json", JSON.stringify({ fecha: hoy.toISOString(), total: conContacto.length, revisadas: resultado.length, sin_contacto: sinContacto, regla: "solo vacantes con correo o WhatsApp de la empresa (se aplica desde Enlace Laboral)", resumen }, null, 2));
 log("TOTAL", resultado.length, JSON.stringify(resumen));
