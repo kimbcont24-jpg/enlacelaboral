@@ -348,17 +348,33 @@ function Panel() {
 function CrearEmpresa({ uid, onListo, onSalir }: { uid: string; onListo: (e: EmpresaPerfil) => void; onSalir: () => void }) {
   const [nombre, setNombre] = useState("");
   const [rnc, setRnc] = useState("");
+  const [contacto, setContacto] = useState("");
   const [guardando, setGuardando] = useState(false);
+  const crear = async (n: string, r: string, c: string, correo: string | null) => {
+    setGuardando(true);
+    const { data, error } = await supabase.from("empresas").insert({ owner_id: uid, nombre: n.trim(), rnc: r, verificada: false, contacto_nombre: c.trim() || null, contacto_email: correo }).select(CAMPOS_EMPRESA).single();
+    setGuardando(false);
+    if (error) return void toast.error("No se pudo guardar. Intenta otra vez.");
+    onListo({ ...(data as unknown as EmpresaPerfil), plantillas: {} });
+  };
+  // Si al crear la cuenta ya escribió empresa y RNC (y luego confirmó el correo), se crea sola.
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => {
+      const m = (data.user?.user_metadata ?? {}) as { empresa?: string; rnc?: string; nombre?: string };
+      const r = (m.rnc ?? "").replace(/\D/g, "");
+      setNombre(m.empresa ?? ""); setRnc(r); setContacto(m.nombre ?? "");
+      if ((m.empresa ?? "").trim().length >= 2 && (r.length === 9 || r.length === 11)) void crear(m.empresa!, r, m.nombre ?? "", data.user?.email ?? null);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const guardar = async (e: React.FormEvent) => {
     e.preventDefault();
     const d = rnc.replace(/\D/g, "");
     if (nombre.trim().length < 2) return void toast.error("Escribe el nombre de tu empresa.");
     if (d.length !== 9 && d.length !== 11) return void toast.error("El RNC tiene 9 dígitos (o 11 si es cédula).");
-    setGuardando(true);
-    const { data, error } = await supabase.from("empresas").insert({ owner_id: uid, nombre: nombre.trim(), rnc: d, verificada: false }).select(CAMPOS_EMPRESA).single();
-    setGuardando(false);
-    if (error) return void toast.error("No se pudo guardar. Intenta otra vez.");
-    onListo({ ...(data as unknown as EmpresaPerfil), plantillas: {} });
+    if (contacto.trim().length < 3) return void toast.error("Escribe tu nombre.");
+    const { data } = await supabase.auth.getUser();
+    await crear(nombre, d, contacto, data.user?.email ?? null);
   };
   return (
     <div className="grid min-h-screen place-items-center bg-background px-4">
@@ -367,9 +383,11 @@ function CrearEmpresa({ uid, onListo, onSalir }: { uid: string; onListo: (e: Emp
         <h1 className="font-display text-2xl font-extrabold">Datos de tu empresa</h1>
         <p className="text-sm text-muted-foreground">Un último paso para usar tu panel y publicar vacantes gratis.</p>
         <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre de la empresa" aria-label="Nombre de la empresa" className="h-12 w-full rounded-xl border border-border bg-background px-3.5" />
-        <input value={rnc} onChange={(e) => setRnc(e.target.value)} inputMode="numeric" placeholder="RNC" aria-label="RNC" className="h-12 w-full rounded-xl border border-border bg-background px-3.5" />
+        <input value={rnc} onChange={(e) => setRnc(e.target.value)} inputMode="numeric" placeholder="RNC (9 dígitos) o cédula (11 dígitos)" aria-label="RNC o cédula" className="h-12 w-full rounded-xl border border-border bg-background px-3.5" />
+        <input value={contacto} onChange={(e) => setContacto(e.target.value)} placeholder="Tu nombre (persona de contacto)" aria-label="Tu nombre" className="h-12 w-full rounded-xl border border-border bg-background px-3.5" />
         <button type="submit" disabled={guardando} className="btn-aplicar h-12 w-full rounded-xl">{guardando ? "Guardando…" : "Entrar a mi panel"}</button>
         <button type="button" onClick={onSalir} className="w-full text-sm font-semibold text-muted-foreground hover:underline">Salir</button>
+        <p className="text-center text-xs text-muted-foreground">¿Buscas empleo? Este panel es para empresas. <a href="/vacantes" className="font-semibold text-primary">Ver vacantes</a></p>
       </form>
     </div>
   );

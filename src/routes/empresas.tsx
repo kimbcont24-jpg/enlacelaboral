@@ -274,7 +274,7 @@ function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.redes} onChange={(e) => setF((x) => ({ ...x, redes: e.target.checked }))} className="mt-1 size-4" /><span>Autorizo que Enlace Laboral comparta esta vacante en sus redes (Telegram, Facebook, Instagram y WhatsApp). Es opcional y gratis.</span></label>
       <input tabIndex={-1} autoComplete="off" aria-hidden="true" value={f.trampa} onChange={set("trampa")} className="hidden" name="sitio_web" />
       <button type="submit" disabled={enviando} className="w-full rounded-xl bg-primary py-3.5 font-bold text-primary-foreground disabled:opacity-60">{enviando ? "Enviando…" : "Enviar vacante gratis"}</button>
-      <p className="text-center text-xs text-muted-foreground">La revisamos antes de publicarla. Te contactamos al correo que indiques.</p>
+      <p className="text-center text-xs text-muted-foreground">Te contactamos al correo que indiques.</p>
     </form>
   );
 }

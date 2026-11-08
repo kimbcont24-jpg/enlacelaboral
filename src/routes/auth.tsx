@@ -62,7 +62,7 @@ function Auth() {
         setError("Revisa tu correo para confirmar la cuenta y luego inicia sesión aquí mismo.");
         setModo("login");
       } else if (modo === "registro") {
-        const { data, error: err } = await supabase.auth.signUp({ email, password: clave, options: { emailRedirectTo: `${window.location.origin}/panel`, data: { nombre } } });
+        const { data, error: err } = await supabase.auth.signUp({ email, password: clave, options: { emailRedirectTo: `${window.location.origin}/panel`, data: { nombre, tipo: "empresa", empresa: empresa.trim(), rnc: soloDigitos(rnc) } } });
         if (err) throw err;
         const userId = data.user?.id;
         if (data.session && userId) {
@@ -92,6 +92,7 @@ function Auth() {
       <main className="mx-auto grid max-w-6xl gap-10 px-6 py-14 lg:grid-cols-2">
         <div>
           <h1 className="text-balance text-4xl font-extrabold tracking-tight">Acceso a Enlace Laboral</h1>
+          <p className="mt-3 text-muted-foreground">Esta entrada es para empresas que publican vacantes.</p>
           <p className="mt-6 text-sm text-muted-foreground">¿Buscas empleo? No necesitas cuenta. <Link to="/vacantes" className="font-semibold text-primary">Mira las vacantes</Link>.</p>
         </div>
         <form onSubmit={enviar} className="space-y-3 self-start rounded-3xl border border-border bg-surface p-7">
@@ -106,7 +107,7 @@ function Auth() {
           {modo === "registro" && (
             <>
               <input required className={input} value={empresa} onChange={(e) => setEmpresa(e.target.value)} placeholder="Nombre de la empresa" />
-              <input required className={input} value={rnc} onChange={(e) => setRnc(soloDigitos(e.target.value).slice(0, 11))} placeholder="RNC o cédula" />
+              <input required inputMode="numeric" className={input} value={rnc} onChange={(e) => setRnc(soloDigitos(e.target.value).slice(0, 11))} placeholder="RNC (9 dígitos) o cédula (11 dígitos)" />
               <input required className={input} value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre" />
             </>
           )}

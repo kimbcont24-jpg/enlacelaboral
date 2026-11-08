@@ -207,7 +207,6 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
           ))}
         </ul>
         <p className="border-t border-border pt-4 text-xs text-muted-foreground">Los candidatos aplican aquí mismo, sin cuenta, y te llegan a la pestaña Candidatos.</p>
-        {!empresa.verificada && <p className="rounded-xl bg-cta/10 p-3 text-xs text-[#8a5200]">Tu empresa aún no está verificada: revisamos cada vacante antes de publicarla.</p>}
       </aside>
     </form>
   );

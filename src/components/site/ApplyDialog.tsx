@@ -115,7 +115,7 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
     const cuerpo = [mensaje.trim(), cv && incluirCv ? `--- CV ---\n${textoCV(cv)}` : ""].filter(Boolean).join("\n\n");
     const { error: err } = await supabase.from("aplicaciones").insert({ vacante_id: job.id, nombre: nombre.trim(), contacto: contacto.trim(), mensaje: cuerpo || null, ...(preguntas.length ? { respuestas: responder(preguntas, resp) } : {}) });
     if (err) {
-      setError("No pudimos enviar tus datos. Revisa tu internet e intenta de nuevo.");
+      setError(/Ya aplicaste|Demasiadas|Mucho tráfico|ya no recibe|demasiado larga/.test(err.message) ? err.message.replace("Aplicación demasiado larga", "Tu mensaje es demasiado largo. Acórtalo un poco.") : "No pudimos enviar tus datos. Revisa tu internet e intenta de nuevo.");
       setEstado("listo");
       return;
     }

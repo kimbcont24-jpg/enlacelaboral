@@ -41,7 +41,7 @@ export function MiEmpresa() {
             {e.verificada ? <span className="inline-flex items-center gap-1.5 rounded-full bg-success/12 px-2.5 py-1 font-bold text-success"><BadgeCheck className="size-4" /> Empresa verificada</span>
               : <span className="inline-flex items-center gap-1.5 rounded-full bg-[#c27803]/12 px-2.5 py-1 font-bold text-[#8a5200]"><Clock className="size-4" /> Verificación pendiente</span>}
           </div>
-          {!e.verificada && <p className="text-sm text-muted-foreground">Verificamos con tu RNC y un contacto real. Mientras tanto revisamos cada vacante antes de publicarla. Completa tus datos para que sea más rápido.</p>}
+          {!e.verificada && <p className="text-sm text-muted-foreground">Verificamos con tu RNC y un contacto real. Completa tus datos para que sea más rápido.</p>}
           <label className="block"><span className="mb-1 block text-sm font-bold">Nombre comercial</span><input value={f.nombre} onChange={(x) => pon("nombre", x.target.value)} maxLength={120} className={campoPanel} /></label>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block"><span className="mb-1 block text-sm font-bold">Sector</span><select value={f.sector} onChange={(x) => pon("sector", x.target.value)} className={campoPanel}><option value="">Elige…</option>{[...new Set([...(f.sector && !SECTORES.includes(f.sector) ? [f.sector] : []), ...SECTORES])].map((s) => <option key={s}>{s}</option>)}</select></label>
@@ -74,7 +74,7 @@ export function MiEmpresa() {
           <TrabajaConNosotros id={e.id} nombre={e.nombre} />
           <div className="rounded-2xl border border-border bg-surface p-5 text-sm">
             <p className="font-extrabold">Consejo</p>
-            <p className="mt-1 text-muted-foreground">Las empresas con descripción, sector y teléfono completos se verifican más rápido. Al verificarte, tus vacantes salen publicadas sin esperar revisión.</p>
+            <p className="mt-1 text-muted-foreground">Las empresas con descripción, sector y teléfono completos se verifican más rápido.</p>
           </div>
         </aside>
       </div>

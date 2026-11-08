@@ -128,7 +128,6 @@ function NuevaJornada({ onListo, onCancelar }: { onListo: () => void; onCancelar
         <label className="block"><span className="mb-1 block text-sm font-bold">Qué deben llevar</span><textarea value={f.llevar} onChange={(e) => pon("llevar", e.target.value)} rows={2} maxLength={500} className={`${campoPanel} h-auto py-3`} /></label>
         <label className="block"><span className="mb-1 block text-sm font-bold">Detalles <span className="font-normal text-muted-foreground">(opcional)</span></span><textarea value={f.descripcion} onChange={(e) => pon("descripcion", e.target.value)} rows={3} maxLength={3000} placeholder="Salario, beneficios, horario de los puestos, cómo será la entrevista…" className={`${campoPanel} h-auto py-3`} /></label>
         <label className="block max-w-[14rem]"><span className="mb-1 block text-sm font-bold">Cupo <span className="font-normal text-muted-foreground">(opcional)</span></span><input inputMode="numeric" value={f.cupo} onChange={(e) => pon("cupo", e.target.value.replace(/\D/g, ""))} placeholder="Sin límite" className={campoPanel} /></label>
-        {!p.empresa.verificada && <p className="rounded-xl bg-[#c27803]/10 p-3 text-sm text-[#8a5200]">Tu empresa aún no está verificada: revisamos la jornada antes de publicarla para cuidar a los candidatos.</p>}
         <button type="submit" disabled={guardando} className="btn-aplicar inline-flex h-12 items-center gap-2 rounded-xl px-8">{guardando && <Loader2 className="size-4 animate-spin" />} Publicar jornada</button>
       </form>
     </>
