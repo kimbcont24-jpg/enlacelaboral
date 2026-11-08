@@ -1,12 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Briefcase, Check, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Eye, FileText, GraduationCap, Lightbulb, ListChecks, MessageCircle, Palette, Pencil, Plus, Search, Sparkles, Target, Trash2, User, Wrench, X } from "lucide-react";
+import { Send, Upload, AlertTriangle, ArrowDown, ArrowUp, Briefcase, Check, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Eye, FileText, GraduationCap, Lightbulb, ListChecks, MessageCircle, Palette, Pencil, Plus, Search, Sparkles, Target, Trash2, User, Wrench, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { GuardarNube } from "@/components/site/GuardarNube";
-import { COLORES, HojaCV, PLANTILLAS, type Color, type Plantilla } from "@/components/cv/Hojas";
+import { COLORES, FUENTES, HojaCV, PLANTILLAS, type Color, type Fuente, type Plantilla } from "@/components/cv/Hojas";
+import { EnviarCV } from "@/components/cv/EnviarCV";
+import { Importar } from "@/components/cv/Importar";
+import { useApply } from "@/components/site/apply-context";
+import { descargarImagen, descargarWord } from "@/lib/cv-archivos";
+
+type Estilo = { plantilla: Plantilla; color: Color; fuente: Fuente };
 import { cvVacio, lineasLogros, textoCV, useCV, type CV, type Curso, type Educacion, type Experiencia } from "@/lib/cv";
 import { carta, IDIOMAS, NIVELES, revisar, rolDe, ROLES, VERBOS, type Rol } from "@/lib/cv-ayuda";
 import { coincidencia } from "@/lib/panel";
@@ -41,27 +47,29 @@ const etiqueta = "mb-1.5 block text-sm font-bold";
 const chip = "inline-flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1.5 text-[13px] font-semibold transition-colors hover:border-[#1d6ff2] hover:text-[#1557c4]";
 const K_ESTILO = "enlace-cv-plantilla";
 
-function leerEstilo(): { plantilla: Plantilla; color: Color } {
+function leerEstilo(): Estilo {
   try {
-    const [p, c] = (localStorage.getItem(K_ESTILO) ?? "").split(":");
-    return { plantilla: PLANTILLAS.some((x) => x.id === p) ? (p as Plantilla) : "clasico", color: COLORES.some((x) => x.id === c) ? (c as Color) : "marino" };
-  } catch { return { plantilla: "clasico", color: "marino" }; }
+    const [p, c, f] = (localStorage.getItem(K_ESTILO) ?? "").split(":");
+    return { plantilla: PLANTILLAS.some((x) => x.id === p) ? (p as Plantilla) : "clasico", color: COLORES.some((x) => x.id === c) ? (c as Color) : "marino", fuente: FUENTES.some((x) => x.id === f) ? (f as Fuente) : "s" };
+  } catch { return { plantilla: "clasico", color: "marino", fuente: "s" }; }
 }
 
 function CrearCV() {
   const { cv, setCV, cargado } = useCV();
   const [paso, setPaso] = useState<Paso>("datos");
   const [vistaMovil, setVistaMovil] = useState<"editar" | "ver">("editar");
-  const [estilo, setEstilo] = useState<{ plantilla: Plantilla; color: Color }>({ plantilla: "clasico", color: "marino" });
-  const [herramienta, setHerramienta] = useState<"comparar" | "carta" | null>(null);
+  const [estilo, setEstilo] = useState<Estilo>({ plantilla: "clasico", color: "marino", fuente: "s" });
+  const [herramienta, setHerramienta] = useState<"comparar" | "carta" | "importar" | null>(null);
+  const [menuBajar, setMenuBajar] = useState(false);
+  const aplicar = useApply();
   const [imprimir, setImprimir] = useState<"cv" | "carta">("cv");
   const [textoCarta, setTextoCarta] = useState("");
   const [cartaPara, setCartaPara] = useState({ puesto: "", empresa: "" });
   const [rolElegido, setRolElegido] = useState<string>("");
   useEffect(() => { setEstilo(leerEstilo()); }, []);
-  const guardarEstilo = (e: { plantilla: Plantilla; color: Color }) => {
+  const guardarEstilo = (e: Estilo) => {
     setEstilo(e);
-    try { localStorage.setItem(K_ESTILO, `${e.plantilla}:${e.color}`); } catch { /* sin almacenamiento */ }
+    try { localStorage.setItem(K_ESTILO, `${e.plantilla}:${e.color}:${e.fuente}`); } catch { /* sin almacenamiento */ }
     window.dispatchEvent(new Event("enlace-cv-cambio"));
   };
 
@@ -84,6 +92,15 @@ function CrearCV() {
     requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
   };
   const copiar = async () => { try { await navigator.clipboard.writeText(textoCV(cv)); toast.success("CV copiado como texto."); } catch { toast.error("No se pudo copiar."); } };
+  const bajarWord = async () => {
+    if (!cv.nombre.trim()) return void toast.error("Escribe al menos tu nombre.");
+    try { await descargarWord(cv, COLORES.find((c) => c.id === estilo.color)!.c); toast.success("CV en Word descargado."); } catch { toast.error("No se pudo crear el Word. Intenta otra vez."); }
+  };
+  const bajarImagen = async () => {
+    const nodo = document.getElementById("cv-hoja");
+    if (!nodo || !cv.nombre.trim()) return void toast.error(nodo ? "Escribe al menos tu nombre." : "Abre «Ver mi CV» y vuelve a intentarlo.");
+    try { await descargarImagen(nodo, cv); toast.success("Imagen descargada. Ya la puedes mandar por WhatsApp."); } catch { toast.error("No se pudo crear la imagen."); }
+  };
   const limpiar = () => { if (confirm("¿Borrar todo lo escrito en el CV?")) { setCV(cvVacio); setPaso("datos"); } };
 
   return (
@@ -94,14 +111,29 @@ function CrearCV() {
         <div className="mx-auto flex max-w-[90rem] flex-wrap items-center gap-3 px-4 py-4 sm:px-6">
           <div className="min-w-0 flex-1">
             <h1 className="font-display text-xl font-extrabold tracking-tight sm:text-2xl">Tu CV profesional</h1>
-            <p className="text-sm text-muted-foreground">Gratis, sin marca de agua. {cargado && cv.nombre ? "Se guarda solo mientras escribes." : "Empieza por tus datos."}</p>
+            <p className="text-sm text-muted-foreground">Gratis de verdad: 6 diseños, PDF, Word e imagen, sin marca de agua. Y aplicas a vacantes con un toque.</p>
           </div>
           <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => setHerramienta("importar")} className="inline-flex h-10 items-center gap-2 rounded-xl border border-border px-3.5 text-sm font-semibold hover:border-[#1d6ff2] hover:text-[#1557c4]"><Upload className="size-4" /> <span className="hidden sm:inline">Importar mi CV</span><span className="sm:hidden">Importar</span></button>
             <button type="button" onClick={() => setHerramienta("comparar")} className="inline-flex h-10 items-center gap-2 rounded-xl border border-border px-3.5 text-sm font-semibold hover:border-[#1d6ff2] hover:text-[#1557c4]"><Target className="size-4" /> <span className="hidden sm:inline">Comparar con una vacante</span><span className="sm:hidden">Comparar</span></button>
             <button type="button" onClick={() => { setCartaPara({ puesto: "", empresa: "" }); setTextoCarta(carta(cv, "", "")); setHerramienta("carta"); }} className="inline-flex h-10 items-center gap-2 rounded-xl border border-border px-3.5 text-sm font-semibold hover:border-[#1d6ff2] hover:text-[#1557c4]"><FileText className="size-4" /> Carta</button>
             <button type="button" onClick={() => void copiar()} aria-label="Copiar como texto" className="grid size-10 place-items-center rounded-xl border border-border hover:border-[#1d6ff2]"><Copy className="size-4" /></button>
             <a href={`https://wa.me/?text=${encodeURIComponent(textoCV(cv))}`} target="_blank" rel="noopener noreferrer" aria-label="Enviar por WhatsApp" className="grid size-10 place-items-center rounded-xl border border-border text-[#1fa855] hover:border-[#1fa855]"><MessageCircle className="size-4" /></a>
-            <button type="button" onClick={() => descargar()} className="btn-aplicar inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm"><Download className="size-4" /> Descargar PDF</button>
+            <div className="relative">
+              <button type="button" onClick={() => setMenuBajar((x) => !x)} aria-expanded={menuBajar} className="btn-aplicar inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm"><Download className="size-4" /> Descargar</button>
+              {menuBajar && (
+                <>
+                  <button type="button" aria-hidden="true" tabIndex={-1} onClick={() => setMenuBajar(false)} className="fixed inset-0 z-30 cursor-default" />
+                  <div className="absolute right-0 z-40 mt-2 w-72 overflow-hidden rounded-2xl border border-border bg-surface py-1.5 shadow-xl" role="menu">
+                    {[
+                      { t: "PDF", d: "Para enviar por correo o imprimir", f: () => descargar() },
+                      { t: "Word (.docx)", d: "Para editarlo en Word o Google Docs", f: () => void bajarWord() },
+                      { t: "Imagen (.png)", d: "Para mandarlo por WhatsApp o redes", f: () => void bajarImagen() },
+                    ].map((x) => <button key={x.t} type="button" role="menuitem" onClick={() => { setMenuBajar(false); x.f(); }} className="block w-full px-4 py-2.5 text-left hover:bg-secondary"><span className="block text-sm font-bold">{x.t}</span><span className="block text-xs text-muted-foreground">{x.d}</span></button>)}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -139,6 +171,12 @@ function CrearCV() {
                 <h2 className="font-display text-lg font-extrabold">{PASOS[i]!.t}</h2>
                 <span className="text-sm text-muted-foreground">Paso {i + 1} de {PASOS.length}</span>
               </div>
+              {paso === "datos" && cargado && !cv.nombre.trim() && !cv.resumen.trim() && (
+                <div className="mb-6 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border-2 border-[#1d6ff2] bg-[#1d6ff2]/[0.04] p-4"><p className="font-extrabold">Empezar de cero</p><p className="mt-1 text-sm text-muted-foreground">Te guiamos paso a paso, con ejemplos para tu puesto.</p></div>
+                  <button type="button" onClick={() => setHerramienta("importar")} className="rounded-2xl border border-border p-4 text-left hover:border-[#1d6ff2]"><p className="flex items-center gap-2 font-extrabold"><Upload className="size-4" /> Ya tengo un CV</p><p className="mt-1 text-sm text-muted-foreground">Súbelo en PDF o Word y lo pasamos aquí para mejorarlo.</p></button>
+                </div>
+              )}
               {paso === "datos" && <PasoDatos cv={cv} setCV={setCV} />}
               {paso === "perfil" && <PasoPerfil cv={cv} setCV={setCV} rol={rol} rolElegido={rolElegido} setRol={setRolElegido} />}
               {paso === "experiencia" && <PasoExperiencia cv={cv} setCV={setCV} rol={rol} />}
@@ -150,7 +188,7 @@ function CrearCV() {
                 <button type="button" disabled={i === 0} onClick={() => setPaso(PASOS[i - 1]!.id)} className="inline-flex h-11 items-center gap-1 rounded-xl px-3 text-sm font-semibold text-muted-foreground hover:text-foreground disabled:invisible"><ChevronLeft className="size-4" /> Anterior</button>
                 {i < PASOS.length - 1
                   ? <button type="button" onClick={() => setPaso(PASOS[i + 1]!.id)} className="inline-flex h-11 items-center gap-1 rounded-xl bg-[#0a2f5c] px-5 text-sm font-bold text-white">Siguiente: {PASOS[i + 1]!.t} <ChevronRight className="size-4" /></button>
-                  : <button type="button" onClick={() => descargar()} className="btn-aplicar inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm"><Download className="size-4" /> Descargar mi CV</button>}
+                  : <span className="flex gap-2"><button type="button" onClick={() => descargar()} className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-4 text-sm font-bold"><Download className="size-4" /> PDF</button><a href="#enviar-cv" className="btn-aplicar inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm"><Send className="size-4" /> Enviar a vacantes</a></span>}
               </div>
             </div>
             <GuardarNube className="mt-4" />
@@ -164,13 +202,15 @@ function CrearCV() {
           <div id="cv-vista" className={`min-w-0 ${vistaMovil === "editar" ? "hidden lg:block" : ""}`}>
             <div className="lg:sticky lg:top-24">
               <Vista cv={cv} estilo={estilo} />
-              <p className="no-print mt-3 text-center text-sm text-muted-foreground">¿Listo? <Link to="/vacantes" className="font-semibold text-[#1557c4] underline-offset-4 hover:underline">Busca vacantes</Link> y marca «Incluir mi CV» al aplicar.</p>
+              <a href="#enviar-cv" className="no-print mt-3 flex items-center justify-center gap-2 rounded-xl bg-[#0a2f5c] px-4 py-3 text-sm font-bold text-white"><Send className="size-4" /> Enviar mi CV a vacantes</a>
             </div>
           </div>
         </div>
+        <EnviarCV cv={cv} />
       </div>
 
-      {herramienta === "comparar" && <Comparar cv={cv} setCV={setCV} onCerrar={() => setHerramienta(null)} onCarta={(v) => { const empresa = v.empresa === "Empresa no indicada" ? "" : v.empresa; setCartaPara({ puesto: v.titulo, empresa }); setTextoCarta(carta(cv, v.titulo, empresa)); setHerramienta("carta"); }} />}
+      {herramienta === "comparar" && <Comparar cv={cv} setCV={setCV} onAplicar={(v) => { setHerramienta(null); aplicar(v); }} onCerrar={() => setHerramienta(null)} onCarta={(v) => { const empresa = v.empresa === "Empresa no indicada" ? "" : v.empresa; setCartaPara({ puesto: v.titulo, empresa }); setTextoCarta(carta(cv, v.titulo, empresa)); setHerramienta("carta"); }} />}
+      {herramienta === "importar" && <Importar actual={cv} onUsar={(nuevo) => { setCV(nuevo); setPaso("datos"); setHerramienta(null); toast.success("Listo. Revisa cada paso: lo que no reconocimos, agrégalo a mano."); }} onCerrar={() => setHerramienta(null)} />}
       {herramienta === "carta" && <Carta inicial={cartaPara} texto={textoCarta} setTexto={setTextoCarta} cv={cv} onCerrar={() => setHerramienta(null)} onDescargar={() => descargar("carta")} />}
       <div id="carta-imprimir" className="hidden whitespace-pre-line p-0 text-[15px] leading-relaxed" style={{ fontFamily: "Figtree, system-ui, sans-serif" }}>{textoCarta}</div>
 
@@ -198,7 +238,7 @@ function CrearCV() {
 /* ───────── Vista previa a escala, con aviso de una página ───────── */
 
 const ANCHO = 794; // A4 a 96 ppp
-function Vista({ cv, estilo }: { cv: CV; estilo: { plantilla: Plantilla; color: Color } }) {
+function Vista({ cv, estilo }: { cv: CV; estilo: Estilo }) {
   const marco = useRef<HTMLDivElement>(null);
   const hoja = useRef<HTMLDivElement>(null);
   const [escala, setEscala] = useState(1);
@@ -222,7 +262,7 @@ function Vista({ cv, estilo }: { cv: CV; estilo: { plantilla: Plantilla; color: 
       </div>
       <div id="cv-marco" ref={marco} className="relative w-full" style={{ height: alto * escala }}>
         <div id="cv-escala" ref={hoja} className="absolute left-0 top-0 origin-top-left" style={{ width: ANCHO, transform: `scale(${escala})` }}>
-          <HojaCV cv={cv} plantilla={estilo.plantilla} color={estilo.color} />
+          <HojaCV cv={cv} plantilla={estilo.plantilla} color={estilo.color} fuente={estilo.fuente} />
         </div>
         {paginas > 1.02 && <div aria-hidden="true" className="no-print pointer-events-none absolute inset-x-0 border-t-2 border-dashed border-[#c27803]/60" style={{ top: ANCHO * 1.414 * escala }}><span className="absolute right-2 -top-6 rounded bg-[#c27803] px-1.5 py-0.5 text-[10px] font-bold text-white">Fin de la página 1</span></div>}
       </div>
@@ -477,7 +517,7 @@ function PasoOtros({ cv, setCV }: P) {
   );
 }
 
-function PasoDiseno({ cv, estilo, onEstilo }: { cv: CV; estilo: { plantilla: Plantilla; color: Color }; onEstilo: (e: { plantilla: Plantilla; color: Color }) => void }) {
+function PasoDiseno({ cv, estilo, onEstilo }: { cv: CV; estilo: Estilo; onEstilo: (e: Estilo) => void }) {
   return (
     <div className="space-y-6">
       <div>
@@ -486,7 +526,7 @@ function PasoDiseno({ cv, estilo, onEstilo }: { cv: CV; estilo: { plantilla: Pla
           {PLANTILLAS.map((p) => (
             <button key={p.id} type="button" onClick={() => onEstilo({ ...estilo, plantilla: p.id })} aria-pressed={estilo.plantilla === p.id} className={`group overflow-hidden rounded-2xl border-2 bg-background text-left transition-colors ${estilo.plantilla === p.id ? "border-[#1d6ff2]" : "border-transparent hover:border-border"}`}>
               <div className="pointer-events-none relative h-36 overflow-hidden bg-[#eef1f5]" aria-hidden="true">
-                <div className="absolute left-1/2 top-2 origin-top" style={{ width: ANCHO, transform: "translateX(-50%) scale(0.2)" }}><HojaCV cv={cv.nombre ? cv : { ...cvVacio, nombre: "María Pérez", puesto: "Asistente administrativa", telefono: "809-555-0000", correo: "maria@correo.com", ciudad: "Santo Domingo", resumen: "Organizada y detallista, con tres años apoyando gerencias.", experiencia: [{ puesto: "Asistente", empresa: "Empresa Ejemplo", desde: "2022", hasta: "", logros: "Organicé el archivo de 2,000 expedientes.\nCoordiné la agenda de 3 gerentes." }], educacion: [{ titulo: "Lic. en Administración", centro: "UASD", anio: "2021" }], habilidades: "Excel, Agenda, Redacción, Archivo", idiomas: "Español (nativo)" }} plantilla={p.id} color={estilo.color} /></div>
+                <div className="absolute left-1/2 top-2 origin-top" style={{ width: ANCHO, transform: "translateX(-50%) scale(0.2)" }}><HojaCV cv={cv.nombre ? cv : { ...cvVacio, nombre: "María Pérez", puesto: "Asistente administrativa", telefono: "809-555-0000", correo: "maria@correo.com", ciudad: "Santo Domingo", resumen: "Organizada y detallista, con tres años apoyando gerencias.", experiencia: [{ puesto: "Asistente", empresa: "Empresa Ejemplo", desde: "2022", hasta: "", logros: "Organicé el archivo de 2,000 expedientes.\nCoordiné la agenda de 3 gerentes." }], educacion: [{ titulo: "Lic. en Administración", centro: "UASD", anio: "2021" }], habilidades: "Excel, Agenda, Redacción, Archivo", idiomas: "Español (nativo)" }} plantilla={p.id} color={estilo.color} fuente={estilo.fuente} /></div>
               </div>
               <p className="flex items-center justify-between px-3 py-2 text-sm font-bold">{p.t}{estilo.plantilla === p.id && <CheckCircle2 className="size-4 text-[#1d6ff2]" />}</p>
             </button>
@@ -498,6 +538,12 @@ function PasoDiseno({ cv, estilo, onEstilo }: { cv: CV; estilo: { plantilla: Pla
         <div className="flex flex-wrap gap-2">
           {COLORES.map((c) => <button key={c.id} type="button" onClick={() => onEstilo({ ...estilo, color: c.id })} aria-pressed={estilo.color === c.id} aria-label={c.t} title={c.t} className={`grid size-10 place-items-center rounded-full ring-offset-2 transition-shadow ${estilo.color === c.id ? "ring-2 ring-[#1d6ff2]" : ""}`} style={{ backgroundColor: c.c }}>{estilo.color === c.id && <Check className="size-4 text-white" />}</button>)}
         </div>
+      <div>
+        <p className={etiqueta}>Letra</p>
+        <div className="inline-flex flex-wrap gap-1 rounded-xl border border-border bg-background p-1">
+          {FUENTES.map((f) => <button key={f.id} type="button" onClick={() => onEstilo({ ...estilo, fuente: f.id })} aria-pressed={estilo.fuente === f.id} className={`rounded-lg px-4 py-2 text-sm font-semibold ${estilo.fuente === f.id ? "bg-[#0a2f5c] text-white" : "text-muted-foreground hover:text-foreground"}`} style={{ fontFamily: f.css }}>{f.t}</button>)}
+        </div>
+      </div>
       </div>
       <p className="flex items-start gap-2 rounded-xl bg-secondary/60 p-3 text-[13px] text-muted-foreground"><Lightbulb className="mt-0.5 size-4 shrink-0 text-[#1557c4]" /> Todos los diseños los leen bien los sistemas que usan las empresas para filtrar CV. Si es para un banco o una oficina formal, «Clásico» o «Elegante» son apuestas seguras.</p>
     </div>
@@ -519,7 +565,7 @@ function Modal({ titulo, onCerrar, children, ancho = "max-w-2xl" }: { titulo: st
   );
 }
 
-function Comparar({ cv, setCV, onCerrar, onCarta }: P & { onCerrar: () => void; onCarta: (v: Vacante) => void }) {
+function Comparar({ cv, setCV, onCerrar, onCarta, onAplicar }: P & { onCerrar: () => void; onCarta: (v: Vacante) => void; onAplicar: (v: Vacante) => void }) {
   const { jobs } = useVacantes();
   const [q, setQ] = useState(cv.puesto);
   const [elegida, setElegida] = useState<Vacante | null>(null);
@@ -564,6 +610,7 @@ function Comparar({ cv, setCV, onCerrar, onCarta }: P & { onCerrar: () => void; 
             </>
           )}
           <div className="mt-6 flex flex-wrap gap-2 border-t border-border pt-4">
+            <button type="button" onClick={() => onAplicar(elegida)} className="btn-aplicar inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm"><Send className="size-4" /> Aplicar con mi CV</button>
             <button type="button" onClick={() => onCarta(elegida)} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#0a2f5c] px-4 text-sm font-bold text-white"><FileText className="size-4" /> Hacer carta para esta vacante</button>
             <Link to="/vacantes/$id" params={{ id: elegida.id }} className="inline-flex h-11 items-center rounded-xl border border-border px-4 text-sm font-bold hover:border-[#1d6ff2]">Ver la vacante</Link>
           </div>

@@ -22,6 +22,13 @@ export const COLORES = [
 ] as const;
 export type Color = (typeof COLORES)[number]["id"];
 
+export const FUENTES = [
+  { id: "s", t: "Moderna", css: "Figtree, system-ui, sans-serif" },
+  { id: "a", t: "Clásica", css: "Arial, Helvetica, sans-serif" },
+  { id: "e", t: "Con serifa", css: "Georgia, 'Times New Roman', serif" },
+] as const;
+export type Fuente = (typeof FUENTES)[number]["id"];
+
 type Datos = ReturnType<typeof preparar>;
 function preparar(cv: CV) {
   return {
@@ -37,7 +44,7 @@ function preparar(cv: CV) {
   };
 }
 const fechas = (d: string, h: string) => [d, h || (d ? "actualidad" : "")].filter(Boolean).join(" – ");
-const base: CSSProperties = { fontFamily: "Figtree, system-ui, sans-serif", printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" };
+const baseComun: CSSProperties = { printColorAdjust: "exact", WebkitPrintColorAdjust: "exact" };
 
 function Logros({ texto, className = "" }: { texto: string; className?: string }) {
   const l = lineasLogros(texto);
@@ -117,8 +124,9 @@ function Extras({ d, cv, color, estilo, chips = true, suave }: { d: Datos; cv: C
 
 const hoja = "cv-hoja mx-auto w-full max-w-[210mm] overflow-hidden rounded-xl border border-border bg-white text-[#14213a] shadow-[var(--shadow-lift)]";
 
-export function HojaCV({ cv, plantilla, color: colorId }: { cv: CV; plantilla: Plantilla; color: Color }) {
+export function HojaCV({ cv, plantilla, color: colorId, fuente = "s" }: { cv: CV; plantilla: Plantilla; color: Color; fuente?: Fuente }) {
   const d = preparar(cv);
+  const base: CSSProperties = { ...baseComun, fontFamily: FUENTES.find((f) => f.id === fuente)?.css ?? FUENTES[0].css };
   const { c: color, suave } = COLORES.find((x) => x.id === colorId) ?? COLORES[0];
 
   if (plantilla === "moderno") {
