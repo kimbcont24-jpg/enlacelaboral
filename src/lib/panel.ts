@@ -142,7 +142,7 @@ export function coincidencia(texto: string, requisitos: string[]): { ok: string[
     const k = claves(r);
     if (!k.length) continue;
     const hallados = k.filter((w) => t.includes(w.length > 5 ? w.slice(0, w.length - 1) : w)).length;
-    (hallados / k.length >= 0.5 ? ok : falta).push(r);
+    (hallados / k.length >= (k.length <= 2 ? 1 : 0.5) ? ok : falta).push(r);
   }
   const total = ok.length + falta.length;
   return total ? { ok, falta, total } : null;

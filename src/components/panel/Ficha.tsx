@@ -163,7 +163,7 @@ export function Ficha({ id, onCerrar, onOtro }: { id: string; onCerrar: () => vo
 /** Muestra el CV que arma Enlace Laboral con sus secciones separadas. */
 function Cv({ texto }: { texto: string }) {
   const lineas = texto.split("\n");
-  const titulos = new Set(["Experiencia", "Formación"]);
+  const titulos = new Set(["Experiencia", "Formación", "Cursos"]);
   return (
     <div className="mt-2 space-y-1 rounded-xl bg-surface p-4 text-sm">
       {lineas.map((l, i) => {
@@ -171,7 +171,8 @@ function Cv({ texto }: { texto: string }) {
         if (!t) return <div key={i} className="h-2" />;
         if (i === 0) return <p key={i} className="text-base font-extrabold">{t}</p>;
         if (titulos.has(t)) return <p key={i} className="pt-2 text-xs font-extrabold text-[#1557c4]">{t}</p>;
-        if (/^(Habilidades|Idiomas):/.test(t)) { const [a, ...b] = t.split(":"); return <p key={i} className="pt-1"><span className="font-bold">{a}:</span>{b.join(":")}</p>; }
+        if (t.startsWith("- ")) return <p key={i} className="pl-3 text-muted-foreground">• {t.slice(2)}</p>;
+        if (/^(Habilidades|Idiomas|Licencia de conducir|Disponibilidad):/.test(t)) { const [a, ...b] = t.split(":"); return <p key={i} className="pt-1"><span className="font-bold">{a}:</span>{b.join(":")}</p>; }
         if (t.startsWith("•")) return <p key={i} className="font-semibold">{t.slice(1).trim()}</p>;
         return <p key={i} className="text-muted-foreground">{t}</p>;
       })}

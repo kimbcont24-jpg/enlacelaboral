@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 /** CV del candidato. Vive solo en su navegador (localStorage); nunca se sube a ningún servidor salvo que él lo incluya al aplicar. */
 export type Experiencia = { puesto: string; empresa: string; desde: string; hasta: string; logros: string };
 export type Educacion = { titulo: string; centro: string; anio: string };
+export type Curso = { nombre: string; centro: string; anio: string };
 export type CV = {
   nombre: string; puesto: string; telefono: string; correo: string; ciudad: string;
   resumen: string;
@@ -10,9 +11,18 @@ export type CV = {
   educacion: Educacion[];
   habilidades: string;
   idiomas: string;
+  /** Cursos y certificaciones (INFOTEP, diplomados, en línea…). */
+  cursos: Curso[];
+  linkedin: string;
+  /** Ej.: Categoría 2. Vacío = no se muestra. */
+  licencia: string;
+  /** Ej.: Inmediata, turnos rotativos, fines de semana. */
+  disponibilidad: string;
+  /** Muestra «Referencias disponibles a solicitud». */
+  referencias: boolean;
 };
 
-export const cvVacio: CV = { nombre: "", puesto: "", telefono: "", correo: "", ciudad: "", resumen: "", experiencia: [{ puesto: "", empresa: "", desde: "", hasta: "", logros: "" }], educacion: [{ titulo: "", centro: "", anio: "" }], habilidades: "", idiomas: "" };
+export const cvVacio: CV = { nombre: "", puesto: "", telefono: "", correo: "", ciudad: "", resumen: "", experiencia: [{ puesto: "", empresa: "", desde: "", hasta: "", logros: "" }], educacion: [{ titulo: "", centro: "", anio: "" }], habilidades: "", idiomas: "", cursos: [], linkedin: "", licencia: "", disponibilidad: "", referencias: true };
 
 const CLAVE = "enlace-cv";
 
@@ -21,7 +31,7 @@ export function leerCV(): CV | null {
     const raw = localStorage.getItem(CLAVE);
     if (!raw) return null;
     const cv = JSON.parse(raw) as Partial<CV>;
-    return { ...cvVacio, ...cv, experiencia: cv.experiencia?.length ? cv.experiencia : cvVacio.experiencia, educacion: cv.educacion?.length ? cv.educacion : cvVacio.educacion };
+    return { ...cvVacio, ...cv, experiencia: cv.experiencia?.length ? cv.experiencia : cvVacio.experiencia, educacion: cv.educacion?.length ? cv.educacion : cvVacio.educacion, cursos: Array.isArray(cv.cursos) ? cv.cursos : [] };
   } catch {
     return null;
   }
@@ -65,17 +75,24 @@ export function cvCompleto(cv: CV | null): cv is CV {
 }
 
 /** Versión en texto plano, para pegarla en una aplicación o en WhatsApp. */
+/** Logros escritos uno por línea (con o sin viñeta). */
+export const lineasLogros = (t: string) => t.split(/\n+/).map((l) => l.replace(/^\s*[-•*▪●]\s*/, "").trim()).filter(Boolean);
+
 export function textoCV(cv: CV): string {
-  const exp = cv.experiencia.filter((e) => e.puesto.trim()).map((e) => `• ${e.puesto}${e.empresa ? ` en ${e.empresa}` : ""}${e.desde || e.hasta ? ` (${[e.desde, e.hasta || "actualidad"].filter(Boolean).join(" – ")})` : ""}${e.logros ? `\n  ${e.logros.replace(/\n+/g, " ")}` : ""}`);
+  const exp = cv.experiencia.filter((e) => e.puesto.trim()).map((e) => `• ${e.puesto}${e.empresa ? ` en ${e.empresa}` : ""}${e.desde || e.hasta ? ` (${[e.desde, e.hasta || "actualidad"].filter(Boolean).join(" – ")})` : ""}${lineasLogros(e.logros).map((l) => `\n  - ${l}`).join("")}`);
   const edu = cv.educacion.filter((e) => e.titulo.trim()).map((e) => `• ${e.titulo}${e.centro ? `, ${e.centro}` : ""}${e.anio ? ` (${e.anio})` : ""}`);
+  const cur = (cv.cursos ?? []).filter((c) => c.nombre.trim()).map((c) => `• ${c.nombre}${c.centro ? `, ${c.centro}` : ""}${c.anio ? ` (${c.anio})` : ""}`);
   return [
     `${cv.nombre}${cv.puesto ? ` · ${cv.puesto}` : ""}`,
-    [cv.telefono, cv.correo, cv.ciudad].filter(Boolean).join(" · "),
+    [cv.telefono, cv.correo, cv.ciudad, cv.linkedin].filter(Boolean).join(" · "),
     cv.resumen ? `\n${cv.resumen}` : "",
     exp.length ? `\nExperiencia\n${exp.join("\n")}` : "",
     edu.length ? `\nFormación\n${edu.join("\n")}` : "",
+    cur.length ? `\nCursos\n${cur.join("\n")}` : "",
     cv.habilidades ? `\nHabilidades: ${cv.habilidades}` : "",
     cv.idiomas ? `Idiomas: ${cv.idiomas}` : "",
+    cv.licencia ? `Licencia de conducir: ${cv.licencia}` : "",
+    cv.disponibilidad ? `Disponibilidad: ${cv.disponibilidad}` : "",
   ].filter((x) => x !== "").join("\n").trim();
 }
 

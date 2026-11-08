@@ -132,7 +132,7 @@ export function RobotNexa() {
   };
 
   return (
-    <div className={`fixed right-3 z-40 flex flex-col items-end gap-2 sm:right-5 ${enVacante ? "bottom-24 lg:bottom-6" : "bottom-4 sm:bottom-6"}`}>
+    <div className={`no-print print:hidden fixed right-3 z-40 flex flex-col items-end gap-2 sm:right-5 ${enVacante ? "bottom-24 lg:bottom-6" : "bottom-4 sm:bottom-6"}`}>
       {abierto && (
         <div role="dialog" aria-label="Nexa, tu guía en Enlace Laboral" className="robot-panel flex max-h-[calc(100dvh-9rem)] w-[min(21.5rem,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-[0_24px_60px_-20px_rgb(10_47_92/0.55)]">
           <div className="hero-dark flex items-start gap-3 px-4 py-3.5">
