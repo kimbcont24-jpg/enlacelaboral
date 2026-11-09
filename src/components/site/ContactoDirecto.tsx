@@ -32,7 +32,7 @@ const wa = (n: string) => {
   return `https://wa.me/${d.length === 10 ? `1${d}` : d}`;
 };
 
-function BotonCopiar({ texto, etiqueta }: { texto: string; etiqueta: string }) {
+function BotonCopiar({ texto, etiqueta, pequeno = false }: { texto: string; etiqueta: string; pequeno?: boolean }) {
   const [ok, setOk] = useState(false);
   return (
     <button
@@ -40,9 +40,9 @@ function BotonCopiar({ texto, etiqueta }: { texto: string; etiqueta: string }) {
       onClick={async () => {
         try { await navigator.clipboard.writeText(texto); setOk(true); setTimeout(() => setOk(false), 2200); } catch { /* sin portapapeles */ }
       }}
-      className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border-2 border-primary bg-surface px-3 text-sm font-bold text-primary hover:bg-primary/5"
+      className={pequeno ? "inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-semibold text-muted-foreground hover:text-primary" : "inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border-2 border-primary bg-surface px-3 text-sm font-bold text-primary hover:bg-primary/5"}
     >
-      {ok ? <Check className="size-4" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />} {ok ? "¡Copiado!" : etiqueta}
+      {ok ? <Check className={pequeno ? "size-3.5" : "size-4"} aria-hidden="true" /> : <Copy className={pequeno ? "size-3.5" : "size-4"} aria-hidden="true" />} {ok ? "¡Copiado!" : etiqueta}
     </button>
   );
 }
@@ -66,15 +66,15 @@ export function ContactoDirecto({ job, compacto = false, alUsar }: { job: Vacant
           <p className="mt-1 text-sm text-muted-foreground">
             Asunto: <span className="font-semibold text-foreground">{asunto}</span>. Adjunta tu CV en PDF.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <BotonCopiar texto={correo} etiqueta="Copiar correo" />
-            <a
-              href={`mailto:${correo}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`}
-              onClick={alUsar}
-              className="btn-aplicar inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl px-3 text-sm"
-            >
-              <Mail className="size-4" aria-hidden="true" /> Abrir mi correo
-            </a>
+          <a
+            href={`mailto:${correo}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`}
+            onClick={alUsar}
+            className="btn-aplicar mt-3 flex h-14 w-full items-center justify-center gap-2 rounded-2xl text-lg"
+          >
+            <Mail className="size-5" aria-hidden="true" /> Aplicar
+          </a>
+          <div className="mt-2 flex justify-center">
+            <BotonCopiar texto={correo} etiqueta="Copiar correo" pequeno />
           </div>
         </div>
       ))}
