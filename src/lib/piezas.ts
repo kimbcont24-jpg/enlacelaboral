@@ -12,7 +12,7 @@ const AZUL2 = "#14498c";
 const CTA = "#1d6ff2";
 const ORO = "#ffd84d";
 const VERDE = "#0f7a43";
-const FUENTE = '"Figtree", "Segoe UI", "Helvetica Neue", Arial, sans-serif';
+const FUENTE = '"Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif';
 
 const sinEmpresa = (v: Vacante) => v.empresa === "Empresa no indicada";
 

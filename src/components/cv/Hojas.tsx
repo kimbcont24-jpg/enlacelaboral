@@ -23,7 +23,7 @@ export const COLORES = [
 export type Color = (typeof COLORES)[number]["id"];
 
 export const FUENTES = [
-  { id: "s", t: "Moderna", css: "Figtree, system-ui, sans-serif" },
+  { id: "s", t: "Moderna", css: "Inter, system-ui, sans-serif" },
   { id: "a", t: "Clásica", css: "Arial, Helvetica, sans-serif" },
   { id: "e", t: "Con serifa", css: "Georgia, 'Times New Roman', serif" },
 ] as const;
