@@ -234,14 +234,14 @@ function EmpleoParaTodos() {
           <div className="hidden lg:block"><Constelacion porCamino={porCamino} cargando={cargando} /></div>
         </div>
 
-        <nav aria-label="Elige tu camino" className="relative mx-auto mt-10 grid max-w-6xl gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <nav aria-label="Elige tu camino" className="relative mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-3 lg:grid-cols-5">
           {CAMINOS.map((c, i) => (
-            <a key={c.id} href={`#${c.id}`} style={{ ...acento(c), animationDelay: `${150 + i * 70}ms` }} className="entra group relative overflow-hidden rounded-2xl bg-white/[0.07] p-4 ring-1 ring-white/15 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.13] hover:ring-white/30">
+            <a key={c.id} href={`#${c.id}`} style={{ ...acento(c), animationDelay: `${150 + i * 70}ms` }} className={`${i === CAMINOS.length - 1 ? "col-span-2 lg:col-span-1 " : ""}entra group relative overflow-hidden rounded-2xl bg-white/[0.07] p-4 ring-1 ring-white/15 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.13] hover:ring-white/30`}>
               <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1" style={{ background: c.color }} />
               <span className="grid size-10 place-items-center rounded-xl bg-white text-[var(--acento)] shadow-sm"><c.I className="size-5" aria-hidden="true" /></span>
-              <p className="mt-3 font-extrabold leading-snug">{c.t}</p>
-              <p className="mt-0.5 text-sm text-white/75">{c.d}</p>
-              <p className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-white">{cargando ? "Contando…" : `${porCamino[c.id].length} vacantes`} <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" /></p>
+              <p className="mt-3 text-[15px] font-extrabold leading-snug sm:text-base">{c.t}</p>
+              <p className="mt-0.5 hidden text-sm text-white/75 sm:block">{c.d}</p>
+              <p className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-white">{cargando ? "Contando…" : `${porCamino[c.id].length} ${porCamino[c.id].length === 1 ? "vacante" : "vacantes"}`} <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" /></p>
             </a>
           ))}
         </nav>
@@ -407,8 +407,8 @@ function Buscador({ porCamino, cargando }: { porCamino: Record<Camino["id"], Vac
         </div>
         {!cargando && (lista.length > 0 ? (
           <div key={`${camino}-${provincia}`} className="vista-entra">
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{lista.slice(0, 6).map((j) => <VacanteTarjeta key={j.id} job={j} />)}</div>
-            {lista.length > 6 && <Link to="/vacantes" search={{ incl: camino, provincia: provincia || undefined } as never} className="btn-aplicar mt-6 inline-flex h-12 items-center gap-2 rounded-xl px-6">Ver las {lista.length} vacantes <ArrowRight className="size-4" aria-hidden="true" /></Link>}
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{lista.slice(0, 6).map((j, i) => <div key={j.id} className={i >= 3 ? "hidden sm:block [&>article]:h-full" : "[&>article]:h-full"}><VacanteTarjeta job={j} /></div>)}</div>
+            {lista.length > 3 && <Link to="/vacantes" search={{ incl: camino, provincia: provincia || undefined } as never} className="btn-aplicar mt-6 inline-flex h-12 items-center gap-2 rounded-xl px-6">Ver las {lista.length} vacantes <ArrowRight className="size-4" aria-hidden="true" /></Link>}
           </div>
         ) : (
           <div className="mt-6 rounded-2xl p-5 text-sm" style={{ background: c.suave }}>
