@@ -20,6 +20,7 @@ import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { ReportarVacante } from "@/components/site/ReportarVacante";
 import { registrarVista } from "@/lib/vistas";
+import { ContactoDirecto, tieneContactoDirecto } from "@/components/site/ContactoDirecto";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -71,7 +72,7 @@ function bloques(texto: string): Bloque[] {
 function comoAplicar(job: Vacante): { Icono: typeof Mail; texto: string } {
   const e = enlaceAplicar(job.aplicar);
   if (!e) return { Icono: FileText, texto: "Dejas tu nombre y tu contacto en un formulario corto. Puedes incluir tu CV. No necesitas crear cuenta." };
-  if (e.href.startsWith("mailto:")) return { Icono: Mail, texto: "Aplicas aquí mismo con un formulario corto y nosotros enviamos tu aplicación a la empresa. Sin cuenta." };
+  if (e.href.startsWith("mailto:")) return { Icono: Mail, texto: "Envías tu CV al correo de la empresa." };
   if (e.href.includes("wa.me")) return { Icono: MessageCircle, texto: "Le escribes a la empresa por WhatsApp. Te abrimos el chat." };
   return { Icono: Link2, texto: "Sigues el enlace de la empresa para aplicar en su propio sitio." };
 }
@@ -109,6 +110,7 @@ function Detalle() {
   const { jobs } = useVacantes();
   const similares = jobs.filter((j) => j.id !== job.id && (j.area === job.area || j.provincia === job.provincia)).slice(0, 4);
   const { Icono: IconoAplicar, texto: textoAplicar } = comoAplicar(job);
+  const directo = tieneContactoDirecto(job);
   const sinEmpresa = job.empresa === "Empresa no indicada";
   const urgente = diasRestantes(job) <= 5;
   const secciones = job.descripcion ? bloques(job.descripcion) : [];
@@ -117,7 +119,7 @@ function Detalle() {
   useEffect(() => registrarVista(job.id, job.estado), [job.id, job.estado]);
 
   // La barra de abajo (celular) aparece solo cuando el botón grande ya no se ve.
-  const botonRef = useRef<HTMLButtonElement>(null);
+  const botonRef = useRef<HTMLDivElement>(null);
   const [barra, setBarra] = useState(false);
   useEffect(() => {
     const el = botonRef.current;
@@ -174,8 +176,19 @@ function Detalle() {
                 <span className="absolute -right-3 -top-3 size-6 rounded-full border-l border-border bg-background" />
               </div>
               <div className="p-6 pt-5">
-                <p className="flex items-start gap-2.5 text-sm leading-snug text-muted-foreground"><IconoAplicar className="mt-0.5 size-[18px] shrink-0 text-primary" aria-hidden="true" /> {textoAplicar}</p>
-                <button ref={botonRef} onClick={() => aplicar(job)} className="btn-aplicar mt-4 h-14 w-full rounded-2xl text-lg">Aplicar a esta vacante</button>
+                {directo ? (
+                  <>
+                    <div ref={botonRef}><ContactoDirecto job={job} /></div>
+                    <button onClick={() => aplicar(job)} className="mt-3 w-full rounded-xl py-2 text-sm font-semibold text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
+                      O usa el formulario de Enlace Laboral
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="flex items-start gap-2.5 text-sm leading-snug text-muted-foreground"><IconoAplicar className="mt-0.5 size-[18px] shrink-0 text-primary" aria-hidden="true" /> {textoAplicar}</p>
+                    <div ref={botonRef}><button onClick={() => aplicar(job)} className="btn-aplicar mt-4 h-14 w-full rounded-2xl text-lg">Aplicar a esta vacante</button></div>
+                  </>
+                )}
                 <div className="mt-3 flex gap-2">
                   <div className="flex-1"><BotonGuardar id={job.id} grande /></div>
                   <CompartirBoton job={job} className="h-11 flex-1" />
@@ -287,7 +300,7 @@ function Detalle() {
             <p className={`truncate ${job.salarioMin > 0 ? "text-xs" : "text-sm font-bold"} text-muted-foreground`}>{job.titulo}</p>
           </div>
           <div className="[&_button]:size-12"><BotonGuardar id={job.id} /></div>
-          <button tabIndex={barra ? 0 : -1} onClick={() => aplicar(job)} className="btn-aplicar h-12 shrink-0 rounded-xl px-6 text-base">Aplicar</button>
+          <button tabIndex={barra ? 0 : -1} onClick={() => (directo ? document.getElementById("aplicar-directo")?.scrollIntoView({ behavior: "smooth", block: "center" }) : aplicar(job))} className="btn-aplicar h-12 shrink-0 rounded-xl px-6 text-base">{directo ? "Cómo aplicar" : "Aplicar"}</button>
         </div>
       </div>
       <Footer />

@@ -5,6 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, ChevronDown, Copy, ExternalLink, FileText, Loader2, Mail, MessageCircle, ShieldCheck, X } from "lucide-react";
 
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
+import { ContactoDirecto } from "@/components/site/ContactoDirecto";
 import { supabase } from "@/integrations/supabase/client";
 import { cvCompleto, leerCV, textoCV, type CV } from "@/lib/cv";
 import { enlaceConMensaje, mensajeAplicacion, viaAplicar } from "@/lib/mensajes";
@@ -136,6 +137,43 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
 
   const IconoVia = via.clave === "whatsapp" ? MessageCircle : via.clave === "correo" ? Mail : via.clave === "formulario" ? FileText : ExternalLink;
 
+  const formulario = (
+    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); void enviarFormulario(); }}>
+      <p className="text-sm text-muted-foreground">{via.clave === "correo" ? "Deja tus datos y te preparamos el correo para la empresa. Sin cuenta, sin costo." : "Deja tus datos y los hacemos llegar a la empresa. Sin cuenta, sin costo."}</p>
+      <input required value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" placeholder="Tu nombre completo" aria-label="Tu nombre completo" className={campo} />
+      <input required value={contacto} onChange={(e) => setContacto(e.target.value)} autoComplete="tel" placeholder="Tu WhatsApp o correo" aria-label="Tu WhatsApp o correo" className={campo} />
+      {preguntas.length > 0 && (
+        <fieldset className="space-y-3 rounded-2xl border border-border p-4">
+          <legend className="px-1 text-sm font-bold">La empresa pregunta</legend>
+          {preguntas.map((q) => (
+            <div key={q.id}>
+              <p className="text-sm font-semibold">{q.texto}</p>
+              {q.tipo === "si_no" ? (
+                <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label={q.texto}>
+                  {(["si", "no"] as const).map((v) => <button key={v} type="button" role="radio" aria-checked={resp[q.id] === v} onClick={() => setResp((r) => ({ ...r, [q.id]: v }))} className={`h-11 rounded-xl border text-sm font-bold transition-colors ${resp[q.id] === v ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background hover:border-primary"}`}>{v === "si" ? "Sí" : "No"}</button>)}
+                </div>
+              ) : <input value={resp[q.id] ?? ""} onChange={(e) => setResp((r) => ({ ...r, [q.id]: e.target.value }))} maxLength={300} aria-label={q.texto} placeholder="Tu respuesta" className={`${campo} mt-2 py-3`} />}
+            </div>
+          ))}
+          <p className="text-xs text-muted-foreground">Responde con la verdad: así llegas a los puestos que sí son para ti.</p>
+        </fieldset>
+      )}
+      {cv ? (
+        <label className="flex items-start gap-2.5 rounded-xl bg-secondary px-4 py-3 text-sm"><input type="checkbox" checked={incluirCv} onChange={(e) => setIncluirCv(e.target.checked)} className="mt-0.5 size-4 accent-[var(--cta)]" /> <span>Incluir mi CV ({cv.nombre}). <Link to="/cv" onClick={onClose} className="font-semibold text-primary underline">Editarlo</Link></span></label>
+      ) : <SinCv />}
+      <details className="group text-sm">
+        <summary className="flex cursor-pointer list-none items-center gap-1.5 py-1 font-semibold text-primary">Agregar un mensaje <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
+        <textarea value={mensaje} onChange={(e) => setMensaje(e.target.value)} rows={3} placeholder="Cuéntanos brevemente tu experiencia" aria-label="Mensaje" className={`${campo} mt-2`} />
+      </details>
+      <Consentimiento para="candidato" />
+      {error && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
+      <button type="submit" disabled={estado === "enviando"} className={botonGrande}>
+        {estado === "enviando" ? (<><Loader2 className="size-5 animate-spin" aria-hidden="true" /> Enviando…</>) : via.clave === "correo" ? "Enviar mi aplicación" : "Enviar mis datos"}
+      </button>
+      <p className="text-center text-xs text-muted-foreground">Al enviar, compartes tu nombre, contacto y CV con {conEmpresa ? job.empresa : "la empresa"}.</p>
+    </form>
+  );
+
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-foreground/60 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={`Aplicar a ${job.titulo}`} onClick={onClose}>
       <div className="entra max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-[1.75rem] border border-border bg-surface px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 shadow-[var(--shadow-lift)] sm:rounded-3xl sm:px-6 sm:pb-6 sm:pt-6" onClick={(e) => e.stopPropagation()}>
@@ -207,43 +245,21 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
               </>
             )}
 
-            {/* ---------- Formulario de Enlace Laboral ---------- */}
-            {(via.clave === "formulario" || via.clave === "correo") && (
-              <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); void enviarFormulario(); }}>
-                <p className="text-sm text-muted-foreground">{via.clave === "correo" ? "Aplicas aquí mismo y nosotros se lo enviamos a la empresa. Sin cuenta, sin costo." : "Deja tus datos y los hacemos llegar a la empresa. Sin cuenta, sin costo."}</p>
-                <input required value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" placeholder="Tu nombre completo" aria-label="Tu nombre completo" className={campo} />
-                <input required value={contacto} onChange={(e) => setContacto(e.target.value)} autoComplete="tel" placeholder="Tu WhatsApp o correo" aria-label="Tu WhatsApp o correo" className={campo} />
-                {preguntas.length > 0 && (
-                  <fieldset className="space-y-3 rounded-2xl border border-border p-4">
-                    <legend className="px-1 text-sm font-bold">La empresa pregunta</legend>
-                    {preguntas.map((q) => (
-                      <div key={q.id}>
-                        <p className="text-sm font-semibold">{q.texto}</p>
-                        {q.tipo === "si_no" ? (
-                          <div className="mt-2 grid grid-cols-2 gap-2" role="radiogroup" aria-label={q.texto}>
-                            {(["si", "no"] as const).map((v) => <button key={v} type="button" role="radio" aria-checked={resp[q.id] === v} onClick={() => setResp((r) => ({ ...r, [q.id]: v }))} className={`h-11 rounded-xl border text-sm font-bold transition-colors ${resp[q.id] === v ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background hover:border-primary"}`}>{v === "si" ? "Sí" : "No"}</button>)}
-                          </div>
-                        ) : <input value={resp[q.id] ?? ""} onChange={(e) => setResp((r) => ({ ...r, [q.id]: e.target.value }))} maxLength={300} aria-label={q.texto} placeholder="Tu respuesta" className={`${campo} mt-2 py-3`} />}
-                      </div>
-                    ))}
-                    <p className="text-xs text-muted-foreground">Responde con la verdad: así llegas a los puestos que sí son para ti.</p>
-                  </fieldset>
-                )}
-                {cv ? (
-                  <label className="flex items-start gap-2.5 rounded-xl bg-secondary px-4 py-3 text-sm"><input type="checkbox" checked={incluirCv} onChange={(e) => setIncluirCv(e.target.checked)} className="mt-0.5 size-4 accent-[var(--cta)]" /> <span>Incluir mi CV ({cv.nombre}). <Link to="/cv" onClick={onClose} className="font-semibold text-primary underline">Editarlo</Link></span></label>
-                ) : <SinCv />}
-                <details className="group text-sm">
-                  <summary className="flex cursor-pointer list-none items-center gap-1.5 py-1 font-semibold text-primary">Agregar un mensaje <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
-                  <textarea value={mensaje} onChange={(e) => setMensaje(e.target.value)} rows={3} placeholder="Cuéntanos brevemente tu experiencia" aria-label="Mensaje" className={`${campo} mt-2`} />
+            {/* ---------- Correo: el contacto directo va primero; el formulario queda como opción ---------- */}
+            {via.clave === "correo" && (
+              <>
+                <ContactoDirecto job={job} compacto alUsar={() => registrar(job, "Correo directo a la empresa")} />
+                <details className="group rounded-xl border border-border px-4 py-3">
+                  <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-muted-foreground">
+                    O usa el formulario de Enlace Laboral <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="mt-3">{formulario}</div>
                 </details>
-                <Consentimiento para="candidato" />
-                {error && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
-                <button type="submit" disabled={estado === "enviando"} className={botonGrande}>
-                  {estado === "enviando" ? (<><Loader2 className="size-5 animate-spin" aria-hidden="true" /> Enviando…</>) : via.clave === "correo" ? "Enviar mi aplicación" : "Enviar mis datos"}
-                </button>
-                <p className="text-center text-xs text-muted-foreground">Al enviar, compartes tu nombre, contacto y CV con {conEmpresa ? job.empresa : "la empresa"}.</p>
-              </form>
+              </>
             )}
+
+            {/* ---------- Formulario de Enlace Laboral ---------- */}
+            {via.clave === "formulario" && formulario}
 
             {ya && estado === "listo" && (
               <p className="rounded-xl bg-success/10 px-4 py-2.5 text-sm text-success">Ya aplicaste a esta vacante. <Link to="/guardadas" search={{ ver: "postulaciones" }} onClick={onClose} className="font-bold underline">Ver mis postulaciones</Link></p>
