@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Cookie } from "lucide-react";
+import { HardDrive, Megaphone, MousePointerClick } from "lucide-react";
 
 import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
 
@@ -18,7 +18,12 @@ const USOS: [string, string][] = [
 
 function Cookies() {
   return (
-    <PaginaLegal I={Cookie} etiqueta="Sin rastreo" titulo="Política de cookies" intro={<p>Actualizada el {LEGAL_ACTUALIZADO}.</p>}
+    <PaginaLegal actual="/cookies" etiqueta="Sin rastreo" titulo="Política de cookies" intro={<p>Actualizada el {LEGAL_ACTUALIZADO}. Por qué no te mostramos el aviso de «Aceptar cookies».</p>}
+      resumen={[
+        { I: Megaphone, t: "Sin publicidad", d: "No hay cookies de anuncios ni te seguimos por otras páginas." },
+        { I: HardDrive, t: "Solo lo necesario", d: "Tu CV, tus guardadas y tu sesión se quedan en tu teléfono." },
+        { I: MousePointerClick, t: "Tú decides", d: "Puedes borrarlo cuando quieras desde tu navegador." },
+      ]}
       indice={[["corto", "En corto"], ["que", "Qué guarda tu navegador"], ["terceros", "Servicios de otros"], ["borrar", "Cómo borrarlo"]]}>
       <Bloque id="corto" titulo="En corto">
         <p><strong>No usamos cookies de publicidad ni de rastreo.</strong> No vendemos tu información ni te seguimos por otras páginas. Por eso no te mostramos un aviso para aceptar cookies.</p>

@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { BadgeCheck, EyeOff, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Footer } from "@/components/site/Footer";
-import { Header } from "@/components/site/Header";
+import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/privacidad")({
@@ -12,33 +11,17 @@ export const Route = createFileRoute("/privacidad")({
   component: Privacidad,
 });
 
-const ACTUALIZADA = "8 de noviembre de 2026";
-
-function Bloque({ id, titulo, children }: { id: string; titulo: string; children: React.ReactNode }) {
-  return (
-    <section id={id} className="scroll-mt-24">
-      <h2 className="font-display text-xl font-extrabold">{titulo}</h2>
-      <div className="mt-2 space-y-2 text-[15px] leading-relaxed text-foreground/85">{children}</div>
-    </section>
-  );
-}
-
 function Privacidad() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-        <p className="inline-flex items-center gap-2 rounded-full bg-success/10 px-3 py-1 text-sm font-semibold text-success"><ShieldCheck className="size-4" aria-hidden="true" /> Tus datos son tuyos</p>
-        <h1 className="mt-4 text-balance font-display text-3xl font-extrabold tracking-tight md:text-4xl">Política de privacidad</h1>
-        <p className="mt-3 text-muted-foreground">Actualizada el {ACTUALIZADA}. La escribimos en palabras sencillas. Se basa en la Ley 172-13 sobre Protección de Datos de Carácter Personal de República Dominicana.</p>
+    <PaginaLegal actual="/privacidad" etiqueta="Tus datos son tuyos" titulo="Política de privacidad"
+      intro={<p>Actualizada el {LEGAL_ACTUALIZADO}. En palabras sencillas y según la Ley 172-13 sobre Protección de Datos de Carácter Personal.</p>}
+      resumen={[
+        { I: EyeOff, t: "No vendemos tus datos", d: "Ni los alquilamos. Tampoco usamos publicidad ni rastreadores." },
+        { I: BadgeCheck, t: "Solo los ve la empresa a la que aplicas", d: "Las demás empresas no ven tu aplicación." },
+        { I: Trash2, t: "Puedes pedir que los borremos", d: "Cuando quieras, con el formulario al final de esta página." },
+      ]}
+      indice={[["que", "Qué datos guardamos"], ["para", "Para qué los usamos"], ["quien", "Quién los ve"], ["donde", "Dónde y por cuánto tiempo"], ["derechos", "Tus derechos"], ["empresas", "Reglas para empresas"], ["pedir", "Ver, corregir o borrar"]]}>
 
-        <nav aria-label="En esta página" className="mt-6 rounded-2xl border border-border bg-surface p-4 text-sm">
-          <ul className="grid gap-1.5 sm:grid-cols-2">
-            {[["que", "Qué datos guardamos"], ["para", "Para qué los usamos"], ["quien", "Quién los ve"], ["donde", "Dónde se guardan y por cuánto tiempo"], ["derechos", "Tus derechos"], ["empresas", "Reglas para empresas"], ["pedir", "Pedir ver, corregir o borrar tus datos"]].map(([id, t]) => <li key={id}><a href={`#${id}`} className="font-semibold text-primary hover:underline">{t}</a></li>)}
-          </ul>
-        </nav>
-
-        <div className="mt-10 space-y-9">
           <Bloque id="que" titulo="Qué datos guardamos">
             <p><strong>Si buscas empleo y aplicas sin cuenta:</strong> tu nombre, tu WhatsApp o correo, el mensaje que escribas, las respuestas a las preguntas de la empresa y, si tú lo eliges, tu CV en texto.</p>
             <p><strong>Si creas tu cuenta (opcional):</strong> tu correo, tu CV, las vacantes que guardas y el seguimiento de tus aplicaciones, para que no los pierdas si cambias de teléfono. Si activas «Banco de talento», las empresas registradas pueden ver tu perfil e invitarte. Puedes apagarlo cuando quieras.</p>
@@ -80,10 +63,7 @@ function Privacidad() {
           <Bloque id="pedir" titulo="Pedir ver, corregir o borrar tus datos">
             <SolicitudDatos />
           </Bloque>
-        </div>
-      </main>
-      <Footer />
-    </div>
+    </PaginaLegal>
   );
 }
 

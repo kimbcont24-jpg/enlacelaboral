@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Logo, LogoMarca } from "@/components/site/Logo";
 import { landingsArea, landingsProvincia } from "@/lib/empleos";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
+import { PAGINAS_LEGALES } from "@/lib/legal";
 
 export function Footer() {
   return (
@@ -13,7 +14,7 @@ export function Footer() {
           <Logo invertido tamano="text-[26px]" />
           <p className="mt-4 max-w-xs text-sm text-white/70">Reunimos vacantes de empresas, portales e instituciones de República Dominicana. Aplicar siempre es gratis.</p>
           <div className="mt-4 max-w-xs"><CanalWhatsApp variante="boton" /></div>
-          <p className="mt-4 max-w-xs rounded-xl bg-white/8 p-3 text-sm text-white/85"><strong>Cuídate:</strong> ninguna empresa seria te cobra por entrevistarte o contratarte.</p>
+          <p className="mt-4 max-w-xs rounded-xl bg-white/8 p-3 text-sm text-white/85"><strong>Cuídate:</strong> ninguna empresa seria te cobra por entrevistarte o contratarte. <Link to="/seguridad" className="font-semibold text-[#ffd84d] underline">Cómo evitar estafas</Link></p>
         </div>
         <nav aria-label="Empleos por provincia">
           <p className="text-sm font-bold text-white">Empleos por provincia</p>
@@ -44,7 +45,7 @@ export function Footer() {
           </ul>
         </nav>
       </div>
-      <p className="relative mx-auto mt-10 flex max-w-7xl sm:pr-20 flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/50"><span>© 2026 Enlace Laboral. Hecho en República Dominicana.</span><span className="flex flex-wrap gap-x-4 gap-y-1"><Link to="/terminos" className="font-semibold hover:text-white">Términos y condiciones</Link><Link to="/privacidad" className="font-semibold hover:text-white">Privacidad</Link><Link to="/cookies" className="font-semibold hover:text-white">Cookies</Link><Link to="/contacto" className="font-semibold hover:text-white">Contacto y ayuda</Link></span></p>
+      <p className="relative mx-auto mt-10 flex max-w-7xl sm:pr-20 flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/50"><span>© 2026 Enlace Laboral. Hecho en República Dominicana.</span><span className="flex flex-wrap gap-x-4 gap-y-1"><Link to="/legal" className="font-semibold text-white/80 hover:text-white">Confianza y legal</Link>{PAGINAS_LEGALES.map((p) => <Link key={p.to} to={p.to} className="font-semibold hover:text-white">{p.t}</Link>)}</span></p>
     </footer>
   );
 }

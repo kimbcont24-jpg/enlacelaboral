@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ScrollText } from "lucide-react";
+import { Ban, Gift, Scale } from "lucide-react";
 
 import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
 
@@ -10,7 +10,12 @@ export const Route = createFileRoute("/terminos")({
 
 function Terminos() {
   return (
-    <PaginaLegal I={ScrollText} etiqueta="Reglas claras" titulo="Términos y condiciones" intro={<p>Actualizados el {LEGAL_ACTUALIZADO}. Son las reglas para usar Enlace Laboral. Al usar la página, las aceptas. Si no estás de acuerdo, no la uses.</p>}
+    <PaginaLegal actual="/terminos" etiqueta="Reglas claras" titulo="Términos y condiciones" intro={<p>Actualizados el {LEGAL_ACTUALIZADO}. Son las reglas para usar Enlace Laboral. Al usar la página, las aceptas.</p>}
+      resumen={[
+        { I: Gift, t: "Buscar empleo es gratis", d: "Aplicar nunca cuesta. Nadie puede cobrarte por un puesto." },
+        { I: Ban, t: "Cero discriminación", d: "Ninguna vacante puede pedir edad, sexo, foto ni estado civil." },
+        { I: Scale, t: "Empresas reales y revisadas", d: "Con RNC o cédula. Quitamos lo que no cumple." },
+      ]}
       indice={[["que", "Qué es Enlace Laboral"], ["quien", "Quién puede usarlo"], ["candidatos", "Si buscas empleo"], ["empresas", "Si eres empresa"], ["otras", "Vacantes de otras fuentes"], ["pagos", "Servicios pagados"], ["prohibido", "Lo que no está permitido"], ["contenido", "Contenido y marca"], ["responsabilidad", "Hasta dónde respondemos"], ["cambios", "Suspensión y cambios"], ["ley", "Ley aplicable"]]}>
       <Bloque id="que" titulo="Qué es Enlace Laboral">
         <p>Enlace Laboral es una página que conecta a personas que buscan empleo con empresas que contratan en República Dominicana. Publicamos vacantes, recibimos aplicaciones y damos herramientas como el creador de CV, el panel de empresas y las jornadas de empleo.</p>
@@ -22,11 +27,12 @@ function Terminos() {
       </Bloque>
       <Bloque id="candidatos" titulo="Si buscas empleo">
         <ul className="list-disc space-y-1.5 pl-5">
-          <li>Usar Enlace Laboral es <strong>gratis</strong> para quien busca empleo. Nadie puede cobrarte por aplicar o por conseguir un puesto en nuestra página.</li>
+          <li>Buscar empleo y aplicar en Enlace Laboral es <strong>gratis</strong>. Nadie puede cobrarte por aplicar o por conseguir un puesto en nuestra página.</li>
+          <li>Ofrecemos servicios opcionales pagados, como <Link to="/impulso" className="font-semibold text-primary underline">Impulso Laboral</Link> (te hacemos el CV). Nunca son un requisito para aplicar ni te dan ventaja frente a las empresas.</li>
           <li>Puedes aplicar sin crear cuenta. La cuenta es opcional y sirve para guardar tu CV y seguir tus aplicaciones.</li>
           <li>Escribe datos reales: tu nombre, tu contacto y tu experiencia. No uses los datos de otra persona.</li>
           <li>Cuando aplicas, la empresa de esa vacante recibe tus datos. Revisa la vacante antes de enviar.</li>
-          <li>Si una empresa te pide dinero, documentos que no tienen que ver con el puesto o algo que te parezca raro, no lo hagas y <Link to="/contacto" className="font-semibold text-primary underline">avísanos</Link>.</li>
+          <li>Si una empresa te pide dinero, documentos que no tienen que ver con el puesto o algo que te parezca raro, no lo hagas y <Link to="/contacto" search={{ tipo: "denuncia" }} className="font-semibold text-primary underline">repórtalo</Link>. Mira cómo cuidarte en <Link to="/seguridad" className="font-semibold text-primary underline">Empleo seguro</Link>.</li>
         </ul>
       </Bloque>
       <Bloque id="empresas" titulo="Si eres empresa">
@@ -44,7 +50,7 @@ function Terminos() {
         <p>Algunas vacantes vienen de fuentes públicas, como las páginas de empleo de las mismas empresas u otros portales. En esos casos mostramos de dónde vienen. Revisamos que tengan sentido y quitamos las que parecen estafas, pero no controlamos esas fuentes: confirma siempre los datos con la empresa.</p>
       </Bloque>
       <Bloque id="pagos" titulo="Servicios pagados">
-        <p>Publicar vacantes es gratis. Algunos servicios para empresas tienen costo, como el Plan Empresa, destacar una vacante o el reclutamiento asistido. Los precios están en la página <Link to="/empresas" className="font-semibold text-primary underline">Empresas</Link>.</p>
+        <p>Publicar vacantes es gratis. Algunos servicios tienen costo: para empresas, el Plan Empresa, destacar una vacante o el reclutamiento asistido (precios en <Link to="/empresas" className="font-semibold text-primary underline">Empresas</Link>); para candidatos, Impulso Laboral (precios en <Link to="/impulso" className="font-semibold text-primary underline">Impulso</Link>). Lee también <Link to="/reembolsos" className="font-semibold text-primary underline">Pagos y reembolsos</Link>.</p>
         <ul className="list-disc space-y-1.5 pl-5">
           <li>Antes de cobrar te confirmamos por escrito el precio, lo que incluye y cómo pagar. No hay cobros automáticos.</li>
           <li>Los planes duran el tiempo pagado y no se renuevan solos.</li>

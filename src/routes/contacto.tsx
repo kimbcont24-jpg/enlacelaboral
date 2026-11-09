@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronDown, LifeBuoy, Loader2 } from "lucide-react";
+import { ChevronDown, Clock3, Flag, Loader2, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Consentimiento } from "@/components/site/Consentimiento";
@@ -26,7 +26,12 @@ const PREGUNTAS: [string, React.ReactNode][] = [
 
 function Contacto() {
   return (
-    <PaginaLegal I={LifeBuoy} etiqueta="Estamos para ayudarte" titulo="Contacto y ayuda" intro={<p>Mira primero las preguntas frecuentes. Si no encuentras la respuesta, escríbenos.</p>}
+    <PaginaLegal actual="/contacto" etiqueta="Estamos para ayudarte" titulo="Contacto y ayuda" intro={<p>Mira primero las preguntas frecuentes. Si no encuentras la respuesta, escríbenos.</p>}
+      resumen={[
+        { I: MessageCircle, t: "Te respondemos nosotros", d: "Personas reales, al correo o WhatsApp que nos dejes." },
+        { I: Flag, t: "Reporta una estafa", d: "Si alguien te pidió dinero por un empleo, avísanos aquí." },
+        { I: Clock3, t: "Tus datos personales", d: "Para ver, corregir o borrarlos, usa el formulario de Privacidad." },
+      ]}
       indice={[["preguntas", "Preguntas frecuentes"], ["escribir", "Escríbenos"]]}>
       <Bloque id="preguntas" titulo="Preguntas frecuentes">
         <div className="divide-y divide-border rounded-2xl border border-border bg-surface">
