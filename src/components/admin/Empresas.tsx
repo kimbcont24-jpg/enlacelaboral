@@ -14,14 +14,17 @@ export function Empresas() {
   const [sol, setSol] = useState<S[]>([]);
   const [cargando, setCargando] = useState(true);
   const [ali, setAli] = useState<{ id: string; tipo: string; institucion: string; contacto_nombre: string; contacto_cargo: string | null; correo: string; telefono: string | null; provincia: string | null; interes: string[]; mensaje: string | null; created_at: string }[]>([]);
+  const [datos, setDatos] = useState<{ id: string; tipo: string; nombre: string; contacto: string; detalle: string | null; created_at: string }[]>([]);
   const [jor, setJor] = useState<{ id: string; titulo: string; fecha: string; lugar: string; provincia: string; empresa_id: string }[]>([]);
   const cargar = useCallback(async () => {
-    const [{ data }, { data: s2 }, { data: j2 }, { data: a2 }] = await Promise.all([
+    const [{ data }, { data: s2 }, { data: j2 }, { data: a2 }, { data: d2 }] = await Promise.all([
       supabase.from("empresas").select("*").order("created_at", { ascending: false }).limit(300),
       supabase.from("solicitudes_empresa").select("id,empresa_id,tipo,estado,created_at,vacante_id,detalle,vacantes(titulo)").in("estado", ["nueva", "contactada"]).order("created_at", { ascending: false }).limit(100),
       supabase.from("jornadas").select("id,titulo,fecha,lugar,provincia,empresa_id").eq("estado", "revision").order("fecha").limit(50),
       supabase.from("alianzas").select("*").in("estado", ["nueva", "contactada"]).order("created_at", { ascending: false }).limit(50),
+      supabase.from("solicitudes_datos").select("*").eq("estado", "nueva").order("created_at", { ascending: false }).limit(50),
     ]);
+    setDatos((d2 ?? []) as typeof datos);
     setAli((a2 ?? []) as typeof ali);
     setJor((j2 ?? []) as typeof jor);
     setFilas((data ?? []) as unknown as E[]);
@@ -60,7 +63,19 @@ export function Empresas() {
   if (cargando) return <div className="flex justify-center py-10"><Loader2 className="size-5 animate-spin text-primary" /></div>;
   return (
     <div className="space-y-3">
-      <p className="rounded-xl border border-border bg-surface p-4 text-sm text-muted-foreground">Verifica una empresa solo cuando hayas confirmado que existe (por ejemplo con su RNC y un contacto real). Solo tú puedes cambiar esto: las empresas no pueden verificarse solas.</p>
+      <p className="rounded-xl border border-border bg-surface p-4 text-sm text-muted-foreground">Verifica una empresa solo cuando hayas confirmado que existe: toca «Verificar en DGII» (copia el número y abre la consulta oficial) y confirma que el nombre coincide. Solo tú puedes cambiar esto: las empresas no pueden verificarse solas.</p>
+      {datos.length > 0 && (
+        <div className="space-y-2 rounded-2xl border-2 border-destructive/40 bg-surface p-4">
+          <p className="font-bold">Solicitudes sobre datos personales ({datos.length})</p>
+          <p className="text-xs text-muted-foreground">Por ley (172-13) hay que responder. Para borrar: Admin → Aplicaciones, busca por el contacto y elimina. Luego marca «Atendida».</p>
+          {datos.map((d) => (
+            <div key={d.id} className="flex flex-wrap items-start justify-between gap-2 rounded-xl bg-muted/50 p-3 text-sm">
+              <div className="min-w-0"><p className="font-bold">{{ ver: "Quiere saber qué datos tenemos", corregir: "Quiere corregir sus datos", borrar: "Quiere que borremos sus datos", otra: "Otra consulta" }[d.tipo] ?? d.tipo}</p><p className="text-muted-foreground">{d.nombre} · {d.contacto} · {haceDesde(d.created_at)}</p>{d.detalle && <p className="mt-1 whitespace-pre-wrap">{d.detalle}</p>}</div>
+              <Button size="sm" onClick={() => void supabase.from("solicitudes_datos").update({ estado: "atendida" }).eq("id", d.id).then(() => { toast.success("Marcada como atendida"); void cargar(); })}>Atendida</Button>
+            </div>
+          ))}
+        </div>
+      )}
       {ali.length > 0 && (
         <div className="space-y-2 rounded-2xl border-2 border-success/40 bg-surface p-4">
           <p className="font-bold">Solicitudes de alianza ({ali.length})</p>
@@ -114,7 +129,7 @@ export function Empresas() {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="font-bold">{e.nombre} {e.verificada && <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-bold text-success"><BadgeCheck className="size-3.5" aria-hidden="true" /> Verificada</span>}</p>
-              <p className="mt-1 text-sm text-muted-foreground">RNC {e.rnc}{e.sector ? ` · ${e.sector}` : ""}{e.provincia ? ` · ${e.provincia}` : ""}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{e.rnc.length === 11 ? "Cédula" : "RNC"} {e.rnc} {/^\d+$/.test(e.rnc) && <button type="button" onClick={() => { void navigator.clipboard?.writeText(e.rnc); window.open("https://dgii.gov.do/herramientas/consultas/Paginas/RNC.aspx", "_blank", "noopener"); toast.success("Número copiado. Pégalo en la DGII."); }} className="ml-1 font-semibold text-primary underline">Verificar en DGII</button>}{e.sector ? ` · ${e.sector}` : ""}{e.provincia ? ` · ${e.provincia}` : ""}</p>
               <p className="mt-0.5 text-sm text-muted-foreground">{[e.contacto_nombre, e.contacto_email, e.contacto_telefono].filter(Boolean).join(" · ") || "Sin datos de contacto"} · registrada {haceDesde(e.created_at)}</p>
             </div>
             <div className="flex flex-wrap gap-2">

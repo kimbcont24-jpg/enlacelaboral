@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Consentimiento } from "@/components/site/Consentimiento";
 import { useEffect, useState } from "react";
 import { ArrowLeft, BadgeCheck, CalendarDays, CalendarPlus, CheckCircle2, Loader2, MapPin, Navigation, Share2, ShieldCheck, Users } from "lucide-react";
 
@@ -106,6 +107,7 @@ function DetalleJornada() {
               {j.puestos.length > 0 && <select value={f.puesto} onChange={(e) => setF({ ...f, puesto: e.target.value })} aria-label="Puesto que te interesa" className={campo}><option value="">¿Qué puesto te interesa?</option>{j.puestos.map((x) => <option key={x}>{x}</option>)}</select>}
               {cv ? <label className="flex items-start gap-2.5 rounded-xl bg-secondary px-4 py-3 text-sm"><input type="checkbox" checked={incluir} onChange={(e) => setIncluir(e.target.checked)} className="mt-0.5 size-4" /> Enviar mi CV ({cv.nombre}) para que me conozcan antes</label>
                 : <p className="text-sm text-muted-foreground">¿No tienes CV? <Link to="/cv" className="font-bold text-primary underline">Hazlo gratis</Link> y llévalo impreso.</p>}
+              <Consentimiento para="candidato" />
               {error && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
               <button type="submit" disabled={estado === "enviando"} className="btn-aplicar flex h-13 w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-lg">{estado === "enviando" && <Loader2 className="size-5 animate-spin" />} Me apunto</button>
               <p className="text-center text-xs text-muted-foreground">Compartes tu nombre y contacto con {j.empresa}.</p>

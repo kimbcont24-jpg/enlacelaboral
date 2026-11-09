@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Consentimiento } from "@/components/site/Consentimiento";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BarChart3, Bell, BellOff, Crown, Briefcase, CalendarCheck, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, UserSearch, Users, UsersRound } from "lucide-react";
 import { toast } from "sonner";
@@ -383,8 +384,9 @@ function CrearEmpresa({ uid, onListo, onSalir }: { uid: string; onListo: (e: Emp
         <h1 className="font-display text-2xl font-extrabold">Datos de tu empresa</h1>
         <p className="text-sm text-muted-foreground">Un último paso para usar tu panel y publicar vacantes gratis.</p>
         <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre de la empresa" aria-label="Nombre de la empresa" className="h-12 w-full rounded-xl border border-border bg-background px-3.5" />
-        <input value={rnc} onChange={(e) => setRnc(e.target.value)} inputMode="numeric" placeholder="RNC (9 dígitos) o cédula (11 dígitos)" aria-label="RNC o cédula" className="h-12 w-full rounded-xl border border-border bg-background px-3.5" />
+        <input value={rnc} onChange={(e) => setRnc(e.target.value)} inputMode="numeric" placeholder="RNC o cédula (solo números)" aria-label="RNC o cédula" className="h-12 w-full rounded-xl border border-border bg-background px-3.5" />
         <input value={contacto} onChange={(e) => setContacto(e.target.value)} placeholder="Tu nombre (persona de contacto)" aria-label="Tu nombre" className="h-12 w-full rounded-xl border border-border bg-background px-3.5" />
+        <Consentimiento para="empresa" />
         <button type="submit" disabled={guardando} className="btn-aplicar h-12 w-full rounded-xl">{guardando ? "Guardando…" : "Entrar a mi panel"}</button>
         <button type="button" onClick={onSalir} className="w-full text-sm font-semibold text-muted-foreground hover:underline">Salir</button>
         <p className="text-center text-xs text-muted-foreground">¿Buscas empleo? Este panel es para empresas. <a href="/vacantes" className="font-semibold text-primary">Ver vacantes</a></p>

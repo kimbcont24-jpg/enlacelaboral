@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Consentimiento } from "@/components/site/Consentimiento";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -107,12 +108,13 @@ function Auth() {
           {modo === "registro" && (
             <>
               <input required className={input} value={empresa} onChange={(e) => setEmpresa(e.target.value)} placeholder="Nombre de la empresa" />
-              <input required inputMode="numeric" className={input} value={rnc} onChange={(e) => setRnc(soloDigitos(e.target.value).slice(0, 11))} placeholder="RNC (9 dígitos) o cédula (11 dígitos)" />
+              <input required inputMode="numeric" className={input} value={rnc} onChange={(e) => setRnc(soloDigitos(e.target.value).slice(0, 11))} placeholder="RNC o cédula (solo números)" />
               <input required className={input} value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre" />
             </>
           )}
           <input required type="email" className={input} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Correo" />
           <input required type="password" className={input} value={clave} onChange={(e) => setClave(e.target.value)} placeholder="Contraseña (mínimo 6)" />
+          {modo === "registro" && <Consentimiento para="empresa" />}
           {error && (<p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>)}
           <button type="submit" disabled={cargando} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-bold text-primary-foreground disabled:opacity-70">
             {cargando && <Loader2 className="size-4 animate-spin" />}

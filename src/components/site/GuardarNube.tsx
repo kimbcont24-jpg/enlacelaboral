@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Consentimiento } from "@/components/site/Consentimiento";
 import { CloudCheck, CloudUpload, Loader2, Mail } from "lucide-react";
 import { toast } from "sonner";
 
@@ -76,6 +77,7 @@ export function GuardarNube({ compacto = false, className = "" }: { compacto?: b
           <button type="submit" disabled={trabajando} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#1d6ff2] px-4 text-sm font-bold text-white disabled:opacity-60">{trabajando && <Loader2 className="size-4 animate-spin" />} Enviarme el código</button>
           <button type="button" onClick={() => setPaso("inicio")} className="h-11 px-2 text-sm font-semibold text-muted-foreground">Cancelar</button>
           <p className="w-full text-xs text-muted-foreground">Solo tú ves tu CV. No lo compartimos con nadie hasta que tú apliques.</p>
+          <Consentimiento para="cuenta" className="w-full" />
         </form>
       )}
       {paso === "codigo" && (

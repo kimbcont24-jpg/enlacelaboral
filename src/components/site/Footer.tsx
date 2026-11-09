@@ -44,7 +44,7 @@ export function Footer() {
           </ul>
         </nav>
       </div>
-      <p className="relative mx-auto mt-10 max-w-7xl border-t border-white/10 pt-6 text-xs text-white/50">© 2026 Enlace Laboral · Hecho en República Dominicana</p>
+      <p className="relative mx-auto mt-10 flex max-w-7xl flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/50"><span>© 2026 Enlace Laboral. Hecho en República Dominicana.</span><Link to="/privacidad" className="font-semibold hover:text-white">Política de privacidad</Link></p>
     </footer>
   );
 }

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Consentimiento } from "@/components/site/Consentimiento";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { COMPROMISOS } from "@/lib/inclusion";
@@ -272,6 +273,7 @@ function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
       <label className="block"><span className={rotulo}>Detalles</span><textarea required rows={5} maxLength={8000} value={f.detalle} onChange={set("detalle")} placeholder="Funciones, requisitos, horario, salario y beneficios. Si publicas el salario, tu vacante llama más la atención." className={caja} /></label>
       <fieldset className="rounded-xl border border-border p-3"><legend className="px-1 text-sm font-bold">¿Tu vacante es para…? (opcional)</legend><p className="text-xs text-muted-foreground">Marca lo que aplique. Las personas podrán encontrar tu vacante con estos filtros.</p><div className="mt-2 grid gap-2">{COMPROMISOS.map((c) => { const on = f.compromisos.includes(c.id); return <label key={c.id} className="flex items-start gap-2 text-sm"><input type="checkbox" checked={on} onChange={() => setF((x) => ({ ...x, compromisos: on ? x.compromisos.filter((y) => y !== c.id) : [...x.compromisos, c.id] }))} className="mt-1 size-4" /><span><strong>{c.t}.</strong> <span className="text-muted-foreground">{c.d}</span></span></label>; })}</div></fieldset>
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.redes} onChange={(e) => setF((x) => ({ ...x, redes: e.target.checked }))} className="mt-1 size-4" /><span>Autorizo que Enlace Laboral comparta esta vacante en sus redes (Telegram, Facebook, Instagram y WhatsApp). Es opcional y gratis.</span></label>
+      <Consentimiento para="empresa" />
       <input tabIndex={-1} autoComplete="off" aria-hidden="true" value={f.trampa} onChange={set("trampa")} className="hidden" name="sitio_web" />
       <button type="submit" disabled={enviando} className="w-full rounded-xl bg-primary py-3.5 font-bold text-primary-foreground disabled:opacity-60">{enviando ? "Enviando…" : "Enviar vacante gratis"}</button>
       <p className="text-center text-xs text-muted-foreground">Te contactamos al correo que indiques.</p>

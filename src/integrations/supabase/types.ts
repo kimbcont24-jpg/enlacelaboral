@@ -40,6 +40,12 @@ export type Database = {
         Update: { estado?: string };
         Relationships: [];
       };
+      solicitudes_datos: {
+        Row: { id: string; tipo: string; nombre: string; contacto: string; detalle: string | null; estado: string; created_at: string };
+        Insert: { tipo: string; nombre: string; contacto: string; detalle?: string | null };
+        Update: { estado?: string };
+        Relationships: [];
+      };
       jornadas: {
         Row: { id: string; empresa_id: string; owner_id: string; titulo: string; descripcion: string | null; fecha: string; hasta: string | null; lugar: string; provincia: string; puestos: string[]; llevar: string | null; cupo: number | null; estado: string; created_at: string };
         Insert: { empresa_id: string; titulo: string; fecha: string; lugar: string; provincia: string; [k: string]: unknown };

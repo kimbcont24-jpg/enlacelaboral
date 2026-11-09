@@ -1,4 +1,5 @@
 import { GuardarNube } from "@/components/site/GuardarNube";
+import { Consentimiento } from "@/components/site/Consentimiento";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, CheckCircle2, ChevronDown, Copy, ExternalLink, FileText, Loader2, Mail, MessageCircle, ShieldCheck, X } from "lucide-react";
@@ -235,6 +236,7 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
                   <summary className="flex cursor-pointer list-none items-center gap-1.5 py-1 font-semibold text-primary">Agregar un mensaje <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
                   <textarea value={mensaje} onChange={(e) => setMensaje(e.target.value)} rows={3} placeholder="Cuéntanos brevemente tu experiencia" aria-label="Mensaje" className={`${campo} mt-2`} />
                 </details>
+                <Consentimiento para="candidato" />
                 {error && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
                 <button type="submit" disabled={estado === "enviando"} className={botonGrande}>
                   {estado === "enviando" ? (<><Loader2 className="size-5 animate-spin" aria-hidden="true" /> Enviando…</>) : via.clave === "correo" ? "Enviar mi aplicación" : "Enviar mis datos"}

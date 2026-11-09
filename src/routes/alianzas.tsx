@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Consentimiento } from "@/components/site/Consentimiento";
 import { useMemo, useState } from "react";
 import { ArrowRight, Building2, CalendarCheck, Check, CheckCircle2, ChevronDown, GraduationCap, HandHeart, HeartHandshake, Landmark, Loader2, Megaphone, Presentation, School, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { toast } from "sonner";
@@ -293,6 +294,7 @@ function Formulario() {
         </div>
       </fieldset>
       <textarea value={f.mensaje} onChange={(e) => pon("mensaje", e.target.value)} rows={3} maxLength={1500} placeholder="Cuéntanos de tu gente (opcional)" aria-label="Mensaje" className={`${campo} h-auto py-3`} />
+      <Consentimiento para="aliado" />
       <button type="submit" disabled={estado === "enviando"} className="btn-aplicar flex h-14 w-full items-center justify-center gap-2 rounded-2xl text-lg">{estado === "enviando" ? <Loader2 className="size-5 animate-spin" /> : <HeartHandshake className="size-5" aria-hidden="true" />} Enviar solicitud</button>
       <p className="text-center text-xs text-muted-foreground">Sin costo. Te respondemos por correo.</p>
     </form>
