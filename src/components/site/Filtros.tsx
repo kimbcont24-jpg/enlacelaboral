@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 
 import { NIVELES, nivelDe } from "@/lib/claridad";
-import { COMPROMISOS } from "@/lib/inclusion";
+import { COMPROMISOS, enCamino } from "@/lib/inclusion";
 import { areas, modalidades, nivelesExperiencia, provincias, rangosSalario, tiposEmpleo } from "@/lib/data";
 
 export type Filtros = { area: string; provincia: string; salarioMin: string; modalidad: string; experiencia: string; tipo: string; fecha: string; conSalario: string; nivel: string; incl?: string };
@@ -61,7 +61,7 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
   );
 }
 
-export function filtrarJobs<T extends { area: string; provincia: string; modalidad: string; experiencia: string; tipo: string; salarioMin: number; titulo: string; empresa: string; categorias: string[]; creado: string }>(jobs: T[], f: Filtros, q = "") {
+export function filtrarJobs<T extends { area: string; provincia: string; modalidad: string; experiencia: string; tipo: string; salarioMin: number; titulo: string; empresa: string; categorias: string[]; creado: string; descripcion?: string; requisitos?: string[] }>(jobs: T[], f: Filtros, q = "") {
   const query = q.trim().toLowerCase();
   return jobs.filter((j) => {
     if (query && !`${j.titulo} ${j.empresa} ${j.area} ${j.categorias.join(" ")}`.toLowerCase().includes(query)) return false;
@@ -73,7 +73,7 @@ export function filtrarJobs<T extends { area: string; provincia: string; modalid
     if (f.tipo && j.tipo !== f.tipo) return false;
     if (f.salarioMin && j.salarioMin < Number(f.salarioMin)) return false;
     if (f.conSalario && j.salarioMin <= 0) return false;
-    if (f.incl && !j.categorias.some((c) => (f.incl === "todas" ? c.startsWith("incl:") : c === `incl:${f.incl}`))) return false;
+    if (f.incl && !(f.incl === "todas" ? j.categorias.some((c) => c.startsWith("incl:")) : enCamino(j, f.incl))) return false;
     if (f.fecha && Date.now() - new Date(j.creado).getTime() > Number(f.fecha) * 864e5) return false;
     return true;
   });

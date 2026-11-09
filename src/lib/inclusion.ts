@@ -51,3 +51,36 @@ export function revisarDiscriminacion(texto: string): Hallazgo[] {
   }
   return out;
 }
+
+// ---------- Caminos de «Empleo para todas las personas» ----------
+// Una sola regla para contar y para filtrar: lo que dice el número es lo que sale en la lista.
+
+/** Las primeras 4 reglas son las de edad. */
+const REGLAS_EDAD = REGLAS.slice(0, 4);
+
+/** ¿El aviso pide una edad (rango, máximo o mínimo mayor de 18)? */
+export function pideEdad(texto: string): boolean {
+  return REGLAS_EDAD.some(({ re }) => { re.lastIndex = 0; const si = re.test(texto); re.lastIndex = 0; return si; });
+}
+
+type JobCamino = { titulo: string; experiencia: string; tipo: string; modalidad: string; categorias: string[]; descripcion?: string; requisitos?: string[] };
+
+const textoAviso = (j: JobCamino) => `${j.titulo} ${j.descripcion ?? ""} ${(j.requisitos ?? []).join(" ")}`;
+
+/**
+ * ¿La vacante sirve para este camino?
+ * - Siempre cuenta si la empresa marcó el compromiso.
+ * - Primer empleo: no pide experiencia. Estudiantes: pasantía o medio tiempo.
+ * - Mamás y papás: medio tiempo o desde casa. Toda edad: el aviso no pide edad.
+ * - Discapacidad: solo si la empresa lo marcó (no se adivina).
+ */
+export function enCamino(j: JobCamino, id: string): boolean {
+  if (j.categorias.includes(`incl:${id}`)) return true;
+  switch (id) {
+    case "primer-empleo": return j.experiencia === "Sin experiencia";
+    case "estudiantes": return j.tipo === "Pasantía" || j.tipo === "Medio tiempo";
+    case "horario-flexible": return j.tipo === "Medio tiempo" || j.modalidad === "Remoto";
+    case "toda-edad": return !pideEdad(textoAviso(j));
+    default: return false;
+  }
+}
