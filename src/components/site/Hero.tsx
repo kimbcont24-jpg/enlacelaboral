@@ -59,7 +59,7 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
       <div className="relative mx-auto max-w-6xl">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_21rem]">
         <div className="min-w-0">
-        <h1 className="entra max-w-2xl text-balance font-display text-[1.9rem] font-extrabold leading-[1.14] tracking-[-0.02em] sm:text-[2rem] md:text-[2.35rem]">{titulo}</h1>
+        <h1 className="entra max-w-2xl text-balance font-display text-[1.9rem] font-extrabold leading-[1.14] tracking-[-0.03em] sm:text-[2rem] md:text-[2.35rem]">{titulo}</h1>
         <p className="entra mt-4 max-w-xl text-lg text-white/85 [animation-delay:80ms]">{subtitulo}</p>
 
         <div className="entra mt-7 [animation-delay:160ms] [&_button]:rounded-full md:[&_form]:rounded-full md:[&_form]:pl-5 [&_form]:rounded-[1.75rem] [&_form]:border-transparent [&_form]:text-foreground [&_form]:shadow-[0_20px_50px_-20px_rgba(0,0,0,.6)]">

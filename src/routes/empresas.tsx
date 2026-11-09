@@ -45,7 +45,7 @@ function Empresas() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           <div>
             <p className="entra inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white/90"><Sparkles className="size-4 text-[#ffd84d]" /> Publicar y elegir candidatos es gratis</p>
-            <h1 className="entra mt-5 text-balance font-display text-[2rem] font-extrabold leading-[1.1] tracking-[-0.02em] [animation-delay:60ms] md:text-[2.75rem]">Publica tu vacante y elige a tu gente desde un solo lugar</h1>
+            <h1 className="entra mt-5 text-balance font-display text-[2rem] font-extrabold leading-[1.1] tracking-[-0.03em] [animation-delay:60ms] md:text-[2.75rem]">Publica tu vacante y elige a tu gente desde un solo lugar</h1>
             <p className="entra mt-5 max-w-xl text-lg text-white/85 [animation-delay:120ms]">Los candidatos aplican sin crear cuenta y te llegan a tu panel con su CV. Tú decides, agendas la entrevista y les escribes por WhatsApp.</p>
             <div className="entra mt-8 flex flex-wrap gap-3 [animation-delay:180ms]">
               <Link to="/auth" search={{ modo: "registro" }} className="btn-aplicar inline-flex h-13 items-center rounded-2xl px-7 py-3.5 text-base">Crear cuenta de empresa</Link>

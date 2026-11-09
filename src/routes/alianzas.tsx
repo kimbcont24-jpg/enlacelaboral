@@ -73,7 +73,7 @@ function Alianzas() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_1fr]">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-sm font-semibold"><HeartHandshake className="size-4 text-[#7ee2a8]" aria-hidden="true" /> Alianzas para el empleo · sin costo</p>
-            <h1 className="mt-6 font-display text-[2.6rem] font-extrabold leading-[0.98] tracking-[-0.02em] sm:text-6xl lg:text-[4.4rem]">
+            <h1 className="mt-6 font-display text-[2.6rem] font-extrabold leading-[0.98] tracking-[-0.035em] sm:text-6xl lg:text-[4.4rem]">
               Del aula<br />al <span className="relative whitespace-nowrap">empleo<svg aria-hidden="true" viewBox="0 0 300 20" className="absolute -bottom-2 left-0 w-full" preserveAspectRatio="none"><path d="M4 14 C 80 4, 200 4, 296 12" stroke="#ffd84d" strokeWidth="6" fill="none" strokeLinecap="round" className="alz-trazo" /></svg></span>.
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/80 sm:text-xl">Tu institución forma talento. Las empresas lo están buscando. <strong className="text-white">Enlace Laboral es el puente</strong>: vacantes reales, jornadas de empleo e inclusión, en todo el país.</p>
