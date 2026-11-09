@@ -1,7 +1,11 @@
 name: Recolectar vacantes
 on:
   schedule:
-    - cron: "45 9 * * *"   # 5:45 a. m. RD, todos los días
+    # GitHub suele atrasar los horarios varias horas; por eso hay dos vueltas al día
+    # y la base importa cada 2 horas (solo si el archivo cambió). La tarea supervisora
+    # además lanza el robot a mano a las 6:43 a. m.
+    - cron: "7 10 * * *"   # 6:07 a. m. RD
+    - cron: "7 19 * * *"   # 3:07 p. m. RD
   workflow_dispatch:
     inputs:
       dias:
