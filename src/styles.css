@@ -222,3 +222,30 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 .ept-revela.ept-visto { opacity: 1; transform: none; }
 .ept-grano { background-image: radial-gradient(rgb(10 47 92 / 0.07) 1px, transparent 1px); background-size: 18px 18px; }
 @media (prefers-reduced-motion: reduce) { .ept-revela { opacity: 1; transform: none; } }
+
+/* ───────── Logo que se enlaza al bajar (EnlaceAnimado) ───────── */
+.enl-fondo {
+  background:
+    radial-gradient(60% 70% at 15% 20%, rgb(126 226 168 / .55) 0%, transparent 60%),
+    radial-gradient(55% 65% at 90% 85%, rgb(255 156 207 / .35) 0%, transparent 60%),
+    radial-gradient(70% 80% at 80% 10%, rgb(43 124 255 / .7) 0%, transparent 65%),
+    linear-gradient(125deg, #0a2f5c 0%, #0f4aa8 38%, #1d6ff2 62%, #12a39a 100%);
+  background-size: 140% 140%;
+  animation: enl-respira 18s ease-in-out infinite alternate;
+}
+@keyframes enl-respira { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+@keyframes enl-flota { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(24px, -18px) scale(1.08); } }
+.enl-mancha { animation: enl-flota 14s ease-in-out infinite; }
+.enl-persona { transform-box: view-box; transform: translateX(calc((1 - var(--p)) * -190px)) rotate(calc((1 - var(--p)) * -14deg)); transform-origin: 300px 520px; opacity: calc(.35 + var(--p) * .65); }
+.enl-maletin { transform-box: view-box; transform: translateX(calc((1 - var(--p)) * 210px)) rotate(calc((1 - var(--p)) * 12deg)); transform-origin: 620px 520px; opacity: calc(.35 + var(--p) * .65); }
+.enl-halo { opacity: calc(var(--p) * .9); transform: translate(-50%, -50%) scale(calc(.6 + var(--p) * .5)); }
+.enl-marca { opacity: calc((var(--p) - .55) * 2.4); transform: translateY(calc((1 - var(--p)) * 26px)); }
+.enl-marca span { display: inline-block; }
+.enl-texto { opacity: calc((var(--p) - .7) * 3.4); transform: translateY(calc((1 - var(--p)) * 30px)); }
+.enl-onda { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.enl-anim[data-enlazado] .enl-onda { animation: e-anillo 1.4s cubic-bezier(.2,.7,.2,1) 1 both; }
+.enl-anim[data-enlazado] .enl-onda-2 { animation-delay: .25s; }
+@media (prefers-reduced-motion: reduce) {
+  .enl-anim { --p: 1 !important; }
+  .enl-fondo, .enl-mancha { animation: none; }
+}

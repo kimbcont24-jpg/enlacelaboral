@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Accessibility, ArrowRight, BellRing, Clock, BookOpen, Building2, CheckCircle2, ExternalLink, Flag, GraduationCap, HandHeart, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
+import { Accessibility, ArrowRight, BellRing, Clock, BookOpen, Building2, CheckCircle2, ExternalLink, Flag, GraduationCap, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { LogoMarca } from "@/components/site/Logo";
+import { EnlaceAnimado } from "@/components/site/EnlaceAnimado";
 import { provincias } from "@/lib/data";
 import { enCamino, revisarDiscriminacion } from "@/lib/inclusion";
 import { SITIO, useVacantes, type Vacante } from "@/lib/vacantes";
@@ -279,16 +280,13 @@ function EmpleoParaTodos() {
         {CAMINOS.map((c, i) => <Seccion key={c.id} c={c} vacantes={porCamino[c.id]} cargando={cargando} invertido={i % 2 === 1} />)}
 
         <Revela>
-          <section aria-label="Lo que creemos" className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#0a2f5c_0%,#0f4aa8_100%)] px-6 py-12 text-center text-white sm:px-12 sm:py-16">
-            <div aria-hidden="true" className="pointer-events-none absolute -left-10 -top-10 size-56 rounded-full bg-[#7ee2a8]/20 blur-3xl" />
-            <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 -right-10 size-64 rounded-full bg-[#ff9ccf]/20 blur-3xl" />
-            <HandHeart className="relative mx-auto size-10 text-[#ffd84d]" aria-hidden="true" />
-            <p className="relative mx-auto mt-4 max-w-3xl text-balance font-display text-[1.6rem] font-extrabold leading-tight sm:text-[2.2rem]">«Un empleo cambia una casa entera. Por eso aquí nadie se queda fuera por su edad, su cuerpo o su historia.»</p>
-            <p className="relative mt-4 text-sm font-semibold text-white/75">Equipo Enlace Laboral</p>
-            <div className="relative mt-7 flex flex-wrap justify-center gap-2">
-              {CAMINOS.map((c) => <a key={c.id} href={`#${c.id}`} className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-sm font-semibold ring-1 ring-white/20 transition-colors hover:bg-white/20"><c.I className="size-4" style={{ color: c.suave }} aria-hidden="true" /> {c.titulo}</a>)}
+          <EnlaceAnimado className="rounded-[2rem]">
+            <p className="mx-auto max-w-2xl text-balance font-display text-xl font-extrabold leading-snug sm:text-[1.6rem]">«Un empleo cambia una casa entera. Por eso aquí nadie se queda fuera por su edad, su sexo, su apariencia o su historia.»</p>
+            <p className="mt-3 text-sm font-semibold text-white/80">Equipo Enlace Laboral</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-2">
+              {CAMINOS.map((c) => <a key={c.id} href={`#${c.id}`} className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-sm font-semibold ring-1 ring-white/25 backdrop-blur transition-colors hover:bg-white/25"><c.I className="size-4" aria-hidden="true" /> {c.titulo}</a>)}
             </div>
-          </section>
+          </EnlaceAnimado>
         </Revela>
 
         <Revela>
