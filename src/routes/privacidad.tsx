@@ -51,7 +51,7 @@ function Privacidad() {
 
           <Bloque id="derechos" titulo="Tus derechos">
             <p>Según la Ley 172-13 puedes: <strong>saber</strong> qué datos tenemos sobre ti, <strong>corregirlos</strong> si están mal, pedir que los <strong>borremos</strong> y <strong>retirar tu permiso</strong> cuando quieras. Respondemos lo antes posible.</p>
-            <p>Si tienes cuenta, puedes editar tu CV o apagar «Banco de talento» tú mismo en <Link to="/guardadas" className="font-semibold text-primary underline">Mi búsqueda</Link>.</p>
+            <p>Si tienes cuenta, puedes editar tu CV, apagar «Banco de talento» o <strong>borrar tu cuenta y tus datos</strong> tú mismo (Opciones → «Borrar mi cuenta y mis datos») en <Link to="/guardadas" className="font-semibold text-primary underline">Mi búsqueda</Link>.</p>
           </Bloque>
 
           <Bloque id="empresas" titulo="Reglas para empresas">

@@ -4,6 +4,7 @@ import { CloudCheck, CloudUpload, Loader2, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 import { useNube } from "@/lib/nube";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Botón opcional para no perder el CV ni la búsqueda: correo + código, sin contraseña.
@@ -30,6 +31,14 @@ export function GuardarNube({ compacto = false, className = "" }: { compacto?: b
             <div className="absolute right-0 z-30 mt-2 w-64 overflow-hidden rounded-xl border border-border bg-surface py-1 text-left shadow-xl">
               <button type="button" onClick={() => { setMenu(false); void nube.salir(); }} className="block w-full px-4 py-2.5 text-left hover:bg-secondary">Salir (lo de este teléfono se queda)</button>
               <button type="button" onClick={() => { if (confirm("¿Salir y borrar tu CV y tu búsqueda de este teléfono? En tu cuenta se quedan guardados.")) void nube.salir(true); }} className="block w-full px-4 py-2.5 text-left hover:bg-secondary">Salir y borrar de este teléfono</button>
+              <button type="button" onClick={() => void (async () => {
+                if (!confirm("¿Borrar tu cuenta para siempre? Se borran tu CV guardado, tu perfil en el banco de talento y tus aplicaciones hechas con este correo. No se puede deshacer.")) return;
+                setMenu(false);
+                const { data, error } = await supabase.rpc("borrar_mi_cuenta" as never);
+                if (error || data !== "ok") return void toast.error("No se pudo borrar. Pídelo en Privacidad y lo hacemos por ti.");
+                await nube.salir(true);
+                toast.success("Listo. Tu cuenta y tus datos fueron borrados.");
+              })()} className="block w-full border-t border-border px-4 py-2.5 text-left font-semibold text-destructive hover:bg-destructive/10">Borrar mi cuenta y mis datos</button>
               <button type="button" onClick={() => { if (confirm("¿Borrar la copia de tu cuenta? Lo de este teléfono se queda.")) void nube.borrar().then(() => toast.success("Borramos la copia de tu cuenta.")); }} className="block w-full px-4 py-2.5 text-left text-destructive hover:bg-destructive/5">Borrar mi copia de la cuenta</button>
             </div>
           )}
