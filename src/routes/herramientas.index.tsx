@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Calculator, Scale } from "lucide-react";
+import { ArrowRight, Calculator, Gift, Scale } from "lucide-react";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -8,7 +8,7 @@ export const Route = createFileRoute("/herramientas/")({
   head: () => ({
     meta: [
       { title: "Herramientas gratis para trabajadores en RD | Enlace Laboral" },
-      { name: "description", content: "Calculadora de salario neto, liquidación y prestaciones laborales de República Dominicana. Gratis, sin registro." },
+      { name: "description", content: "Calculadora de regalía pascual, salario neto, liquidación y prestaciones laborales de República Dominicana. Gratis, sin registro." },
     ],
     links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/herramientas" }],
   }),
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/herramientas/")({
 });
 
 const items = [
+  { to: "/herramientas/regalia-pascual", icono: Gift, titulo: "¿Cuánto te toca de regalía pascual?", texto: "Tu doble sueldo 2026 en segundos: si trabajaste todo el año, si empezaste este año, si te fuiste o si tu salario cambió.", etiqueta: "Doble sueldo 2026" },
   { to: "/herramientas/salario-neto", icono: Calculator, titulo: "¿Cuánto te llega de tu salario?", texto: "Descuentos de AFP, SFS e ISR al detalle. También: qué bruto necesitas para ganar el neto que quieres.", etiqueta: "Salario neto 2026" },
   { to: "/herramientas/liquidacion", icono: Scale, titulo: "¿Cuánto te deben de liquidación?", texto: "Preaviso, cesantía, vacaciones y regalía pascual según el Código de Trabajo.", etiqueta: "Prestaciones laborales" },
 ] as const;

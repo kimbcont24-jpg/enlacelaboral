@@ -10,6 +10,7 @@ import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { Hero } from "@/components/site/Hero";
 import { JornadasProximas } from "@/components/site/JornadasProximas";
 import { EmpleoParaTodosBanda } from "@/components/site/EmpleoParaTodosBanda";
+import { RegaliaBanda } from "@/components/site/RegaliaBanda";
 import { AreasGrid } from "@/components/site/AreasGrid";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { consejos } from "@/lib/data";
@@ -99,6 +100,7 @@ function Home() {
         </div>
       </section>
 
+      <RegaliaBanda />
       <EmpleoParaTodosBanda />
       <JornadasProximas />
       <section className="px-4 pb-12 sm:px-6"><div className="mx-auto grid max-w-6xl gap-4"><CanalWhatsApp /><AlertaForm /></div></section>

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { CalculadoraPagina, CompartirResultado, PieCalculadora, campoCalc, rotuloCalc } from "@/components/site/CalculadoraBase";
@@ -84,7 +84,7 @@ function SalarioNeto() {
                 </tbody>
               </table>
               <div className="mt-5 rounded-2xl bg-muted p-4 text-sm">
-                <p><strong>Al año:</strong> {pesos(r.neto * 12)} en 12 pagos + {pesos(r.regalia)} de regalía pascual (el «doble sueldo» de diciembre, sin ISR ni descuentos de TSS si trabajaste todo el año) = <strong>{pesos(r.netoAnual)}</strong>.</p>
+                <p><strong>Al año:</strong> {pesos(r.neto * 12)} en 12 pagos + {pesos(r.regalia)} de regalía pascual (el «doble sueldo» de diciembre, sin ISR ni descuentos de TSS si trabajaste todo el año; <Link to="/herramientas/regalia-pascual" className="font-semibold text-primary underline">calcúlala aquí</Link>) = <strong>{pesos(r.netoAnual)}</strong>.</p>
               </div>
               <div className="mt-5"><CompartirResultado texto={resumen} ruta="/herramientas/salario-neto" query={`?bruto=${Math.round(r.bruto)}`} /></div>
             </div>
