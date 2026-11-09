@@ -1,14 +1,17 @@
 {
-  "fecha": "2026-11-08T16:18:46.740Z",
-  "total": 188,
+  "fecha": "2026-11-09T17:56:06.695Z",
+  "total": 185,
+  "revisadas": 185,
+  "sin_contacto": 185,
+  "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
-    "aldaba": 35,
-    "computrabajo": 5,
+    "aldaba": 30,
+    "computrabajo": 9,
     "alorica": 11,
     "marriott": 58,
     "citi": 3,
     "medtronic": 6,
     "baxter": 2,
-    "eaton": 68
+    "eaton": 66
   }
 }
