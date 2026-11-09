@@ -1,5 +1,6 @@
 import { leerPreguntas, type Pregunta } from "@/lib/preguntas";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -209,3 +210,23 @@ export function jobPostingLd(job: Vacante): string | null {
 }
 
 export const CANAL_WHATSAPP = "https://whatsapp.com/channel/0029Vb7GW0UKLaHf3idEm62D";
+
+// ---------- Total de vacantes abiertas (para el menú) ----------
+// Consulta liviana (solo cuenta, sin traer las vacantes) y se recuerda en la sesión.
+let totalEnMemoria: number | null = null;
+export function useTotalVacantes(): number | null {
+  const [n, setN] = useState<number | null>(() => {
+    if (totalEnMemoria !== null) return totalEnMemoria;
+    try { const v = typeof sessionStorage !== "undefined" ? sessionStorage.getItem("enlace:total-vacantes") : null; return v ? Number(v) : null; } catch { return null; }
+  });
+  useEffect(() => {
+    if (totalEnMemoria !== null) return;
+    void supabase.from("vacantes").select("id", { count: "exact", head: true }).eq("estado", "publicada").gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString())
+      .then(({ count }) => {
+        if (typeof count !== "number") return;
+        totalEnMemoria = count; setN(count);
+        try { sessionStorage.setItem("enlace:total-vacantes", String(count)); } catch { /* sin almacenamiento */ }
+      });
+  }, []);
+  return n;
+}

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 
 import { AvisoGlobal } from "@/components/site/AvisoGlobal";
 import { Logo } from "@/components/site/Logo";
 import { useEsAdmin } from "@/components/site/AdminAcciones";
 import { useGuardados } from "@/lib/guardados";
-import { Bookmark, ChevronDown, Menu, Search, X } from "lucide-react";
+import { ArrowRight, Bookmark, ChevronDown, Menu, Search, X } from "lucide-react";
+import { useTotalVacantes } from "@/lib/vacantes";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -48,6 +49,22 @@ export function Header() {
   }, []);
 
   const [menu, setMenu] = useState(false);
+  const total = useTotalVacantes();
+  const { pathname } = useLocation();
+  const enVacantes = pathname === "/vacantes" || pathname === "/vacantes/";
+  // Celular: la franja de empleos se esconde al bajar y vuelve al subir (no estorba al leer).
+  const [franja, setFranja] = useState(true);
+  useEffect(() => {
+    let ultimo = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y < 120 || y < ultimo - 6) setFranja(true);
+      else if (y > ultimo + 6) setFranja(false);
+      ultimo = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   useEffect(() => {
     if (!menu) return;
     const tecla = (e: KeyboardEvent) => { if (e.key === "Escape") setMenu(false); };
@@ -61,7 +78,7 @@ export function Header() {
   return (
     <>
     <AvisoGlobal />
-    <nav className={cn("sticky top-0 z-50 flex items-center justify-between gap-3 border-b px-4 transition-all duration-500 sm:px-6", scrolled || menu ? "border-border/80 bg-surface/90 py-3 shadow-[var(--shadow-soft)] backdrop-blur-md" : "border-transparent bg-surface py-4")}>
+    <nav className={cn("sticky top-0 z-50 flex flex-wrap items-center justify-between gap-x-3 border-b px-4 transition-all duration-500 sm:px-6", scrolled || menu ? "border-border/80 bg-surface/90 py-3 shadow-[var(--shadow-soft)] backdrop-blur-md" : "border-transparent bg-surface py-4")}>
       <Logo cabecera />
       <div className="hidden items-center gap-1 whitespace-nowrap text-[15px] font-semibold lg:flex">
         {nav.filter((item) => PRINCIPALES.includes(item.to)).map((item) => (
@@ -69,6 +86,7 @@ export function Header() {
             // «Empleos» es la puerta principal del sitio: destaca sin competir con «Publicar vacante».
             <Link key={item.to} to={item.to} className="mr-1 inline-flex items-center gap-1.5 rounded-full bg-[#1d6ff2]/10 px-3.5 py-2 font-bold text-[#1557c4] ring-1 ring-[#1d6ff2]/30 transition-all hover:bg-[#1d6ff2]/15 hover:ring-[#1d6ff2]/50 xl:px-4" activeProps={{ className: "!bg-[#1d6ff2] !text-white !ring-[#1d6ff2]" }}>
               <Search className="size-4" aria-hidden="true" /> {item.label}
+              {total !== null && total > 0 && <span className="ml-0.5 rounded-full bg-[#1d6ff2] px-2 py-0.5 text-[11px] font-bold tabular-nums leading-none text-white in-data-[status=active]:bg-white in-data-[status=active]:text-[#1557c4]">{total.toLocaleString("es-DO")}</span>}
             </Link>
           ) : (
           <Link key={item.to} to={item.to} className="rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary xl:px-3.5" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link>
@@ -93,6 +111,15 @@ export function Header() {
           {menu ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
       </div>
+      {!enVacantes && !menu && (
+        <div className={cn("basis-full overflow-hidden transition-all duration-300 lg:hidden", franja ? "mt-2.5 max-h-14 opacity-100" : "mt-0 max-h-0 opacity-0")} aria-hidden={!franja}>
+          <Link to="/vacantes" tabIndex={franja ? 0 : -1} className="flex h-11 items-center gap-2.5 rounded-xl border border-[#1d6ff2]/30 bg-[#1d6ff2]/[0.07] pl-3.5 pr-1.5 text-[15px] font-semibold text-[#1557c4] active:scale-[0.99]">
+            <Search className="size-[18px] shrink-0" aria-hidden="true" />
+            <span className="min-w-0 flex-1 truncate">{total ? <>Ver <strong className="font-extrabold">{total.toLocaleString("es-DO")}</strong> empleos abiertos</> : "Buscar empleos"}</span>
+            <span className="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg bg-[#1d6ff2] px-3 text-sm font-bold text-white">Ver <ArrowRight className="size-3.5" aria-hidden="true" /></span>
+          </Link>
+        </div>
+      )}
       {menu && (
         <>
           <div id="menu-movil" className="menu-baja absolute inset-x-0 top-full z-50 border-b border-border bg-surface px-4 pb-5 pt-2 shadow-xl sm:px-6 lg:hidden">
@@ -100,7 +127,7 @@ export function Header() {
             <ul className="grid grid-cols-2 gap-1.5">
               {nav.map((item) => (
                 <li key={item.to}>{item.to === "/vacantes" ? (
-                  <Link to={item.to} onClick={() => setMenu(false)} className="flex items-center gap-2 rounded-xl bg-[#1d6ff2]/10 px-4 py-3 text-[15px] font-bold text-[#1557c4] ring-1 ring-[#1d6ff2]/30" activeProps={{ className: "!bg-[#1d6ff2] !text-white" }}><Search className="size-4" aria-hidden="true" /> {item.label}</Link>
+                  <Link to={item.to} onClick={() => setMenu(false)} className="flex items-center gap-2 rounded-xl bg-[#1d6ff2]/10 px-4 py-3 text-[15px] font-bold text-[#1557c4] ring-1 ring-[#1d6ff2]/30" activeProps={{ className: "!bg-[#1d6ff2] !text-white" }}><Search className="size-4" aria-hidden="true" /> {item.label}{total ? <span className="ml-auto text-xs font-bold tabular-nums opacity-80">{total.toLocaleString("es-DO")}</span> : null}</Link>
                 ) : (
                   <Link to={item.to} onClick={() => setMenu(false)} className="block rounded-xl px-4 py-3 text-[15px] font-semibold hover:bg-secondary" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link>
                 )}</li>
