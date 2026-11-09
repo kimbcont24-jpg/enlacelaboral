@@ -1,3 +1,5 @@
+import { revisarDiscriminacion } from "@/lib/inclusion";
+
 /** Señales de posible estafa o vacante dudosa. Son avisos para que lo revises tú; nada se descarta solo. */
 const SENALES: [RegExp, string][] = [
   [/(pag(a|ar|o|ue)|deposit(a|ar|o|e)|invers|cuota|cobr(o|amos))[^.\n]{0,50}(inscrip|registro|material|uniforme|kit|capacitaci|curso|entrevista|tr[aá]mite|plataforma|afiliaci)/i, "Pide pagar para entrar o para capacitarse"],
@@ -9,6 +11,8 @@ const SENALES: [RegExp, string][] = [
 
 export function senalesRiesgo(texto: string, tieneContacto: boolean): string[] {
   const out = SENALES.filter(([re]) => re.test(texto)).map(([, m]) => m);
+  // Lo que discrimina (edad, sexo, foto, estado civil…) también frena la publicación automática.
+  for (const h of revisarDiscriminacion(texto)) out.push(`Discrimina: «${h.frase}» (${h.motivo.replace(/\.$/, "")})`);
   if (!tieneContacto) out.push("No trae forma de contacto ni de aplicar");
   return out;
 }

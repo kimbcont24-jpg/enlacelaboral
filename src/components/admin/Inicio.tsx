@@ -1,4 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { revisarVacante } from "@/lib/inclusion";
+import { useVacantes } from "@/lib/vacantes";
 import { AlertTriangle, CheckCircle2, Circle, Loader2, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -98,6 +101,28 @@ function Lista({ items }: { items: { nombre: string; n: number }[] }) {
   );
 }
 
+/** Vacantes publicadas que piden edad, sexo, foto u otra cosa que discrimina: hay que corregirlas. */
+function VacantesQueDiscriminan() {
+  const { jobs, cargando } = useVacantes();
+  if (cargando) return null;
+  const malas = jobs.map((j) => ({ j, h: revisarVacante(j) })).filter((x) => x.h.length > 0);
+  if (!malas.length) return null;
+  return (
+    <section role="alert" className="rounded-2xl border-2 border-destructive/40 bg-destructive/5 p-5">
+      <h2 className="flex items-center gap-2 text-base font-extrabold text-destructive"><AlertTriangle className="size-5" aria-hidden="true" /> {malas.length} {malas.length === 1 ? "vacante publicada discrimina" : "vacantes publicadas discriminan"}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">Piden edad, sexo, foto u otra cosa que no está permitida en Enlace Laboral. Ábrela, quita esa parte y guarda. Si es de una empresa registrada, pídele que la corrija.</p>
+      <ul className="mt-3 space-y-2">
+        {malas.slice(0, 15).map(({ j, h }) => (
+          <li key={j.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-surface px-3 py-2 text-sm">
+            <span className="min-w-0"><strong>{j.titulo}</strong> · {j.empresa} — <span className="text-destructive">«{h[0]!.frase}»</span> {h[0]!.motivo}</span>
+            <Link to="/admin" search={{ editar: j.id }} className="font-bold text-primary hover:underline">Corregir</Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function Inicio({ onIr }: { onIr: (t: TabId) => void }) {
   const q = usePanel();
   const pago = usePago();
@@ -121,6 +146,8 @@ export function Inicio({ onIr }: { onIr: (t: TabId) => void }) {
         <p className="text-sm text-muted-foreground">Se actualiza solo cada minuto. Hora de República Dominicana.</p>
         <Button variant="outline" size="sm" onClick={() => void q.refetch()} disabled={q.isFetching}><RefreshCw className={q.isFetching ? "animate-spin" : ""} /> Actualizar</Button>
       </div>
+
+      <VacantesQueDiscriminan />
 
       <Tarjeta titulo={lista.length ? "Requiere tu atención" : "Todo al día"}>
         {lista.length === 0 ? (

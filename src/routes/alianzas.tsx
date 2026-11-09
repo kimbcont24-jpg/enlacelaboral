@@ -155,7 +155,7 @@ function Alianzas() {
                 { I: Sparkles, t: "Transparencia", d: "Salario visible cuando la empresa lo publica, empresa identificada, fuente verdadera y fecha de vencimiento." },
                 { I: Users, t: "Aplicar en un minuto", d: "Sin crear cuenta. CV profesional gratis, en PDF o Word, y seguimiento de cada aplicación." },
                 { I: CalendarCheck, t: "Jornadas de empleo", d: "Entrevistas en persona con inscripción en línea, recordatorio por WhatsApp y lista de asistencia." },
-                { I: HeartHandshake, t: "Inclusión de verdad", d: "Empresas que marcan «Primer empleo», «Inclusiva», «Sin límite de edad». Botón de accesibilidad en toda la página." },
+                { I: HeartHandshake, t: "Inclusión de verdad", d: "Prohibido pedir edad, sexo o foto. Empresas que marcan «Primer empleo» e «Inclusiva». Botón de accesibilidad en toda la página." },
                 { I: Megaphone, t: "Difusión", d: "Las vacantes llegan a nuestro canal de WhatsApp y redes, además de la página." },
               ].map(({ I, t, d }) => (
                 <div key={t} className="rounded-3xl bg-surface p-7 shadow-[0_1px_2px_rgb(20_33_58/0.06)]">

@@ -21,6 +21,7 @@ import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { ReportarVacante } from "@/components/site/ReportarVacante";
 import { registrarVista } from "@/lib/vistas";
 import { ContactoDirecto, tieneContactoDirecto } from "@/components/site/ContactoDirecto";
+import { revisarVacante } from "@/lib/inclusion";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -111,6 +112,7 @@ function Detalle() {
   const similares = jobs.filter((j) => j.id !== job.id && (j.area === job.area || j.provincia === job.provincia)).slice(0, 4);
   const { Icono: IconoAplicar, texto: textoAplicar } = comoAplicar(job);
   const directo = tieneContactoDirecto(job);
+  const exclusiones = revisarVacante(job);
   const sinEmpresa = job.empresa === "Empresa no indicada";
   const urgente = diasRestantes(job) <= 5;
   const secciones = job.descripcion ? bloques(job.descripcion) : [];
@@ -203,6 +205,12 @@ function Detalle() {
 
         <article className="min-w-0 lg:order-1 lg:col-span-8 lg:pt-10">
           <AdminAcciones job={job} volverAlListado />
+          {exclusiones.length > 0 && (
+            <div role="note" className="mb-6 rounded-2xl border border-[#9a6b00]/30 bg-[#fff8e1] p-4 text-sm">
+              <p className="font-extrabold text-[#6b4a00]">Este aviso pide algo que no está permitido</p>
+              <p className="mt-1">Menciona {exclusiones.map((x) => `«${x.frase}»`).join(", ")}. En Enlace Laboral está prohibido pedir edad, sexo, foto, estado civil o rasgos físicos, y ya le pedimos corregirlo. Si cumples con lo que pide el trabajo, aplica igual.</p>
+            </div>
+          )}
 
           <dl className="grid grid-cols-2 divide-border overflow-hidden rounded-2xl border border-border bg-surface sm:grid-cols-4 [&>div]:border-b [&>div]:border-border [&>div:nth-child(2n)]:border-l sm:[&>div:nth-child(2n)]:border-l-0 sm:[&>div:not(:nth-child(4n+1))]:border-l [&>div:nth-last-child(-n+2)]:border-b-0 sm:[&>div:nth-last-child(-n+4)]:border-b-0">
             <Dato Icono={GraduationCap} etiqueta="Experiencia" valor={job.experiencia} />

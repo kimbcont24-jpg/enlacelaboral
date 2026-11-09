@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Consentimiento } from "@/components/site/Consentimiento";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { COMPROMISOS } from "@/lib/inclusion";
+import { COMPROMISOS, revisarDiscriminacion } from "@/lib/inclusion";
+import { AvisoExclusion } from "@/components/site/AvisoExclusion";
 import { Bell, CalendarCheck, CalendarClock, Check, Columns3, Crown, FileText, Link2, MessageCircle, Megaphone, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
@@ -233,6 +234,8 @@ function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
     e.preventDefault();
     if (f.trampa) return onListo();
     if (f.detalle.trim().length < 30) return void toast.error("Cuéntanos un poco más: funciones, requisitos y horario.");
+    const malas = revisarDiscriminacion(`${f.titulo}\n${f.detalle}`);
+    if (malas.length) return void toast.error(`Quita «${malas[0]!.frase}»: ${malas[0]!.motivo} En Enlace Laboral no se publican avisos que discriminan.`);
     setEnviando(true);
     const texto = [`Puesto: ${f.titulo.trim()}`, `Empresa: ${f.empresa.trim()}`, `Ubicación: ${f.provincia}`, "", f.detalle.trim(), "", `Plan: ${plan}`, f.redes ? "Autoriza compartir en redes: sí" : "Autoriza compartir en redes: no", f.compromisos.length ? `Compromisos de inclusión: ${f.compromisos.join(", ")}` : ""].filter((l, i, a) => l !== "" || i < a.length - 1).join("\n");
     const { error } = await supabase.from("borradores").insert({
@@ -271,6 +274,8 @@ function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
       <label className="block"><span className={rotulo}>Título del puesto</span><input required maxLength={200} value={f.titulo} onChange={set("titulo")} placeholder="Ej. Cajero/a" className={caja} /></label>
       <label className="block"><span className={rotulo}>Ubicación</span><select required value={f.provincia} onChange={set("provincia")} className={caja}>{provincias.slice(1).map((p) => (<option key={p}>{p}</option>))}</select></label>
       <label className="block"><span className={rotulo}>Detalles</span><textarea required rows={5} maxLength={8000} value={f.detalle} onChange={set("detalle")} placeholder="Funciones, requisitos, horario, salario y beneficios. Si publicas el salario, tu vacante llama más la atención." className={caja} /></label>
+      <p className="-mt-2 text-xs text-muted-foreground">No pidas edad, sexo, foto ni CV con foto, estado civil o hijos: pide lo que necesita el trabajo.</p>
+      <AvisoExclusion hallazgos={revisarDiscriminacion(`${f.titulo}\n${f.detalle}`)} />
       <fieldset className="rounded-xl border border-border p-3"><legend className="px-1 text-sm font-bold">¿Tu vacante es para…? (opcional)</legend><p className="text-xs text-muted-foreground">Marca lo que aplique. Las personas podrán encontrar tu vacante con estos filtros.</p><div className="mt-2 grid gap-2">{COMPROMISOS.map((c) => { const on = f.compromisos.includes(c.id); return <label key={c.id} className="flex items-start gap-2 text-sm"><input type="checkbox" checked={on} onChange={() => setF((x) => ({ ...x, compromisos: on ? x.compromisos.filter((y) => y !== c.id) : [...x.compromisos, c.id] }))} className="mt-1 size-4" /><span><strong>{c.t}.</strong> <span className="text-muted-foreground">{c.d}</span></span></label>; })}</div></fieldset>
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.redes} onChange={(e) => setF((x) => ({ ...x, redes: e.target.checked }))} className="mt-1 size-4" /><span>Autorizo que Enlace Laboral comparta esta vacante en sus redes (Telegram, Facebook, Instagram y WhatsApp). Es opcional y gratis.</span></label>
       <Consentimiento para="empresa" />

@@ -23,6 +23,8 @@ import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/conten
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, extraer, type Borrador } from "@/lib/extraer";
 import { senalesRiesgo } from "@/lib/antiestafa";
+import { revisarVacante } from "@/lib/inclusion";
+import { AvisoExclusion } from "@/components/site/AvisoExclusion";
 import { EVENTO_PUBLICADA, avisarPublicada, filaDesde, miEmpresa } from "@/lib/publicar";
 import { aCsvUrl, tablaAVacantes } from "@/lib/csv";
 import { CANAL_WHATSAPP, SELECT, enlacePieza, rowToVacante, textoWhatsApp, type Vacante, type VacanteRow } from "@/lib/vacantes";
@@ -356,8 +358,10 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
     if (editar || desde) cancelar();
   };
 
+  const exclusiones = revisarVacante({ titulo: b.titulo, descripcion: b.descripcion, requisitos: b.requisitos });
   const publicar = async () => {
     if (!b.titulo.trim()) return void toast.error("Falta el puesto.");
+    if (exclusiones.length) return void toast.error(`Quita «${exclusiones[0]!.frase}» antes de publicar: ${exclusiones[0]!.motivo}`);
     if (!b.fuente.trim()) return void toast.error("Indica de dónde sacaste la vacante (Fuente).");
     setGuardando(true);
     try {
@@ -432,6 +436,7 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
           <label className="block"><span className={etiqueta}>Salario desde (RD$)</span><input inputMode="numeric" value={b.salarioMin} onChange={(e) => setB((x) => ({ ...x, salarioMin: e.target.value.replace(/\D/g, "") }))} className={campo} placeholder="Vacío si no lo dicen" /></label>
           <label className="block"><span className={etiqueta}>Salario hasta (RD$)</span><input inputMode="numeric" value={b.salarioMax} onChange={(e) => setB((x) => ({ ...x, salarioMax: e.target.value.replace(/\D/g, "") }))} className={campo} placeholder="Opcional" /></label>
           <label className="block sm:col-span-2"><span className={etiqueta}>Requisitos (uno por línea)</span><textarea value={b.requisitos} onChange={set("requisitos")} rows={5} className={campo} placeholder="Vacío si la vacante no los menciona" /></label>
+          {exclusiones.length > 0 && <div className="sm:col-span-2"><AvisoExclusion hallazgos={exclusiones} para="admin" /></div>}
           <label className="block sm:col-span-2"><span className={etiqueta}>Funciones, beneficios y horario</span><textarea value={b.descripcion} onChange={set("descripcion")} rows={6} className={campo} placeholder="Solo información del empleo. Vacío si no la hay." /></label>
           <label className="block sm:col-span-2"><span className={etiqueta}>Cómo aplicar (enlace, correo o WhatsApp)</span><input value={b.aplicar} onChange={set("aplicar")} className={campo} placeholder="Ej. rrhh@empresa.com o https://… — vacío = aplican por tu página" /></label>
           <label className="block"><span className={etiqueta}>Fuente (dónde la viste) *</span><input value={b.fuente} onChange={set("fuente")} className={campo} placeholder="Ej. LinkedIn, Instagram de la empresa…" /></label>

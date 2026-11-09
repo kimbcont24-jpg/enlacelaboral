@@ -3,7 +3,6 @@
 export const COMPROMISOS = [
   { id: "primer-empleo", corto: "Primer empleo", t: "Primer empleo bienvenido", d: "No pedimos experiencia previa: enseñamos el trabajo." },
   { id: "discapacidad", corto: "Inclusiva", t: "Inclusiva para personas con discapacidad", d: "Adaptamos la entrevista y el puesto cuando hace falta." },
-  { id: "toda-edad", corto: "Toda edad", t: "Sin límite de edad", d: "Valoramos la experiencia a cualquier edad." },
   { id: "estudiantes", corto: "Para estudiantes", t: "Horario compatible con estudios", d: "Ideal si estudias en la universidad o en INFOTEP." },
   { id: "horario-flexible", corto: "Horario flexible", t: "Horario flexible para madres y padres", d: "Acordamos horarios que funcionen con tu familia." },
 ] as const;
@@ -14,7 +13,7 @@ export const compromisosDe = (categorias: string[]): (typeof COMPROMISOS)[number
 /** Las etiquetas internas no se muestran como texto suelto. */
 export const sinEtiquetasInternas = (categorias: string[]) => categorias.filter((c) => !c.startsWith("incl:"));
 
-type Hallazgo = { frase: string; motivo: string };
+export type Hallazgo = { frase: string; motivo: string };
 
 // Código de Trabajo, Principio VII: se prohíbe la discriminación por sexo, edad, raza, color, ascendencia nacional,
 // origen social, opinión política, militancia sindical o creencia religiosa. Aquí se marcan las formas más comunes en avisos.
@@ -34,6 +33,10 @@ const REGLAS: { re: RegExp; motivo: string }[] = [
   { re: /\b(?:estatura|peso|talla|complexi[óo]n|tez|color de piel)\b/gi, motivo: "Pide rasgos físicos que no son del trabajo." },
   { re: /\b(?:religi[óo]n|cristian[oa]|cat[óo]lic[oa]|evang[ée]lic[oa])\b/gi, motivo: "Pide una creencia religiosa." },
   { re: /\b(?:sin\s+discapacidad|sin\s+limitaciones\s+f[íi]sicas|perfecto\s+estado\s+de\s+salud)\b/gi, motivo: "Excluye a personas con discapacidad." },
+  { re: /\bedad\s+(?:m[áa]xima|m[íi]nima|l[íi]mite|requerida|ideal|preferible)\b/gi, motivo: "Pide una edad." },
+  { re: /\b(?:cv|curr[íi]cul(?:um|o)|hoja\s+de\s+vida)\s+(?:con|y|más)\s+foto(?:graf[íi]a)?\b/gi, motivo: "Pide CV con foto: no hace falta para decidir." },
+  { re: /\b(?:env[íi]a(?:r)?|adjunta(?:r)?|anexa(?:r)?|inclu(?:ir|ye|ya)|acompa[ñn]ad[oa]\s+de)\s+(?:una\s+|tu\s+|su\s+)?foto(?:graf[íi]a)?\b/gi, motivo: "Pide foto: no hace falta para decidir." },
+  { re: /\b(?:hombres?|mujeres?|damas?|caballeros?)\s+(?:preferiblemente|solamente|únicamente)\b/gi, motivo: "Excluye por sexo." },
 ];
 
 /** Busca en el aviso frases que excluyen a personas por motivos que no son del trabajo. */
@@ -52,26 +55,24 @@ export function revisarDiscriminacion(texto: string): Hallazgo[] {
   return out;
 }
 
-// ---------- Caminos de «Empleo para todas las personas» ----------
-// Una sola regla para contar y para filtrar: lo que dice el número es lo que sale en la lista.
-
-/** Las primeras 4 reglas son las de edad. */
-const REGLAS_EDAD = REGLAS.slice(0, 4);
-
-/** ¿El aviso pide una edad (rango, máximo o mínimo mayor de 18)? */
-export function pideEdad(texto: string): boolean {
-  return REGLAS_EDAD.some(({ re }) => { re.lastIndex = 0; const si = re.test(texto); re.lastIndex = 0; return si; });
+/** Revisa una vacante completa (título, descripción y requisitos). */
+export function revisarVacante(v: { titulo: string; descripcion?: string; requisitos?: string[] | string }): Hallazgo[] {
+  const req = Array.isArray(v.requisitos) ? v.requisitos.join("\n") : (v.requisitos ?? "");
+  return revisarDiscriminacion(`${v.titulo}\n${v.descripcion ?? ""}\n${req}`);
 }
 
-type JobCamino = { titulo: string; experiencia: string; tipo: string; modalidad: string; categorias: string[]; descripcion?: string; requisitos?: string[] };
+// ---------- Caminos de «Empleo para todas las personas» ----------
+// No se crean caminos por edad, sexo u otra condición personal: eso también sería separar a la gente.
+// Solo por el tipo de puesto (sin experiencia, pasantía, horario) o por compromisos que la ley promueve (discapacidad).
+// Una sola regla para contar y para filtrar: lo que dice el número es lo que sale en la lista.
 
-const textoAviso = (j: JobCamino) => `${j.titulo} ${j.descripcion ?? ""} ${(j.requisitos ?? []).join(" ")}`;
+type JobCamino = { titulo: string; experiencia: string; tipo: string; modalidad: string; categorias: string[]; descripcion?: string; requisitos?: string[] };
 
 /**
  * ¿La vacante sirve para este camino?
  * - Siempre cuenta si la empresa marcó el compromiso.
  * - Primer empleo: no pide experiencia. Estudiantes: pasantía o medio tiempo.
- * - Mamás y papás: medio tiempo o desde casa. Toda edad: el aviso no pide edad.
+ * - Horario flexible: medio tiempo o desde casa.
  * - Discapacidad: solo si la empresa lo marcó (no se adivina).
  */
 export function enCamino(j: JobCamino, id: string): boolean {
@@ -80,7 +81,6 @@ export function enCamino(j: JobCamino, id: string): boolean {
     case "primer-empleo": return j.experiencia === "Sin experiencia";
     case "estudiantes": return j.tipo === "Pasantía" || j.tipo === "Medio tiempo";
     case "horario-flexible": return j.tipo === "Medio tiempo" || j.modalidad === "Remoto";
-    case "toda-edad": return !pideEdad(textoAviso(j));
     default: return false;
   }
 }

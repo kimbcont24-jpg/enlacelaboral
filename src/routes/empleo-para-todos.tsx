@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Accessibility, ArrowRight, Baby, BellRing, BookOpen, Building2, CheckCircle2, ExternalLink, Flag, GraduationCap, HandHeart, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, Users } from "lucide-react";
+import { Accessibility, ArrowRight, BellRing, Clock, BookOpen, Building2, CheckCircle2, ExternalLink, Flag, GraduationCap, HandHeart, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/empleo-para-todos")({
   head: () => ({
     meta: [
       { title: "Empleo para todas las personas | Enlace Laboral" },
-      { name: "description", content: "Primer empleo, estudiantes, 40 años o más, mamás y papás, personas con discapacidad: vacantes reales, un plan claro y apoyo en República Dominicana. Cero discriminación." },
+      { name: "description", content: "En Enlace Laboral está prohibido pedir edad, sexo o foto. Primer empleo, pasantías, horario flexible e inclusión: vacantes reales, un plan claro y apoyo en República Dominicana." },
       { property: "og:title", content: "Empleo para todas las personas · Enlace Laboral" },
       { property: "og:description", content: "Vacantes reales para tu situación, un plan en 3 pasos y a quién acudir. Gratis y sin discriminación." },
     ],
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/empleo-para-todos")({
 type Recurso = { n: string; d: string; url?: string };
 type Paso = { t: string; d: string; link?: { to: string; search?: Record<string, string>; t: string } };
 type Camino = {
-  id: "primer-empleo" | "estudiantes" | "toda-edad" | "horario-flexible" | "discapacidad";
+  id: "primer-empleo" | "estudiantes" | "horario-flexible" | "discapacidad";
   I: typeof Sprout;
   color: string; // acento del camino
   suave: string; // fondo suave del camino
@@ -80,32 +80,16 @@ const CAMINOS: Camino[] = [
     vacio: { texto: "En este momento no hay pasantías ni medio tiempo en esa provincia. Prueba con todo el país." },
   },
   {
-    id: "toda-edad", I: Users, color: "#b45309", suave: "#fdf1e1", t: "Tengo 40 años o más", d: "Tu experiencia vale. Sin límite de edad.",
-    titulo: "40 años o más", frase: "Tu experiencia es un valor, no un obstáculo.",
-    nota: "Vacantes cuyo aviso no pide edad.",
-    plan: [
-      { t: "CV con tus últimos 10 a 15 años", d: "Pon lo que lograste, con números si puedes. No hace falta tu fecha de nacimiento ni foto.", link: { to: "/cv", t: "Actualizar mi CV" } },
-      { t: "Muestra que estás al día", d: "Un curso corto de INFOTEP, manejo de correo, Excel o WhatsApp de empresa. Ponlo en tu CV." },
-      { t: "Usa tu red", d: "Antiguos compañeros, la iglesia, la junta de vecinos. Una recomendación abre muchas puertas." },
-    ],
-    derechos: [
-      "El Código de Trabajo prohíbe excluir a una persona por su edad. Aquí no se publican avisos con edad máxima.",
-      "Si ves una vacante en Enlace Laboral que pide edad, toca «Reportar» y la corregimos.",
-    ],
-    recursos: [INFOTEP, SENAE],
-    vacio: { texto: "No hay vacantes en esa provincia ahora mismo. Prueba con todo el país." },
-  },
-  {
-    id: "horario-flexible", I: Baby, color: "#be185d", suave: "#fce7f1", t: "Soy mamá, papá o cuido a alguien", d: "Medio tiempo y trabajos desde casa.",
-    titulo: "Mamás, papás y quienes cuidan", frase: "Trabajar y cuidar a tu familia no tiene por qué ser una pelea.",
+    id: "horario-flexible", I: Clock, color: "#be185d", suave: "#fce7f1", t: "Necesito horario flexible", d: "Medio tiempo y trabajos desde casa.",
+    titulo: "Horario flexible", frase: "Si estudias, cuidas a alguien o tienes otro trabajo, el horario importa. Aquí lo encuentras.",
     nota: "Medio tiempo, desde casa o con horario flexible.",
     plan: [
-      { t: "Busca medio tiempo o desde casa", d: "Son las vacantes que más se acomodan a la rutina de la casa. Aquí abajo están las de ahora." },
+      { t: "Busca medio tiempo o desde casa", d: "Son las vacantes que mejor se acomodan a otros compromisos. Aquí abajo están las de ahora." },
       { t: "Habla de horarios con naturalidad", d: "En la entrevista puedes preguntar por turnos y flexibilidad. Es una pregunta normal." },
       { t: "Activa una alerta", d: "Te avisamos por correo cuando salgan vacantes nuevas, para que no tengas que estar buscando cada día." },
     ],
     derechos: [
-      "Ninguna empresa debería decidir por si tienes hijos o por tu estado civil. Aquí no se publican avisos que lo piden.",
+      "Ninguna empresa puede decidir por si tienes hijos o por tu estado civil. En Enlace Laboral está prohibido preguntarlo en el aviso.",
       "Si trabajas medio tiempo o desde casa, también te corresponden salario y TSS.",
     ],
     recursos: [SENAE, INFOTEP],
@@ -165,7 +149,7 @@ function Cuenta({ n, sufijo = "" }: { n: number; sufijo?: string }) {
 
 /** La idea de Enlace en un dibujo: cinco caminos que se conectan en el centro. */
 function Constelacion({ porCamino, cargando }: { porCamino: Record<Camino["id"], Vacante[]>; cargando: boolean }) {
-  const pos = [[50, 10], [89, 38], [75, 86], [25, 86], [11, 38]] as const;
+  const pos = [[50, 9], [91, 50], [50, 91], [9, 50]] as const;
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[26rem]" aria-hidden="true">
       <svg viewBox="0 0 100 100" className="absolute inset-0 size-full overflow-visible">
@@ -212,7 +196,7 @@ function EmpleoParaTodos() {
             <h1 className="mt-4 max-w-3xl text-balance font-display text-[2.1rem] font-extrabold leading-[1.08] tracking-tight md:text-[3rem]">
               Empleo para <span className="bg-gradient-to-r from-[#7ee2a8] via-[#8ec1ff] to-[#ffb3d9] bg-clip-text text-transparent">todas las personas</span>
             </h1>
-            <p className="mt-4 max-w-xl text-lg text-white/85">No importa tu edad, si es tu primer trabajo, si estás estudiando, si cuidas a tu familia o si tienes una discapacidad. Te conectamos con vacantes reales y te acompañamos a dar el paso.</p>
+            <p className="mt-4 max-w-xl text-lg text-white/85">Aquí nadie se queda fuera por su edad, su sexo, su apariencia o su historia. Te conectamos con vacantes reales y te acompañamos a dar el paso, sea tu primer empleo o el próximo.</p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#buscador" className="btn-aplicar inline-flex h-12 items-center gap-2 rounded-xl px-6 text-base"><Search className="size-5" aria-hidden="true" /> Encontrar mi vacante</a>
               <a href="#compromiso" className="vidrio inline-flex h-12 items-center gap-2 rounded-xl px-5 text-base font-bold text-white hover:bg-white/15"><ShieldCheck className="size-5" aria-hidden="true" /> Nuestro compromiso</a>
@@ -234,9 +218,9 @@ function EmpleoParaTodos() {
           <div className="hidden lg:block"><Constelacion porCamino={porCamino} cargando={cargando} /></div>
         </div>
 
-        <nav aria-label="Elige tu camino" className="relative mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-3 lg:grid-cols-5">
+        <nav aria-label="Elige tu camino" className="relative mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-3 lg:grid-cols-4">
           {CAMINOS.map((c, i) => (
-            <a key={c.id} href={`#${c.id}`} style={{ ...acento(c), animationDelay: `${150 + i * 70}ms` }} className={`${i === CAMINOS.length - 1 ? "col-span-2 lg:col-span-1 " : ""}entra group relative overflow-hidden rounded-2xl bg-white/[0.07] p-4 ring-1 ring-white/15 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.13] hover:ring-white/30`}>
+            <a key={c.id} href={`#${c.id}`} style={{ ...acento(c), animationDelay: `${150 + i * 70}ms` }} className={`entra group relative overflow-hidden rounded-2xl bg-white/[0.07] p-4 ring-1 ring-white/15 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.13] hover:ring-white/30`}>
               <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1" style={{ background: c.color }} />
               <span className="grid size-10 place-items-center rounded-xl bg-white text-[var(--acento)] shadow-sm"><c.I className="size-5" aria-hidden="true" /></span>
               <p className="mt-3 text-[15px] font-extrabold leading-snug sm:text-base">{c.t}</p>
@@ -256,6 +240,12 @@ function EmpleoParaTodos() {
               <span className="grid size-12 place-items-center rounded-2xl bg-primary text-primary-foreground"><Scale className="size-6" aria-hidden="true" /></span>
               <h2 id="t-compromiso" className="mt-4 font-display text-[1.7rem] font-extrabold leading-tight">Nuestro compromiso</h2>
               <p className="mt-3 text-muted-foreground">El Código de Trabajo dominicano (Principio VII) prohíbe excluir a una persona por su sexo, edad, raza, color, origen nacional o social, opinión política, militancia sindical o religión. Una empresa solo puede pedir lo que el puesto necesita de verdad.</p>
+              <p className="mt-5 text-sm font-extrabold">En Enlace Laboral está prohibido pedir:</p>
+              <ul className="mt-2 flex flex-wrap gap-2">
+                {["Edad", "Sexo", "Foto o CV con foto", "Estado civil o hijos", "Rasgos físicos", "«Buena presencia»", "Religión"].map((t) => (
+                  <li key={t} className="inline-flex items-center gap-1.5 rounded-full border border-destructive/25 bg-destructive/[0.06] px-3 py-1 text-sm font-semibold text-destructive"><X className="size-3.5" aria-hidden="true" /> {t}</li>
+                ))}
+              </ul>
               {!cargando && jobs.length > 0 && (
                 <div className="mt-6 flex items-center gap-4 rounded-2xl bg-success/10 p-4">
                   <Anillo pct={pct} />
@@ -269,8 +259,8 @@ function EmpleoParaTodos() {
             <ul className="grid gap-3 sm:grid-cols-2">
               {[
                 [ShieldCheck, "Revisamos cada aviso", "Quitamos pedidos de edad, sexo, foto o estado civil de las vacantes que publicamos."],
-                [Flag, "No se publican avisos que excluyen", "Nuestro formulario detecta esas frases y no deja publicar hasta que se cambien."],
-                [Sparkles, "Compromisos visibles", "Las empresas marcan «Primer empleo», «Inclusiva», «Sin límite de edad» y «Horario flexible». Los ves en cada vacante."],
+                [Flag, "Si un aviso lo pide, se frena", "El formulario detecta esas frases y no deja publicar hasta que se cambien. Si alguna se escapa, nos llega una alerta y la corregimos."],
+                [Sparkles, "Compromisos visibles", "Las empresas marcan «Primer empleo», «Inclusiva», «Para estudiantes» y «Horario flexible». Los ves en cada vacante."],
                 [Accessibility, "Página para todos", "Toca el botón de accesibilidad (abajo a la izquierda) para agrandar la letra o subir el contraste."],
               ].map(([I, t, d]) => {
                 const Icono = I as typeof Flag;
@@ -332,7 +322,7 @@ function EmpleoParaTodos() {
               <span aria-hidden="true" className="absolute -right-8 -top-8 size-32 rounded-full bg-[#1d6ff2]/10" />
               <span className="relative grid size-12 place-items-center rounded-2xl bg-[#e8f0fe] text-[#1d6ff2]"><Building2 className="size-6" aria-hidden="true" /></span>
               <h2 id="t-aliados" className="relative mt-4 font-display text-xl font-extrabold">¿Eres empresa?</h2>
-              <p className="relative mt-2 text-muted-foreground">Marca tus compromisos de inclusión al publicar: primer empleo, inclusiva, toda edad, horario flexible o para estudiantes. Las personas los ven en tu vacante y te encuentran aquí. Publicar es gratis.</p>
+              <p className="relative mt-2 text-muted-foreground">Marca tus compromisos de inclusión al publicar: primer empleo, inclusiva, horario flexible o para estudiantes. Recuerda: aquí no se puede pedir edad, sexo ni foto. Las personas los ven en tu vacante y te encuentran aquí. Publicar es gratis.</p>
               <Link to="/empresas" className="relative mt-5 inline-flex items-center gap-1.5 font-bold text-primary">Publicar una vacante inclusiva <ArrowRight className="size-4" aria-hidden="true" /></Link>
             </div>
             <div className="lift relative overflow-hidden rounded-[2rem] border border-border bg-surface p-7">
