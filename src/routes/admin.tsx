@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Actividad } from "@/components/admin/Actividad";
 import { Exportar } from "@/components/admin/Exportar";
 import { Estudio } from "@/components/admin/Estudio";
+import { Apariencia } from "@/components/admin/Apariencia";
 import { DesdeFotos } from "@/components/admin/DesdeFotos";
 import { Control } from "@/components/admin/Control";
 import { Empresas } from "@/components/admin/Empresas";
@@ -115,7 +116,7 @@ function Admin() {
     { id: "negocio", label: "Negocio", tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "exportar", label: "Descargar datos" }] },
     { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
     { id: "crecer", label: "Crecer", tabs: [{ id: "estudio", label: "Estudio viral" }] },
-    { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }] },
+    { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }, { id: "apariencia", label: "Apariencia" }] },
   ];
   const grupoActual = grupos.find((g) => g.tabs.some((t) => t.id === tab)) ?? grupos[0]!;
   const ir = (t: Tab) => { setTab(t); window.scrollTo({ top: 0, behavior: "smooth" }); };
@@ -168,6 +169,7 @@ function Admin() {
               {tab === "actividad" && <Actividad />}
               {tab === "usuarios" && <Usuarios uid={uid} />}
               {tab === "textos" && <Textos />}
+              {tab === "apariencia" && <Apariencia />}
             </div>
           </>
         )}

@@ -10,6 +10,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { iniciarNube } from "@/lib/nube";
+import { iniciarApariencia, scriptApariencia } from "@/lib/apariencia";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -47,7 +48,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
-    scripts: [{ children: scriptEntrada }],
+    scripts: [{ children: scriptApariencia }, { children: scriptEntrada }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -66,6 +67,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => iniciarNube(), []);
+  useEffect(() => { void iniciarApariencia(); }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <ApplyProvider>
