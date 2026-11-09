@@ -41,8 +41,8 @@ export type Database = {
         Relationships: [];
       };
       solicitudes_datos: {
-        Row: { id: string; tipo: string; nombre: string; contacto: string; detalle: string | null; estado: string; created_at: string };
-        Insert: { tipo: string; nombre: string; contacto: string; detalle?: string | null };
+        Row: { id: string; tipo: string; nombre: string; contacto: string; detalle: string | null; vacante: string | null; estado: string; created_at: string };
+        Insert: { tipo: string; nombre: string; contacto: string; detalle?: string | null; vacante?: string | null };
         Update: { estado?: string };
         Relationships: [];
       };

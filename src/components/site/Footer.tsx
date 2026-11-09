@@ -6,7 +6,7 @@ import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 
 export function Footer() {
   return (
-    <footer className="relative overflow-hidden bg-[#07213f] px-4 pb-10 pt-14 text-white sm:px-6">
+    <footer className="relative overflow-hidden bg-[#07213f] px-4 pb-28 pt-14 sm:pb-10 text-white sm:px-6">
       <LogoMarca invertido className="pointer-events-none absolute -bottom-16 -right-24 h-60 w-auto opacity-[0.05] sm:h-72" />
       <div className="relative mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
         <div>
@@ -44,7 +44,7 @@ export function Footer() {
           </ul>
         </nav>
       </div>
-      <p className="relative mx-auto mt-10 flex max-w-7xl flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/50"><span>© 2026 Enlace Laboral. Hecho en República Dominicana.</span><Link to="/privacidad" className="font-semibold hover:text-white">Política de privacidad</Link></p>
+      <p className="relative mx-auto mt-10 flex max-w-7xl sm:pr-20 flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/50"><span>© 2026 Enlace Laboral. Hecho en República Dominicana.</span><span className="flex flex-wrap gap-x-4 gap-y-1"><Link to="/terminos" className="font-semibold hover:text-white">Términos y condiciones</Link><Link to="/privacidad" className="font-semibold hover:text-white">Privacidad</Link><Link to="/cookies" className="font-semibold hover:text-white">Cookies</Link><Link to="/contacto" className="font-semibold hover:text-white">Contacto y ayuda</Link></span></p>
     </footer>
   );
 }

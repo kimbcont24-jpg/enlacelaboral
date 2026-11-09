@@ -44,7 +44,7 @@ function Privacidad() {
             <p><strong>Si creas tu cuenta (opcional):</strong> tu correo, tu CV, las vacantes que guardas y el seguimiento de tus aplicaciones, para que no los pierdas si cambias de teléfono. Si activas «Banco de talento», las empresas registradas pueden ver tu perfil e invitarte. Puedes apagarlo cuando quieras.</p>
             <p><strong>Sin cuenta, tu CV se queda en tu teléfono.</strong> No lo subimos a ningún lado hasta que aplicas o lo guardas en tu cuenta.</p>
             <p><strong>Si eres empresa:</strong> el nombre de la empresa, el RNC o la cédula, el nombre, correo y teléfono de contacto, y las vacantes que publicas.</p>
-            <p><strong>Datos de uso:</strong> contamos cuántas veces se ve cada vacante, sin guardar quién la vio. No usamos publicidad ni rastreadores de terceros.</p>
+            <p><strong>Datos de uso:</strong> contamos cuántas veces se ve cada vacante, sin guardar quién la vio. No usamos publicidad ni rastreadores de terceros (ver <Link to="/cookies" className="font-semibold text-primary underline">cookies</Link>).</p>
             <p>No pedimos ni guardamos foto, edad, sexo, estado civil, religión ni información de salud. Si tienes una discapacidad, no estás obligado a decirlo.</p>
           </Bloque>
 

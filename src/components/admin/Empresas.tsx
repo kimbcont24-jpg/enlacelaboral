@@ -14,7 +14,7 @@ export function Empresas() {
   const [sol, setSol] = useState<S[]>([]);
   const [cargando, setCargando] = useState(true);
   const [ali, setAli] = useState<{ id: string; tipo: string; institucion: string; contacto_nombre: string; contacto_cargo: string | null; correo: string; telefono: string | null; provincia: string | null; interes: string[]; mensaje: string | null; created_at: string }[]>([]);
-  const [datos, setDatos] = useState<{ id: string; tipo: string; nombre: string; contacto: string; detalle: string | null; created_at: string }[]>([]);
+  const [datos, setDatos] = useState<{ id: string; tipo: string; nombre: string; contacto: string; detalle: string | null; vacante: string | null; created_at: string }[]>([]);
   const [jor, setJor] = useState<{ id: string; titulo: string; fecha: string; lugar: string; provincia: string; empresa_id: string }[]>([]);
   const cargar = useCallback(async () => {
     const [{ data }, { data: s2 }, { data: j2 }, { data: a2 }, { data: d2 }] = await Promise.all([
@@ -66,11 +66,11 @@ export function Empresas() {
       <p className="rounded-xl border border-border bg-surface p-4 text-sm text-muted-foreground">Verifica una empresa solo cuando hayas confirmado que existe: toca «Verificar en DGII» (copia el número y abre la consulta oficial) y confirma que el nombre coincide. Solo tú puedes cambiar esto: las empresas no pueden verificarse solas.</p>
       {datos.length > 0 && (
         <div className="space-y-2 rounded-2xl border-2 border-destructive/40 bg-surface p-4">
-          <p className="font-bold">Solicitudes sobre datos personales ({datos.length})</p>
-          <p className="text-xs text-muted-foreground">Por ley (172-13) hay que responder. Para borrar: Admin → Aplicaciones, busca por el contacto y elimina. Luego marca «Atendida».</p>
+          <p className="font-bold">Mensajes de contacto y solicitudes de datos ({datos.length})</p>
+          <p className="text-xs text-muted-foreground">Respóndele a cada persona a su contacto. Las solicitudes de datos son obligatorias por ley (172-13). Para borrar: Admin → Aplicaciones, busca por el contacto y elimina. Luego marca «Atendida».</p>
           {datos.map((d) => (
             <div key={d.id} className="flex flex-wrap items-start justify-between gap-2 rounded-xl bg-muted/50 p-3 text-sm">
-              <div className="min-w-0"><p className="font-bold">{{ ver: "Quiere saber qué datos tenemos", corregir: "Quiere corregir sus datos", borrar: "Quiere que borremos sus datos", otra: "Otra consulta" }[d.tipo] ?? d.tipo}</p><p className="text-muted-foreground">{d.nombre} · {d.contacto} · {haceDesde(d.created_at)}</p>{d.detalle && <p className="mt-1 whitespace-pre-wrap">{d.detalle}</p>}</div>
+              <div className="min-w-0"><p className="font-bold">{{ ver: "Quiere saber qué datos tenemos", corregir: "Quiere corregir sus datos", borrar: "Quiere que borremos sus datos", otra: "Otra consulta sobre datos", contacto: "Mensaje de contacto", empresa: "Mensaje de una empresa", denuncia: "⚠ Reporte de oferta o empresa sospechosa" }[d.tipo] ?? d.tipo}</p><p className="text-muted-foreground">{d.nombre} · {d.contacto} · {haceDesde(d.created_at)}</p>{d.vacante && <p className="mt-1 font-semibold">Vacante: {d.vacante}</p>}{d.detalle && <p className="mt-1 whitespace-pre-wrap">{d.detalle}</p>}</div>
               <Button size="sm" onClick={() => void supabase.from("solicitudes_datos").update({ estado: "atendida" }).eq("id", d.id).then(() => { toast.success("Marcada como atendida"); void cargar(); })}>Atendida</Button>
             </div>
           ))}
