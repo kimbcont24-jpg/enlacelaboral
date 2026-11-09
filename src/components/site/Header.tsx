@@ -5,7 +5,7 @@ import { AvisoGlobal } from "@/components/site/AvisoGlobal";
 import { Logo } from "@/components/site/Logo";
 import { useEsAdmin } from "@/components/site/AdminAcciones";
 import { useGuardados } from "@/lib/guardados";
-import { Bookmark, ChevronDown, Menu, X } from "lucide-react";
+import { Bookmark, ChevronDown, Menu, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -65,7 +65,14 @@ export function Header() {
       <Logo cabecera />
       <div className="hidden items-center gap-1 whitespace-nowrap text-[15px] font-semibold lg:flex">
         {nav.filter((item) => PRINCIPALES.includes(item.to)).map((item) => (
+          item.to === "/vacantes" ? (
+            // «Empleos» es la puerta principal del sitio: destaca sin competir con «Publicar vacante».
+            <Link key={item.to} to={item.to} className="mr-1 inline-flex items-center gap-1.5 rounded-full bg-[#1d6ff2]/10 px-3.5 py-2 font-bold text-[#1557c4] ring-1 ring-[#1d6ff2]/30 transition-all hover:bg-[#1d6ff2]/15 hover:ring-[#1d6ff2]/50 xl:px-4" activeProps={{ className: "!bg-[#1d6ff2] !text-white !ring-[#1d6ff2]" }}>
+              <Search className="size-4" aria-hidden="true" /> {item.label}
+            </Link>
+          ) : (
           <Link key={item.to} to={item.to} className="rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary xl:px-3.5" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link>
+          )
         ))}
         <details className="group relative">
           <summary className="flex cursor-pointer list-none items-center gap-1 rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary [&::-webkit-details-marker]:hidden">Más <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
@@ -92,7 +99,11 @@ export function Header() {
             <Link to="/guardadas" onClick={() => setMenu(false)} className="mb-2 flex items-center gap-3 rounded-xl bg-secondary px-4 py-3 font-bold text-primary"><Bookmark className="size-4" /> Mi búsqueda <span className="ml-auto text-xs font-semibold text-muted-foreground">guardadas y aplicaciones</span></Link>
             <ul className="grid grid-cols-2 gap-1.5">
               {nav.map((item) => (
-                <li key={item.to}><Link to={item.to} onClick={() => setMenu(false)} className="block rounded-xl px-4 py-3 text-[15px] font-semibold hover:bg-secondary" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link></li>
+                <li key={item.to}>{item.to === "/vacantes" ? (
+                  <Link to={item.to} onClick={() => setMenu(false)} className="flex items-center gap-2 rounded-xl bg-[#1d6ff2]/10 px-4 py-3 text-[15px] font-bold text-[#1557c4] ring-1 ring-[#1d6ff2]/30" activeProps={{ className: "!bg-[#1d6ff2] !text-white" }}><Search className="size-4" aria-hidden="true" /> {item.label}</Link>
+                ) : (
+                  <Link to={item.to} onClick={() => setMenu(false)} className="block rounded-xl px-4 py-3 text-[15px] font-semibold hover:bg-secondary" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link>
+                )}</li>
               ))}
             </ul>
             <div className="mt-3 grid gap-2">
