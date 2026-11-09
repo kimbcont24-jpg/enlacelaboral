@@ -8,7 +8,7 @@ import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { ContactoDirecto } from "@/components/site/ContactoDirecto";
 import { supabase } from "@/integrations/supabase/client";
 import { cvCompleto, leerCV, textoCV, type CV } from "@/lib/cv";
-import { enlaceConMensaje, mensajeAplicacion, viaAplicar } from "@/lib/mensajes";
+import { correoAplicacion, enlaceConMensaje, mensajeAplicacion, viaAplicar } from "@/lib/mensajes";
 import { usePostulaciones } from "@/lib/postulaciones";
 import { responder } from "@/lib/preguntas";
 import { enlaceAplicar, useVacantes, type Vacante } from "@/lib/vacantes";
@@ -69,7 +69,7 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
 
   // El mensaje se arma solo con el nombre y el CV, hasta que la persona lo edite.
   useEffect(() => {
-    if (job && !editado) setTexto(mensajeAplicacion(job, nombre, cv));
+    if (job && !editado) setTexto(viaAplicar(job).clave === "correo" ? correoAplicacion(job, cv, { nombre }).cuerpo : mensajeAplicacion(job, nombre, cv));
   }, [job, nombre, cv, editado]);
 
   const parecidas = useMemo(() => {
@@ -83,8 +83,8 @@ export function ApplyDialog({ job, onClose, onCambiar }: { job: Vacante | null; 
   const ya = yaAplico(job.id);
   const conEmpresa = job.empresa && job.empresa !== "Empresa no indicada";
   // Por correo sí cabe el CV completo en el mensaje; por WhatsApp se copia aparte.
-  const textoFinal = via.clave === "correo" && cv && incluirCv ? `${texto}\n\n${textoCV(cv)}` : texto;
-  const enlace = enlaceConMensaje(job, textoFinal) ?? enlaceAplicar(job.aplicar);
+  const textoFinal = via.clave === "correo" && cv && incluirCv ? `${texto}\n\n— Resumen de mi CV —\n${textoCV(cv)}` : texto;
+  const enlace = enlaceConMensaje(job, textoFinal, via.clave === "correo" ? correoAplicacion(job, cv, { nombre }).asunto : undefined) ?? enlaceAplicar(job.aplicar);
 
   const copiar = async (que: "mensaje" | "cv") => {
     try {

@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Check, Copy, ExternalLink, Link2, Mail, MessageCircle, Phone } from "lucide-react";
 
 import type { Vacante } from "@/lib/vacantes";
+import { EVENTO_CV, leerCV, cvCompleto, type CV } from "@/lib/cv";
+import { correoAplicacion } from "@/lib/mensajes";
 
 /**
  * Mientras no haya dominio propio (envío automático por Resend), la vacante muestra
@@ -49,8 +52,17 @@ function BotonCopiar({ texto, etiqueta, pequeno = false }: { texto: string; etiq
 
 export function ContactoDirecto({ job, compacto = false, alUsar }: { job: Vacante; compacto?: boolean; alUsar?: () => void }) {
   const c = leerContacto(job.aplicar);
-  const asunto = c.asunto || `Aplicación: ${job.titulo}`;
-  const cuerpo = `Hola,\n\nVi la vacante «${job.titulo}» en Enlace Laboral y me gustaría aplicar. Adjunto mi CV.\n\nNombre:\nTeléfono:\n\nGracias.`;
+  // El correo se arma con el CV que la persona guardó en Enlace (vive en su navegador).
+  const [cv, setCv] = useState<CV | null>(null);
+  useEffect(() => {
+    const cargar = () => setCv(leerCV());
+    cargar();
+    window.addEventListener(EVENTO_CV, cargar);
+    window.addEventListener("storage", cargar);
+    return () => { window.removeEventListener(EVENTO_CV, cargar); window.removeEventListener("storage", cargar); };
+  }, []);
+  const conCv = cvCompleto(cv);
+  const { asunto, cuerpo } = correoAplicacion(job, conCv ? cv : null, { asuntoPedido: c.asunto || undefined });
   const fuenteVisible = (job.fuente && job.fuente !== "Enlace Laboral" && job.fuente !== "Carga masiva") || !!job.fuenteUrl;
   // Si el enlace para aplicar es la misma publicación original, se muestra un solo botón.
   const mismoEnlace = !!c.url && c.url === job.fuenteUrl;
@@ -64,7 +76,7 @@ export function ContactoDirecto({ job, compacto = false, alUsar }: { job: Vacant
           <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-primary"><Mail className="size-4" aria-hidden="true" /> Envía tu CV a este correo</p>
           <p className="mt-1.5 select-all break-all text-lg font-extrabold leading-snug text-foreground">{correo}</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Asunto: <span className="font-semibold text-foreground">{asunto}</span>. Adjunta tu CV en PDF.
+            Asunto: <span className="font-semibold text-foreground">{asunto}</span>
           </p>
           <a
             href={`mailto:${correo}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`}
@@ -73,9 +85,19 @@ export function ContactoDirecto({ job, compacto = false, alUsar }: { job: Vacant
           >
             <Mail className="size-5" aria-hidden="true" /> Aplicar
           </a>
-          <div className="mt-2 flex justify-center">
+          <div className="mt-2 flex flex-wrap justify-center gap-x-3">
             <BotonCopiar texto={correo} etiqueta="Copiar correo" pequeno />
+            <BotonCopiar texto={`Asunto: ${asunto}\n\n${cuerpo}`} etiqueta="Copiar el mensaje" pequeno />
           </div>
+          <p className="mt-2 text-center text-xs text-muted-foreground">
+            {conCv
+              ? <>Te preparamos una carta de presentación formal con los datos de tu CV. <strong className="text-foreground">Adjunta tu CV en PDF</strong> antes de enviar.</>
+              : <>Te preparamos una carta de presentación formal. <Link to="/cv" className="font-semibold text-primary underline-offset-2 hover:underline">Haz tu CV gratis</Link> y saldrá con tus datos y tu experiencia. Adjunta tu CV en PDF antes de enviar.</>}
+          </p>
+          <details className="group mt-2 rounded-xl bg-surface/70 px-3 py-2 text-left">
+            <summary className="cursor-pointer list-none text-center text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">Ver el correo que vas a enviar</summary>
+            <pre className="mt-2 max-h-72 overflow-auto whitespace-pre-wrap break-words font-sans text-xs leading-relaxed text-foreground">{`Asunto: ${asunto}\n\n${cuerpo}`}</pre>
+          </details>
         </div>
       ))}
 
