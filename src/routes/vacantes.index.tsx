@@ -63,7 +63,7 @@ function Vacantes() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <div className="mx-auto max-w-7xl px-6 pb-20 pt-10">
-        <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl">Vacantes disponibles</h1>
+        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Vacantes disponibles</h1>
         <div className="mt-5"><SearchBar puesto={puesto} provincia={provinciaBuscador} onPuesto={setPuesto} onProvincia={setProvinciaBuscador} onSubmit={buscar} /></div>
         <FiltrosRapidos value={filtros} onChange={setFiltros} className="mt-4" />
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
