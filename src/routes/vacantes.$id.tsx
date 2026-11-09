@@ -163,6 +163,7 @@ function Detalle() {
         <aside className="-mt-10 lg:order-2 lg:col-span-4 lg:-mt-24">
           <div className="entra lg:sticky lg:top-20">
             <div className="rounded-3xl border border-t-[6px] border-border border-t-[#ffd84d] bg-surface shadow-[0_24px_48px_-24px_rgb(10_47_92/0.45)]">
+              {job.salarioMin > 0 && (<>
               <div className="p-6 pb-5">
                 <p className="mb-2 text-sm font-semibold text-muted-foreground">Sueldo</p>
                 <Sueldo job={job} />
@@ -175,7 +176,8 @@ function Detalle() {
                 <span className="absolute -left-3 -top-3 size-6 rounded-full border-r border-border bg-background" />
                 <span className="absolute -right-3 -top-3 size-6 rounded-full border-l border-border bg-background" />
               </div>
-              <div className="p-6 pt-5">
+              </>)}
+              <div className={job.salarioMin > 0 ? "p-6 pt-5" : "p-6"}>
                 {directo ? (
                   <>
                     <div ref={botonRef}><ContactoDirecto job={job} /></div>
