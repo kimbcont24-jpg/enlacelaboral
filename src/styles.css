@@ -208,3 +208,17 @@ html.a11y-enlaces a { text-decoration: underline !important; text-underline-offs
 html.a11y-quieto *, html.a11y-quieto *::before, html.a11y-quieto *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 html.a11y-lectura body { letter-spacing: 0.03em; word-spacing: 0.12em; line-height: 1.75; }
 html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
+
+/* ───────── Empleo para todas las personas: constelación «enlace», aparición al bajar ───────── */
+@keyframes ept-fluye { to { stroke-dashoffset: -24; } }
+@keyframes ept-flota { 0%, 100% { transform: translate(-50%, -50%) translateY(0); } 50% { transform: translate(-50%, -50%) translateY(-6px); } }
+@keyframes ept-latido { 0% { transform: scale(.9); opacity: .55; } 100% { transform: scale(1.9); opacity: 0; } }
+@keyframes ept-gira { to { transform: rotate(360deg); } }
+.ept-linea { stroke-dasharray: 4 8; animation: ept-fluye 1.6s linear infinite; }
+.ept-nodo { position: absolute; transform: translate(-50%, -50%); animation: ept-flota 5s ease-in-out infinite; }
+.ept-latido::before { content: ""; position: absolute; inset: 0; border-radius: 9999px; background: currentColor; animation: ept-latido 2.4s ease-out infinite; }
+.ept-orbita { animation: ept-gira 60s linear infinite; transform-origin: center; }
+.ept-revela { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease-out-expo), transform .7s var(--ease-out-expo); }
+.ept-revela.ept-visto { opacity: 1; transform: none; }
+.ept-grano { background-image: radial-gradient(rgb(10 47 92 / 0.07) 1px, transparent 1px); background-size: 18px 18px; }
+@media (prefers-reduced-motion: reduce) { .ept-revela { opacity: 1; transform: none; } }
