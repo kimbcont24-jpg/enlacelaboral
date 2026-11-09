@@ -274,7 +274,7 @@ function CrearCV() {
       )}
       {herramienta === "importar" && <Importar actual={cv} onUsar={(nuevo) => { setCV(nuevo); setPaso("datos"); setHerramienta(null); toast.success("Listo. Revisa cada paso: lo que no reconocimos, agrégalo a mano."); }} onCerrar={() => setHerramienta(null)} />}
       {herramienta === "carta" && <Carta inicial={cartaPara} texto={textoCarta} setTexto={setTextoCarta} cv={cv} onCerrar={() => setHerramienta(null)} onDescargar={() => descargar("carta")} />}
-      <div id="carta-imprimir" className="hidden whitespace-pre-line p-0 text-[15px] leading-relaxed" style={{ fontFamily: "Inter, system-ui, sans-serif" }}>{textoCarta}</div>
+      <div id="carta-imprimir" className="hidden whitespace-pre-line p-0 text-[15px] leading-relaxed" style={{ fontFamily: "Figtree, system-ui, sans-serif" }}>{textoCarta}</div>
 
       <div className="no-print"><Footer /></div>
       <style>{`
