@@ -112,6 +112,24 @@ function Empresas() {
         </div>
       </section>
 
+      <section aria-labelledby="t-sin-discriminacion" className="px-4 pb-4 sm:px-6">
+        <div className="mx-auto max-w-6xl rounded-3xl border border-border bg-surface p-6 sm:p-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-xl">
+              <p className="eyebrow">Política de publicación</p>
+              <h2 id="t-sin-discriminacion" className="mt-1 font-display text-2xl font-extrabold tracking-tight">Vacantes sin límite de edad ni filtros que excluyen</h2>
+              <p className="mt-3 text-muted-foreground">En Enlace Laboral no se publican avisos que pidan edad, sexo, foto, estado civil, religión o «buena presencia». Pide lo que el puesto necesita de verdad: experiencia, conocimientos, horario. Nuestro sistema revisa cada aviso antes de enviarlo.</p>
+            </div>
+            <ul className="grid gap-2 text-sm lg:w-[26rem]">
+              <li className="flex gap-2.5 rounded-2xl bg-background p-3.5"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" /><span><strong>Código de Trabajo, Principio VII.</strong> Prohíbe cualquier discriminación, exclusión o preferencia por sexo, edad, raza, color, origen, opinión política, militancia sindical o creencia religiosa.</span></li>
+              <li className="flex gap-2.5 rounded-2xl bg-background p-3.5"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" /><span><strong>Constitución, artículo 39.</strong> Derecho a la igualdad.</span></li>
+              <li className="flex gap-2.5 rounded-2xl bg-background p-3.5"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" /><span><strong>Convenio 111 de la OIT</strong>, ratificado por el país, sobre discriminación en el empleo.</span></li>
+            </ul>
+          </div>
+          <p className="mt-5 text-xs text-muted-foreground">En el Congreso hay además proyectos que harían más explícita la prohibición de poner edad en los anuncios de empleo. Mientras no sean ley, esta regla se basa en lo que ya está vigente.</p>
+        </div>
+      </section>
+
       <section id="publicar" className="scroll-mt-20 px-4 py-16 sm:px-6 md:py-20">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
           <div>

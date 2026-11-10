@@ -39,7 +39,7 @@ function Terminos() {
         <ul className="list-disc space-y-1.5 pl-5">
           <li>Debes dar un RNC o una cédula reales y un contacto que responda. Revisamos cada empresa y decidimos si la verificamos. Mientras no esté verificada, revisamos sus vacantes antes de mostrarlas.</li>
           <li>Publica solo puestos reales y vigentes. Cierra la vacante cuando la cubras.</li>
-          <li><strong>Está prohibido discriminar.</strong> No pidas edad, sexo, foto, estado civil, religión, «buena presencia» ni nada que no tenga que ver con el trabajo, según el Principio VII del Código de Trabajo. Nuestro sistema detiene los avisos que lo hacen.</li>
+          <li><strong>Está prohibido discriminar.</strong> No pidas edad, sexo, foto, estado civil, religión, «buena presencia» ni nada que no tenga que ver con el trabajo. Tampoco pongas límites como «hasta 35 años» o «persona joven». Así lo establecen el Principio VII del Código de Trabajo, el artículo 39 de la Constitución y el Convenio 111 de la OIT. Nuestro sistema detiene los avisos que lo hacen.</li>
           <li><strong>Está prohibido cobrar a los candidatos</strong> por aplicar, por entrevistas, por capacitaciones o por el puesto.</li>
           <li>Usa los datos de los candidatos solo para su proceso de selección. No los vendas, no los compartas con otros y bórralos cuando ya no los necesites. Lee la <Link to="/privacidad" className="font-semibold text-primary underline">política de privacidad</Link>.</li>
           <li>Eres responsable de lo que hacen las personas que invitas a tu equipo en el panel.</li>
