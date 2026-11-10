@@ -45,7 +45,7 @@ export function EmpleoParaTodosBanda() {
 
   return (
     <section ref={ref} aria-labelledby="t-para-todos" style={{ "--p": 0.5 } as React.CSSProperties}
-      className="ept-banda relative mb-12 overflow-hidden px-4 pb-28 pt-20 text-white sm:px-6 sm:pb-40 sm:pt-28">
+      className="ept-banda relative mb-12 mt-10 overflow-hidden px-4 pb-28 pt-20 text-white sm:px-6 sm:pb-40 sm:pt-28">
       {/* Degradado de marca que se desplaza con el scroll */}
       <span aria-hidden="true" className="ept-banda-fondo absolute inset-0" />
       <span aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:22px_22px]" />

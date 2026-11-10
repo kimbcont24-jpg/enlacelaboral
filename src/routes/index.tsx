@@ -100,6 +100,12 @@ function Home() {
       </section>
 
       <RegaliaBanda />
+      <EmpleoParaTodosBanda />
+      <JornadasProximas />
+      <RecibeVacantes />
+
+      <ExploraEmpleos jobs={jobs} provincias={provinciasConVacantes} />
+
       <EnlaceAnimado ondas className="mb-12" video="https://videos.pexels.com/video-files/7692917/7692917-hd_1280_720_25fps.mp4" credito="Video: Yan Krukau · Pexels">
         <p className="mx-auto max-w-2xl text-balance text-lg font-semibold leading-relaxed text-white/90 sm:text-xl">Conectamos talento con oportunidades reales en toda República Dominicana. Sin discriminación, con información clara y gratis para quien busca empleo.</p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
@@ -107,12 +113,6 @@ function Home() {
           <Link to="/empresas" className="inline-flex h-12 items-center rounded-xl bg-white/15 px-6 font-bold text-white ring-1 ring-white/40 backdrop-blur transition-colors hover:bg-white/25">Publicar una vacante</Link>
         </div>
       </EnlaceAnimado>
-      <EmpleoParaTodosBanda />
-      <JornadasProximas />
-      <RecibeVacantes />
-
-      <ExploraEmpleos jobs={jobs} provincias={provinciasConVacantes} />
-
       <section className="cv-auto border-t border-border bg-surface py-10 sm:py-12">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="flex items-end justify-between gap-3">
