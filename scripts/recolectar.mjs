@@ -1,7 +1,7 @@
 // Recolector diario de vacantes reales de República Dominicana.
 // Corre en GitHub Actions (gratis), guarda carga/auto-latest.json y la base lo importa sola (pg_cron + pg_net).
 // Fuentes: Aldaba (solo ofertas con empresa visible, fuente visible), Eaton, Medtronic, Baxter.
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
 
 const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36", "accept-language": "es-DO,es;q=0.9" };
 const DIAS = Number(process.env.DIAS ?? 3);
@@ -342,6 +342,18 @@ for (const f of resultado) {
   f.descripcion = f.descripcion.replace(/;? ?se aplica (?:en línea|en la oferta original)\.?/i, ". Aplica desde Enlace Laboral.");
   conContacto.push(f);
 }
+// Flyers de Kim: la tarea horaria deja filas ya revisadas en carga/flyers/AAAA-MM-DD-*.json (últimos 10 días).
+// Se meten al principio del archivo para que la base las importe sola (pg_cron), sin usar acciones de Lovable.
+const flyers = [];
+try {
+  const lim = Date.now() - 10 * 864e5;
+  for (const n of readdirSync("carga/flyers").filter((x) => /^\d{4}-\d{2}-\d{2}.*\.json$/.test(x)).sort()) {
+    if (new Date(n.slice(0, 10)).getTime() < lim) continue;
+    try { const a = JSON.parse(readFileSync(`carga/flyers/${n}`, "utf8")); if (Array.isArray(a)) flyers.push(...a); } catch (e) { log("flyers", n, String(e).slice(0, 60)); }
+  }
+} catch {}
+conContacto.unshift(...flyers);
+log("flyers de Kim", flyers.length);
 log("cargadas", conContacto.length, "sin correo ni WhatsApp", sinContacto, SOLO_CONTACTO ? "(no se cargan)" : "(se cargan con enlace al portal)");
 mkdirSync("carga", { recursive: true });
 writeFileSync("carga/auto-latest.json", JSON.stringify(conContacto.slice(0, 300)));

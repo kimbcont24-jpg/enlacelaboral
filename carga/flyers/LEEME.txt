@@ -1,0 +1,1 @@
+Aquí la tarea horaria deja los flyers de Kim ya revisados (AAAA-MM-DD-flyers-HHMM.json). El robot (scripts/recolectar.mjs) los agrega a carga/auto-latest.json y la base los importa sola cada 2 horas.
