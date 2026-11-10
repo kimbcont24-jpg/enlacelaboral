@@ -1,14 +1,14 @@
 {
-  "fecha": "2026-11-10T17:41:59.881Z",
-  "total": 159,
-  "revisadas": 142,
-  "sin_contacto": 142,
+  "fecha": "2026-11-10T21:18:44.958Z",
+  "total": 163,
+  "revisadas": 144,
+  "sin_contacto": 144,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "alorica": 11,
-    "marriott": 58,
+    "marriott": 59,
     "citi": 3,
-    "medtronic": 2,
+    "medtronic": 3,
     "baxter": 3,
     "eaton": 65
   }
