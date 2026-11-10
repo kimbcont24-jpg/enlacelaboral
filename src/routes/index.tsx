@@ -9,11 +9,11 @@ import { RecibeVacantes } from "@/components/site/RecibeVacantes";
 import { ExploraEmpleos } from "@/components/site/ExploraEmpleos";
 import { Hero } from "@/components/site/Hero";
 import { JornadasProximas } from "@/components/site/JornadasProximas";
+import { consejosPortada } from "@/lib/guias";
 import { EmpleoParaTodosBanda } from "@/components/site/EmpleoParaTodosBanda";
 import { EnlaceAnimado } from "@/components/site/EnlaceAnimado";
 import { RegaliaBanda } from "@/components/site/RegaliaBanda";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
-import { consejos } from "@/lib/data";
 import { useContenido } from "@/lib/contenido";
 import { useVacantes } from "@/lib/vacantes";
 
@@ -132,8 +132,8 @@ function Home() {
         </div>
         <div className="mx-auto mt-4 max-w-6xl snap-x snap-mandatory scroll-px-4 overflow-x-auto px-4 pb-2 sm:scroll-px-6 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
           <div className="grid auto-cols-[78%] grid-flow-col gap-3 sm:auto-cols-auto sm:grid-flow-row sm:grid-cols-2 lg:grid-cols-4">
-            {consejos.slice(0, 4).map((c) => (
-              <Link key={c.titulo} to="/recursos" className="flex snap-start flex-col rounded-2xl border border-border bg-background p-4 transition-colors hover:border-primary">
+            {consejosPortada.map((c) => (
+              <Link key={c.id} to="/recursos" hash={c.id} className="flex snap-start flex-col rounded-2xl border border-border bg-background p-4 transition-colors hover:border-primary">
                 <span className="text-[11px] font-bold uppercase tracking-wide text-cta">{c.categoria} · {c.minutos} min</span>
                 <h3 className="mt-1.5 text-[15px] font-bold leading-snug">{c.titulo}</h3>
                 <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{c.resumen}</p>
