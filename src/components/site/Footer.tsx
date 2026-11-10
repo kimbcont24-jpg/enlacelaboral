@@ -43,6 +43,7 @@ export function Footer() {
             <li><Link to="/herramientas/regalia-pascual" className="hover:text-white">Calculadora de regalía pascual</Link></li>
             <li><Link to="/herramientas/salario-neto" className="hover:text-white">Calculadora de salario neto</Link></li>
             <li><Link to="/herramientas/liquidacion" className="hover:text-white">Calculadora de liquidación</Link></li>
+            <li><Link to="/herramientas/comparar-ofertas" className="hover:text-white">Comparador de ofertas</Link></li>
           </ul>
         </nav>
       </div>
