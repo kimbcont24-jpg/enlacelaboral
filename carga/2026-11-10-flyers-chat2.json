@@ -1,0 +1,45 @@
+[
+ {
+  "titulo": "Médico/a Psiquiatra",
+  "empresa": "Psicobienestar",
+  "provincia": "Santo Domingo",
+  "area": "Salud",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Psicobienestar busca médico/a psiquiatra para integrarse a un equipo que trabaja la salud mental de forma colaborativa e integral. Ubicación por confirmar.",
+  "requisitos": "Especialidad en Psiquiatría | Mínimo 5 años de experiencia | Trabajo en equipo y visión integral",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@psicobienestarrd.com",
+  "redes": "si",
+  "imagen": "https://enlace-rd.vercel.app/flyers/psicobienestar-medico-psiquiatra.jpg"
+ },
+ {
+  "titulo": "Paralegal (Temporal)",
+  "empresa": "ONEGAS",
+  "provincia": "Distrito Nacional",
+  "area": "Administración",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "ONEGAS busca paralegal temporal en Villas Agrícolas para apoyar las gestiones legales de la organización: elaboración, revisión y gestión de contratos, depósito y seguimiento de documentos ante instituciones públicas y privadas, trámites administrativos y legales, y asistencia directa al área legal. Requiere trasladarse al interior del país y visitar distintas oficinas.",
+  "requisitos": "Estudiante de término o graduado/a de Derecho | Experiencia en contratos legales | Excel y Microsoft Office | Disponibilidad para viajar al interior del país | Vehículo propio | Organización, atención al detalle, confidencialidad y comunicación oral y escrita",
+  "fuente": "Publicación de la empresa",
+  "aplicar": "empleos@onegas.com.do",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista de Contabilidad",
+  "empresa": "ONEGAS",
+  "provincia": "Distrito Nacional",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "ONEGAS busca analista de contabilidad en Villas Agrícolas para cuentas por pagar, tesorería, préstamos e impuestos: registro de facturas y movimientos bancarios, pagos a proveedores, conciliaciones bancarias y de tarjetas corporativas, formulario 606 ante la DGII, facturación a empresas relacionadas, cierre contable mensual y apoyo a auditoría externa. Horario: lunes a viernes de 8:30 a. m. a 5:30 p. m.",
+  "requisitos": "Licenciatura en Contabilidad, Administración o afines, con título en mano | Mínimo 3 años en funciones contables | Excel y sistemas ERP (preferible Symasoft) | Conciliaciones, tarjetas corporativas y procesos ante la DGII | Capacidad analítica y precisión numérica",
+  "fuente": "Publicación de la empresa",
+  "aplicar": "empleos@onegas.com.do",
+  "redes": "si"
+ }
+]
