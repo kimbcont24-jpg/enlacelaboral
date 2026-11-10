@@ -15,7 +15,7 @@ import { EnlaceAnimado } from "@/components/site/EnlaceAnimado";
 import { RegaliaBanda } from "@/components/site/RegaliaBanda";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { useContenido } from "@/lib/contenido";
-import { useVacantes } from "@/lib/vacantes";
+import { fetchPublicadas, useVacantes } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,6 +24,14 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Busca empleo en República Dominicana. Vacantes de todo el país en un solo lugar, con la fuente original visible." },
     ],
   }),
+  loader: async ({ context: { queryClient } }) => {
+    // Precarga las vacantes antes de renderizar para evitar el spinner en la portada
+    await queryClient.ensureQueryData({
+      queryKey: ["vacantes"],
+      queryFn: fetchPublicadas,
+      staleTime: 30_000,
+    });
+  },
   component: Home,
 });
 
