@@ -1,18 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Consentimiento } from "@/components/site/Consentimiento";
 import { useEffect, useState } from "react";
-import { ArrowLeft, BadgeCheck, CalendarDays, CalendarPlus, CheckCircle2, Loader2, MapPin, Navigation, Share2, ShieldCheck, Users } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Briefcase, CalendarDays, CalendarPlus, CheckCircle2, ExternalLink, Loader2, Mail, MapPin, MessageCircle, Navigation, Phone, Share2, ShieldCheck, Users } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { supabase } from "@/integrations/supabase/client";
 import { cvCompleto, leerCV, textoCV, type CV } from "@/lib/cv";
-import { cuandoJornada, enlaceMapa, faltan, icsJornada, useJornadas } from "@/lib/jornadas";
+import { cuandoJornada, enlaceMapa, faltan, icsJornada, organizadorDe, useJornadas } from "@/lib/jornadas";
+import { MapaFerias } from "@/components/site/MapaFerias";
+import { leerContacto } from "@/components/site/ContactoDirecto";
 import { SITIO } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/jornadas/$id")({
-  head: () => ({ meta: [{ title: "Jornada de empleo | Enlace Laboral" }] }),
+  head: () => ({ meta: [{ title: "Feria de empleo | Enlace Laboral" }] }),
   component: DetalleJornada,
 });
 
@@ -23,7 +25,7 @@ const campo = "w-full rounded-xl border border-border bg-background px-4 py-3.5 
 function DetalleJornada() {
   const { id } = Route.useParams();
   const valido = /^[0-9a-f-]{36}$/i.test(id);
-  const { data, isLoading, refetch } = useJornadas(valido ? id : "00000000-0000-0000-0000-000000000000");
+  const { data, isLoading, refetch } = useJornadas(valido ? id : "00000000-0000-0000-0000-000000000000", true);
   const j = data?.[0];
   const [cv, setCv] = useState<CV | null>(null);
   const [f, setF] = useState({ nombre: "", contacto: "", puesto: "" });
@@ -40,34 +42,38 @@ function DetalleJornada() {
   if (isLoading) return <div className="min-h-screen bg-background"><Header /><div className="grid min-h-[50vh] place-items-center"><Loader2 className="size-6 animate-spin text-primary" /></div></div>;
   if (!j) return (
     <div className="min-h-screen bg-background text-foreground"><Header />
-      <main className="mx-auto max-w-xl px-4 py-20 text-center"><h1 className="text-2xl font-extrabold">Esta jornada ya pasó o no está disponible</h1><Link to="/jornadas" className="btn-aplicar mt-6 inline-grid h-12 place-items-center rounded-xl px-6">Ver otras jornadas</Link></main>
+      <main className="mx-auto max-w-xl px-4 py-20 text-center"><h1 className="text-2xl font-extrabold">Esta feria ya no está disponible</h1><Link to="/jornadas" className="btn-aplicar mt-6 inline-grid h-12 place-items-center rounded-xl px-6">Ver otras ferias</Link></main>
       <Footer /></div>
   );
 
   const lleno = j.cupo !== null && j.inscritos >= j.cupo;
+  const org = organizadorDe(j);
+  const externa = !j.empresa_id;
+  const contacto = leerContacto(j.contacto ?? "");
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     if (f.nombre.trim().length < 2 || f.contacto.trim().length < 5) return setError("Escribe tu nombre y tu WhatsApp o correo.");
     setEstado("enviando");
     const { error: err } = await supabase.rpc("inscribirse_jornada", { p_jornada: j.id, p_nombre: f.nombre, p_contacto: f.contacto, p_puesto: f.puesto || null, p_mensaje: cv && incluir ? `--- CV ---\n${textoCV(cv)}` : null });
-    if (err) { setEstado("listo"); return setError(err.message.includes("ya_inscrito") ? "Ya estás apuntado a esta jornada con ese contacto." : err.message.includes("lleno") ? "Se llenó el cupo. Mira otras jornadas." : "No pudimos apuntarte. Intenta otra vez."); }
+    if (err) { setEstado("listo"); return setError(err.message.includes("ya_inscrito") ? "Ya estás apuntado a esta feria con ese contacto." : err.message.includes("lleno") ? "Se llenó el cupo. Mira otras ferias." : "No pudimos apuntarte. Intenta otra vez."); }
     try { localStorage.setItem(K, JSON.stringify([...new Set([...misJornadas(), j.id])])); } catch { /* sin almacenamiento */ }
     setEstado("hecho");
     void refetch();
   };
-  const compartir = `https://wa.me/?text=${encodeURIComponent(`Jornada de empleo de ${j.empresa}: ${j.titulo}. ${cuandoJornada(j)} en ${j.lugar}. Apúntate gratis: ${SITIO}/jornadas/${j.id}`)}`;
+  const compartir = `https://wa.me/?text=${encodeURIComponent(`📍 ${j.titulo} (${org})\n🗓 ${cuandoJornada(j)}\n📌 ${j.lugar}, ${j.provincia}\n\nDetalles: ${SITIO}/jornadas/${j.id}`)}`;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <title>{`${j.titulo} · ${j.empresa} | Enlace Laboral`}</title>
+      <title>{`${j.titulo} · ${org} | Enlace Laboral`}</title>
       <header className="hero-dark px-4 pb-14 pt-6 sm:px-6 md:pb-20">
         <div className="relative mx-auto max-w-5xl">
-          <Link to="/jornadas" className="inline-flex items-center gap-1.5 text-sm font-semibold text-white/80 hover:text-white"><ArrowLeft className="size-4" /> Jornadas</Link>
-          <div className="mt-6 flex flex-wrap items-center gap-2"><span className="rounded-full bg-[#ffd84d] px-3 py-1 text-sm font-extrabold text-[#3d2f00]">{faltan(j.fecha)}</span>{j.inscritos > 0 && <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold"><Users className="size-4" /> {j.inscritos} apuntados{j.cupo ? ` de ${j.cupo}` : ""}</span>}</div>
+          <Link to="/jornadas" className="inline-flex items-center gap-1.5 text-sm font-semibold text-white/80 hover:text-white"><ArrowLeft className="size-4" /> Ferias de empleo</Link>
+          <div className="mt-6 flex flex-wrap items-center gap-2"><span className="rounded-full bg-[#ffd84d] px-3 py-1 text-sm font-extrabold text-[#3d2f00]">{j.pasada ? "Ya pasó" : faltan(j.fecha)}</span>{j.vacantes ? <span className="rounded-full bg-[#7ee2a8]/20 px-3 py-1 text-sm font-bold text-[#c9ffe1]">{j.vacantes.toLocaleString("es-DO")} vacantes</span> : null}{j.inscritos > 0 && <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold"><Users className="size-4" /> {j.inscritos} apuntados{j.cupo ? ` de ${j.cupo}` : ""}</span>}</div>
           <h1 className="mt-4 max-w-3xl text-balance font-display text-[2rem] font-extrabold leading-[1.1] tracking-tight md:text-[2.6rem]">{j.titulo}</h1>
-          <Link to="/empresa/$id" params={{ id: j.empresa_id }} className="mt-4 inline-flex items-center gap-2.5 font-semibold text-white/90 hover:text-white"><EmpresaAvatar nombre={j.empresa} className="size-9 text-sm" claro />{j.empresa}{j.verificada && <BadgeCheck className="size-5 text-[#7ee2a8]" aria-label="Verificada" />}</Link>
+          {j.empresa_id ? <Link to="/empresa/$id" params={{ id: j.empresa_id }} className="mt-4 inline-flex items-center gap-2.5 font-semibold text-white/90 hover:text-white"><EmpresaAvatar nombre={org} className="size-9 text-sm" claro />{org}{j.verificada && <BadgeCheck className="size-5 text-[#7ee2a8]" aria-label="Verificada" />}</Link>
+            : <p className="mt-4 inline-flex items-center gap-2.5 font-semibold text-white/90"><EmpresaAvatar nombre={org} className="size-9 text-sm" claro />Organiza: {org}</p>}
         </div>
       </header>
 
@@ -79,25 +85,44 @@ function DetalleJornada() {
           </div>
           {j.puestos.length > 0 && <div><h2 className="text-sm font-extrabold">Puestos que buscan</h2><div className="mt-2 flex flex-wrap gap-2">{j.puestos.map((x) => <span key={x} className="rounded-full bg-secondary px-3 py-1.5 text-sm font-semibold">{x}</span>)}</div></div>}
           {j.descripcion && <div><h2 className="text-sm font-extrabold">Detalles</h2><p className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-foreground/85">{j.descripcion}</p></div>}
-          <div className="rounded-2xl bg-[#ffd84d]/15 p-4"><h2 className="text-sm font-extrabold text-[#6b5000]">Qué llevar</h2><p className="mt-1 whitespace-pre-line text-sm">{j.llevar || "Tu CV impreso, tu cédula y ganas de causar buena impresión. Llega 15 minutos antes."}</p></div>
+          <div className="rounded-2xl bg-[#ffd84d]/15 p-4"><h2 className="text-sm font-extrabold text-[#6b5000]">Qué llevar</h2><p className="mt-1 whitespace-pre-line text-sm">{j.llevar || "Varias copias de tu CV impreso y tu cédula. Llega temprano y ve vestido como irías a una entrevista."}</p></div>
+          <div><h2 className="text-sm font-extrabold">En el mapa</h2><MapaFerias ferias={[j]} oficinas={false} className="mt-2 h-56 w-full overflow-hidden rounded-2xl sm:h-64" /></div>
+          {j.imagen && <div><h2 className="text-sm font-extrabold">Flyer original</h2><img src={j.imagen} alt={`Flyer: ${j.titulo}`} loading="lazy" className="mt-2 w-full max-w-md rounded-2xl border border-border" /></div>}
+          {j.fuente && <p className="text-xs text-muted-foreground">Fuente: <span className="font-semibold text-foreground">{j.fuente}</span>{j.fuente_url && <> — <a href={j.fuente_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">ver publicación original <ExternalLink className="size-3" /></a></>}</p>}
           <p className="flex items-start gap-2 text-xs text-muted-foreground"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" /> Asistir es gratis. Ninguna empresa seria cobra por entrevistarte o contratarte.</p>
         </section>
 
         <aside className="h-fit rounded-3xl border border-border bg-surface p-6 lg:sticky lg:top-20">
-          {estado === "hecho" ? (
+          {j.pasada || externa ? (
+            <div>
+              <p className="text-lg font-extrabold">{j.pasada ? "Esta feria ya pasó" : "Ve directo con tu CV"}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{j.pasada ? "Muchas empresas siguen recibiendo CV después de la feria. Escríbeles:" : "No hace falta apuntarse. Llega con varias copias de tu CV impreso. Si no puedes ir, envíalo:"}</p>
+              <div className="mt-4 grid gap-2">
+                {contacto.correos.map((c) => <a key={c} href={`mailto:${c}?subject=${encodeURIComponent(`CV para ${j.titulo}`)}`} className="btn-aplicar inline-flex h-11 items-center justify-center gap-2 rounded-xl text-sm"><Mail className="size-4" /> Enviar CV a {c}</a>)}
+                {contacto.telefonos.map((t) => <a key={t} href={`https://wa.me/${t.replace(/\D/g, "").replace(/^(8[024]9)/, "1$1")}`} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#1fa855] text-sm font-bold text-white"><Phone className="size-4" /> {t}</a>)}
+                {!j.pasada && <>
+                  <button type="button" onClick={() => icsJornada({ ...j, empresa: org })} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0a2f5c] text-sm font-bold text-white"><CalendarPlus className="size-4" /> Agregar a mi calendario</button>
+                  <a href={enlaceMapa(j.lugar, j.provincia)} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border text-sm font-bold"><Navigation className="size-4" /> Cómo llegar</a>
+                </>}
+                <a href={compartir} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border text-sm font-bold text-[#178a45]"><MessageCircle className="size-4" /> Avisarle a alguien</a>
+                <Link to="/cv" className="mt-1 inline-flex items-center justify-center gap-1.5 text-sm font-bold text-primary"><Briefcase className="size-4" /> Prepara tu CV para imprimirlo</Link>
+                {j.pasada && <Link to="/jornadas" className="mt-1 text-center text-sm font-bold text-primary">Ver próximas ferias</Link>}
+              </div>
+            </div>
+          ) : estado === "hecho" ? (
             <div className="text-center">
               <CheckCircle2 className="mx-auto size-12 text-success" />
               <p className="mt-3 text-xl font-extrabold">¡Estás apuntado!</p>
-              <p className="mt-1 text-sm text-muted-foreground">{j.empresa} ya tiene tus datos. Guarda la fecha para que no se te pase.</p>
+              <p className="mt-1 text-sm text-muted-foreground">{org} ya tiene tus datos. Guarda la fecha para que no se te pase.</p>
               <div className="mt-5 grid gap-2">
-                <button type="button" onClick={() => icsJornada(j)} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0a2f5c] text-sm font-bold text-white"><CalendarPlus className="size-4" /> Agregar a mi calendario</button>
+                <button type="button" onClick={() => icsJornada({ ...j, empresa: org })} className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0a2f5c] text-sm font-bold text-white"><CalendarPlus className="size-4" /> Agregar a mi calendario</button>
                 <a href={enlaceMapa(j.lugar, j.provincia)} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border text-sm font-bold"><Navigation className="size-4" /> Cómo llegar</a>
                 <a href={compartir} target="_blank" rel="noopener noreferrer" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-border text-sm font-bold"><Share2 className="size-4" /> Avisarle a un amigo</a>
                 <Link to="/cv" className="mt-1 text-sm font-bold text-primary">Prepara tu CV para imprimirlo</Link>
               </div>
             </div>
           ) : lleno ? (
-            <div className="text-center"><p className="text-lg font-extrabold">Se llenó el cupo</p><p className="mt-1 text-sm text-muted-foreground">Mira otras jornadas o aplica a vacantes abiertas.</p><Link to="/jornadas" className="btn-aplicar mt-4 inline-grid h-11 w-full place-items-center rounded-xl text-sm">Ver otras jornadas</Link></div>
+            <div className="text-center"><p className="text-lg font-extrabold">Se llenó el cupo</p><p className="mt-1 text-sm text-muted-foreground">Mira otras ferias o aplica a vacantes abiertas.</p><Link to="/jornadas" className="btn-aplicar mt-4 inline-grid h-11 w-full place-items-center rounded-xl text-sm">Ver otras ferias</Link></div>
           ) : (
             <form onSubmit={(e) => void enviar(e)} className="space-y-3">
               <p className="text-lg font-extrabold">Apúntate gratis</p>
@@ -110,7 +135,7 @@ function DetalleJornada() {
               <Consentimiento para="candidato" />
               {error && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
               <button type="submit" disabled={estado === "enviando"} className="btn-aplicar flex h-13 w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-lg">{estado === "enviando" && <Loader2 className="size-5 animate-spin" />} Me apunto</button>
-              <p className="text-center text-xs text-muted-foreground">Compartes tu nombre y contacto con {j.empresa}.</p>
+              <p className="text-center text-xs text-muted-foreground">Compartes tu nombre y contacto con {org}.</p>
             </form>
           )}
         </aside>
