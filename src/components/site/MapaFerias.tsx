@@ -16,6 +16,9 @@ export function MapaFerias({ ferias, activa, onElegir, oficinas = true, classNam
   const mapa = useRef<import("leaflet").Map | null>(null);
   const marcas = useRef(new Map<string, import("leaflet").Marker>());
   const L = useRef<typeof import("leaflet") | null>(null);
+  // Siempre la versión más reciente de los datos (el mapa se crea de forma asíncrona).
+  const datos = useRef({ ferias, oficinas, onElegir });
+  datos.current = { ferias, oficinas, onElegir };
 
   // Crear el mapa una sola vez (Leaflet solo funciona en el navegador).
   useEffect(() => {
@@ -44,6 +47,7 @@ export function MapaFerias({ ferias, activa, onElegir, oficinas = true, classNam
   const pintar = () => {
     const Lf = L.current, m = mapa.current;
     if (!Lf || !m) return;
+    const { ferias, oficinas, onElegir } = datos.current;
     marcas.current.forEach((mk) => mk.remove());
     marcas.current.clear();
     m.eachLayer((capa) => { if ((capa as { options?: { pane?: string; esOficina?: boolean } }).options?.esOficina) m.removeLayer(capa); });
