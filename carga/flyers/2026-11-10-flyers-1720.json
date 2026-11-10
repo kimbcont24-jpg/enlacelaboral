@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Pasante de Calidad",
+  "empresa": "Laboratorios Lemuel",
+  "provincia": "Santo Domingo",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Laboratorios Lemuel busca un pasante de calidad para su planta en Km 14, Av. La Cordillera, Santo Domingo Oeste. Pasantía remunerada. Salario publicado en el flyer: RD$15,000.",
+  "requisitos": "Estudiante de Ingeniería Química | Enviar CV por correo o WhatsApp",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "ymanriquez@laboratorioslemuel.com / pgross@laboratorioslemuel.com · WhatsApp 849-570-3658 / 849-621-3132",
+  "imagen": "https://enlace-rd.vercel.app/flyers/laboratorios-lemuel-pasante-calidad.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Supervisor de Operaciones",
+  "empresa": "Probuffet SRL",
+  "provincia": "La Romana",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Probuffet SRL, empresa con más de 30 años de experiencia, busca un supervisor de operaciones para su equipo en La Romana. Horario rotativo.",
+  "requisitos": "Experiencia previa en posiciones similares del sector alimenticio | Liderazgo, organización y supervisión de personal | Dar seguimiento a las operaciones diarias | Orientación a resultados y resolución de problemas | Disponibilidad para horario rotativo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Enviar currículum a Probuffet SRL (ver flyer)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/probuffet-supervisor-operaciones.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Chofer de Camión (gasoil)",
+  "empresa": "JBV Group",
+  "provincia": "Santiago",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "JBV Group busca chofer de camión (combustible gasoil) residente en Santiago. Ofrece sueldo RD$18,800 más KPI de RD$2,000, bonificación de ley, seguro de ley, diferencial de vacaciones y buen ambiente laboral. Indicar el nombre de la vacante en el asunto del correo.",
+  "requisitos": "Bachiller | Licencia de conducir categoría 3 | Puntualidad y responsabilidad | Buena presentación | Residir en Santiago",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rrhh@grupopauliza.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/jbv-group-chofer-camion.jpg",
+  "redes": "si"
+ }
+]
