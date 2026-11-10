@@ -13,20 +13,27 @@ export function EnlaceAnimado({ children, ondas = false, className, video, credi
   const ref = useRef<HTMLElement>(null);
   const refVideo = useRef<HTMLVideoElement>(null);
 
-  // El video solo se descarga cuando la sección está por verse, y no corre con «reducir movimiento».
+  // Video de fondo. iPhone y Android solo reproducen solos los videos silenciados (atributo «muted» real)
+  // y con playsInline. React no escribe «muted» en el HTML, por eso se pone a mano antes de cargar.
+  // En celular se usa la versión liviana (960 px). Se pausa fuera de la vista y con «reducir movimiento».
   useEffect(() => {
     const v = refVideo.current;
-    if (!v || !video || typeof IntersectionObserver === "undefined") return;
+    if (!v || !video) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+    v.setAttribute("playsinline", "");
+    v.setAttribute("webkit-playsinline", "");
     const quieto = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    // En el celular el video no se descarga: el fondo de color basta y el desplazamiento va fluido.
-    if (window.matchMedia?.("(max-width: 767px)").matches) return;
-    const o = new IntersectionObserver(([e]) => {
-      if (!e) return;
-      if (e.isIntersecting) { if (!v.src) v.src = video; if (!quieto) void v.play().catch(() => undefined); }
-      else v.pause();
-    }, { rootMargin: "200px 0px" });
+    const chico = window.matchMedia?.("(max-width: 900px)").matches;
+    const fuente = chico ? video.replace(/hd_1280_720/, "sd_960_540") : video;
+    const reproducir = () => { if (!quieto) void v.play().catch(() => undefined); };
+    if (v.getAttribute("src") !== fuente) { v.src = fuente; v.load(); }
+    v.addEventListener("canplay", reproducir);
+    if (typeof IntersectionObserver === "undefined") { reproducir(); return () => v.removeEventListener("canplay", reproducir); }
+    const o = new IntersectionObserver(([en]) => { if (!en) return; if (en.isIntersecting) reproducir(); else v.pause(); }, { rootMargin: "200px 0px" });
     o.observe(v);
-    return () => o.disconnect();
+    return () => { o.disconnect(); v.removeEventListener("canplay", reproducir); };
   }, [video]);
 
   useEffect(() => {
@@ -55,7 +62,7 @@ export function EnlaceAnimado({ children, ondas = false, className, video, credi
   return (
     <section ref={ref} aria-label="Enlace Laboral: conectamos talento con oportunidades" className={cn("enl-anim relative isolate overflow-hidden text-white", className)} style={{ "--p": 0 } as React.CSSProperties}>
       {/* Fondo: colores de Enlace mezclados (azul profundo, azul eléctrico, verde y un toque rosado) */}
-      {video && <video ref={refVideo} aria-hidden="true" muted loop playsInline preload="none" className="absolute inset-0 -z-30 size-full object-cover" />}
+      {video && <video ref={refVideo} aria-hidden="true" muted autoPlay loop playsInline preload="auto" className="absolute inset-0 -z-30 size-full object-cover" />}
       <div aria-hidden="true" className={cn("enl-fondo absolute inset-0 -z-20", video && "opacity-[0.86] mix-blend-multiply")} />
       {video && <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[#0a2f5c]/35" />}
       <div aria-hidden="true" className="enl-mancha absolute -left-24 top-1/4 -z-10 size-[28rem] rounded-full bg-[#7ee2a8]/35 blur-3xl" />
