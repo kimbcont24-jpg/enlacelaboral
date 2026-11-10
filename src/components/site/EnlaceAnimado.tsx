@@ -18,6 +18,8 @@ export function EnlaceAnimado({ children, ondas = false, className, video, credi
     const v = refVideo.current;
     if (!v || !video || typeof IntersectionObserver === "undefined") return;
     const quieto = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    // En el celular el video no se descarga: el fondo de color basta y el desplazamiento va fluido.
+    if (window.matchMedia?.("(max-width: 767px)").matches) return;
     const o = new IntersectionObserver(([e]) => {
       if (!e) return;
       if (e.isIntersecting) { if (!v.src) v.src = video; if (!quieto) void v.play().catch(() => undefined); }

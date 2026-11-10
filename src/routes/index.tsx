@@ -1,23 +1,21 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowRight, Building2, Loader2, UserRound } from "lucide-react";
+import { ArrowRight, Building2, Loader2, Quote, UserRound } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
-import { AlertaForm } from "@/components/site/AlertaForm";
-import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
+import { RecibeVacantes } from "@/components/site/RecibeVacantes";
+import { ExploraEmpleos } from "@/components/site/ExploraEmpleos";
 import { Hero } from "@/components/site/Hero";
 import { JornadasProximas } from "@/components/site/JornadasProximas";
 import { EmpleoParaTodosBanda } from "@/components/site/EmpleoParaTodosBanda";
 import { EnlaceAnimado } from "@/components/site/EnlaceAnimado";
 import { RegaliaBanda } from "@/components/site/RegaliaBanda";
-import { AreasGrid } from "@/components/site/AreasGrid";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { consejos } from "@/lib/data";
 import { useContenido } from "@/lib/contenido";
 import { useVacantes } from "@/lib/vacantes";
-import { slug } from "@/lib/empleos";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -111,53 +109,47 @@ function Home() {
       </EnlaceAnimado>
       <EmpleoParaTodosBanda />
       <JornadasProximas />
-      <section className="px-4 pb-12 sm:px-6"><div className="mx-auto grid max-w-6xl gap-4"><CanalWhatsApp /><AlertaForm /></div></section>
+      <RecibeVacantes />
 
-      <AreasGrid jobs={jobs} />
+      <ExploraEmpleos jobs={jobs} provincias={provinciasConVacantes} />
 
-      {provinciasConVacantes.length > 0 && (
-        <section className="px-4 py-12 sm:px-6">
-          <div className="mx-auto max-w-6xl">
-            <p className="eyebrow">Explora</p>
-            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Empleos por provincia</h2>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {provinciasConVacantes.map(([p, n]) => (
-                <Link key={p} to="/empleos/$slug" params={{ slug: slug(p.replace(/\s*\(.*?\)\s*/g, "").replace("Remoto desde RD", "Remoto")) }} className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary">{p} <span className="text-muted-foreground">({n})</span></Link>
-              ))}
+      <section className="cv-auto border-t border-border bg-surface py-10 sm:py-12">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow">Guías</p>
+              <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Consejos para tu búsqueda</h2>
             </div>
+            <Link to="/recursos" className="inline-flex shrink-0 items-center gap-1 text-sm font-bold text-primary">Ver todos <ArrowRight className="size-4" aria-hidden="true" /></Link>
           </div>
-        </section>
-      )}
-
-      <section className="border-t border-border bg-surface px-4 py-14 sm:px-6">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-12 lg:items-start">
-          <div className="lg:col-span-4">
-            <p className="eyebrow">Guías</p>
-            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Consejos para tu búsqueda</h2>
-            <div className="mt-5 rounded-2xl border-l-4 border-cta bg-secondary p-5">
-              <p className="leading-relaxed">“{t.especialista_cita}”</p>
-              <p className="mt-2 text-sm text-muted-foreground">{t.especialista_firma}</p>
+          <figure className="mt-4 flex gap-3 rounded-2xl bg-secondary px-4 py-3">
+            <Quote className="mt-0.5 size-5 shrink-0 text-cta" aria-hidden="true" />
+            <div>
+              <blockquote className="text-sm leading-relaxed">{t.especialista_cita}</blockquote>
+              <figcaption className="mt-1 text-xs text-muted-foreground">{t.especialista_firma}</figcaption>
             </div>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:col-span-8">
+          </figure>
+        </div>
+        <div className="mx-auto mt-4 max-w-6xl snap-x snap-mandatory scroll-px-4 overflow-x-auto px-4 pb-2 sm:scroll-px-6 [scrollbar-width:none] sm:px-6 [&::-webkit-scrollbar]:hidden">
+          <div className="grid auto-cols-[78%] grid-flow-col gap-3 sm:auto-cols-auto sm:grid-flow-row sm:grid-cols-2 lg:grid-cols-4">
             {consejos.slice(0, 4).map((c) => (
-              <Link key={c.titulo} to="/recursos" className="lift block rounded-2xl border border-border bg-background p-5 hover:border-primary/40">
-                <span className="text-xs font-bold text-cta">{c.categoria} · {c.minutos} min de lectura</span>
-                <h3 className="mt-1 font-bold leading-snug">{c.titulo}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{c.resumen}</p>
+              <Link key={c.titulo} to="/recursos" className="flex snap-start flex-col rounded-2xl border border-border bg-background p-4 transition-colors hover:border-primary">
+                <span className="text-[11px] font-bold uppercase tracking-wide text-cta">{c.categoria} · {c.minutos} min</span>
+                <h3 className="mt-1.5 text-[15px] font-bold leading-snug">{c.titulo}</h3>
+                <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{c.resumen}</p>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="px-4 py-14 sm:px-6">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 hero-dark rounded-3xl p-8 md:flex-row md:items-center md:justify-between md:p-10">
-          <div className="max-w-xl">
-            <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">{t.reclutadores_titulo}</h2>
-            <p className="mt-2 text-white/80">Publicar vacantes es gratis. Envíanos tu vacante y la publicamos para candidatos de todo el país.</p>
+      <section className="cv-auto px-4 py-8 sm:px-6 sm:py-10">
+        <div className="hero-dark mx-auto flex max-w-6xl flex-col gap-4 rounded-3xl p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div>
+            <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">{t.reclutadores_titulo}</h2>
+            <p className="mt-1 text-sm text-white/80 sm:text-base">Publicar vacantes es gratis. Llega a candidatos de todo el país.</p>
           </div>
-          <Link to="/empresas" className="btn-aplicar rounded-xl px-7 py-3.5 text-center text-lg">Publicar vacante gratis</Link>
+          <Link to="/empresas" className="btn-aplicar shrink-0 rounded-xl px-6 py-3 text-center">Publicar vacante gratis</Link>
         </div>
       </section>
       <Footer />

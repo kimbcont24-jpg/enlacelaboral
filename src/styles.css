@@ -283,3 +283,15 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 .brj-barra{transform-origin:left;animation:brj-barra .9s cubic-bezier(.2,.8,.2,1) both}
 @keyframes brj-barra{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media (prefers-reduced-motion:reduce){.brj-aguja,.brj-rosa,.brj-entra,.brj-barra{animation:none}}
+
+/* ───────── Rendimiento en el celular ─────────
+   Las secciones bajo el pliegue no se pintan hasta acercarse: el desplazamiento va más ligero.
+   En pantallas pequeñas se apagan las manchas difuminadas y la animación del fondo, que son lo que más pesa. */
+@utility cv-auto { content-visibility: auto; contain-intrinsic-size: auto 520px; }
+@media (max-width: 767px) {
+  .enl-mancha { display: none; }
+  .enl-fondo { animation: none; background-size: 100% 100%; }
+  .enl-fondo.mix-blend-multiply { mix-blend-mode: normal; }
+  .enl-halo { filter: none; }
+  .ept-orbita, .ept-nodo, .ept-latido::before { animation: none; }
+}
