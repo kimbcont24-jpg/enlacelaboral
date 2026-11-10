@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { useMemo } from "react";
+import type React from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Accessibility, ArrowRight, Clock, GraduationCap, HeartHandshake, ShieldCheck, Sprout } from "lucide-react";
 
 import { LOGO_BROCHE, LOGO_CABEZA, LOGO_CUERPO, LOGO_MALETIN, LOGO_VIEWBOX } from "@/components/site/logo-paths";
@@ -20,20 +21,44 @@ const CAMINOS = [
 export function EmpleoParaTodosBanda() {
   const { jobs, cargando } = useVacantes();
   const cuenta = useMemo(() => Object.fromEntries(CAMINOS.map((c) => [c.id, jobs.filter((j) => enCamino(j, c.id)).length])), [jobs]);
+  const ref = useRef<HTMLElement>(null);
+
+  // Mientras bajas, el degradado se desplaza y la marca de agua y el símbolo se mueven a otra velocidad (parallax).
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) { el.style.setProperty("--p", "0.5"); return; }
+    let raf = 0;
+    const medir = () => {
+      raf = 0;
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+      el.style.setProperty("--p", p.toFixed(4));
+    };
+    const pedir = () => { if (!raf) raf = requestAnimationFrame(medir); };
+    medir();
+    window.addEventListener("scroll", pedir, { passive: true });
+    window.addEventListener("resize", pedir);
+    return () => { window.removeEventListener("scroll", pedir); window.removeEventListener("resize", pedir); if (raf) cancelAnimationFrame(raf); };
+  }, []);
 
   return (
-    <section className="px-4 pb-12 sm:px-6" aria-labelledby="t-para-todos">
-      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.25rem] bg-[linear-gradient(120deg,#0a2f5c_0%,#0f4aa8_48%,#0f7a43_120%)] px-5 pb-20 pt-9 text-white shadow-[0_40px_80px_-40px_rgb(10_47_92/0.75)] sm:px-10 sm:pb-36 sm:pt-12">
-        {/* Luces y trama */}
-        <span aria-hidden="true" className="pointer-events-none absolute -left-24 -top-24 size-80 rounded-full bg-[#1d6ff2]/40 blur-3xl" />
-        <span aria-hidden="true" className="pointer-events-none absolute -bottom-32 right-0 size-96 rounded-full bg-[#7ee2a8]/20 blur-3xl" />
-        <span aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:22px_22px]" />
+    <section ref={ref} aria-labelledby="t-para-todos" style={{ "--p": 0.5 } as React.CSSProperties}
+      className="ept-banda relative mb-12 overflow-hidden px-4 pb-28 pt-20 text-white sm:px-6 sm:pb-40 sm:pt-28">
+      {/* Degradado de marca que se desplaza con el scroll */}
+      <span aria-hidden="true" className="ept-banda-fondo absolute inset-0" />
+      <span aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:22px_22px]" />
 
-        {/* Símbolo grande de fondo */}
-        <svg aria-hidden="true" viewBox={LOGO_VIEWBOX} className="pointer-events-none absolute -right-16 top-6 hidden w-[26rem] opacity-[0.06] lg:block">
-          <path d={LOGO_CABEZA} fill="#fff" /><path d={LOGO_CUERPO} fill="#fff" /><path d={LOGO_MALETIN} fill="#fff" /><path d={LOGO_BROCHE} fill="#fff" />
-        </svg>
+      {/* Símbolo grande que se mueve más lento (parallax) */}
+      <svg aria-hidden="true" viewBox={LOGO_VIEWBOX} className="ept-banda-simbolo pointer-events-none absolute left-1/2 top-1/2 w-[30rem] max-w-[90vw] opacity-[0.07]">
+        <path d={LOGO_CABEZA} fill="#fff" /><path d={LOGO_CUERPO} fill="#fff" /><path d={LOGO_MALETIN} fill="#fff" /><path d={LOGO_BROCHE} fill="#fff" />
+      </svg>
 
+      {/* Marca de agua arriba */}
+      <p aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-10 whitespace-nowrap text-center text-[8px] font-bold uppercase tracking-[0.28em] text-white/35 sm:top-14 sm:text-xs sm:tracking-[0.5em]">Conecta talento con oportunidades reales</p>
+
+      <div className="relative mx-auto max-w-6xl">
         <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_1.15fr]">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-bold text-[#7ee2a8] ring-1 ring-white/20 backdrop-blur"><HeartHandshake className="size-4" aria-hidden="true" /> Cero discriminación</p>
@@ -66,11 +91,12 @@ export function EmpleoParaTodosBanda() {
           </ul>
         </div>
 
-        {/* Marca de agua abajo */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 select-none text-center leading-none">
-          <p className="translate-y-[18%] whitespace-nowrap font-display text-[12.5vw] font-extrabold tracking-tight text-white/[0.08] sm:text-[8.5rem]">ENLACE LABORAL</p>
-          <p className="absolute inset-x-0 bottom-3 whitespace-nowrap text-[8px] font-bold uppercase tracking-[0.28em] text-white/40 sm:bottom-5 sm:text-xs sm:tracking-[0.5em]">Conecta talento con oportunidades reales</p>
         </div>
+
+      {/* Marca de agua abajo, a otra velocidad */}
+      <div aria-hidden="true" className="ept-banda-marca pointer-events-none absolute inset-x-0 bottom-0 select-none text-center leading-none">
+        <p className="translate-y-[22%] whitespace-nowrap font-display text-[13vw] font-extrabold tracking-tight text-white/[0.08] sm:text-[10rem]">ENLACE LABORAL</p>
+        <p className="absolute inset-x-0 bottom-4 whitespace-nowrap text-[8px] font-bold uppercase tracking-[0.28em] text-white/40 sm:bottom-8 sm:text-xs sm:tracking-[0.5em]">Cero discriminación · Empleo para todas las personas</p>
       </div>
     </section>
   );

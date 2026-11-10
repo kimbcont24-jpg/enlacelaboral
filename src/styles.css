@@ -295,3 +295,11 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
   .enl-halo { filter: none; }
   .ept-orbita, .ept-nodo, .ept-latido::before { animation: none; }
 }
+
+/* Franja «Empleo para todos» de la portada: bordes curvos, degradado que se desplaza y parallax */
+.ept-banda{border-radius:62% 38% 55% 45% / 70px 46px 64px 40px}
+@media (max-width:640px){.ept-banda{border-radius:60% 40% 55% 45% / 36px 24px 34px 22px}}
+.ept-banda-fondo{background:linear-gradient(110deg,#0f7a43 0%,#0b5a6e 22%,#0f4aa8 48%,#0a2f5c 70%,#1d6ff2 88%,#0f7a43 110%);background-size:260% 100%;background-position:calc(var(--p) * 100%) 50%}
+.ept-banda-fondo::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at calc(20% + var(--p) * 60%) 30%,rgb(126 226 168/.22),transparent 60%),radial-gradient(50% 70% at calc(85% - var(--p) * 50%) 80%,rgb(29 111 242/.3),transparent 60%)}
+.ept-banda-simbolo{transform:translate(-50%,calc(-50% + (var(--p) - .5) * 260px)) rotate(calc((var(--p) - .5) * 14deg))}
+.ept-banda-marca{transform:translateY(calc((.5 - var(--p)) * 90px))}
