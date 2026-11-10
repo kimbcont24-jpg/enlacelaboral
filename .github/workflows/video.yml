@@ -1,0 +1,23 @@
+name: Guardar video de portada
+on:
+  workflow_dispatch:
+jobs:
+  video:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p public/video
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36"
+          curl -fsSL -A "$UA" -o public/video/apreton-1280.mp4 https://videos.pexels.com/video-files/7692917/7692917-hd_1280_720_25fps.mp4
+          curl -fsSL -A "$UA" -o public/video/apreton-960.mp4 https://videos.pexels.com/video-files/7692917/7692917-sd_960_540_25fps.mp4
+          ls -la public/video
+      - run: |
+          git config user.name "Enlace Laboral"
+          git config user.email "bot@enlace-rd.vercel.app"
+          git add public/video
+          git commit -m "Video de portada guardado en el sitio (apretón de manos)" || echo "sin cambios"
+          git pull --rebase origin main
+          git push
