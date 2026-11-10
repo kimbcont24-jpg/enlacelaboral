@@ -250,30 +250,18 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
   .enl-fondo, .enl-mancha { animation: none; }
 }
 
-/* ───────── Mapa de ferias de empleo ───────── */
-.mapa-ferias { background: #dfe9f5; }
-.mapa-ferias .leaflet-container, .mapa-ferias.leaflet-container { font-family: inherit; background: #dfe9f5; }
-.mf-feria { position: relative; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px 14px 14px 4px; transform: rotate(-45deg); background: linear-gradient(135deg, #2b7cff, #0a2f5c); box-shadow: 0 10px 22px -8px rgb(10 47 92 / .7), 0 0 0 3px #fff; color: #fff; }
-.mf-txt { transform: rotate(45deg); display: flex; flex-direction: column; align-items: center; line-height: 1; }
-.mf-txt b { font-size: 16px; font-weight: 900; }
-.mf-txt i { font-style: normal; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; opacity: .9; margin-top: 1px; }
-.mf-hoy { background: linear-gradient(135deg, #34c77b, #0f7a43); }
-.mf-pasada { background: linear-gradient(135deg, #9aa7b8, #5d6b7e); box-shadow: 0 6px 14px -8px rgb(0 0 0 / .4), 0 0 0 3px #fff; opacity: .85; }
-.mf-pulso { position: absolute; inset: -6px; border-radius: inherit; border: 3px solid #2b7cff; animation: mf-late 2s ease-out infinite; }
-.mf-hoy .mf-pulso { border-color: #34c77b; }
-.mf-pasada .mf-pulso { display: none; }
-@keyframes mf-late { from { opacity: .8; transform: scale(.9); } to { opacity: 0; transform: scale(1.6); } }
-.mf-oficina { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9999px; background: #fff; box-shadow: 0 6px 16px -6px rgb(10 47 92 / .55), 0 0 0 2px #ffd84d; font-size: 15px; }
-.mapa-ferias .leaflet-popup-content-wrapper { border-radius: 16px; box-shadow: 0 20px 40px -16px rgb(10 47 92 / .45); }
-.mapa-ferias .leaflet-popup-content { margin: 14px 16px; }
-.mf-pop { font-family: inherit; color: #14213a; }
-.mf-pop p { margin: 0; }
-.mf-pop-et { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: #1d6ff2; }
-.mf-pop-t { margin-top: 4px !important; font-size: 15px; font-weight: 800; line-height: 1.25; }
-.mf-pop-o { margin-top: 2px !important; font-size: 13px; font-weight: 600; color: #556275; }
-.mf-pop-l { margin-top: 6px !important; font-size: 12.5px; color: #556275; }
-.mf-pop-n { margin-top: 6px !important; font-size: 12.5px; font-weight: 700; color: #0f7a43; }
-.mf-pop-b { display: inline-block; margin-top: 10px; padding: 7px 12px; border-radius: 10px; background: #1d6ff2; color: #fff !important; font-size: 13px; font-weight: 700; text-decoration: none; }
-@media (prefers-reduced-motion: reduce) { .mf-pulso { animation: none; display: none; } }
-/* Mapa base un poco más suave, para que resalten los marcadores. */
-.mf-teselas { filter: saturate(.75) brightness(1.04) contrast(.95); }
+/* ───────── Mapa de luz (ferias) ───────── */
+.mapa-rejilla { background-image: linear-gradient(rgb(142 193 255 / .07) 1px, transparent 1px), linear-gradient(90deg, rgb(142 193 255 / .07) 1px, transparent 1px); background-size: 40px 40px; }
+@keyframes ml-titila { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+.ml-titila { animation: ml-titila 4.5s ease-in-out infinite; }
+@keyframes ml-scan { from { transform: translateX(0); } to { transform: translateX(1400px); } }
+.ml-scan { animation: ml-scan 9s linear infinite; }
+@keyframes ml-fluye { to { stroke-dashoffset: -28; } }
+.ml-linea { stroke-dasharray: 6 8; animation: ml-fluye 1.4s linear infinite; }
+.ml-linea-quieta { stroke-dasharray: 3 6; }
+@keyframes ml-late { 0%, 100% { opacity: .55; transform: scale(.85); } 50% { opacity: 1; transform: scale(1.1); } }
+.ml-late { transform-box: fill-box; transform-origin: center; animation: ml-late 2.4s ease-in-out infinite; }
+@keyframes ml-onda { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(3.2); } }
+.ml-onda { transform-box: fill-box; transform-origin: center; animation: ml-onda 2s ease-out infinite; }
+.mapa-luz g[role="button"]:focus-visible circle { stroke: #ffffff; }
+@media (prefers-reduced-motion: reduce) { .ml-titila, .ml-scan, .ml-linea, .ml-late, .ml-onda { animation: none; } }

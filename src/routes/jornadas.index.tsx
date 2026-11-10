@@ -81,10 +81,10 @@ function Ferias() {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
             <h2 id="t-mapa" className="flex items-center gap-2 text-lg font-extrabold"><MapPin className="size-5 text-[#1d6ff2]" aria-hidden="true" /> Mapa de ferias</h2>
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-              <Leyenda color="bg-gradient-to-br from-[#2b7cff] to-[#0a2f5c]">Próxima</Leyenda>
-              <Leyenda color="bg-gradient-to-br from-[#34c77b] to-[#0f7a43]">Hoy</Leyenda>
-              <Leyenda color="bg-gradient-to-br from-[#9aa7b8] to-[#5d6b7e]">Ya pasó</Leyenda>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1">🏛 Oficina de empleo</span>
+              <Leyenda color="bg-[#ffd84d] rounded-full">Próxima</Leyenda>
+              <Leyenda color="bg-[#34c77b] rounded-full">Hoy</Leyenda>
+              <Leyenda color="bg-[#9aa7b8] rounded-full">Ya pasó</Leyenda>
+              <Leyenda color="bg-[#ffd84d] rotate-45 !size-2.5">Oficina de empleo</Leyenda>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2 px-5 pt-4 sm:px-6">
@@ -97,9 +97,9 @@ function Ferias() {
             )}
           </div>
           <div className="p-3 sm:p-4">
-            <MapaFerias ferias={enMapa} activa={activa} className="h-[380px] w-full overflow-hidden rounded-2xl sm:h-[480px] lg:h-[540px]" />
+            <MapaFerias ferias={enMapa} activa={activa} className="aspect-[1000/632] w-full" />
           </div>
-          <p className="px-6 pb-4 text-xs text-muted-foreground">Toca un marcador para ver la feria. Si una feria no trae dirección exacta, la ubicamos en su provincia. Las oficinas de empleo son del Ministerio de Trabajo (ubicación aproximada; confirma antes de ir).</p>
+          <p className="px-6 pb-4 text-xs text-muted-foreground">Toca un faro para ver la feria; el mapa se acerca. Las líneas salen de Enlace hacia cada feria. Si una feria no trae dirección exacta, la ubicamos en su provincia. Los rombos son oficinas de empleo del Ministerio de Trabajo (ubicación aproximada; confirma antes de ir).</p>
         </section>
 
         {/* ---------- Próxima feria con cuenta regresiva ---------- */}
