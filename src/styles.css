@@ -265,3 +265,10 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 .ml-onda { transform-box: fill-box; transform-origin: center; animation: ml-onda 2s ease-out infinite; }
 .mapa-luz g[role="button"]:focus-visible circle { stroke: #ffffff; }
 @media (prefers-reduced-motion: reduce) { .ml-titila, .ml-scan, .ml-linea, .ml-late, .ml-onda { animation: none; } }
+
+/* Alertas de ferias: radar y campana */
+.alf-onda{position:absolute;inset:0;border-radius:9999px;border:2px solid rgb(255 216 77/.55);transform:scale(.08);opacity:0;animation:alf-onda 3.9s ease-out infinite}
+@keyframes alf-onda{0%{transform:scale(.08);opacity:.9}100%{transform:scale(1);opacity:0}}
+.alf-campana{transform-origin:50% 10%;animation:alf-campana 3.2s ease-in-out infinite}
+@keyframes alf-campana{0%,82%,100%{transform:rotate(0)}86%{transform:rotate(14deg)}90%{transform:rotate(-12deg)}94%{transform:rotate(8deg)}97%{transform:rotate(-4deg)}}
+@media (prefers-reduced-motion:reduce){.alf-onda,.alf-campana{animation:none}.alf-onda{opacity:.25;transform:scale(.6)}}

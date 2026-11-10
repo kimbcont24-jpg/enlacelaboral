@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { BadgeCheck, Briefcase, Building2, CalendarDays, CalendarPlus, ChevronRight, Clock, FileText, Landmark, Loader2, MapPin, MessageCircle, Navigation, Shirt, Sparkles, Users } from "lucide-react";
+import { BadgeCheck, BellRing, Briefcase, Building2, CalendarDays, CalendarPlus, ChevronRight, Clock, FileText, Landmark, Loader2, MapPin, MessageCircle, Navigation, Shirt, Sparkles, Users } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { MapaFerias } from "@/components/site/MapaFerias";
+import { AlertaFerias, BajaFerias } from "@/components/site/AlertaFerias";
 import { cuandoJornada, cuentaRegresiva, diaNum, enlaceMapa, faltan, icsJornada, mesCorto, OFICINAS_EMPLEO, organizadorDe, useJornadas, type Jornada } from "@/lib/jornadas";
 import { SITIO } from "@/lib/vacantes";
 
@@ -50,6 +51,7 @@ function Ferias() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
+      <BajaFerias />
       <header className="hero-dark px-4 pb-44 pt-10 sm:px-6 md:pb-52 md:pt-14">
         <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-16 size-72 rounded-full bg-[#ffd84d]/10 blur-3xl" />
         <div aria-hidden="true" className="pointer-events-none absolute -right-20 bottom-24 size-80 rounded-full bg-[#7ee2a8]/15 blur-3xl" />
@@ -59,6 +61,7 @@ function Ferias() {
             Todas las ferias de empleo del país, <span className="bg-gradient-to-r from-[#ffd84d] via-[#8ec1ff] to-[#7ee2a8] bg-clip-text text-transparent">en un mapa</span>
           </h1>
           <p className="entra mt-4 max-w-2xl text-lg text-white/85">Dónde, cuándo, qué empresas van y qué puestos buscan. Llega con tu CV impreso y sal con una entrevista hecha.</p>
+          <a href="#alertas" className="entra mt-5 inline-flex items-center gap-2 rounded-full bg-[#ffd84d] px-4 py-2 text-sm font-extrabold text-[#0a2f5c] shadow-[0_10px_24px_-10px_rgba(255,216,77,.9)] transition hover:-translate-y-0.5"><BellRing className="alf-campana size-4" aria-hidden="true" /> Recibe alertas de ferias en tu correo</a>
           <dl className="entra mt-7 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
             {[
               [isLoading ? "…" : String(proximas.length), proximas.length === 1 ? "feria próxima" : "ferias próximas"],
@@ -123,6 +126,7 @@ function Ferias() {
                 <p className="text-xl font-extrabold">{provincia ? `No hay ferias próximas en ${provincia}` : "No hay ferias confirmadas para los próximos días"}</p>
                 <p className="mt-2 text-muted-foreground">Las publicamos aquí apenas se anuncian. Mientras tanto, las oficinas de empleo del Ministerio de Trabajo reciben tu CV todo el año, gratis, y en Enlace hay vacantes abiertas hoy.</p>
                 <div className="mt-5 flex flex-wrap gap-3">
+                  <a href="#alertas" className="inline-flex h-12 items-center gap-2 rounded-xl bg-[#ffd84d] px-6 font-extrabold text-[#0a2f5c]"><BellRing className="size-4" aria-hidden="true" /> Avisarme cuando haya una</a>
                   <Link to="/vacantes" className="btn-aplicar inline-flex h-12 items-center rounded-xl px-6">Ver vacantes abiertas</Link>
                   {provincia && <button type="button" onClick={() => setProvincia("")} className="inline-flex h-12 items-center rounded-xl border border-border px-5 font-bold hover:border-primary">Ver todo el país</button>}
                 </div>
@@ -140,6 +144,9 @@ function Ferias() {
         </section>
 
         {/* ---------- Consejos ---------- */}
+        {/* ---------- Suscripción a alertas ---------- */}
+        <AlertaFerias provinciaInicial={provincia} />
+
         <section aria-labelledby="t-consejos" className="mt-16 rounded-[2rem] bg-[linear-gradient(135deg,#0a2f5c_0%,#0f4aa8_100%)] p-7 text-white sm:p-10">
           <h2 id="t-consejos" className="flex items-center gap-2 font-display text-[1.6rem] font-extrabold"><Sparkles className="size-6 text-[#ffd84d]" aria-hidden="true" /> Cómo sacarle provecho a una feria</h2>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
