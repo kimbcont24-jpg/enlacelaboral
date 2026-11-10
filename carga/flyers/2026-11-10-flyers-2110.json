@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Ejecutiva de Ventas",
+  "empresa": "Empresa confidencial",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Empresa en Santo Domingo Este busca una persona proactiva, persuasiva y con orientación a resultados para captar clientes potenciales, cerrar ventas y desarrollar su cartera.",
+  "requisitos": "Experiencia comprobable en ventas | Negociación y cierre de ventas | Captación de clientes potenciales | Manejo de objeciones | Desarrollo y aumento de cartera de clientes | Cumplimiento de metas de ventas | Habilidades de comunicación y negociación",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 849-359-5070",
+  "imagen": "https://enlace-rd.vercel.app/flyers/confidencial-ejecutiva-ventas-sde.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Cajero",
+  "empresa": "British Motors",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "British Motors busca un cajero para recibir y registrar pagos de clientes, emitir recibos de ingresos, manejar efectivo, transferencias y tarjetas, y llevar el cuadre diario de caja. Ubicación por confirmar.",
+  "requisitos": "Bachiller o estudiante de Contabilidad o Administración | Experiencia mínima de 1 año en caja o cobros | Manejo de Microsoft Office (Excel) | Conocimientos de facturación y sistemas administrativos (preferible SAP) | Honestidad, responsabilidad y buen servicio al cliente",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "empleos@british.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/british-motors-cajero.jpg",
+  "redes": "si"
+ }
+]
