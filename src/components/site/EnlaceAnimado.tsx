@@ -62,9 +62,9 @@ export function EnlaceAnimado({ children, ondas = false, className, video, credi
   return (
     <section ref={ref} aria-label="Enlace Laboral: conectamos talento con oportunidades" className={cn("enl-anim relative isolate overflow-hidden text-white", className)} style={{ "--p": 0 } as React.CSSProperties}>
       {/* Fondo: colores de Enlace mezclados (azul profundo, azul eléctrico, verde y un toque rosado) */}
-      {video && <video ref={refVideo} aria-hidden="true" muted autoPlay loop playsInline preload="auto" className="absolute inset-0 -z-30 size-full object-cover" />}
-      <div aria-hidden="true" className={cn("enl-fondo absolute inset-0 -z-20", video && "opacity-[0.86] mix-blend-multiply")} />
-      {video && <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[#0a2f5c]/35" />}
+      {video && <video ref={refVideo} aria-hidden="true" muted autoPlay loop playsInline preload="auto" className="absolute inset-0 -z-30 size-full object-cover object-[50%_65%]" />}
+      <div aria-hidden="true" className={cn("enl-fondo absolute inset-0 -z-20", video && "opacity-[0.5] mix-blend-multiply")} />
+      {video && <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[linear-gradient(180deg,rgb(10_47_92/0.45)_0%,rgb(10_47_92/0.15)_45%,rgb(10_47_92/0.5)_100%)]" />}
       <div aria-hidden="true" className="enl-mancha absolute -left-24 top-1/4 -z-10 size-[28rem] rounded-full bg-[#7ee2a8]/35 blur-3xl" />
       <div aria-hidden="true" className="enl-mancha absolute -right-24 bottom-0 -z-10 size-[30rem] rounded-full bg-[#ff9ccf]/25 blur-3xl" style={{ animationDelay: "-6s" }} />
       <svg aria-hidden="true" className="absolute inset-0 -z-10 size-full opacity-[0.18]" preserveAspectRatio="none">
