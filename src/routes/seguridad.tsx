@@ -27,6 +27,7 @@ function Seguridad() {
       ]}
       indice={[["senales", "Señales de alerta"], ["verificar", "Cómo verificar una empresa"], ["entrevista", "Antes de ir a una entrevista"], ["hacemos", "Lo que hacemos nosotros"], ["paso", "Si ya te pasó"]]}>
       <Bloque id="senales" titulo="Señales de alerta">
+        <Link to="/herramientas/verificar-oferta" className="mb-4 flex items-center justify-between gap-3 rounded-2xl bg-[#0a2f5c] p-4 font-bold text-white hover:bg-[#0f4aa8]"><span>¿Te llegó una oferta por WhatsApp o redes? Pégala en el verificador y mira sus señales de alerta.</span><span className="shrink-0 rounded-xl bg-[#ffd84d] px-3 py-2 text-sm text-[#0a2f5c]">Verificar</span></Link>
         <ul className="grid gap-3 sm:grid-cols-2">
           {SENALES.map(([t, d]) => (
             <li key={t} className="rounded-2xl border border-[#c27803]/30 bg-[#c27803]/[0.06] p-4"><p className="font-extrabold text-[#8a5200]">{t}</p><p className="mt-1 text-sm">{d}</p></li>

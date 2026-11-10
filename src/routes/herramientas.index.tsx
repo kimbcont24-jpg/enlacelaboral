@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Calculator, Compass, Gift, Scale, Trophy } from "lucide-react";
+import { ArrowRight, Calculator, Compass, Gift, Scale, ShieldCheck, Trophy } from "lucide-react";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -21,6 +21,7 @@ const items = [
   { to: "/herramientas/liquidacion", icono: Scale, titulo: "¿Cuánto te deben de liquidación?", texto: "Preaviso, cesantía, vacaciones y regalía pascual según el Código de Trabajo.", etiqueta: "Prestaciones laborales" },
   { to: "/herramientas/comparar-ofertas", icono: Trophy, titulo: "¿Qué oferta de trabajo te conviene más?", texto: "Compara dos ofertas (o tu trabajo actual contra una nueva): salario neto, pasaje, horas en el tapón, beneficios y cómo te sentirías ahí.", etiqueta: "Comparador de ofertas" },
   { to: "/herramientas/brujula", icono: Compass, titulo: "¿Para qué trabajo eres bueno?", texto: "Brújula del primer empleo: 12 preguntas sobre lo que te gusta y haces bien. Te dice qué áreas van contigo y te muestra vacantes sin experiencia.", etiqueta: "Nuevo · Primer empleo" },
+  { to: "/herramientas/verificar-oferta", icono: ShieldCheck, titulo: "¿Esta oferta es real o es estafa?", texto: "Pega la vacante que te llegó por WhatsApp o redes y mira sus señales de alerta en segundos. No guardamos nada.", etiqueta: "Nuevo · Verificador de ofertas" },
 ] as const;
 
 function Herramientas() {

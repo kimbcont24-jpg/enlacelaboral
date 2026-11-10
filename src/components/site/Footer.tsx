@@ -45,6 +45,7 @@ export function Footer() {
             <li><Link to="/herramientas/liquidacion" className="hover:text-white">Calculadora de liquidación</Link></li>
             <li><Link to="/herramientas/comparar-ofertas" className="hover:text-white">Comparador de ofertas</Link></li>
             <li><Link to="/herramientas/brujula" className="hover:text-white">Brújula del primer empleo</Link></li>
+            <li><Link to="/herramientas/verificar-oferta" className="hover:text-white">Verificador de estafas</Link></li>
           </ul>
         </nav>
       </div>
