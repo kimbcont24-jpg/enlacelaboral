@@ -26,7 +26,7 @@ export function EnlaceAnimado({ children, ondas = false, className, video, credi
     v.setAttribute("webkit-playsinline", "");
     const quieto = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const chico = window.matchMedia?.("(max-width: 900px)").matches;
-    const fuente = chico ? video.replace(/hd_1280_720/, "sd_960_540") : video;
+    const fuente = chico ? video.replace(/-1280\.mp4$/, "-960.mp4") : video;
     const reproducir = () => { if (!quieto) void v.play().catch(() => undefined); };
     if (v.getAttribute("src") !== fuente) { v.src = fuente; v.load(); }
     v.addEventListener("canplay", reproducir);

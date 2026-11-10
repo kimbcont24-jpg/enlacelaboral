@@ -106,7 +106,7 @@ function Home() {
 
       <ExploraEmpleos jobs={jobs} provincias={provinciasConVacantes} />
 
-      <EnlaceAnimado ondas className="mb-12" video="https://videos.pexels.com/video-files/7692917/7692917-hd_1280_720_25fps.mp4" credito="Video: Yan Krukau · Pexels">
+      <EnlaceAnimado ondas className="mb-12" video="/video/apreton-1280.mp4" credito="Video: Yan Krukau · Pexels">
         <p className="mx-auto max-w-2xl text-balance text-lg font-semibold leading-relaxed text-white/90 sm:text-xl">Conectamos talento con oportunidades reales en toda República Dominicana. Sin discriminación, con información clara y gratis para quien busca empleo.</p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link to="/vacantes" className="inline-flex h-12 items-center rounded-xl bg-white px-6 font-bold text-[#0a2f5c] shadow-lg transition-transform hover:-translate-y-0.5">Ver empleos</Link>
