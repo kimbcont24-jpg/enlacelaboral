@@ -272,3 +272,14 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 .alf-campana{transform-origin:50% 10%;animation:alf-campana 3.2s ease-in-out infinite}
 @keyframes alf-campana{0%,82%,100%{transform:rotate(0)}86%{transform:rotate(14deg)}90%{transform:rotate(-12deg)}94%{transform:rotate(8deg)}97%{transform:rotate(-4deg)}}
 @media (prefers-reduced-motion:reduce){.alf-onda,.alf-campana{animation:none}.alf-onda{opacity:.25;transform:scale(.6)}}
+
+/* Brújula del primer empleo */
+.brj-aguja{animation:brj-aguja 4s ease-in-out infinite}
+@keyframes brj-aguja{0%,100%{transform:rotate(-18deg)}30%{transform:rotate(24deg)}55%{transform:rotate(-8deg)}75%{transform:rotate(6deg)}}
+.brj-rosa{box-shadow:0 0 0 0 rgb(255 216 77/.35);animation:brj-pulso 2.8s ease-out infinite}
+@keyframes brj-pulso{0%{box-shadow:0 0 0 0 rgb(255 216 77/.35)}100%{box-shadow:0 0 0 18px rgb(255 216 77/0)}}
+.brj-entra{animation:brj-entra .35s ease-out both}
+@keyframes brj-entra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.brj-barra{transform-origin:left;animation:brj-barra .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes brj-barra{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.brj-aguja,.brj-rosa,.brj-entra,.brj-barra{animation:none}}

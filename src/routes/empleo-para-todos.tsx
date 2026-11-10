@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Accessibility, ArrowRight, BellRing, Clock, BookOpen, Building2, CheckCircle2, ExternalLink, Flag, GraduationCap, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
+import { Accessibility, ArrowRight, BellRing, Clock, BookOpen, Building2, Compass, CheckCircle2, ExternalLink, Flag, GraduationCap, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -53,6 +53,7 @@ const CAMINOS: Camino[] = [
     titulo: "Mi primer empleo", frase: "Todo el mundo empezó sin experiencia. Lo que cuenta es lo que ya sabes hacer.",
     nota: "Vacantes que no piden experiencia.",
     plan: [
+      { t: "Descubre para qué eres bueno", d: "La Brújula del primer empleo: 12 preguntas, 3 minutos. Te dice qué áreas van contigo y qué puestos buscar sin experiencia.", link: { to: "/herramientas/brujula", t: "Hacer la Brújula" } },
       { t: "Haz tu CV en 5 minutos", d: "Cuenta lo que hiciste en la escuela, la iglesia, el deporte, el voluntariado o ayudando en el negocio familiar. Tiene ejemplos para quienes empiezan.", link: { to: "/cv", t: "Hacer mi CV gratis" } },
       { t: "Practica la entrevista", d: "Te mostramos las preguntas que más hacen y cómo responderlas con tus propias palabras.", link: { to: "/cv", search: { h: "entrevista" }, t: "Practicar ahora" } },
       { t: "Aplica a varias esta semana", d: "Mientras más apliques, más rápido llega la primera llamada. Activa una alerta y te avisamos cuando salgan nuevas." },
@@ -234,6 +235,8 @@ function EmpleoParaTodos() {
 
       <main className="ept-grano px-4 py-14 sm:px-6"><div className="mx-auto max-w-6xl space-y-20">
         <Revela><Buscador porCamino={porCamino} cargando={cargando} /></Revela>
+
+        <Revela><BannerBrujula /></Revela>
 
         <Revela>
           <section id="compromiso" aria-labelledby="t-compromiso" className="scroll-mt-24 grid gap-6 rounded-[2rem] border border-border bg-surface p-6 shadow-[0_24px_48px_-36px_rgb(10_47_92/0.5)] sm:p-10 lg:grid-cols-[1fr_1.2fr]">
@@ -445,9 +448,9 @@ function Seccion({ c, vacantes, cargando, invertido }: { c: Camino; vacantes: Va
               {alerta && <div className="vista-entra rounded-2xl border border-border bg-surface p-4"><AlertaForm compacta /></div>}
 
               <div>
-                <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.14em]" style={{ color: c.color }}>Tu plan en 3 pasos</p>
-                <ol className="relative grid gap-3 md:grid-cols-3">
-                  <span aria-hidden="true" className="absolute left-4 right-4 top-[1.6rem] hidden h-0.5 md:block" style={{ background: `repeating-linear-gradient(90deg, ${c.color}55 0 8px, transparent 8px 14px)` }} />
+                <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.14em]" style={{ color: c.color }}>Tu plan en {c.plan.length} pasos</p>
+                <ol className={`relative grid gap-3 ${c.plan.length === 4 ? "sm:grid-cols-2" : "md:grid-cols-3"}`}>
+                  <span aria-hidden="true" className={`absolute left-4 right-4 top-[1.6rem] hidden h-0.5 ${c.plan.length === 4 ? "" : "md:block"}`} style={{ background: `repeating-linear-gradient(90deg, ${c.color}55 0 8px, transparent 8px 14px)` }} />
                   {c.plan.map((p, i) => (
                     <li key={p.t} className="lift relative flex flex-col rounded-2xl border border-border bg-surface p-4">
                       <span className="relative grid size-9 place-items-center rounded-full text-sm font-extrabold text-white ring-4 ring-surface" style={{ background: c.color }} aria-hidden="true">{i + 1}</span>
@@ -503,4 +506,23 @@ function RecursoTarjeta({ r, color }: { r: Recurso; color: string }) {
   return r.url
     ? <a href={r.url} target="_blank" rel="noopener noreferrer" className={clase}>{contenido}</a>
     : <div className={clase}>{contenido}</div>;
+}
+
+/** Invitación a la Brújula del primer empleo (test de intereses y fortalezas). */
+function BannerBrujula() {
+  return (
+    <section aria-labelledby="t-brujula" className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#0a2f5c_0%,#0f7a43_130%)] p-7 text-white shadow-[0_30px_70px_-30px_rgb(10_47_92/0.7)] sm:p-10">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full border-[18px] border-white/5" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-4 -top-4 size-48 rounded-full border-[10px] border-white/5" />
+      <div className="relative grid items-center gap-6 md:grid-cols-[auto_1fr_auto]">
+        <span className="brj-rosa grid size-20 place-items-center rounded-full bg-white/10 ring-1 ring-white/20"><Compass className="brj-aguja size-11 text-[#ffd84d]" aria-hidden="true" /></span>
+        <div>
+          <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#7ee2a8]">Nuevo · Para tu primer empleo</p>
+          <h2 id="t-brujula" className="mt-1 font-display text-[1.6rem] font-extrabold leading-tight sm:text-[1.9rem]">¿No sabes por dónde empezar? Usa la Brújula</h2>
+          <p className="mt-2 max-w-2xl text-white/85">12 preguntas sobre lo que te gusta y lo que haces bien. En 3 minutos te decimos qué áreas van contigo, qué puestos buscar sin experiencia, frases para tu CV y vacantes reales para ti.</p>
+        </div>
+        <Link to="/herramientas/brujula" className="inline-flex h-13 items-center justify-center gap-2 rounded-xl bg-[#ffd84d] px-6 py-3.5 font-extrabold text-[#0a2f5c] shadow-[0_12px_24px_-12px_rgba(255,216,77,.9)] transition hover:-translate-y-0.5">Hacer la Brújula <ArrowRight className="size-4" aria-hidden="true" /></Link>
+      </div>
+    </section>
+  );
 }
