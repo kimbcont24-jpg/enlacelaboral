@@ -304,7 +304,11 @@ async function computrabajo() {
   return filas;
 }
 
-const fuentes = { aldaba, computrabajo, alorica, marriott, citi, medtronic, baxter, eaton };
+// 10 nov 2026 (Kim): ya NO se cargan Aldaba ni Computrabajo; el foco son los flyers que Kim sube desde el celular.
+// Para reactivarlos: poner la variable CON_PORTALES=1 en el workflow.
+const fuentes = process.env.CON_PORTALES === "1"
+  ? { aldaba, computrabajo, alorica, marriott, citi, medtronic, baxter, eaton }
+  : { alorica, marriott, citi, medtronic, baxter, eaton };
 const resultado = [];
 const resumen = {};
 for (const [nombre, fn] of Object.entries(fuentes)) {
