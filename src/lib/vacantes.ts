@@ -122,7 +122,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
 }
 
 export async function fetchPublicadas(): Promise<Vacante[]> {
-  const { data, error } = await supabase.from("vacantes").select(SELECT).eq("estado", "publicada").gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString()).order("destacada", { ascending: false }).order("created_at", { ascending: false }).limit(1000);
+  const { data, error } = await supabase.from("vacantes").select(SELECT).eq("estado", "publicada").gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString()).order("created_at", { ascending: false }).limit(1000);
   if (error) throw error;
   return ((data ?? []) as unknown as VacanteRow[]).map(rowToVacante);
 }

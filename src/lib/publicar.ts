@@ -14,6 +14,8 @@ export function filaDesde(b: Borrador) {
     b.aplicar.trim() && `m:aplicar:${b.aplicar.trim()}`,
     b.redes && "m:redes:si",
     b.imagen && `m:imagen:${b.imagen}`,
+    min > 0 && `m:salario_min:${min}`,
+    min > 0 && max > min && `m:salario_max:${max}`,
     ...(b.compromisos ?? []).filter((c) => COMPROMISOS.some((x) => x.id === c)).map((c) => `incl:${c}`),
   ].filter(Boolean) as string[];
   return {
@@ -23,8 +25,6 @@ export function filaDesde(b: Borrador) {
     modalidad: b.modalidad,
     tipo: b.tipo,
     experiencia: b.experiencia,
-    salario_min: min,
-    salario_max: max > min ? max : null,
     descripcion: b.descripcion.trim(),
     requisitos: b.requisitos.split("\n").map((r) => r.trim()).filter(Boolean),
     etiquetas,
