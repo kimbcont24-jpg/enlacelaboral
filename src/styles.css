@@ -295,3 +295,13 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
   .enl-halo { filter: none; }
   .ept-orbita, .ept-nodo, .ept-latido::before { animation: none; }
 }
+
+/* ───────── Ventana de marca: la marca fija detrás, se descubre al bajar ───────── */
+.ventana { clip-path: inset(0); }
+.ventana-capa { z-index: 0; }
+.ventana-gigante { transform: translate(calc(-8% - var(--p) * 22%), -50%); will-change: transform; }
+.ventana-halo { transform: translate(-50%, -50%) scale(calc(.5 + var(--p) * .7)); opacity: calc(.3 + var(--p) * .7); }
+@keyframes ventana-nodo { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+.ventana-nodo { animation: ventana-nodo 3.2s ease-in-out infinite; }
+@media (max-width: 767px) { .ventana-halo { filter: blur(28px); } }
+@media (prefers-reduced-motion: reduce) { .ventana { --p: 1 !important; } .ventana-nodo { animation: none; } }

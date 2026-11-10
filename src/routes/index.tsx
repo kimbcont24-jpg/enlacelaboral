@@ -10,7 +10,7 @@ import { ExploraEmpleos } from "@/components/site/ExploraEmpleos";
 import { Hero } from "@/components/site/Hero";
 import { JornadasProximas } from "@/components/site/JornadasProximas";
 import { EmpleoParaTodosBanda } from "@/components/site/EmpleoParaTodosBanda";
-import { EnlaceAnimado } from "@/components/site/EnlaceAnimado";
+import { VentanaMarca } from "@/components/site/VentanaMarca";
 import { RegaliaBanda } from "@/components/site/RegaliaBanda";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { consejos } from "@/lib/data";
@@ -100,13 +100,13 @@ function Home() {
       </section>
 
       <RegaliaBanda />
-      <EnlaceAnimado ondas className="mb-12" video="https://videos.pexels.com/video-files/7692917/7692917-hd_1280_720_25fps.mp4" credito="Video: Yan Krukau · Pexels">
-        <p className="mx-auto max-w-2xl text-balance text-lg font-semibold leading-relaxed text-white/90 sm:text-xl">Conectamos talento con oportunidades reales en toda República Dominicana. Sin discriminación, con información clara y gratis para quien busca empleo.</p>
+      <VentanaMarca video="https://videos.pexels.com/video-files/7692917/7692917-hd_1280_720_25fps.mp4">
+        <p className="mx-auto max-w-2xl text-balance text-base font-medium leading-relaxed text-white/85 sm:text-lg">Conectamos talento con oportunidades reales en toda República Dominicana. Sin discriminación, con información clara y gratis para quien busca empleo.</p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link to="/vacantes" className="inline-flex h-12 items-center rounded-xl bg-white px-6 font-bold text-[#0a2f5c] shadow-lg transition-transform hover:-translate-y-0.5">Ver empleos</Link>
           <Link to="/empresas" className="inline-flex h-12 items-center rounded-xl bg-white/15 px-6 font-bold text-white ring-1 ring-white/40 backdrop-blur transition-colors hover:bg-white/25">Publicar una vacante</Link>
         </div>
-      </EnlaceAnimado>
+      </VentanaMarca>
       <EmpleoParaTodosBanda />
       <JornadasProximas />
       <RecibeVacantes />
