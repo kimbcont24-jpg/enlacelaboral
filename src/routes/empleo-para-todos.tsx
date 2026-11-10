@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Accessibility, ArrowRight, BellRing, Clock, BookOpen, Building2, Compass, CheckCircle2, ExternalLink, Flag, GraduationCap, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
+import { Accessibility, ArrowRight, ChevronDown, ChevronRight, BellRing, Clock, BookOpen, Building2, Compass, CheckCircle2, ExternalLink, Flag, GraduationCap, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { LogoMarca } from "@/components/site/Logo";
 import { EnlaceAnimado } from "@/components/site/EnlaceAnimado";
@@ -398,7 +397,7 @@ function Buscador({ porCamino, cargando }: { porCamino: Record<Camino["id"], Vac
         </div>
         {!cargando && (lista.length > 0 ? (
           <div key={`${camino}-${provincia}`} className="vista-entra">
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{lista.slice(0, 6).map((j, i) => <div key={j.id} className={i >= 3 ? "hidden sm:block [&>article]:h-full" : "[&>article]:h-full"}><VacanteTarjeta job={j} /></div>)}</div>
+            <ul className="mt-6 grid gap-2 lg:grid-cols-2">{lista.slice(0, 4).map((j, i) => <li key={j.id} className={i >= 3 ? "hidden lg:block" : ""}><VacanteFila job={j} color={c.color} /></li>)}</ul>
             {lista.length > 3 && <Link to="/vacantes" search={{ incl: camino, provincia: provincia || undefined } as never} className="btn-aplicar mt-6 inline-flex h-12 items-center gap-2 rounded-xl px-6">Ver las {lista.length} vacantes <ArrowRight className="size-4" aria-hidden="true" /></Link>}
           </div>
         ) : (
@@ -417,6 +416,7 @@ function Buscador({ porCamino, cargando }: { porCamino: Record<Camino["id"], Vac
 
 function Seccion({ c, vacantes, cargando, invertido }: { c: Camino; vacantes: Vacante[]; cargando: boolean; invertido: boolean }) {
   const [alerta, setAlerta] = useState(false);
+  const [verVac, setVerVac] = useState(false);
   const n = vacantes.length;
   return (
     <section id={c.id} aria-labelledby={`t-${c.id}`} style={acento(c)} className="scroll-mt-24">
@@ -463,9 +463,17 @@ function Seccion({ c, vacantes, cargando, invertido }: { c: Camino; vacantes: Va
               </div>
 
               {!cargando && n > 0 && (
-                <div>
-                  <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.14em]" style={{ color: c.color }}>Vacantes de hoy para ti</p>
-                  <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{vacantes.slice(0, 3).map((j) => <VacanteTarjeta key={j.id} job={j} />)}</div>
+                <div className="rounded-2xl border border-border bg-surface">
+                  <button type="button" aria-expanded={verVac} onClick={() => setVerVac(!verVac)} className="flex w-full items-center justify-between gap-3 rounded-2xl px-4 py-3.5 text-left">
+                    <span className="flex items-center gap-2.5 text-sm font-extrabold"><span className="grid size-8 place-items-center rounded-full text-xs text-white" style={{ background: c.color }}>{n}</span> Ver vacantes de hoy para ti</span>
+                    <ChevronDown className={`size-5 shrink-0 text-muted-foreground transition-transform ${verVac ? "rotate-180" : ""}`} aria-hidden="true" />
+                  </button>
+                  {verVac && (
+                    <div className="vista-entra border-t border-border p-3">
+                      <ul className="space-y-2">{vacantes.slice(0, 3).map((j) => <li key={j.id}><VacanteFila job={j} color={c.color} /></li>)}</ul>
+                      {n > 3 && <Link to="/vacantes" search={{ incl: c.id } as never} className="mt-3 inline-flex items-center gap-1.5 px-1 text-sm font-bold hover:underline" style={{ color: c.color }}>Ver las {n} <ArrowRight className="size-4" aria-hidden="true" /></Link>}
+                    </div>
+                  )}
                 </div>
               )}
               {!cargando && n === 0 && <p className="rounded-2xl border border-dashed p-4 text-sm" style={{ borderColor: `${c.color}66`, background: c.suave }}>{c.vacio.texto}</p>}
@@ -524,5 +532,19 @@ function BannerBrujula() {
         <Link to="/herramientas/brujula" className="inline-flex h-13 items-center justify-center gap-2 rounded-xl bg-[#ffd84d] px-6 py-3.5 font-extrabold text-[#0a2f5c] shadow-[0_12px_24px_-12px_rgba(255,216,77,.9)] transition hover:-translate-y-0.5">Hacer la Brújula <ArrowRight className="size-4" aria-hidden="true" /></Link>
       </div>
     </section>
+  );
+}
+
+/** Vacante en una sola línea, sin etiquetas: para listas cortas y livianas en el celular. */
+function VacanteFila({ job, color }: { job: Vacante; color: string }) {
+  return (
+    <Link to="/vacantes/$id" params={{ id: job.id }} className="group flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 transition hover:border-[var(--acento)] hover:shadow-sm">
+      <span aria-hidden="true" className="h-9 w-1 shrink-0 rounded-full" style={{ background: color }} />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-bold leading-snug">{job.titulo}</span>
+        <span className="block truncate text-xs text-muted-foreground">{job.empresa} · {job.provincia}{job.salario ? ` · ${job.salario}` : ""}</span>
+      </span>
+      <ChevronRight className="size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5" aria-hidden="true" />
+    </Link>
   );
 }
