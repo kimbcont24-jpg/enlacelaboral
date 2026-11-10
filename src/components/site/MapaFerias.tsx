@@ -30,10 +30,21 @@ export function MapaFerias({ ferias, activa, onElegir, oficinas = true, classNam
       const m = Lf.map(caja.current, { zoomControl: false, scrollWheelZoom: false, attributionControl: true, minZoom: 7, maxZoom: 17, zoomSnap: 0.25 })
         .fitBounds([[17.45, -72.05], [19.98, -68.3]], { padding: [10, 10] });
       Lf.control.zoom({ position: "bottomright" }).addTo(m);
-      Lf.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: "abcd", maxZoom: 19,
-      }).addTo(m);
+      // Mapa base gratis y sin clave: OpenStreetMap. Si falla, cambia solo a Esri.
+      const fuentes = [
+        { url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png", attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' },
+        { url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", attribution: "Tiles &copy; Esri" },
+      ];
+      let actual = 0, errores = 0;
+      const poner = (i: number) => {
+        const capa = Lf.tileLayer(fuentes[i]!.url, { attribution: fuentes[i]!.attribution, maxZoom: 19, className: "mf-teselas" });
+        capa.on("tileerror", () => {
+          errores += 1;
+          if (errores >= 4 && actual < fuentes.length - 1) { m.removeLayer(capa); actual += 1; errores = 0; poner(actual); }
+        });
+        capa.addTo(m);
+      };
+      poner(0);
       // La rueda del ratón solo hace zoom después de tocar el mapa (no secuestra el desplazamiento de la página).
       m.on("click", () => m.scrollWheelZoom.enable());
       m.on("mouseout", () => m.scrollWheelZoom.disable());

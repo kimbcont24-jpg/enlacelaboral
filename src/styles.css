@@ -275,3 +275,5 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 .mf-pop-n { margin-top: 6px !important; font-size: 12.5px; font-weight: 700; color: #0f7a43; }
 .mf-pop-b { display: inline-block; margin-top: 10px; padding: 7px 12px; border-radius: 10px; background: #1d6ff2; color: #fff !important; font-size: 13px; font-weight: 700; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) { .mf-pulso { animation: none; display: none; } }
+/* Mapa base un poco más suave, para que resalten los marcadores. */
+.mf-teselas { filter: saturate(.75) brightness(1.04) contrast(.95); }
