@@ -1,12 +1,12 @@
 {
-  "fecha": "2026-11-09T17:56:06.695Z",
-  "total": 185,
-  "revisadas": 185,
-  "sin_contacto": 185,
+  "fecha": "2026-11-10T01:59:16.780Z",
+  "total": 182,
+  "revisadas": 182,
+  "sin_contacto": 182,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
-    "aldaba": 30,
-    "computrabajo": 9,
+    "aldaba": 23,
+    "computrabajo": 13,
     "alorica": 11,
     "marriott": 58,
     "citi": 3,
