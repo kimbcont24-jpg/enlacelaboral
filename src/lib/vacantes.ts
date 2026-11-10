@@ -48,14 +48,18 @@ export type VacanteRow = {
   modalidad: string;
   tipo: string;
   experiencia: string;
+  salario_min: number;
+  salario_max: number | null;
   descripcion: string;
   requisitos: string[] | null;
   etiquetas: string[] | null;
   estado: string;
   created_at: string;
+  destacada?: boolean | null;
+  preguntas?: unknown;
 };
 
-export const SELECT = "id,titulo,area,provincia,modalidad,tipo,experiencia,descripcion,requisitos,etiquetas,estado,created_at";
+export const SELECT = "id,titulo,area,provincia,modalidad,tipo,experiencia,salario_min,salario_max,descripcion,requisitos,etiquetas,estado,created_at,destacada,preguntas";
 
 const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
 
@@ -88,11 +92,8 @@ const REQUISITO_EXCLUYE = /(\bedad\b.*\d{2}|\b\d{2}\s*(a|y|-|–)\s*\d{2}\s*año
 
 export function rowToVacante(r: VacanteRow): Vacante {
   const { meta, tags } = leerMeta(r.etiquetas);
-  // salario_min / salario_max no existen como columnas: se leen de las etiquetas meta si están disponibles
-  const salarioMin = meta["salario_min"] ? Number(meta["salario_min"]) : 0;
-  const salarioMaxRaw = meta["salario_max"] ? Number(meta["salario_max"]) : 0;
-  const max = salarioMaxRaw > salarioMin ? salarioMaxRaw : null;
-  const salario = salarioMin > 0 ? (max ? `${pesos(salarioMin)} - ${pesos(max)}` : pesos(salarioMin)) : "";
+  const max = r.salario_max && r.salario_max > r.salario_min ? r.salario_max : null;
+  const salario = r.salario_min > 0 ? (max ? `${pesos(r.salario_min)} - ${pesos(max)}` : pesos(r.salario_min)) : "";
   return {
     id: r.id,
     titulo: r.titulo.replace(SEXO_EN_TITULO, "").trim() || r.titulo,
@@ -102,7 +103,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
     tipo: r.tipo,
     experiencia: r.experiencia,
     area: r.area,
-    salarioMin,
+    salarioMin: r.salario_min,
     salarioMax: max,
     salario,
     descripcion: r.descripcion,
@@ -114,15 +115,15 @@ export function rowToVacante(r: VacanteRow): Vacante {
     creado: r.created_at,
     estado: r.estado,
     categorias: tags,
-    destacada: false,
+    destacada: !!r.destacada,
     redes: meta["redes"] === "si",
     imagen: meta["imagen"] || "",
-    preguntas: leerPreguntas(undefined),
+    preguntas: leerPreguntas(r.preguntas),
   };
 }
 
 export async function fetchPublicadas(): Promise<Vacante[]> {
-  const { data, error } = await supabase.from("vacantes").select(SELECT).eq("estado", "publicada").gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString()).order("created_at", { ascending: false }).limit(1000);
+  const { data, error } = await supabase.from("vacantes").select(SELECT).eq("estado", "publicada").gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString()).order("destacada", { ascending: false }).order("created_at", { ascending: false }).limit(1000);
   if (error) throw error;
   return ((data ?? []) as unknown as VacanteRow[]).map(rowToVacante);
 }

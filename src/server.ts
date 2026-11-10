@@ -71,15 +71,14 @@ async function ogVacante(id: string, origen: string): Promise<Response> {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return new Response("No encontrada", { status: 404 });
   let fila: VacanteRow | null = null;
   try {
-    const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,titulo,provincia,modalidad,tipo,requisitos,etiquetas,estado&id=eq.${id}&limit=1`, { headers: { apikey: SB_KEY } });
+    const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,titulo,provincia,modalidad,tipo,salario_min,salario_max,requisitos,etiquetas,estado&id=eq.${id}&limit=1`, { headers: { apikey: SB_KEY } });
     if (r.ok) fila = ((await r.json()) as VacanteRow[])[0] ?? null;
   } catch {
     fila = null;
   }
   if (!fila) return new Response("No encontrada", { status: 404 });
   const { meta } = leerMeta(fila.etiquetas);
-  const min = meta["salario_min"] ? Number(meta["salario_min"]) : 0;
-  const max = meta["salario_max"] ? Number(meta["salario_max"]) : 0;
+  const min = fila.salario_min ?? 0, max = fila.salario_max ?? 0;
   try {
     const png = await imagenVacante({
       titulo: fila.titulo, empresa: meta["empresa"] || "Empresa no indicada", provincia: fila.provincia, modalidad: fila.modalidad, tipo: fila.tipo,

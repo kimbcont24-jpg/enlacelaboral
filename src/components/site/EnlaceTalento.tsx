@@ -91,7 +91,7 @@ export function EnlaceTalento() {
               <div className="min-w-0">
                 <p className="text-lg font-extrabold leading-tight">{i.titulo}</p>
                 <p className="inline-flex items-center gap-1 text-sm font-semibold">{i.empresa}{i.verificada && <BadgeCheck className="size-4 text-success" aria-label="Empresa verificada" />}</p>
-                <p className="text-sm text-muted-foreground">{i.provincia}{i.salarioMin > 0 ? ` · ${pesos(i.salarioMin)}${i.salarioMax ? ` – ${pesos(i.salarioMax)}` : ""}` : ""}</p>
+                <p className="text-sm text-muted-foreground">{i.provincia}{i.salario_min > 0 ? ` · ${pesos(i.salario_min)}${i.salario_max ? ` – ${pesos(i.salario_max)}` : ""}` : ""}</p>
               </div>
             </div>
             {i.mensaje && <p className="mt-3 rounded-xl bg-secondary/70 p-3 text-sm">«{i.mensaje}»</p>}
