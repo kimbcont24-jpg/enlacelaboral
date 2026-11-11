@@ -1,11 +1,11 @@
 {
-  "fecha": "2026-11-11T16:57:10.489Z",
-  "total": 247,
+  "fecha": "2026-11-11T17:19:14.221Z",
+  "total": 250,
   "revisadas": 142,
   "sin_contacto": 142,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
-    "nst": "error: Error: 403 https://www.neurostemtalent.com/sitemap.xml",
+    "nst": 0,
     "alorica": 11,
     "marriott": 56,
     "citi": 3,
