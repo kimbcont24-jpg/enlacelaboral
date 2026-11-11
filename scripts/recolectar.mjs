@@ -311,7 +311,10 @@ async function computrabajo() {
 async function nst() {
   const filas = [];
   const base = "https://www.neurostemtalent.com";
-  const sm = await getText(`${base}/sitemap.xml`);
+  // Desde GitHub, Cloudflare del sitio de NST responde 403 (protección anti-robots). Si pasa, no es error:
+  // la tarea diaria «Vacantes diarias (supervisor)» las trae con WebFetch.
+  let sm = "";
+  try { sm = await getText(`${base}/sitemap.xml`); } catch (e) { log("nst bloqueado por Cloudflare desde GitHub; las trae la tarea diaria", String(e).slice(0, 40)); return filas; }
   const urls = [...new Set([...sm.matchAll(/https?:\/\/(?:www\.)?neurostemtalent\.com\/vacantes\/[0-9a-f-]{36}/g)].map((m) => m[0].replace("://neurostemtalent", "://www.neurostemtalent")))];
   log("nst enlaces", urls.length);
   for (const u of urls) {
