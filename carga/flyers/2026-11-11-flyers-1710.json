@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Líder de Ventas Santiago",
+  "empresa": "Quala Dominicana",
+  "provincia": "Santiago",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Quala busca un Líder de Ventas para Santiago. Liderarás equipos y ejecutarás estrategias comerciales, impulsarás la excelencia en los puntos de venta y te desarrollarás en una empresa que apuesta por el crecimiento y la innovación.",
+  "requisitos": "Liderar equipos y ejecutar estrategias comerciales | Impulsar la excelencia en puntos de venta",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Postúlate por los canales de Quala Dominicana indicados en el flyer",
+  "imagen": "https://enlace-rd.vercel.app/flyers/quala-lider-de-ventas-santiago.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Asistente de Topografía",
+  "empresa": "Constructora Rizek",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Constructora Rizek contrata un Asistente de Topografía para dar soporte técnico y operativo al área: procesar datos de levantamientos, elaborar y actualizar planos, gestionar documentación y apoyar el trabajo de campo. Ubicación por confirmar. Ofrece salario competitivo, beneficios de ley y oportunidades de desarrollo.",
+  "requisitos": "Estudiante de término, técnico o graduado en Topografía, Agrimensura, Ingeniería Civil o afines | Manejo de AutoCAD Civil 3D | Conocimientos de procesamiento de información topográfica y gestión documental | Microsoft Office (Excel, Word, Outlook) | Deseable experiencia con equipos topográficos y GPS",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "w.cuello@constructorarizek.com · Tel./WhatsApp 829-755-6470 (Asunto: Asistente de Topografía)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/constructora-rizek-asistente-topografia.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista de Nómina",
+  "empresa": "Termo Envases",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Termo Envases busca un Analista de Nómina para ejecutar los procesos de nómina con precisión y oportunidad, garantizando el cálculo y pago correcto de salarios y el cumplimiento de las políticas internas y las leyes dominicanas. Ubicación por confirmar.",
+  "requisitos": "Estudiante de término o graduado en Contabilidad, Administración, Psicología Industrial o afines | 2 años de experiencia en posiciones similares | Manejo de sistema de nómina y RR. HH. (SPN deseable) | Cálculo de prestaciones laborales, ISR, TSS, DGT3, DGT4, OVI | Excel intermedio-avanzado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Talentos@termoenvases.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/termo-envases-analista-nomina.jpg",
+  "redes": "si"
+ }
+]
