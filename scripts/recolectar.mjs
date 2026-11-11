@@ -354,6 +354,20 @@ try {
 } catch {}
 conContacto.unshift(...flyers);
 log("flyers de Kim", flyers.length);
+// 11 nov 2026 (Kim): NINGUNA consultora ni empresa de gestión humana / reclutamiento (People Group, Manpower, Verox,
+// RD Gestión Talento, etc.). La única excepción es Neuro STEM Talent: sus vacantes SIEMPRE se publican.
+// La base tiene la misma regla (privado.es_consultora + trigger tr_zz_bloquear_consultoras), esto es la primera barrera.
+const ES_NST = /neuro\s*stem|neurostemtalent/i;
+const CONSULTORA = /(people\s*group|manpower|\bverox|adecco|randstad|kelly\s+services|michael\s+page|intra\s*rh|ditalent|hava\s+gesti|target\s+talent|talento\s+firme|capital\s+humano|cenerh|ceerh|acerh|rh\s*solution|search\s*latam|talents\.ghs|talentos\s+srl|talentoshospitality|all\s+people\s+international|mabel\s*rosado|gen-?t\s+aliada|kriterion|vip\s+personnel|v[uü]o\s+partners|rd\s*gesti[oó]n\s*(de(l)?\s+)?talento|consultor\w*\s+(de\s+|y\s+asesor\w*\s+)?(de\s+)?(gesti[oó]n|talento|recursos\s+humanos|rrhh|personal|selecci)|gesti[oó]n\s+(de(l)?\s+)?talento|headhunt|head\s*hunter|staffing|reclutadora|agencia\s+de\s+(empleo|reclutamiento|colocaci)|selecci[oó]n\s+de\s+personal|outsourcing\s+de\s+personal|suministro\s+de\s+personal|empresa\s+cliente|consulting|consultor[ií]a\s+rd)/i;
+const CLIENTE = /(empresa\s+cliente|(para|de)\s+(nuestr[oa]s?|importante|reconocid[oa])\s+(empresa\s+)?cliente\b|en\s+representaci[oó]n\s+de\s+(nuestro|un|una)\s+cliente)/i;
+const esConsultora = (f) => {
+  const id = `${f.empresa ?? ""} ${f.aplicar ?? ""} ${f.fuente_url ?? ""} ${f.fuente ?? ""}`;
+  if (ES_NST.test(`${id} ${f.descripcion ?? ""}`)) return false;
+  return CONSULTORA.test(id) || CLIENTE.test(String(f.descripcion ?? ""));
+};
+const antes = conContacto.length;
+for (let i = conContacto.length - 1; i >= 0; i--) if (esConsultora(conContacto[i])) conContacto.splice(i, 1);
+log("descartadas por ser consultora / gestión humana", antes - conContacto.length);
 log("cargadas", conContacto.length, "sin correo ni WhatsApp", sinContacto, SOLO_CONTACTO ? "(no se cargan)" : "(se cargan con enlace al portal)");
 mkdirSync("carga", { recursive: true });
 writeFileSync("carga/auto-latest.json", JSON.stringify(conContacto.slice(0, 300)));
