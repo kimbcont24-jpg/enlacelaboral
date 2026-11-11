@@ -1,0 +1,34 @@
+[
+ {
+  "titulo": "Ayudante de Corte y Pegado",
+  "empresa": "Publiplas",
+  "provincia": "Santo Domingo",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Publiplas, empresa de publicidad promocional, busca ayudante de corte y pegado. Ofrece salario más beneficios de ley. Ubicación por confirmar (Santo Domingo).",
+  "requisitos": "Disponibilidad para aprender | Responsabilidad y puntualidad | Trabajo en equipo",
+  "fuente": "Flyer de la empresa",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/publiplas-ayudante-corte-pegado.jpg",
+  "aplicar": "rhumanos@publiplas.com · Tel. 809-878-9558",
+  "imagen": "https://enlace-rd.vercel.app/flyers/publiplas-ayudante-corte-pegado.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Diseñador Gráfico para taller publicitario y de impresión",
+  "empresa": "Publiplas",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Publiplas busca diseñador gráfico para su taller publicitario y de impresión, con preparación de artes para DTF, sublimación y vallas. Ofrece salario competitivo y beneficios de ley (regalía, ARS y AFP). Ubicación por confirmar (Santo Domingo).",
+  "requisitos": "Estudiante o profesional en Diseño Gráfico | Dominio de Adobe Illustrator, Photoshop y CorelDRAW | Experiencia mínima de 2 años | Preparación de artes para DTF, sublimación, vallas, etc. | Trabajo presencial permanente",
+  "fuente": "Flyer de la empresa",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/publiplas-disenador-grafico.jpg",
+  "aplicar": "rhumanos@publiplas.com · Tel. 809-878-9558",
+  "imagen": "https://enlace-rd.vercel.app/flyers/publiplas-disenador-grafico.jpg",
+  "redes": "si"
+ }
+]
