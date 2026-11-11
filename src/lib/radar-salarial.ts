@@ -23,6 +23,7 @@ const PISO = 8_000;
 const TECHO = 400_000;
 
 export type Observacion = {
+  id: string;
   titulo: string;
   area: string;
   provincia: string;
@@ -35,6 +36,8 @@ export type Observacion = {
   fecha: string;
   stems: string[];
   grupo: string;
+  /** "ficha": el salario venía en su campo. "texto": lo dijo la descripción (por ejemplo, el flyer). */
+  fuente: "ficha" | "texto";
 };
 
 export type Nivel = "insuficiente" | "pequena" | "moderada" | "amplia";
@@ -180,45 +183,105 @@ export function porArea(obs: Observacion[]): FilaArea[] {
 
 // ---------- Datos ----------
 
-type Fila = { titulo: string; area: string; provincia: string; tipo: string; experiencia: string; salario_min: number; salario_max: number | null; created_at: string };
+type Fila = { id: string; titulo: string; area: string; provincia: string; tipo: string; experiencia: string; salario_min: number; salario_max: number | null; created_at: string; descripcion?: string | null };
+
+const NUM = String.raw`(\d{1,3}(?:[,.]\d{3})+|\d{4,6})(?:\.\d{2})?`;
+const RE_TEXTO = new RegExp(String.raw`(?:salario|sueldo|pago|paga|ofrecemos)[^\n\d]{0,45}?(?:RD\$|DOP|\$)?\s*` + NUM + String.raw`(?:\s*(?:-|–|a|hasta|y)\s*(?:RD\$|\$)?\s*` + NUM + ")?", "i");
+const RE_RD = new RegExp(String.raw`RD\$\s*` + NUM + String.raw`(?:\s*(?:-|–|a|hasta)\s*(?:RD\$)?\s*` + NUM + ")?", "i");
+const aNumero = (t?: string) => (t ? Number(t.replace(/[.,](?=\d{3}\b)/g, "").replace(/,/g, "")) : 0);
+
+/**
+ * Salario dicho en la descripción cuando la ficha no lo trae ("Salario publicado en el flyer: RD$27,987").
+ * Solo montos mensuales en pesos: se descartan dólares, por hora y por día; quincenal y semanal se pasan a mes.
+ */
+export function salarioDelTexto(texto: string | null | undefined): { min: number; max: number | null } | null {
+  if (!texto) return null;
+  const m = texto.match(RE_TEXTO) ?? texto.match(RE_RD);
+  if (!m || m.index === undefined) return null;
+  const alrededor = norm(texto.slice(Math.max(0, m.index - 12), m.index + m[0].length + 30));
+  if (/us\$|usd|dolar|por hora|la hora|\/hora|diario|por dia|al dia/.test(alrededor)) return null;
+  const factor = /quincena/.test(alrededor) ? 2 : /semana/.test(alrededor) ? 4.33 : 1;
+  const min = Math.round(aNumero(m[1]) * factor);
+  const max2 = Math.round(aNumero(m[2]) * factor);
+  if (!min) return null;
+  return { min, max: max2 > min ? max2 : null };
+}
+
+const ES_PRUEBA = /ejemplo de prueba|\bprueba\b.*\bejemplo\b|\btest\b/i;
 
 export function aObservaciones(filas: Fila[]): Observacion[] {
   const vistas = new Set<string>();
   const out: Observacion[] = [];
   for (const r of filas) {
-    const min = Number(r.salario_min) || 0;
-    const max = r.salario_max && r.salario_max > min ? Number(r.salario_max) : null;
+    if (ES_PRUEBA.test(r.titulo)) continue;
+    let min = Number(r.salario_min) || 0;
+    let max = r.salario_max && r.salario_max > min ? Number(r.salario_max) : null;
+    let fuente: Observacion["fuente"] = "ficha";
+    if (!min) {
+      const t = salarioDelTexto(r.descripcion);
+      if (!t) continue;
+      ({ min, max } = t);
+      fuente = "texto";
+    }
     const valor = max ? (min + max) / 2 : min;
     if (min < PISO || valor > TECHO) continue;
     // Una vacante republicada o cargada dos veces cuenta una sola vez.
-    const id = `${claveGrupo(raices(r.titulo))}|${min}|${max ?? ""}|${r.provincia}`;
+    const stems = raices(r.titulo);
+    const id = `${claveGrupo(stems)}|${min}|${max ?? ""}|${r.provincia}`;
     if (vistas.has(id)) continue;
     vistas.add(id);
-    const stems = raices(r.titulo);
-    out.push({ titulo: r.titulo, area: r.area, provincia: r.provincia, tipo: r.tipo, experiencia: r.experiencia, salarioMin: min, salarioMax: max, valor, fecha: r.created_at, stems, grupo: claveGrupo(stems) });
+    out.push({ id: r.id, titulo: r.titulo, area: r.area, provincia: r.provincia, tipo: r.tipo, experiencia: r.experiencia, salarioMin: min, salarioMax: max, valor, fecha: r.created_at, stems, grupo: claveGrupo(stems), fuente });
   }
   return out;
 }
 
-export async function fetchObservaciones(): Promise<Observacion[]> {
+export type DatosRadar = { obs: Observacion[]; total: number; conSalario: number };
+
+const COLUMNAS = "id,titulo,area,provincia,tipo,experiencia,salario_min,salario_max,created_at";
+
+export async function fetchObservaciones(): Promise<DatosRadar> {
   const desde = new Date();
   desde.setMonth(desde.getMonth() - MESES);
-  const { data, error } = await supabase
-    .from("vacantes")
-    .select("titulo,area,provincia,tipo,experiencia,salario_min,salario_max,created_at")
-    .eq("estado", "publicada")
-    .gt("salario_min", 0)
-    .gte("created_at", desde.toISOString())
-    .order("created_at", { ascending: false })
-    .limit(5000);
-  if (error) throw error;
-  return aObservaciones((data ?? []) as unknown as Fila[]);
+  const d = desde.toISOString();
+  const base = () => supabase.from("vacantes").select(COLUMNAS).eq("estado", "publicada").gte("created_at", d);
+  const [conFicha, conTexto, conteo] = await Promise.all([
+    base().gt("salario_min", 0).order("created_at", { ascending: false }).limit(5000),
+    supabase.from("vacantes").select(`${COLUMNAS},descripcion`).eq("estado", "publicada").gte("created_at", d).or("salario_min.is.null,salario_min.eq.0")
+      .or("descripcion.ilike.%salario%,descripcion.ilike.%sueldo%,descripcion.ilike.%RD$%").limit(3000),
+    supabase.from("vacantes").select("id", { count: "exact", head: true }).eq("estado", "publicada").gte("created_at", d),
+  ]);
+  if (conFicha.error) throw conFicha.error;
+  const filas = [...((conFicha.data ?? []) as unknown as Fila[]), ...((conTexto.data ?? []) as unknown as Fila[])];
+  const conSalario = filas.filter((f) => !ES_PRUEBA.test(f.titulo) && (Number(f.salario_min) > 0 || salarioDelTexto(f.descripcion))).length;
+  return { obs: aObservaciones(filas), total: conteo.count ?? 0, conSalario };
 }
 
 export function useObservaciones() {
-  const q = useQuery({ queryKey: ["radar-salarial"], queryFn: fetchObservaciones, staleTime: 5 * 60_000 });
-  return { obs: q.data ?? [], cargando: q.isLoading, error: q.isError };
+  const q = useQuery({ queryKey: ["radar-salarial", 2], queryFn: fetchObservaciones, staleTime: 5 * 60_000 });
+  return { obs: q.data?.obs ?? [], total: q.data?.total ?? 0, conSalario: q.data?.conSalario ?? 0, cargando: q.isLoading, error: q.isError };
 }
+
+// ---------- Referencias oficiales ----------
+
+/** Salario mínimo del sector privado no sectorizado, Resolución CNS-01-2025, vigente desde el 1 de febrero de 2026. */
+export const MINIMOS = [
+  { t: "Microempresa", v: 16_993.2 },
+  { t: "Pequeña empresa", v: 18_421.2 },
+  { t: "Mediana empresa", v: 27_489.6 },
+  { t: "Gran empresa", v: 29_988 },
+] as const;
+export const MINIMO_GRANDE = 29_988;
+
+/** Canasta familiar (bienes y servicios de un hogar), Banco Central. */
+export const CANASTA = { nacional: 49_613.15, mesNacional: "julio 2026", ozama: 57_384, mesOzama: "septiembre 2026" } as const;
+
+/** Horas de trabajo al mes con la jornada legal de 44 horas semanales. */
+export const HORAS_MES = (44 * 52) / 12;
+
+export const FUENTES_RADAR = [
+  { nombre: "Salario mínimo 2026 (Resolución CNS-01-2025) — Ministerio de Trabajo", url: "https://mt.gob.do/" },
+  { nombre: "Canasta familiar por región y quintil — Banco Central", url: "https://www.bancentral.gov.do/a/d/2534-precios" },
+];
 
 export const pesos = (n: number) => `RD$${Math.round(n).toLocaleString("es-DO")}`;
 export const pesosCortos = (n: number) => (n >= 1000 ? `RD$${Math.round(n / 1000).toLocaleString("es-DO")}k` : pesos(n));

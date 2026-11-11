@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Calculator, Info, Radar, Search, Share2, Sparkles, X } from "lucide-react";
+
+import { Contador, MapaSalarios, Termometro, Transparencia } from "@/components/salarios/Piezas";
 import { useEffect, useMemo, useState } from "react";
 
 import { Footer } from "@/components/site/Footer";
@@ -7,7 +9,7 @@ import { Header } from "@/components/site/Header";
 import { areas, nivelesExperiencia, provincias } from "@/lib/data";
 import {
   MESES, MIN_AMPLIA, MIN_CALCULO, MIN_RANGO, MIN_RANKING, TEXTO_NIVEL,
-  agrupar, filtrar, porArea, posicion, pesos, pesosCortos, resumir, useObservaciones,
+  CANASTA, FUENTES_RADAR, agrupar, filtrar, porArea, pesos, pesosCortos, resumir, useObservaciones,
   type Filtro, type Observacion, type Resumen,
 } from "@/lib/radar-salarial";
 import { SITIO } from "@/lib/vacantes";
@@ -35,7 +37,8 @@ const selectCls = "h-11 w-full rounded-xl border border-input bg-background px-3
 function RadarSalarial() {
   const s = Route.useSearch();
   const navigate = useNavigate({ from: "/salarios" });
-  const { obs, cargando, error } = useObservaciones();
+  const { obs, total, conSalario, cargando, error } = useObservaciones();
+  const [miSalario, setMiSalario] = useState(0);
   const [texto, setTexto] = useState(s.q ?? "");
 
   // La búsqueda queda en el enlace (para compartirla), sin llenar el historial.
@@ -56,6 +59,13 @@ function RadarSalarial() {
   const tablaAreas = useMemo(() => porArea(base), [base]);
   const ultima = obs.reduce((m, o) => (o.fecha > m ? o.fecha : m), "");
   const hayFiltros = !!(s.area || s.provincia || s.experiencia);
+
+  const idsBusqueda = useMemo(() => new Set(encontradas.map((o) => o.id)), [encontradas]);
+  const porBusqueda = !!filtro.q && encontradas.length >= MIN_RANGO;
+  const comparables = porBusqueda ? encontradas : base;
+  const etiquetaComp = porBusqueda ? `vacantes de “${filtro.q}”` : hayFiltros ? "vacantes con tus filtros" : "vacantes publicadas en el país";
+  const general = useMemo(() => resumir(base), [base]);
+  const de100 = total ? Math.max(1, Math.round((conSalario / total) * 100)) : 0;
 
   const chips = [...new Set([...EJEMPLOS.slice(0, 2), ...sugerencias])].slice(0, 6);
 
@@ -102,9 +112,24 @@ function RadarSalarial() {
             Incluir medio tiempo y pasantías <span className="text-white/50">(por defecto comparamos solo tiempo completo)</span>
           </label>
 
-          <p className="mt-6 text-sm text-white/60">
-            {cargando ? "Cargando salarios…" : `${obs.length.toLocaleString("es-DO")} salarios publicados en los últimos ${MESES} meses${ultima ? ` · último: ${new Date(ultima).toLocaleDateString("es-DO", { day: "numeric", month: "long" })}` : ""}`}
-          </p>
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-3xl bg-white/[0.07] p-5 ring-1 ring-white/10 backdrop-blur sm:col-span-1">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Índice de transparencia</p>
+              <p className="mt-2 text-4xl font-extrabold tracking-tight">{cargando ? "…" : <><Contador valor={de100} /> <span className="text-xl text-white/70">de cada 100</span></>}</p>
+              <p className="mt-1 text-sm text-white/70">vacantes dicen cuánto pagan</p>
+              <div className="mt-4 max-w-[220px]">{!cargando && <Transparencia de100={de100} />}</div>
+            </div>
+            <div className="rounded-3xl bg-white/[0.07] p-5 ring-1 ring-white/10">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Salarios reales</p>
+              <p className="mt-2 text-4xl font-extrabold tracking-tight">{cargando ? "…" : <Contador valor={obs.length} />}</p>
+              <p className="mt-1 text-sm text-white/70">publicados por empresas en los últimos {MESES} meses{ultima ? `. El último, el ${new Date(ultima).toLocaleDateString("es-DO", { day: "numeric", month: "long" })}` : ""}.</p>
+            </div>
+            <div className="rounded-3xl bg-white/[0.07] p-5 ring-1 ring-white/10">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Salario mediano publicado</p>
+              <p className="mt-2 text-4xl font-extrabold tracking-tight">{cargando || !general ? "…" : <Contador valor={general.mediana} formato={pesos} />}</p>
+              <p className="mt-1 text-sm text-white/70">{general ? `La mitad de las vacantes ofrece menos y la otra mitad más${hayFiltros ? ", con tus filtros" : ""}.` : ""}</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -115,6 +140,18 @@ function RadarSalarial() {
         {!cargando && !error && (
           <>
             {filtro.q && <Resultado consulta={filtro.q} obs={encontradas} hayFiltros={hayFiltros} />}
+
+            <section aria-labelledby="termometro">
+              <Termometro salario={miSalario} onSalario={setMiSalario} comparables={comparables} etiqueta={etiquetaComp} />
+            </section>
+
+            <section aria-labelledby="mapa">
+              <Encabezado id="mapa" etiqueta="El mapa" titulo="Todos los salarios publicados, uno por uno" texto={filtro.q ? `En azul, las vacantes de “${filtro.q}”. Cada punto es una vacante real: tócalo para verla.` : "Cada punto es una vacante real con su salario. Las líneas marcan el salario mínimo de una gran empresa y lo que cuesta la canasta de un hogar."} />
+              <div className="mt-8 rounded-3xl border border-border bg-surface px-3 pb-5 pt-12 sm:px-6">
+                {base.length ? <MapaSalarios obs={base} resaltar={filtro.q ? (o) => idsBusqueda.has(o.id) : undefined} etiquetaResaltado={filtro.q ? `Vacantes de “${filtro.q}”` : undefined} miSalario={miSalario || undefined} /> : <p className="py-8 text-center text-muted-foreground">Sin salarios con estos filtros.</p>}
+              </div>
+              {general && <p className="mt-3 text-sm text-muted-foreground"><b className="text-foreground">{Math.round((base.filter((o) => o.valor < CANASTA.nacional).length / base.length) * 100)}%</b> de estas vacantes ofrece menos de lo que cuesta la canasta familiar de un hogar.</p>}
+            </section>
 
             {/* ---------- Ranking ---------- */}
             <section aria-labelledby="ranking">
@@ -171,8 +208,6 @@ function RadarSalarial() {
 
 function Resultado({ consulta, obs, hayFiltros }: { consulta: string; obs: Observacion[]; hayFiltros: boolean }) {
   const r = resumir(obs);
-  const [ofertaTxt, setOfertaTxt] = useState("");
-  const oferta = Number(ofertaTxt.replace(/\D/g, "")) || 0;
   const nombres = useMemo(() => agrupar(obs).sort((a, b) => b.resumen.n - a.resumen.n), [obs]);
   const titulo = consulta.charAt(0).toUpperCase() + consulta.slice(1);
 
@@ -228,16 +263,8 @@ function Resultado({ consulta, obs, hayFiltros }: { consulta: string; obs: Obser
             <Dato rotulo="Vacantes analizadas" valor={String(r.n)} nota={`Últimos ${MESES} meses`} />
           </div>
 
-          <Distribucion r={r} oferta={oferta} />
-          <p className={`mt-3 flex items-start gap-2 rounded-xl px-3 py-2 text-sm ${nivel.tono}`}><Info className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> {nivel.d}</p>
-
-          {r.n >= MIN_RANKING && (
-            <div className="mt-6 rounded-2xl bg-muted p-4">
-              <label className="block text-sm font-semibold" htmlFor="oferta">¿Te ofrecieron un salario para este puesto? Compáralo</label>
-              <input id="oferta" inputMode="numeric" autoComplete="off" value={ofertaTxt} onChange={(e) => { const n = Number(e.target.value.replace(/\D/g, "")); setOfertaTxt(n ? n.toLocaleString("es-DO") : ""); }} placeholder="Ej. 35,000" className="mt-1 h-11 w-full max-w-xs rounded-xl border border-input bg-background px-4 outline-none focus:border-primary" />
-              {oferta > 0 && <Comparacion oferta={oferta} r={r} />}
-            </div>
-          )}
+          <p className={`mt-4 flex items-start gap-2 rounded-xl px-3 py-2 text-sm ${nivel.tono}`}><Info className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> {nivel.d}</p>
+          {r.n >= MIN_RANKING && <a href="#termometro" className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline">¿Te ofrecieron un salario para este puesto? Compáralo en el termómetro <ArrowRight className="size-4" /></a>}
         </>
       )}
 
@@ -251,52 +278,6 @@ function Resultado({ consulta, obs, hayFiltros }: { consulta: string; obs: Obser
         <button type="button" onClick={compartir} className="inline-flex items-center gap-1.5 text-primary hover:underline"><Share2 className="size-4" /> Compartir</button>
       </div>
     </section>
-  );
-}
-
-function Comparacion({ oferta, r }: { oferta: number; r: Resumen }) {
-  const dif = (oferta - r.mediana) / r.mediana;
-  const pct = Math.round(Math.abs(dif) * 100);
-  const frase = Math.abs(dif) < 0.05 ? "Está en línea con lo que se publica para este puesto." : dif > 0 ? `Está ${pct}% por encima del salario mediano publicado.` : `Está ${pct}% por debajo del salario mediano publicado.`;
-  return (
-    <div className="mt-3 text-sm">
-      <p className="font-bold">{frase}</p>
-      {r.n >= MIN_RANGO
-        ? <p className="mt-1 text-muted-foreground">Paga más que unas {posicion(oferta, r)} de cada 10 vacantes parecidas.</p>
-        : <p className="mt-1 text-muted-foreground">Con {r.n} vacantes es solo una referencia: compara también beneficios, horario y distancia.</p>}
-      <Link to="/herramientas/comparar-ofertas" className="mt-2 inline-flex items-center gap-1 font-bold text-primary hover:underline">Compara la oferta completa <ArrowRight className="size-3.5" /></Link>
-    </div>
-  );
-}
-
-/** Cada punto es una vacante. La franja es el rango típico; la línea, la mediana. */
-function Distribucion({ r, oferta }: { r: Resumen; oferta: number }) {
-  const W = 600, H = 84, pad = 16;
-  const lo = Math.min(r.min, oferta || r.min), hi = Math.max(r.max, oferta || r.max);
-  const span = hi - lo || 1;
-  const x = (v: number) => pad + ((v - lo) / span) * (W - pad * 2);
-  const conRango = r.n >= MIN_RANGO;
-  return (
-    <figure className="mt-6">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`Distribución de ${r.n} salarios entre ${pesos(r.min)} y ${pesos(r.max)}, mediana ${pesos(r.mediana)}`}>
-        <line x1={pad} x2={W - pad} y1={44} y2={44} stroke="var(--border)" strokeWidth={2} />
-        {conRango && <rect x={x(r.p25)} y={26} width={Math.max(2, x(r.p75) - x(r.p25))} height={36} rx={10} fill="#1d6ff2" opacity={0.14} />}
-        {r.valores.map((v, i) => <circle key={i} cx={x(v)} cy={44 + (((i * 37) % 9) - 4) * 3} r={r.n > 60 ? 3.5 : 5} fill="#0a2f5c" opacity={0.55} />)}
-        <line x1={x(r.mediana)} x2={x(r.mediana)} y1={18} y2={70} stroke="#e0a800" strokeWidth={3} strokeLinecap="round" />
-        {oferta > 0 && <line x1={x(oferta)} x2={x(oferta)} y1={10} y2={78} stroke="#0f7a45" strokeWidth={2.5} strokeDasharray="5 4" />}
-      </svg>
-      <div className="relative mt-1 h-5 text-xs tabular-nums text-muted-foreground">
-        {(x(r.mediana) / W) > 0.18 && <span className="absolute left-0">{pesosCortos(lo)}</span>}
-        <span className="absolute -translate-x-1/2 font-bold text-[#7a5a00]" style={{ left: `${(x(r.mediana) / W) * 100}%` }}>{pesosCortos(r.mediana)}</span>
-        {(x(r.mediana) / W) < 0.82 && <span className="absolute right-0">{pesosCortos(hi)}</span>}
-      </div>
-      <figcaption className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-[#0a2f5c]/60" /> Cada punto es una vacante</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-3 w-1 rounded bg-[#e0a800]" /> Mediana</span>
-        {conRango && <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-5 rounded bg-[#1d6ff2]/20" /> Rango típico</span>}
-        {oferta > 0 && <span className="inline-flex items-center gap-1.5 font-semibold text-[#0f7a45]"><span className="h-3 w-0.5 bg-[#0f7a45]" /> Tu oferta</span>}
-      </figcaption>
-    </figure>
   );
 }
 
@@ -356,6 +337,7 @@ function Metodo() {
         <ul className="space-y-3 text-sm">
           <li><b>De dónde salen los datos.</b> De vacantes publicadas en los últimos {MESES} meses que dicen cuánto pagan. Las que no publican salario no entran.</li>
           <li><b>Usamos la mediana, no el promedio.</b> Un solo salario muy alto puede inflar un promedio. La mediana es el punto del medio: la mitad ofrece menos y la mitad más.</li>
+          <li><b>Si la ficha no trae el salario pero el texto sí</b> (por ejemplo «Salario publicado en el flyer: RD$27,987»), lo tomamos del texto. Descartamos montos en dólares, por hora o por día; los quincenales y semanales se pasan a mensual.</li>
           <li><b>Si la vacante da un rango</b> (por ejemplo RD$30,000 – RD$40,000), usamos el punto medio.</li>
           <li><b>Comparamos parecidos.</b> Por defecto solo tiempo completo; medio tiempo y pasantías se incluyen si lo eliges. Una misma vacante publicada dos veces cuenta una sola vez.</li>
           <li><b>Es salario bruto ofrecido</b>, antes de AFP, SFS e ISR, y sin incluir comisiones o bonos que no estén en la cifra publicada.</li>
@@ -364,6 +346,10 @@ function Metodo() {
           <p className="text-sm font-bold">Cuánto mostramos según la cantidad de vacantes</p>
           <ul className="mt-3 space-y-2">
             {reglas.map((r) => <li key={r.n} className="rounded-xl bg-muted px-4 py-2.5 text-sm"><b className="tabular-nums">{r.n}:</b> {r.t}</li>)}
+          </ul>
+          <p className="mt-5 text-sm font-bold">Cifras oficiales de referencia</p>
+          <ul className="mt-2 space-y-1.5 text-sm">
+            {FUENTES_RADAR.map((f) => <li key={f.url}><a href={f.url} target="_blank" rel="noopener noreferrer" className="text-primary underline">{f.nombre}</a></li>)}
           </ul>
         </div>
       </div>
