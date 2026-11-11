@@ -18,21 +18,25 @@ const sinMovimiento = () => typeof window !== "undefined" && window.matchMedia?.
 export function Contador({ valor, formato = (n: number) => Math.round(n).toLocaleString("es-DO"), ms = 1200 }: { valor: number; formato?: (n: number) => string; ms?: number }) {
   const [v, setV] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
+  const actual = useRef(0);
+  const visto = useRef(false);
   useEffect(() => {
-    if (!valor) return;
-    if (sinMovimiento()) { setV(valor); return; }
+    if (sinMovimiento()) { actual.current = valor; setV(valor); return; }
     let raf = 0;
     const el = ref.current;
+    // Sube (o baja) desde el número que ya se ve, no desde cero.
     const correr = () => {
-      const t0 = performance.now();
+      visto.current = true;
+      const t0 = performance.now(), desde = actual.current;
       const paso = (t: number) => {
         const p = Math.min(1, (t - t0) / ms);
-        setV(valor * (1 - Math.pow(1 - p, 3)));
+        actual.current = desde + (valor - desde) * (1 - Math.pow(1 - p, 3));
+        setV(actual.current);
         if (p < 1) raf = requestAnimationFrame(paso);
       };
       raf = requestAnimationFrame(paso);
     };
-    if (!el || typeof IntersectionObserver === "undefined") { correr(); return () => cancelAnimationFrame(raf); }
+    if (visto.current || !el || typeof IntersectionObserver === "undefined") { correr(); return () => cancelAnimationFrame(raf); }
     const io = new IntersectionObserver(([e]) => { if (e?.isIntersecting) { correr(); io.disconnect(); } }, { threshold: 0.4 });
     io.observe(el);
     return () => { io.disconnect(); cancelAnimationFrame(raf); };

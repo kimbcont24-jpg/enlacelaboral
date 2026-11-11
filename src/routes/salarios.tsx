@@ -81,7 +81,27 @@ function RadarSalarial() {
           <h1 className="mt-4 max-w-3xl text-balance text-4xl font-extrabold tracking-tight md:text-6xl">¿Cuánto pagan <span className="text-[#ffd84d]">de verdad?</span></h1>
           <p className="mt-4 max-w-2xl text-lg text-white/80">Explora los salarios que las empresas publican en sus vacantes, por puesto, área y provincia. Siempre te decimos cuántas vacantes hay detrás de cada cifra.</p>
 
-          <label className="mt-8 flex h-14 items-center gap-3 rounded-2xl bg-white px-4 text-foreground shadow-[0_20px_40px_-20px_rgba(0,0,0,.5)] focus-within:ring-4 focus-within:ring-[#ffd84d]/60">
+          <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div className="col-span-2 grid grid-cols-[1fr_auto] items-center gap-4 rounded-3xl bg-white/[0.07] p-5 ring-1 ring-white/10 backdrop-blur sm:col-span-1 sm:block">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Índice de transparencia</p>
+                <p className="mt-2 text-4xl font-extrabold tracking-tight">{cargando ? "…" : <><Contador valor={de100} /> <span className="text-xl text-white/70">de cada 100</span></>}</p>
+                <p className="mt-1 text-sm text-white/70">vacantes dicen cuánto pagan</p>
+              </div>
+              <div className="w-28 sm:mt-4 sm:w-auto sm:max-w-[220px]">{!cargando && <Transparencia de100={de100} />}</div>
+            </div>
+            <div className="rounded-3xl bg-white/[0.07] p-4 ring-1 ring-white/10 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Salarios reales</p>
+              <p className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">{cargando ? "…" : <Contador valor={obs.length} />}</p>
+              <p className="mt-1 text-xs text-white/70 sm:text-sm">publicados por empresas en los últimos {MESES} meses{ultima ? `. El último, el ${new Date(ultima).toLocaleDateString("es-DO", { day: "numeric", month: "long" })}` : ""}.</p>
+            </div>
+            <div className="rounded-3xl bg-white/[0.07] p-4 ring-1 ring-white/10 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Salario mediano publicado</p>
+              <p className="mt-2 text-2xl font-extrabold tracking-tight sm:text-4xl">{cargando || !general ? "…" : <Contador valor={general.mediana} formato={pesos} />}</p>
+              <p className="mt-1 text-xs text-white/70 sm:text-sm">{general ? `La mitad de las vacantes ofrece menos y la otra mitad más${hayFiltros ? ", con tus filtros" : ""}.` : ""}</p>
+            </div>
+          </div>
+          <label className="mt-6 flex h-14 items-center gap-3 rounded-2xl bg-white px-4 text-foreground shadow-[0_20px_40px_-20px_rgba(0,0,0,.5)] focus-within:ring-4 focus-within:ring-[#ffd84d]/60">
             <Search className="size-5 shrink-0 text-primary" aria-hidden="true" />
             <span className="sr-only">Puesto</span>
             <input value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="¿Cuánto gana un… auxiliar de contabilidad?" className="h-full w-full bg-transparent text-base outline-none placeholder:text-muted-foreground" autoComplete="off" enterKeyHint="search" />
@@ -109,27 +129,9 @@ function RadarSalarial() {
           </div>
           <label className="mt-3 inline-flex cursor-pointer items-center gap-2 text-sm text-white/80">
             <input type="checkbox" checked={!!s.todas} onChange={(e) => poner({ todas: e.target.checked || undefined })} className="size-4 accent-[#ffd84d]" />
-            Incluir medio tiempo y pasantías <span className="text-white/50">(por defecto comparamos solo tiempo completo)</span>
+            Incluir medio tiempo y pasantías <span className="hidden text-white/50 sm:inline">(por defecto comparamos solo tiempo completo)</span>
           </label>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-3xl bg-white/[0.07] p-5 ring-1 ring-white/10 backdrop-blur sm:col-span-1">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Índice de transparencia</p>
-              <p className="mt-2 text-4xl font-extrabold tracking-tight">{cargando ? "…" : <><Contador valor={de100} /> <span className="text-xl text-white/70">de cada 100</span></>}</p>
-              <p className="mt-1 text-sm text-white/70">vacantes dicen cuánto pagan</p>
-              <div className="mt-4 max-w-[220px]">{!cargando && <Transparencia de100={de100} />}</div>
-            </div>
-            <div className="rounded-3xl bg-white/[0.07] p-5 ring-1 ring-white/10">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Salarios reales</p>
-              <p className="mt-2 text-4xl font-extrabold tracking-tight">{cargando ? "…" : <Contador valor={obs.length} />}</p>
-              <p className="mt-1 text-sm text-white/70">publicados por empresas en los últimos {MESES} meses{ultima ? `. El último, el ${new Date(ultima).toLocaleDateString("es-DO", { day: "numeric", month: "long" })}` : ""}.</p>
-            </div>
-            <div className="rounded-3xl bg-white/[0.07] p-5 ring-1 ring-white/10">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#ffd84d]">Salario mediano publicado</p>
-              <p className="mt-2 text-4xl font-extrabold tracking-tight">{cargando || !general ? "…" : <Contador valor={general.mediana} formato={pesos} />}</p>
-              <p className="mt-1 text-sm text-white/70">{general ? `La mitad de las vacantes ofrece menos y la otra mitad más${hayFiltros ? ", con tus filtros" : ""}.` : ""}</p>
-            </div>
-          </div>
         </div>
       </section>
 
