@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Operador de Planta",
+  "empresa": "Terpel",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Terpel busca un operador de planta para la recepción de combustible, la realización de inspecciones y el cumplimiento de los procedimientos de seguridad que garantizan una operación eficiente y confiable. Ubicación por confirmar.",
+  "requisitos": "Bachiller | Licencia de conducir categoría 3 | Disponibilidad para horario rotativo | Manejo del paquete Office | Trabajo en equipo y buenas relaciones interpersonales",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "vacantes.rd@terpel.com (Asunto: Operador de Planta)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/terpel-operador-de-planta.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Técnico de Mantenimiento",
+  "empresa": "Terpel",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Terpel busca un técnico de mantenimiento para refullers, vehículos y equipos de planta, contribuyendo a la continuidad operativa y al cumplimiento de los estándares de seguridad. Ubicación por confirmar.",
+  "requisitos": "Técnico en Mecánica Automotriz o electromecánica | Experiencia en mantenimiento preventivo y correctivo de vehículos y equipos | Conocimientos de mecánica diésel, sistemas hidráulicos y neumáticos | Trabajo en equipo y orientación a la seguridad | Licencia de conducir categoría 3",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "vacantes.rd@terpel.com (Asunto: Técnico de Mantenimiento)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/terpel-tecnico-de-mantenimiento.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Practicante de Mantenimiento",
+  "empresa": "Terpel",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Pasantía",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Terpel ofrece una pasantía para apoyar la planificación, el seguimiento y el control de las actividades del área de mantenimiento, contribuyendo a la eficiencia de las operaciones. Ubicación por confirmar.",
+  "requisitos": "Estudiante de término de Ingeniería Industrial, Electromecánica o carreras afines | Manejo de Microsoft Office | Capacidad de análisis y organización | Proactividad y orientación al aprendizaje",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "vacantes.rd@terpel.com (Asunto: Practicante de Mantenimiento)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/terpel-practicante-de-mantenimiento.jpg",
+  "redes": "si"
+ }
+]
