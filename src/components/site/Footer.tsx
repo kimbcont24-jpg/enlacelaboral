@@ -40,6 +40,7 @@ export function Footer() {
             <li><Link to="/alianzas" className="hover:text-white">Alianzas: universidades y fundaciones</Link></li>
             <li><Link to="/empresas" className="hover:text-white">Publicar una vacante</Link></li>
             <li><Link to="/recursos" className="hover:text-white">Consejos y guías</Link></li>
+            <li><Link to="/salarios" className="hover:text-white">Radar salarial: cuánto pagan los puestos</Link></li>
             <li><Link to="/herramientas/regalia-pascual" className="hover:text-white">Calculadora de regalía pascual</Link></li>
             <li><Link to="/herramientas/salario-neto" className="hover:text-white">Calculadora de salario neto</Link></li>
             <li><Link to="/herramientas/liquidacion" className="hover:text-white">Calculadora de liquidación</Link></li>

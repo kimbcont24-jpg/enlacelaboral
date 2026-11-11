@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { BadgeCheck, Briefcase, CalendarClock, CalendarDays, Calculator, ArrowLeft, Check, CheckCircle2, Circle, ExternalLink, FileText, GraduationCap, Layers, Link2, Mail, MapPin, MessageCircle, Monitor, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
+import { BadgeCheck, Briefcase, CalendarClock, CalendarDays, Calculator, ArrowLeft, Check, CheckCircle2, Circle, ExternalLink, FileText, GraduationCap, Layers, Link2, Mail, MapPin, MessageCircle, Monitor, Radar, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
 
 import { AdminAcciones } from "@/components/site/AdminAcciones";
 import { InclusionBloque } from "@/components/site/InclusionPills";
@@ -171,6 +171,9 @@ function Detalle() {
                 <Sueldo job={job} />
                 {job.salarioMin > 0 && (
                   <Link to="/herramientas/salario-neto" search={{ bruto: job.salarioMin }} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"><Calculator className="size-4" aria-hidden="true" /> Calcula cuánto te llega</Link>
+                )}
+                {job.salarioMin > 0 && (
+                  <Link to="/salarios" search={{ q: job.titulo }} className="ml-4 mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"><Radar className="size-4" aria-hidden="true" /> Compara con otras vacantes</Link>
                 )}
               </div>
               <div className="relative h-0" aria-hidden="true">

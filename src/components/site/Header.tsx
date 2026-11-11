@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 const PRINCIPALES: string[] = ["/vacantes", "/alianzas", "/empresas", "/cv"];
 const nav = [
   { to: "/vacantes", label: "Empleos" },
+  { to: "/salarios", label: "Salarios" },
   { to: "/alianzas", label: "Alianzas" },
   { to: "/empleo-para-todos", label: "Empleo para todos" },
   { to: "/descubrir", label: "Descubrir" },
