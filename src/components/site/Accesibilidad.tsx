@@ -21,6 +21,9 @@ export function Accesibilidad() {
   const [abierto, setAbierto] = useState(false);
   // En el panel de empresas (celular) hay barra abajo: el botón sube para no taparla.
   const enPanel = useRouterState({ select: (s) => /^\/(panel|admin)/.test(s.location.pathname) });
+  // En la página de una vacante (celular) también hay una barra fija con "Aplicar".
+  const enVacante = useRouterState({ select: (s) => /^\/vacantes\/[^/]+/.test(s.location.pathname) });
+  const subir = enPanel || enVacante;
   const [a, setA] = useState<Ajustes>(INICIAL);
   useEffect(() => { const x = leer(); setA(x); aplicar(x); }, []);
   useEffect(() => { if (!abierto) return; const t = (e: KeyboardEvent) => { if (e.key === "Escape") setAbierto(false); }; document.addEventListener("keydown", t); return () => document.removeEventListener("keydown", t); }, [abierto]);
@@ -34,12 +37,12 @@ export function Accesibilidad() {
   );
   return (
     <div className="no-print">
-      <button type="button" onClick={() => setAbierto((x) => !x)} aria-expanded={abierto} aria-controls="panel-accesibilidad" aria-label="Accesibilidad: tamaño de letra y contraste" className={`fixed left-4 z-[60] grid size-12 place-items-center rounded-full bg-[#0a2f5c] text-white shadow-lg ring-2 ring-white hover:bg-[#123f78] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#ffbf00] ${enPanel ? "bottom-24 lg:bottom-4 lg:left-[17rem]" : "bottom-4"}`}>
+      <button type="button" onClick={() => setAbierto((x) => !x)} aria-expanded={abierto} aria-controls="panel-accesibilidad" aria-label="Accesibilidad: tamaño de letra y contraste" className={`fixed left-4 z-[60] grid size-12 place-items-center rounded-full bg-[#0a2f5c] text-white shadow-lg ring-2 ring-white hover:bg-[#123f78] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#ffbf00] ${subir ? `bottom-24 lg:bottom-4 ${enPanel ? "lg:left-[17rem]" : ""}` : "bottom-4"}`}>
         <Accessibility className="size-6" aria-hidden="true" />
         {activos > 0 && <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-[#1d6ff2] text-[10px] font-bold">{activos}</span>}
       </button>
       {abierto && (
-        <div id="panel-accesibilidad" role="dialog" aria-label="Accesibilidad" className={`fixed left-4 z-[60] w-[min(22rem,calc(100vw-2rem))] rounded-2xl border border-border bg-surface p-4 shadow-2xl ${enPanel ? "bottom-40 lg:bottom-20 lg:left-[17rem]" : "bottom-20"}`}>
+        <div id="panel-accesibilidad" role="dialog" aria-label="Accesibilidad" className={`fixed left-4 z-[60] w-[min(22rem,calc(100vw-2rem))] rounded-2xl border border-border bg-surface p-4 shadow-2xl max-h-[calc(100dvh-7rem)] overflow-y-auto ${subir ? `bottom-40 lg:bottom-20 ${enPanel ? "lg:left-[17rem]" : ""}` : "bottom-20"}`}>
           <div className="flex items-center justify-between">
             <p className="flex items-center gap-2 font-extrabold"><Accessibility className="size-5 text-primary" aria-hidden="true" /> Accesibilidad</p>
             <button type="button" onClick={() => setAbierto(false)} aria-label="Cerrar" className="grid size-8 place-items-center rounded-lg hover:bg-muted"><X className="size-4" /></button>

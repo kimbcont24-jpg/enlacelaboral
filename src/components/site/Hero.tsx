@@ -54,7 +54,7 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
   const subtitulo = viejo(t.hero_subtitulo) || t.hero_subtitulo.startsWith("Reunimos vacantes") ? textosPorDefecto.hero_subtitulo : t.hero_subtitulo;
 
   return (
-    <header className="hero-dark px-4 pb-12 pt-10 sm:px-6 md:pb-16 md:pt-14">
+    <header className="hero-dark px-4 pb-24 pt-10 sm:pb-12 sm:px-6 md:pb-16 md:pt-14">
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-1/2 hidden size-[34rem] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(29_111_242/.55)_0%,rgb(29_111_242/0)_65%)] lg:block" />
       <div className="relative mx-auto max-w-6xl">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_21rem]">

@@ -13,7 +13,7 @@ const fechas = [{ value: "1", label: "Hoy" }, { value: "3", label: "Últimos 3 d
 
 function Chip({ activo, onClick, children }: { activo: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={onClick} aria-pressed={activo} className={activo ? "rounded-full border border-primary bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground" : "rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary"}>
+    <button type="button" onClick={onClick} aria-pressed={activo} className={activo ? "shrink-0 whitespace-nowrap rounded-full border border-primary bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground" : "shrink-0 whitespace-nowrap rounded-full border border-border bg-surface px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary"}>
       {children}
     </button>
   );
@@ -35,7 +35,7 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
   const activos = [value.area, value.provincia, value.salarioMin, value.tipo, value.fecha, value.nivel, value.incl].filter(Boolean).length;
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
-      <div className="flex flex-wrap items-center justify-start gap-2" role="group" aria-label="Atajos">
+      <div className="-mx-4 flex items-center justify-start gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6 md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden" role="group" aria-label="Atajos">
         <Chip activo={value.fecha === "1"} onClick={() => set("fecha")(value.fecha === "1" ? "" : "1")}>Publicadas hoy</Chip>
         <Chip activo={value.conSalario === "si"} onClick={() => set("conSalario")(value.conSalario === "si" ? "" : "si")}>Con salario visible</Chip>
         <Chip activo={value.nivel === "Primer empleo"} onClick={() => set("nivel")(value.nivel === "Primer empleo" ? "" : "Primer empleo")}>Primer empleo</Chip>
