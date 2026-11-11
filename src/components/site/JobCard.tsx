@@ -10,6 +10,7 @@ import { useGuardados } from "@/lib/guardados";
 import { viaAplicar } from "@/lib/mensajes";
 import { usePostulaciones } from "@/lib/postulaciones";
 import type { Vacante } from "@/lib/vacantes";
+import { lema, nombreEmpresa } from "@/lib/presentar";
 
 export function ClaridadPill({ job, className = "" }: { job: Vacante; className?: string }) {
   const c = claridad(job);
@@ -46,50 +47,58 @@ export function JobCard({ job }: { job: Vacante }) {
   const conSueldo = job.salarioMin > 0;
   const via = viaAplicar(job);
   const { yaAplico } = usePostulaciones();
+  const resumen = lema(job, 150);
   return (
-    <article className={`group relative rounded-2xl border bg-surface p-4 transition-[border-color,box-shadow] hover:border-primary/50 hover:shadow-[var(--shadow-soft)] sm:p-5 ${job.destacada ? "border-primary/50 border-t-4 border-t-[#ffd84d]" : "border-border"}`}>
+    <article className={`group relative overflow-hidden rounded-3xl border bg-surface p-5 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-[#1d6ff2]/40 hover:shadow-[var(--shadow-lift)] ${job.destacada ? "border-[#e8c22e]/60" : "border-border"}`}>
+      {job.destacada && <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#ffd84d] to-[#ffb020]" />}
       <div className="flex items-start gap-3.5">
         <EmpresaAvatar nombre={job.empresa} className="size-12 text-xl" />
         <div className="min-w-0 flex-1">
-          <div className={`flex flex-wrap items-center gap-x-2 gap-y-1 ${job.destacada || nueva || yaAplico(job.id) ? "mb-1.5" : ""}`}>
-            {job.destacada && <span className="rounded-full bg-[#ffd84d] px-2 py-0.5 text-[11px] font-extrabold text-[#3d2f00]">Destacada</span>}
-            {nueva && <span className="rounded-full bg-cta px-2 py-0.5 text-[11px] font-bold text-cta-foreground">Nueva</span>}
-            {yaAplico(job.id) && <span className="rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-bold text-success">Ya aplicaste</span>}
-          </div>
-          <h3 className="text-lg font-extrabold leading-snug">
-            <Link to="/vacantes/$id" params={{ id: job.id }} className="text-balance after:absolute after:inset-0 after:rounded-2xl group-hover:text-primary">{job.titulo}</Link>
+          <p className="truncate text-sm font-semibold text-muted-foreground">{nombreEmpresa(job.empresa)}</p>
+          <h3 className="mt-0.5 text-[1.15rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
+            <Link to="/vacantes/$id" params={{ id: job.id }} className="text-balance after:absolute after:inset-0 after:rounded-3xl group-hover:text-[#1557c4]">{job.titulo}</Link>
           </h3>
-          <p className="mt-0.5 truncate text-sm text-muted-foreground">{job.empresa}</p>
         </div>
       </div>
 
-      {conSueldo && (
-<p className="mt-3.5 flex items-baseline gap-1.5">
-        <span className={conSueldo ? "text-xl font-extrabold tabular-nums text-success" : "text-sm font-bold text-muted-foreground"}>{job.salario}</span>
-        {conSueldo && <span className="text-xs font-semibold text-muted-foreground">al mes</span>}
-      </p>
-)}
+      {(job.destacada || nueva || yaAplico(job.id)) && (
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          {job.destacada && <span className="rounded-full bg-[#ffd84d] px-2.5 py-0.5 text-[11px] font-extrabold text-[#3d2f00]">Destacada</span>}
+          {nueva && <span className="rounded-full bg-cta px-2.5 py-0.5 text-[11px] font-bold text-cta-foreground">Nueva</span>}
+          {yaAplico(job.id) && <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[11px] font-bold text-success">Ya aplicaste</span>}
+        </div>
+      )}
 
-      <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5"><MapPin className="size-4 shrink-0" aria-hidden="true" /> {job.provincia}</span>
-        <span className="inline-flex items-center gap-1.5"><Monitor className="size-4 shrink-0" aria-hidden="true" /> {job.modalidad}</span>
-        <span className="inline-flex items-center gap-1.5"><Briefcase className="size-4 shrink-0" aria-hidden="true" /> {job.tipo}</span>
+      {conSueldo && (
+        <p className="mt-3.5 flex items-baseline gap-1.5">
+          <span className="font-display text-[1.3rem] font-bold tracking-tight tabular-nums text-success">{job.salario}</span>
+          <span className="text-xs font-semibold text-muted-foreground">al mes</span>
+        </p>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-foreground/75">
+        <span className="inline-flex items-center gap-1.5"><MapPin className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" /> {job.provincia}</span>
+        <span className="inline-flex items-center gap-1.5"><Monitor className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" /> {job.modalidad === "Remoto" ? "Desde casa" : job.modalidad}</span>
+        <span className="inline-flex items-center gap-1.5"><Briefcase className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" /> {job.tipo}</span>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+      {resumen && <p className="mt-3 line-clamp-2 text-[15px] leading-relaxed text-muted-foreground">{resumen}</p>}
+
+      <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
         <ClaridadPill job={job} />
         <InclusionPills categorias={job.categorias} />
         <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-primary">{nivelDe(job)}</span>
         <span className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted-foreground">{via.texto}</span>
-        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Clock className="size-3.5" aria-hidden="true" /> {job.publicado}</span>
-        <span className={`text-xs ${pronto ? "font-bold text-destructive" : "text-muted-foreground"}`}>{venceTexto(job)}</span>
       </div>
 
-      <div className="relative z-10 mt-4 flex items-stretch gap-2 border-t border-border pt-4">
+      <div className="relative z-10 mt-4 flex items-center gap-2 border-t border-border pt-4">
         <button onClick={() => aplicar(job)} className="btn-aplicar h-11 flex-1 rounded-xl px-5 text-base sm:max-w-[14rem]">Aplicar</button>
         <Link to="/vacantes/$id" params={{ id: job.id }} className="hidden h-11 items-center rounded-xl border border-border px-4 text-sm font-semibold hover:border-primary hover:text-primary sm:inline-flex">Ver detalles</Link>
         <div className="[&_button]:size-11"><BotonGuardar id={job.id} /></div>
-        <span className="ml-auto hidden min-w-0 items-center truncate text-xs text-muted-foreground md:inline-flex">Fuente: {job.fuente}</span>
+        <span className="ml-auto flex shrink-0 flex-col items-end text-right text-xs leading-tight text-muted-foreground">
+          <span className="inline-flex items-center gap-1"><Clock className="size-3.5" aria-hidden="true" /> {job.publicado}</span>
+          <span className={pronto ? "mt-0.5 font-bold text-destructive" : "mt-0.5"}>{venceTexto(job)}</span>
+        </span>
       </div>
       <div className="relative z-10"><AdminAcciones job={job} /></div>
     </article>

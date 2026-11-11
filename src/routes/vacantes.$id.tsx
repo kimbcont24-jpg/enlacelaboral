@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { BadgeCheck, Briefcase, CalendarClock, CalendarDays, Calculator, ArrowLeft, Check, CheckCircle2, Circle, ExternalLink, FileText, GraduationCap, Layers, Link2, Mail, MapPin, MessageCircle, Monitor, Radar, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { BadgeCheck, Briefcase, Building2, CalendarClock, CalendarDays, Calculator, ArrowLeft, CheckCircle2, ChevronRight, Circle, ExternalLink, FileText, GraduationCap, Image as ImageIcon, Layers, Link2, Mail, MapPin, MessageCircle, Monitor, Radar, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
 
 import { AdminAcciones } from "@/components/site/AdminAcciones";
 import { InclusionBloque } from "@/components/site/InclusionPills";
@@ -22,6 +22,8 @@ import { ReportarVacante } from "@/components/site/ReportarVacante";
 import { registrarVista } from "@/lib/vistas";
 import { ContactoDirecto, tieneContactoDirecto } from "@/components/site/ContactoDirecto";
 import { revisarVacante } from "@/lib/inclusion";
+import { empresaOculta, nombreEmpresa, presentar } from "@/lib/presentar";
+import { Beneficios, Funciones, Notas, PasosAplicar, Requisitos, Seccion, SeccionTitulo, Vigencia } from "@/components/site/VacanteSecciones";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -51,20 +53,15 @@ export const Route = createFileRoute("/vacantes/$id")({
   component: Detalle,
 });
 
-type Bloque = { tipo: "p"; texto: string } | { tipo: "ul"; items: string[] };
-
-/** Convierte el texto de la vacante en párrafos y listas, para que se lea fácil en el celular. */
-function bloques(texto: string): Bloque[] {
-  const out: Bloque[] = [];
-  for (const raw of texto.split(/\r?\n/)) {
-    const l = raw.trim();
-    if (!l) continue;
-    const m = l.match(/^(?:[-•*▪●✓✔]|\d+[.)])\s+(.*)$/);
-    if (m) {
-      const ult = out[out.length - 1];
-      if (ult?.tipo === "ul") ult.items.push(m[1]);
-      else out.push({ tipo: "ul", items: [m[1]] });
-    } else out.push({ tipo: "p", texto: l });
+/** Párrafos cortos para leer cómodo: si un párrafo es muy largo, se parte en oraciones agrupadas. */
+function parrafos(textos: string[]): string[] {
+  const out: string[] = [];
+  for (const t of textos) {
+    if (t.length < 320) { out.push(t); continue; }
+    const os = t.split(/(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ¿¡])/);
+    let actual = "";
+    for (const o of os) { if ((actual + " " + o).length > 260 && actual) { out.push(actual.trim()); actual = o; } else actual += " " + o; }
+    if (actual.trim()) out.push(actual.trim());
   }
   return out;
 }
@@ -80,25 +77,30 @@ function comoAplicar(job: Vacante): { Icono: typeof Mail; texto: string } {
 
 function Dato({ Icono, etiqueta, valor, alerta = false }: { Icono: typeof Mail; etiqueta: string; valor: string; alerta?: boolean }) {
   return (
-    <div className="flex items-start gap-3 p-4">
+    <div className="flex items-start gap-3 p-4 sm:p-5">
       <span aria-hidden="true" className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl bg-secondary text-primary"><Icono className="size-[18px]" /></span>
       <div className="min-w-0">
-        <dt className="text-xs font-semibold text-muted-foreground">{etiqueta}</dt>
-        <dd className={`mt-0.5 text-sm font-bold leading-snug ${alerta ? "text-destructive" : ""}`}>{valor}</dd>
+        <dt className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">{etiqueta}</dt>
+        <dd className={`mt-1 text-[15px] font-bold leading-snug ${alerta ? "text-destructive" : ""}`}>{valor}</dd>
       </div>
     </div>
   );
 }
 
-function Sueldo({ job }: { job: Vacante }) {
+function Sueldo({ job, texto }: { job: Vacante; texto: string }) {
   if (job.salarioMin <= 0) {
-    return null;
+    return (
+      <div>
+        <p className="font-display text-[1.35rem] font-bold leading-tight tracking-tight text-foreground">{texto || "No lo publicaron"}</p>
+        <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{texto ? "Así lo indica la empresa." : "Pregúntalo en la entrevista. Antes, mira cuánto se paga por este puesto."}</p>
+      </div>
+    );
   }
   const [min, max] = job.salario.split(" - ");
   return (
     <div>
-      <p className="text-[2.5rem] font-extrabold leading-none tracking-tight text-success tabular-nums">{min}</p>
-      <p className="mt-1.5 text-lg font-bold text-success tabular-nums">{max ? `a ${max}` : ""}<span className="text-sm font-semibold text-muted-foreground">{max ? " " : ""}al mes</span></p>
+      <p className="font-display text-[2.35rem] font-bold leading-none tracking-[-0.03em] text-success tabular-nums">{min}</p>
+      <p className="mt-2 text-lg font-bold text-success tabular-nums">{max ? `a ${max}` : ""}<span className="text-sm font-semibold text-muted-foreground">{max ? " " : ""}al mes</span></p>
     </div>
   );
 }
@@ -106,16 +108,21 @@ function Sueldo({ job }: { job: Vacante }) {
 function Detalle() {
   const { job } = Route.useLoaderData();
   const aplicar = useApply();
-  const fecha = new Date(job.creado).toLocaleDateString("es-DO", { day: "numeric", month: "long", year: "numeric" });
+  const fecha = new Date(job.creado).toLocaleDateString("es-DO", { day: "numeric", month: "short", year: "numeric" }).replace(".", "");
   const c = claridad(job);
   const { jobs } = useVacantes();
   const similares = jobs.filter((j) => j.id !== job.id && (j.area === job.area || j.provincia === job.provincia)).slice(0, 4);
   const { Icono: IconoAplicar, texto: textoAplicar } = comoAplicar(job);
   const directo = tieneContactoDirecto(job);
   const exclusiones = revisarVacante(job);
-  const sinEmpresa = job.empresa === "Empresa no indicada";
+  const sinEmpresa = empresaOculta(job.empresa);
+  const empresa = nombreEmpresa(job.empresa);
   const urgente = diasRestantes(job) <= 5;
-  const secciones = job.descripcion ? bloques(job.descripcion) : [];
+  const p = useMemo(() => presentar(job), [job]);
+  const textos = parrafos(p.resumen);
+  const lede = textos[0] && textos[0].length <= 240 && !/^para /i.test(textos[0]) ? textos[0] : "";
+  const cuerpo = lede ? textos.slice(1) : textos;
+  const irAplicar = () => (directo ? document.getElementById("aplicar-directo")?.scrollIntoView({ behavior: "smooth", block: "center" }) : aplicar(job));
 
   // Cuenta una vista por persona y sesión, para que la empresa vea cuánta gente vio su vacante.
   useEffect(() => registrarVista(job.id, job.estado), [job.id, job.estado]);
@@ -131,58 +138,68 @@ function Detalle() {
     return () => o.disconnect();
   }, [job.id]);
 
+  const chips = [
+    { I: MapPin, t: job.provincia },
+    { I: Monitor, t: job.modalidad === "Remoto" ? "Desde casa" : job.modalidad },
+    { I: Briefcase, t: job.tipo },
+    { I: GraduationCap, t: job.experiencia === "Sin experiencia" ? "Sin experiencia" : `Experiencia: ${job.experiencia}` },
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
 
-      <section className="hero-dark pb-16 pt-6 lg:pb-28 lg:pt-8">
+      <section className="hero-dark pb-20 pt-6 lg:pb-28 lg:pt-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <Link to="/vacantes" className="inline-flex items-center gap-1.5 rounded-lg py-1 text-sm font-semibold text-white/75 hover:text-white"><ArrowLeft className="size-4" aria-hidden="true" /> Volver a vacantes</Link>
-          <div className="mt-5 flex items-start gap-4 lg:max-w-[calc(66.666%-1.5rem)]">
-            <EmpresaAvatar nombre={job.empresa} claro className="size-14 text-2xl sm:size-16 sm:text-3xl" />
-            <div className="min-w-0">
-              {(job.destacada || esNueva(job)) && (
-                <div className="mb-2 flex flex-wrap gap-1.5">
-                  {job.destacada && <span className="rounded-full bg-[#ffd84d] px-2.5 py-0.5 text-xs font-extrabold text-[#3d2f00]">Destacada</span>}
-                  {esNueva(job) && <span className="vidrio rounded-full px-2.5 py-0.5 text-xs font-bold text-white">Nueva</span>}
-                </div>
-              )}
-              <h1 className="text-[1.75rem] font-extrabold leading-[1.15] tracking-tight text-balance sm:text-4xl lg:text-[2.6rem]">{job.titulo}</h1>
-              <p className="mt-2 text-base text-white/85 sm:text-lg">
-                {sinEmpresa ? job.empresa : <Link to="/empleos/$slug" params={{ slug: slug(job.empresa) }} className="font-semibold underline-offset-4 hover:underline">{job.empresa}</Link>}
-              </p>
-              <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-white/85">
-                <Link to="/empleos/$slug" params={{ slug: slug(job.provincia.replace(/\s*\(.*?\)\s*/g, "").replace("Remoto desde RD", "Remoto")) }} className="inline-flex items-center gap-1.5 hover:text-white hover:underline"><MapPin className="size-4" aria-hidden="true" /> {job.provincia}</Link>
-                <span className="inline-flex items-center gap-1.5"><Monitor className="size-4" aria-hidden="true" /> {job.modalidad}</span>
-                <span className="inline-flex items-center gap-1.5"><Briefcase className="size-4" aria-hidden="true" /> {job.tipo}</span>
-              </p>
+          <nav aria-label="Ruta" className="flex flex-wrap items-center gap-1.5 text-sm font-semibold text-white/70">
+            <Link to="/vacantes" className="inline-flex items-center gap-1.5 rounded-lg py-1 hover:text-white"><ArrowLeft className="size-4" aria-hidden="true" /> Vacantes</Link>
+            <ChevronRight className="size-3.5 opacity-60" aria-hidden="true" />
+            <Link to="/vacantes" search={{ area: job.area }} className="py-1 hover:text-white">{job.area}</Link>
+          </nav>
+          <div className="entra mt-6 lg:max-w-[calc(66.666%-1.5rem)]">
+            <div className="flex items-center gap-3.5">
+              <EmpresaAvatar nombre={job.empresa} claro className="size-14 text-2xl sm:size-16 sm:text-3xl" />
+              <div className="min-w-0">
+                <p className="truncate text-base font-bold text-white sm:text-lg">
+                  {sinEmpresa ? empresa : <Link to="/empleos/$slug" params={{ slug: slug(job.empresa) }} className="underline-offset-4 hover:underline">{empresa}</Link>}
+                </p>
+                <p className="mt-0.5 text-sm text-white/70">{p.gestor && p.gestor !== job.empresa ? `Gestionada por ${p.gestor} · ` : ""}Publicada {job.publicado}</p>
+              </div>
             </div>
+            <div className="mt-6 flex flex-wrap gap-1.5">
+              {job.destacada && <span className="rounded-full bg-[#ffd84d] px-3 py-1 text-xs font-extrabold text-[#3d2f00]">Destacada</span>}
+              {esNueva(job) && <span className="rounded-full bg-[#5aa0ff] px-3 py-1 text-xs font-extrabold text-[#062048]">Nueva</span>}
+              {job.salarioMin > 0 && <span className="rounded-full bg-[#2ecc85]/20 px-3 py-1 text-xs font-bold text-[#a8f0cc] ring-1 ring-[#2ecc85]/40">Salario publicado</span>}
+              <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white ring-1 ring-white/20"><ShieldCheck className="size-3.5" aria-hidden="true" /> Aplicar es gratis</span>
+            </div>
+            <h1 className="mt-3 text-[2rem] font-extrabold leading-[1.08] tracking-[-0.025em] text-balance sm:text-[2.6rem] lg:text-[3.1rem]">{job.titulo}</h1>
+            {lede && <p className="mt-4 max-w-[60ch] text-[1.0625rem] leading-relaxed text-white/80 sm:text-lg">{lede}</p>}
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {chips.map(({ I, t }) => <li key={t} className="vidrio inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold text-white"><I className="size-4 text-[#8ec1ff]" aria-hidden="true" />{t}</li>)}
+            </ul>
           </div>
         </div>
       </section>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 pb-32 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:pb-24">
-        <aside className="-mt-10 lg:order-2 lg:col-span-4 lg:-mt-24">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 pb-32 sm:px-6 lg:grid-cols-12 lg:gap-14 lg:pb-24">
+        <aside className="-mt-12 lg:order-2 lg:col-span-4 lg:-mt-[25rem]">
           <div className="entra lg:sticky lg:top-20">
-            <div className="rounded-3xl border border-t-[6px] border-border border-t-[#ffd84d] bg-surface shadow-[0_24px_48px_-24px_rgb(10_47_92/0.45)]">
-              {job.salarioMin > 0 && (<>
+            <div className="overflow-hidden rounded-[1.75rem] border border-border bg-surface shadow-[0_30px_60px_-30px_rgb(10_47_92/0.5)]">
+              <div className="h-1.5 bg-gradient-to-r from-[#ffd84d] via-[#5aa0ff] to-[#1d6ff2]" aria-hidden="true" />
               <div className="p-6 pb-5">
-                <p className="mb-2 text-sm font-semibold text-muted-foreground">Sueldo</p>
-                <Sueldo job={job} />
-                {job.salarioMin > 0 && (
-                  <Link to="/herramientas/salario-neto" search={{ bruto: job.salarioMin }} className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"><Calculator className="size-4" aria-hidden="true" /> Calcula cuánto te llega</Link>
-                )}
-                {job.salarioMin > 0 && (
-                  <Link to="/salarios" search={{ q: job.titulo }} className="ml-4 mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"><Radar className="size-4" aria-hidden="true" /> Compara con otras vacantes</Link>
-                )}
+                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">Sueldo mensual</p>
+                <Sueldo job={job} texto={p.salarioTexto} />
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+                  {job.salarioMin > 0 && <Link to="/herramientas/salario-neto" search={{ bruto: job.salarioMin }} className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"><Calculator className="size-4" aria-hidden="true" /> Cuánto te llega</Link>}
+                  <Link to="/salarios" search={{ q: job.titulo }} className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"><Radar className="size-4" aria-hidden="true" /> {job.salarioMin > 0 ? "Compara" : "Cuánto se paga"}</Link>
+                </div>
               </div>
               <div className="relative h-0" aria-hidden="true">
                 <div className="absolute inset-x-5 border-t-2 border-dashed border-border" />
                 <span className="absolute -left-3 -top-3 size-6 rounded-full border-r border-border bg-background" />
                 <span className="absolute -right-3 -top-3 size-6 rounded-full border-l border-border bg-background" />
               </div>
-              </>)}
-              <div className={job.salarioMin > 0 ? "p-6 pt-5" : "p-6"}>
+              <div className="p-6 pt-5">
                 {directo ? (
                   <>
                     <div ref={botonRef}><ContactoDirecto job={job} /></div>
@@ -192,114 +209,104 @@ function Detalle() {
                   </>
                 ) : (
                   <>
-                    <p className="flex items-start gap-2.5 text-sm leading-snug text-muted-foreground"><IconoAplicar className="mt-0.5 size-[18px] shrink-0 text-primary" aria-hidden="true" /> {textoAplicar}</p>
-                    <div ref={botonRef}><button onClick={() => aplicar(job)} className="btn-aplicar mt-4 h-14 w-full rounded-2xl text-lg">Aplicar a esta vacante</button></div>
+                    <div ref={botonRef}><button onClick={() => aplicar(job)} className="btn-aplicar h-14 w-full rounded-2xl text-lg">Aplicar a esta vacante</button></div>
+                    <p className="mt-3 flex items-start gap-2.5 text-sm leading-snug text-muted-foreground"><IconoAplicar className="mt-0.5 size-[18px] shrink-0 text-primary" aria-hidden="true" /> {textoAplicar}</p>
                   </>
                 )}
-                <div className="mt-3 flex gap-2">
+                <div className="mt-4 flex gap-2">
                   <div className="flex-1"><BotonGuardar id={job.id} grande /></div>
                   <CompartirBoton job={job} className="h-11 flex-1" />
                 </div>
+                <div className="mt-5 border-t border-border pt-4"><Vigencia job={job} /></div>
               </div>
             </div>
             <div className="mt-4 hidden lg:block"><CanalWhatsApp variante="boton" /></div>
           </div>
         </aside>
 
-        <article className="min-w-0 lg:order-1 lg:col-span-8 lg:pt-10">
+        <article className="min-w-0 space-y-12 lg:order-1 lg:col-span-8 lg:pt-12">
           <AdminAcciones job={job} volverAlListado />
           {exclusiones.length > 0 && (
-            <div role="note" className="mb-6 rounded-2xl border border-[#9a6b00]/30 bg-[#fff8e1] p-4 text-sm">
+            <div role="note" className="rounded-2xl border border-[#9a6b00]/30 bg-[#fff8e1] p-4 text-sm">
               <p className="font-extrabold text-[#6b4a00]">Este aviso pide algo que no está permitido</p>
               <p className="mt-1">Menciona {exclusiones.map((x) => `«${x.frase}»`).join(", ")}. En Enlace Laboral está prohibido pedir edad, sexo, foto, estado civil o rasgos físicos, y ya le pedimos corregirlo. Si cumples con lo que pide el trabajo, aplica igual.</p>
             </div>
           )}
 
-          <dl className="grid grid-cols-2 divide-border overflow-hidden rounded-2xl border border-border bg-surface sm:grid-cols-4 [&>div]:border-b [&>div]:border-border [&>div:nth-child(2n)]:border-l sm:[&>div:nth-child(2n)]:border-l-0 sm:[&>div:not(:nth-child(4n+1))]:border-l [&>div:nth-last-child(-n+2)]:border-b-0 sm:[&>div:nth-last-child(-n+4)]:border-b-0">
-            <Dato Icono={GraduationCap} etiqueta="Experiencia" valor={job.experiencia} />
+          <dl className="grid grid-cols-2 overflow-hidden rounded-3xl border border-border bg-surface shadow-[var(--shadow-soft)] sm:grid-cols-4 [&>div]:border-border max-sm:[&>div:nth-child(-n+2)]:border-b max-sm:[&>div:nth-child(2n)]:border-l sm:[&>div:not(:first-child)]:border-l">
             <Dato Icono={Layers} etiqueta="Área" valor={job.area} />
             <Dato Icono={TrendingUp} etiqueta="Nivel" valor={nivelDe(job)} />
             <Dato Icono={CalendarDays} etiqueta="Publicada" valor={fecha} />
             <Dato Icono={CalendarClock} etiqueta="Vigencia" valor={venceTexto(job)} alerta={urgente} />
-            <Dato Icono={Briefcase} etiqueta="Contrato" valor={job.tipo} />
-            <Dato Icono={Monitor} etiqueta="Modalidad" valor={job.modalidad} />
-            <Dato Icono={MapPin} etiqueta="Dónde" valor={job.provincia} />
           </dl>
 
-          {job.requisitos.length > 0 && (
-            <section className="mt-10">
-              <h2 className="text-xl font-extrabold">Lo que piden</h2>
-              <ul className="mt-4 space-y-3">
-                {job.requisitos.map((r) => (
-                  <li key={r} className="flex items-start gap-3 leading-snug">
-                    <span aria-hidden="true" className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-success/12 text-success"><Check className="size-3.5" strokeWidth={3} /></span>
-                    <span className="min-w-0 [overflow-wrap:anywhere]">{r}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
+          {(cuerpo.length > 0 || p.lista.length > 0 || p.notas.length > 0) && (
+            <Seccion etiqueta="sec-sobre">
+              <SeccionTitulo id="sec-sobre" Icono={Building2} titulo="Sobre el puesto" />
+              <div className="mt-5 max-w-[66ch] space-y-4 text-[1.0625rem] leading-[1.7] text-foreground/85 sm:text-[1.125rem]">
+                {cuerpo.map((t, i) => <p key={i} className="[overflow-wrap:anywhere]">{t}</p>)}
+                {p.lista.length > 0 && <ul className="space-y-2.5">{p.lista.map((x, j) => <li key={j} className="flex gap-3"><span aria-hidden="true" className="mt-[0.68em] size-1.5 shrink-0 rounded-full bg-[#1d6ff2]" /><span className="min-w-0 [overflow-wrap:anywhere]">{x}</span></li>)}</ul>}
+              </div>
+              {p.notas.length > 0 && <div className="mt-6 max-w-[66ch]"><Notas items={p.notas} /></div>}
+            </Seccion>
           )}
 
-          {secciones.length > 0 && (
-            <section className="mt-10">
-              <h2 className="text-xl font-extrabold">Sobre el puesto</h2>
-              <div className="mt-4 max-w-[68ch] space-y-4 text-[1.0625rem] leading-relaxed text-foreground/85">
-                {secciones.map((b, i) => b.tipo === "p"
-                  ? <p key={i} className="[overflow-wrap:anywhere]">{b.texto}</p>
-                  : <ul key={i} className="space-y-2">{b.items.map((x, j) => <li key={j} className="flex gap-3"><span aria-hidden="true" className="mt-[0.7em] size-1.5 shrink-0 rounded-full bg-primary" /><span className="min-w-0 [overflow-wrap:anywhere]">{x}</span></li>)}</ul>)}
-              </div>
-            </section>
-          )}
+          {p.funciones.length > 0 && <Funciones items={p.funciones} />}
+          {(p.imprescindibles.length > 0 || p.cualidades.length > 0 || p.suman.length > 0) && <Requisitos imprescindibles={p.imprescindibles} cualidades={p.cualidades} suman={p.suman} />}
+          {p.ofrece.length > 0 && <Beneficios items={p.ofrece} />}
+
+          <PasosAplicar via={textoAplicar} directo={directo} onAplicar={irAplicar} />
 
           {job.imagen && (
-            <section className="mt-10" aria-labelledby="img-orig">
-              <h2 id="img-orig" className="text-xl font-extrabold">Publicación original</h2>
-              <a href={job.imagen} target="_blank" rel="noopener noreferrer" className="mt-4 block max-w-md overflow-hidden rounded-2xl border border-border bg-surface" aria-label="Abrir la imagen original en tamaño completo">
+            <Seccion etiqueta="img-orig">
+              <SeccionTitulo id="img-orig" Icono={ImageIcon} titulo="Publicación original" sub="Así la publicó la empresa. Toca para verla completa." />
+              <a href={job.imagen} target="_blank" rel="noopener noreferrer" className="mt-6 block max-w-md overflow-hidden rounded-3xl border border-border bg-surface shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5" aria-label="Abrir la imagen original en tamaño completo">
                 <img src={job.imagen} alt={`Publicación original de la vacante ${job.titulo}`} loading="lazy" className="w-full object-contain" />
               </a>
-              <p className="mt-2 text-sm text-muted-foreground">Toca la imagen para verla completa.</p>
-            </section>
+            </Seccion>
           )}
 
           <InclusionBloque categorias={job.categorias} />
 
-          <section className="mt-10 rounded-2xl bg-secondary/70 p-5 sm:p-6" aria-labelledby="seguro">
-            <h2 id="seguro" className="flex items-center gap-2 text-lg font-extrabold"><ShieldCheck className="size-5 text-primary" aria-hidden="true" /> Antes de aplicar</h2>
-            <ul className="mt-3 space-y-2 text-sm leading-snug text-foreground/85">
-              <li>Una empresa seria no te cobra para contratarte. Si te piden dinero, no sigas y repórtalo.</li>
-              <li>Confirma el nombre de la empresa y a quién le mandas tus datos.</li>
-              <li>Enlace Laboral republica esta vacante. Los detalles finales los confirma la empresa.</li>
-            </ul>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Fuente: <span className="font-semibold text-foreground">{job.fuente}</span>
-              {job.fuenteUrl && (<> — <a href={job.fuenteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">ver publicación original <ExternalLink className="size-3.5" aria-hidden="true" /></a></>)}
-            </p>
-            <ReportarVacante id={job.id} />
-          </section>
+          <div className="grid gap-4 md:grid-cols-2">
+            <section className="rounded-3xl bg-secondary/70 p-5 sm:p-6" aria-labelledby="seguro">
+              <h2 id="seguro" className="flex items-center gap-2 text-lg font-extrabold"><ShieldCheck className="size-5 text-primary" aria-hidden="true" /> Antes de aplicar</h2>
+              <ul className="mt-3 space-y-2 text-sm leading-snug text-foreground/85">
+                <li>Una empresa seria no te cobra para contratarte. Si te piden dinero, no sigas y repórtalo.</li>
+                <li>Confirma el nombre de la empresa y a quién le mandas tus datos.</li>
+                <li>Enlace Laboral republica esta vacante. Los detalles finales los confirma la empresa.</li>
+              </ul>
+              <p className="mt-4 text-sm text-muted-foreground">
+                Fuente: <span className="font-semibold text-foreground">{job.fuente}</span>
+                {job.fuenteUrl && (<> — <a href={job.fuenteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">ver publicación original <ExternalLink className="size-3.5" aria-hidden="true" /></a></>)}
+              </p>
+              <ReportarVacante id={job.id} />
+            </section>
 
-          <section className="mt-6 rounded-2xl border border-border bg-surface p-5" aria-labelledby="claridad-titulo">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 id="claridad-titulo" className="flex items-center gap-2 text-lg font-extrabold"><Sparkles className="size-5 text-primary" aria-hidden="true" /> Qué tan completa está ({c.puntos} de {c.total})</h2>
-              <ClaridadPill job={job} />
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">Mientras más completa la vacante, menos sorpresas al aplicar.</p>
-            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-              {c.tiene.map((x) => <li key={x} className="flex items-center gap-2 text-sm"><CheckCircle2 className="size-4 shrink-0 text-success" aria-hidden="true" /> {x}</li>)}
-              {c.falta.map((x) => <li key={x} className="flex items-center gap-2 text-sm text-muted-foreground"><Circle className="size-4 shrink-0" aria-hidden="true" /> {x}: no lo indica</li>)}
-            </ul>
-          </section>
+            <section className="rounded-3xl border border-border bg-surface p-5 sm:p-6" aria-labelledby="claridad-titulo">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 id="claridad-titulo" className="flex items-center gap-2 text-lg font-extrabold"><Sparkles className="size-5 text-primary" aria-hidden="true" /> Qué tan completa está</h2>
+                <ClaridadPill job={job} />
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">{c.puntos} de {c.total}. Mientras más completa, menos sorpresas al aplicar.</p>
+              <ul className="mt-4 grid gap-2">
+                {c.tiene.map((x) => <li key={x} className="flex items-center gap-2 text-sm"><CheckCircle2 className="size-4 shrink-0 text-success" aria-hidden="true" /> {x}</li>)}
+                {c.falta.map((x) => <li key={x} className="flex items-center gap-2 text-sm text-muted-foreground"><Circle className="size-4 shrink-0" aria-hidden="true" /> {x}: no lo indica</li>)}
+              </ul>
+            </section>
+          </div>
 
-          <div className="mt-8 lg:hidden"><CanalWhatsApp variante="tarjeta" /></div>
+          <div className="lg:hidden"><CanalWhatsApp variante="tarjeta" /></div>
 
           <SobreEmpresa vacanteId={job.id} />
 
           {similares.length > 0 && (
-            <section className="mt-12">
-              <h2 className="text-xl font-extrabold">Vacantes parecidas</h2>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">{similares.map((j) => <VacanteTarjeta key={j.id} job={j} />)}</div>
+            <section>
+              <h2 className="text-[1.3rem] font-extrabold tracking-[-0.01em] sm:text-[1.45rem]">Vacantes parecidas</h2>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">{similares.map((j) => <VacanteTarjeta key={j.id} job={j} />)}</div>
             </section>
           )}
-          <section className="mt-12"><AlertaForm areaInicial={job.area} provinciaInicial={job.provincia} /></section>
+          <section><AlertaForm areaInicial={job.area} provinciaInicial={job.provincia} /></section>
         </article>
       </div>
 
@@ -313,7 +320,7 @@ function Detalle() {
             <p className={`truncate ${job.salarioMin > 0 ? "text-xs" : "text-sm font-bold"} text-muted-foreground`}>{job.titulo}</p>
           </div>
           <div className="[&_button]:size-12"><BotonGuardar id={job.id} /></div>
-          <button tabIndex={barra ? 0 : -1} onClick={() => (directo ? document.getElementById("aplicar-directo")?.scrollIntoView({ behavior: "smooth", block: "center" }) : aplicar(job))} className="btn-aplicar h-12 shrink-0 rounded-xl px-6 text-base">{directo ? "Cómo aplicar" : "Aplicar"}</button>
+          <button tabIndex={barra ? 0 : -1} onClick={irAplicar} className="btn-aplicar h-12 shrink-0 rounded-xl px-6 text-base">{directo ? "Cómo aplicar" : "Aplicar"}</button>
         </div>
       </div>
       <Footer />
@@ -326,7 +333,7 @@ function SobreEmpresa({ vacanteId }: { vacanteId: string }) {
   const { data: e } = useEmpresaPublica({ vacante: vacanteId });
   if (!e) return null;
   return (
-    <section className="mt-10 rounded-2xl border border-border bg-surface p-5 sm:p-6">
+    <section className="rounded-3xl border border-border bg-surface p-5 sm:p-6">
       <div className="flex items-start gap-4">
         <EmpresaAvatar nombre={e.nombre} className="size-12 text-xl" />
         <div className="min-w-0 flex-1">

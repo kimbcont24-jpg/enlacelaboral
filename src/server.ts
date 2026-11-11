@@ -4,7 +4,7 @@ import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { landingsArea, landingsProvincia, slug } from "./lib/empleos";
 import { imagenVacante } from "./lib/og";
-import { leerMeta, type VacanteRow } from "./lib/vacantes";
+import { empresaDe, leerMeta, type VacanteRow } from "./lib/vacantes";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -81,7 +81,7 @@ async function ogVacante(id: string, origen: string): Promise<Response> {
   const min = fila.salario_min ?? 0, max = fila.salario_max ?? 0;
   try {
     const png = await imagenVacante({
-      titulo: fila.titulo, empresa: meta["empresa"] || "Empresa no indicada", provincia: fila.provincia, modalidad: fila.modalidad, tipo: fila.tipo,
+      titulo: fila.titulo, empresa: empresaDe(meta["empresa"]), provincia: fila.provincia, modalidad: fila.modalidad, tipo: fila.tipo,
       conSalario: min > 0, salario: max > min ? `${pesos(min)} – ${pesos(max)}` : min > 0 ? pesos(min) : "",
     }, origen);
     return new Response(png as BodyInit, { headers: { "content-type": "image/png", "cache-control": "public, max-age=3600, s-maxage=86400" } });

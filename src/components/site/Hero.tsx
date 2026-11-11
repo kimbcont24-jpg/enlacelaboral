@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { nombreEmpresa } from "@/lib/presentar";
 
 import { useApply } from "@/components/site/apply-context";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
@@ -30,7 +31,7 @@ function TarjetaPortada({ job }: { job: Vacante }) {
         <EmpresaAvatar nombre={job.empresa} className="size-11 text-lg" />
         <div className="min-w-0">
           <Link to="/vacantes/$id" params={{ id: job.id }} className="block text-base font-extrabold leading-snug hover:text-primary">{job.titulo}</Link>
-          <p className="truncate text-sm text-muted-foreground">{job.empresa}</p>
+          <p className="truncate text-sm text-muted-foreground">{nombreEmpresa(job.empresa)}</p>
         </div>
       </div>
       {conSueldo && (

@@ -61,6 +61,9 @@ export type VacanteRow = {
 
 export const SELECT = "id,titulo,area,provincia,modalidad,tipo,experiencia,salario_min,salario_max,descripcion,requisitos,etiquetas,estado,created_at,destacada,preguntas";
 
+/** Las empresas sin nombre («… (confidencial)», «Confidencial») se guardan todas igual. */
+export const empresaDe = (e?: string) => (!e || /^(…|\.\.\.)|^\s*(empresa\s+)?confidencial\s*$|\(confidencial\)\s*$/i.test(e.trim()) ? "Empresa no indicada" : e.trim());
+
 const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
 
 export function leerMeta(etiquetas: string[] | null) {
@@ -97,7 +100,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
   return {
     id: r.id,
     titulo: r.titulo.replace(SEXO_EN_TITULO, "").trim() || r.titulo,
-    empresa: meta["empresa"] || "Empresa no indicada",
+    empresa: empresaDe(meta["empresa"]),
     provincia: r.provincia,
     modalidad: r.modalidad,
     tipo: r.tipo,

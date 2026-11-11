@@ -74,7 +74,7 @@ export function ContactoDirecto({ job, compacto = false, alUsar }: { job: Vacant
       {c.correos.map((correo) => (
         <div key={correo} className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4">
           <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-primary"><Mail className="size-4" aria-hidden="true" /> Envía tu CV a este correo</p>
-          <p className="mt-1.5 select-all break-all text-lg font-extrabold leading-snug text-foreground">{correo}</p>
+          <p className={`mt-1.5 select-all font-extrabold leading-snug tracking-[-0.01em] text-foreground [overflow-wrap:anywhere] ${correo.length > 30 ? "text-[15px]" : correo.length > 24 ? "text-base" : "text-lg"}`}>{correo}</p>
           <p className="mt-1 text-sm text-muted-foreground">
             Asunto: <span className="font-semibold text-foreground">{asunto}</span>
           </p>

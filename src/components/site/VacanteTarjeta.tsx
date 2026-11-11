@@ -8,6 +8,7 @@ import { useApply } from "@/components/site/apply-context";
 import { diasRestantes, esNueva, venceTexto } from "@/lib/claridad";
 import { viaAplicar } from "@/lib/mensajes";
 import type { Vacante } from "@/lib/vacantes";
+import { nombreEmpresa } from "@/lib/presentar";
 
 /** Tarjeta compacta para cuadrículas (portada). */
 export function VacanteTarjeta({ job }: { job: Vacante }) {
@@ -15,19 +16,20 @@ export function VacanteTarjeta({ job }: { job: Vacante }) {
   const etiqueta = job.modalidad === "Remoto" ? "Desde casa" : job.tipo;
   const conSueldo = job.salarioMin > 0;
   return (
-    <article className={`group lift relative flex flex-col rounded-2xl border bg-surface p-5 ${job.destacada ? "border-t-4 border-primary/40 border-t-[#ffd84d]" : "border-border"}`}>
+    <article className={`group lift relative flex flex-col overflow-hidden rounded-3xl border bg-surface p-5 ${job.destacada ? "border-[#e8c22e]/60" : "border-border"}`}>
+      {job.destacada && <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#ffd84d] to-[#ffb020]" />}
       <div className="flex items-start gap-3">
         <EmpresaAvatar nombre={job.empresa} className="size-11 text-lg" />
         <div className="min-w-0 flex-1">
-          <h3 className="text-base font-extrabold leading-snug">
-            <Link to="/vacantes/$id" params={{ id: job.id }} className="text-balance after:absolute after:inset-0 after:rounded-2xl group-hover:text-primary">{job.titulo}</Link>
+          <p className="truncate text-[13px] font-semibold text-muted-foreground">{nombreEmpresa(job.empresa)}</p>
+          <h3 className="mt-0.5 text-[1.05rem] font-extrabold leading-[1.25] tracking-[-0.01em]">
+            <Link to="/vacantes/$id" params={{ id: job.id }} className="text-balance after:absolute after:inset-0 after:rounded-3xl group-hover:text-[#1557c4]">{job.titulo}</Link>
           </h3>
-          <p className="mt-0.5 truncate text-sm text-muted-foreground">{job.empresa}</p>
         </div>
       </div>
       {conSueldo && (
 <p className="mt-4 flex items-baseline gap-1.5">
-        <span className={conSueldo ? "text-xl font-extrabold tabular-nums text-success" : "text-sm font-bold text-muted-foreground"}>{job.salario}</span>
+        <span className="font-display text-[1.2rem] font-bold tracking-tight tabular-nums text-success">{job.salario}</span>
         {conSueldo && <span className="text-xs font-semibold text-muted-foreground">al mes</span>}
       </p>
 )}
