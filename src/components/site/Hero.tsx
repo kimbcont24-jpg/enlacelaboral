@@ -54,7 +54,7 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
   const subtitulo = viejo(t.hero_subtitulo) || t.hero_subtitulo.startsWith("Reunimos vacantes") ? textosPorDefecto.hero_subtitulo : t.hero_subtitulo;
 
   return (
-    <header className="hero-dark px-4 pb-24 pt-10 sm:pb-12 sm:px-6 md:pb-16 md:pt-14">
+    <header className="hero-dark px-4 pb-16 pt-10 sm:pb-12 sm:px-6 md:pb-16 md:pt-14">
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-1/2 hidden size-[34rem] -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(29_111_242/.55)_0%,rgb(29_111_242/0)_65%)] lg:block" />
       <div className="relative mx-auto max-w-6xl">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_21rem]">
@@ -66,14 +66,15 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
           <SearchBar puesto={puesto} provincia={provincia} onPuesto={onPuesto} onProvincia={onProvincia} onSubmit={onBuscar} ctaLabel="Buscar" />
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-sm text-white/75">Búsquedas populares:</span>
+        <p className="mt-5 text-sm text-white/75 md:hidden">Búsquedas populares:</p>
+        <div className="-mx-4 mt-2 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6 md:mx-0 md:mt-5 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden [&>a]:shrink-0 [&>a]:whitespace-nowrap">
+          <span className="mr-1 hidden text-sm text-white/75 md:inline">Búsquedas populares:</span>
           {populares.map((p) => (
             <Link key={p} to="/vacantes" search={{ q: p }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-white/25">{p}</Link>
           ))}
           <Link to="/empleos/$slug" params={{ slug: "remoto" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Desde casa</Link>
           <Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Primer empleo</Link>
-          <Link to="/descubrir" className="rounded-full bg-[#ffd84d] px-3.5 py-1.5 text-sm font-extrabold text-[#3d2f00] hover:bg-[#ffe27a]">Descubrir deslizando</Link>
+          <Link to="/descubrir" className="order-first rounded-full bg-[#ffd84d] px-3.5 py-1.5 md:order-none text-sm font-extrabold text-[#3d2f00] hover:bg-[#ffe27a]">Descubrir deslizando</Link>
         </div>
 
         </div>
