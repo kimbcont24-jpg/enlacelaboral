@@ -1,8 +1,8 @@
 {
-  "fecha": "2026-11-11T20:09:51.102Z",
-  "total": 264,
-  "revisadas": 144,
-  "sin_contacto": 144,
+  "fecha": "2026-11-11T20:58:33.787Z",
+  "total": 233,
+  "revisadas": 100,
+  "sin_contacto": 100,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "nst": 0,
@@ -11,6 +11,6 @@
     "citi": 3,
     "medtronic": 3,
     "baxter": 4,
-    "eaton": 66
+    "eaton": 22
   }
 }
