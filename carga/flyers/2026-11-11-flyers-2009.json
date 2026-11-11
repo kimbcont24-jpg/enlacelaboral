@@ -1,0 +1,62 @@
+[
+ {
+  "titulo": "Monitoreo Profesional (cámaras de seguridad)",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se busca persona para monitorear cámaras de seguridad, recibir incidencias de los agentes de ventas, realizar cuadres con los mensajeros y aperturar rutas de mensajeros. Salario publicado en el flyer: RD$24,000, más beneficios de ley y otros beneficios de la empresa.",
+  "requisitos": "Bachiller | Buenas relaciones humanas | Manejo de la tecnología | Habilidad para aprender y socializar | Habilidad para trabajar bajo presión",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "yilin_2@hotmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/monitoreo-profesional-santo-domingo.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ejecutivo/a de Negocios (La Vega)",
+  "empresa": "BP Medical",
+  "provincia": "La Vega",
+  "area": "Ventas",
+  "modalidad": "Campo",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "BP Medical, empresa de equipos médicos, busca ejecutivos de negocios para La Vega y Santiago. Ofrece salario base, comisiones, asignación de combustible, mantenimiento de vehículo y viáticos.",
+  "requisitos": "Licenciatura en Mercadeo, Ingeniería Biomédica o carreras afines | Experiencia en ventas, preferiblemente en salud o equipos médicos | Venta consultiva, negociación y cierre | Inglés | Vehículo propio y licencia al día | Planificación y organización | Manejo de herramientas tecnológicas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "GESTIONHUMANA@BPMEDICAL.NET",
+  "imagen": "https://enlace-rd.vercel.app/flyers/bp-medical-ejecutivos-de-negocios.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ejecutivo/a de Negocios (Santiago)",
+  "empresa": "BP Medical",
+  "provincia": "Santiago",
+  "area": "Ventas",
+  "modalidad": "Campo",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "BP Medical, empresa de equipos médicos, busca ejecutivos de negocios para La Vega y Santiago. Ofrece salario base, comisiones, asignación de combustible, mantenimiento de vehículo y viáticos.",
+  "requisitos": "Licenciatura en Mercadeo, Ingeniería Biomédica o carreras afines | Experiencia en ventas, preferiblemente en salud o equipos médicos | Venta consultiva, negociación y cierre | Inglés | Vehículo propio y licencia al día | Planificación y organización | Manejo de herramientas tecnológicas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "GESTIONHUMANA@BPMEDICAL.NET",
+  "imagen": "https://enlace-rd.vercel.app/flyers/bp-medical-ejecutivos-de-negocios.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Personal de Limpieza Temporal",
+  "empresa": "Tokmakjian International",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Por proyecto",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Tokmakjian International solicita personal de limpieza de forma temporal para cobertura de vacaciones. Ubicación por confirmar.",
+  "requisitos": "Disponibilidad para cobertura temporal de vacaciones",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rgonzalez@tokmakjian.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/tokmakjian-personal-de-limpieza.jpg",
+  "redes": "si"
+ }
+]
