@@ -304,11 +304,38 @@ async function computrabajo() {
   return filas;
 }
 
+
+/* ---------------- Neuro STEM Talent (regla de Kim, 11 nov 2026: sus vacantes SIEMPRE van en Enlace) ---------------- */
+// El listado de neurostemtalent.com/vacantes se dibuja con JavaScript, pero el sitemap trae cada vacante
+// y cada página de vacante tiene su JobPosting (JSON-LD). No se filtra por fecha: si está abierta en NST, va.
+async function nst() {
+  const filas = [];
+  const base = "https://www.neurostemtalent.com";
+  const sm = await getText(`${base}/sitemap.xml`);
+  const urls = [...new Set([...sm.matchAll(/https?:\/\/(?:www\.)?neurostemtalent\.com\/vacantes\/[0-9a-f-]{36}/g)].map((m) => m[0].replace("://neurostemtalent", "://www.neurostemtalent")))];
+  log("nst enlaces", urls.length);
+  for (const u of urls) {
+    try {
+      const h = await getText(u);
+      const jp = jsonLd(h);
+      if (!jp) continue;
+      if (jp.datePosted && (hoy - new Date(jp.datePosted)) / 864e5 > 180) continue;
+      const cliente = limpiar(jp.hiringOrganization?.name ?? "");
+      const f = filaDesdeJobPosting(jp, { empresa: "Neuro STEM Talent", url: u, fuenteTexto: `Vacante gestionada por Neuro STEM Talent${cliente && !/neuro\s*stem/i.test(cliente) ? " para " + cliente : ""}. Postular no tiene costo.`, provDef: "Distrito Nacional" });
+      if (!f) continue;
+      if (/haina/i.test(JSON.stringify(jp.jobLocation ?? ""))) f.provincia = "San Cristóbal";
+      f.fuente = "Neuro STEM Talent";
+      filas.push(f);
+    } catch (e) { log("nst", u.slice(-12), String(e).slice(0, 60)); }
+  }
+  return filas;
+}
+
 // 10 nov 2026 (Kim): ya NO se cargan Aldaba ni Computrabajo; el foco son los flyers que Kim sube desde el celular.
 // Para reactivarlos: poner la variable CON_PORTALES=1 en el workflow.
 const fuentes = process.env.CON_PORTALES === "1"
-  ? { aldaba, computrabajo, alorica, marriott, citi, medtronic, baxter, eaton }
-  : { alorica, marriott, citi, medtronic, baxter, eaton };
+  ? { nst, aldaba, computrabajo, alorica, marriott, citi, medtronic, baxter, eaton }
+  : { nst, alorica, marriott, citi, medtronic, baxter, eaton };
 const resultado = [];
 const resumen = {};
 for (const [nombre, fn] of Object.entries(fuentes)) {
