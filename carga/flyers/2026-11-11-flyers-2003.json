@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Contador/a",
+  "empresa": "Grabo Estilo",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Grabo Estilo busca un contador o contadora con experiencia en cuentas por pagar, conciliaciones bancarias, nómina e impuestos. Residir en Santo Domingo. Ofrece beneficios de ley y otros beneficios marginales.",
+  "requisitos": "Licenciatura en Contabilidad | Experiencia mínima de 2 años | Cuentas por pagar y conciliaciones bancarias | Nómina | Conocimiento de impuestos | Manejo de Office y sistemas contables | Residir en Santo Domingo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "RRHH@GRABOESTILO.COM / RRHH01@GRABOESTILO.COM · WhatsApp 809-501-5584 (poner el nombre del puesto en el asunto)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/grabo-estilo-contador.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Cuidador/a Infantil",
+  "empresa": "EducaKids Centro de Cuidado Infantil",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "EducaKids busca cuidador o cuidadora infantil con manejo de grupos de niños y conocimientos de estimulación temprana. Residir en la Zona Oriental, próximo a Megacentro. Ofrece beneficios de ley, capacitación y bono.",
+  "requisitos": "Manejo de grupos de niños | Dinámica y responsable | Licenciatura o estudiante en áreas afines | Conocimientos de estimulación temprana | Residir en la Zona Oriental próximo a Megacentro",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "c.cuidadoinfantileducakids@gmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/educakids-cuidador-infantil.jpg",
+  "redes": "si"
+ }
+]
