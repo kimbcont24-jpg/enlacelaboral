@@ -1,5 +1,5 @@
 {
-  "fecha": "2026-11-12T15:34:57.479Z",
+  "fecha": "2026-11-12T18:10:37.213Z",
   "total": 372,
   "revisadas": 141,
   "sin_contacto": 141,
@@ -9,8 +9,8 @@
     "alorica": 11,
     "marriott": 57,
     "citi": 3,
-    "medtronic": 3,
+    "medtronic": 4,
     "baxter": 3,
-    "eaton": 64
+    "eaton": 63
   }
 }
