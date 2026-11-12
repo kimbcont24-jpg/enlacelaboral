@@ -1,0 +1,60 @@
+[
+ {
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "tipo": "Tiempo completo",
+  "modalidad": "Presencial",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "titulo": "Despachador",
+  "empresa": "Henríquez Soluciones Logísticas",
+  "experiencia": "1-3 años",
+  "descripcion": "Henríquez Soluciones Logísticas busca Despachador para su operación en Caucedo. Turno B, de 2:00 p. m. a 10:00 p. m., de lunes a sábado.",
+  "requisitos": "Estudiante de Ingeniería Industrial o carreras afines | Mínimo 1 año de experiencia en despacho y logística | Disponibilidad para el turno B (2:00 p. m. a 10:00 p. m., lunes a sábado) | Residir en zonas aledañas a Boca Chica o Brisas de Caucedo",
+  "aplicar": "reclutamiento@henriquez.com.do (indicar el nombre de la vacante en el asunto)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/henriquez-despachador-caucedo.jpg"
+ },
+ {
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "tipo": "Tiempo completo",
+  "modalidad": "Presencial",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "titulo": "Montacarguista Reach",
+  "empresa": "Henríquez Soluciones Logísticas",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Henríquez Soluciones Logísticas busca Montacarguista Reach para su operación en Caucedo. Turno B, de 2:00 p. m. a 10:00 p. m.",
+  "requisitos": "Saber manejar montacargas Reach | Certificado de manejo de montacargas | Disponibilidad para el turno B (2:00 p. m. a 10:00 p. m.) | Residir en zonas aledañas a Brisas de Caucedo",
+  "aplicar": "reclutamiento@henriquez.com.do (indicar el nombre de la vacante en el asunto)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/henriquez-montacarguista-reach-caucedo.jpg"
+ },
+ {
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "tipo": "Tiempo completo",
+  "modalidad": "Presencial",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "titulo": "Almacenista I",
+  "empresa": "Schad",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Ejecutar las actividades de movilización, traslado y ubicación de mercancías dentro de las áreas de almacén, contribuyendo al orden y al flujo eficiente de los productos. Ubicación: Km 11 ½ de la Av. Independencia.",
+  "requisitos": "Educación básica | Formación complementaria en almacén y control de inventarios | Manejo de equipos de movilización de carga (walkie / pallet jack) | Capacidad para trabajar en equipo | Operación de montacargas (deseable)",
+  "aplicar": "rys@schad.do"
+ },
+ {
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "tipo": "Tiempo completo",
+  "modalidad": "Presencial",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "titulo": "Almacenista I",
+  "empresa": "Schad",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Ejecutar las actividades de movilización, traslado y ubicación de mercancías dentro de las áreas de almacén, contribuyendo al orden y al flujo eficiente de los productos. Ubicación: la Av. Monumental.",
+  "requisitos": "Educación básica | Formación complementaria en almacén y control de inventarios | Manejo de equipos de movilización de carga (walkie / pallet jack) | Capacidad para trabajar en equipo | Operación de montacargas (deseable)",
+  "aplicar": "rys@schad.do"
+ }
+]
