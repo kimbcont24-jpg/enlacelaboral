@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Promotor/a Mercaderista",
+  "empresa": "Importadora Exportadora J&J",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Campo",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Importadora Exportadora J&J busca promotor/a mercaderista para la zona de Santo Domingo Este, Las Américas. Salario base publicado en el flyer: RD$31,000, más combustible RD$5,000 y depreciación de vehículo RD$2,000. Incluye bonificación anual, beneficios de ley (ARS, AFP) y programas para adquirir productos de la empresa. Envía tu CV con el nombre de la vacante en el asunto.",
+  "requisitos": "Residir en Santo Domingo Este | Mínimo bachiller o estudiante universitario | Experiencia previa como mercaderista | Vehículo propio | Licencia de conducir vigente | Disponibilidad inmediata | Habilidades sólidas de comunicación y organización | Buena administración del tiempo",
+  "imagen": "https://enlace-rd.vercel.app/flyers/jj-importadora-promotor-mercaderista.jpg",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@jjimportexport.com.do",
+  "redes": "si"
+ },
+ {
+  "titulo": "Auxiliar de Contabilidad",
+  "empresa": "Importadora Exportadora J&J",
+  "provincia": "San Cristóbal",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Importadora Exportadora J&J busca auxiliar de contabilidad para apoyar los procesos del departamento (zona de Bajos de Haina). Ofrece salario competitivo, almuerzo cubierto al 100%, cooperativa y beneficios de ley. Envía tu CV con el nombre de la vacante en el asunto.",
+  "requisitos": "Estudiante o recién graduado/a de contabilidad | Mínimo 1 año de experiencia en procesos contables | Conocimientos básicos de registros contables y conciliación bancaria | Manejo de documentación financiera | Experiencia en software de contabilidad | Excel intermedio-avanzado | Residir en Bajos de Haina o zonas aledañas | Organización, confidencialidad y trabajo en equipo",
+  "imagen": "https://enlace-rd.vercel.app/flyers/jj-importadora-auxiliar-contabilidad.jpg",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@jjimportexport.com.do",
+  "redes": "si"
+ },
+ {
+  "titulo": "Auxiliar de Ventas y Servicio al Cliente",
+  "empresa": "Importadora Exportadora J&J",
+  "provincia": "San Cristóbal",
+  "area": "Servicio al Cliente",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Importadora Exportadora J&J busca auxiliar de ventas y servicio al cliente (zona de Bajos de Haina): aprobación de pedidos colocados por vendedores, generación de órdenes de venta y envío de factura al cliente, solicitud de citas y confirmación de salida de mercancía. Ofrece salario competitivo, almuerzo cubierto al 100%, cooperativa y beneficios de ley.",
+  "requisitos": "Estudiante universitario | Experiencia en ventas y facturación (imprescindible) | Residir en Bajos de Haina o zonas aledañas | Organización y trabajo en equipo | Disponibilidad inmediata",
+  "imagen": "https://enlace-rd.vercel.app/flyers/jj-importadora-auxiliar-ventas-servicio-cliente.jpg",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@jjimportexport.com.do",
+  "redes": "si"
+ }
+]
