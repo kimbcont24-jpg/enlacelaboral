@@ -1,7 +1,8 @@
+import { OpinionesEmpresa } from "@/components/panel/OpinionesEmpresa";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Consentimiento } from "@/components/site/Consentimiento";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BarChart3, Bell, BellOff, Crown, Briefcase, CalendarCheck, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, UserSearch, Users, UsersRound } from "lucide-react";
+import { BarChart3, Bell, BellOff, Crown, Star, Briefcase, CalendarCheck, CalendarDays, ChevronRight, ExternalLink, Home, LogOut, Menu, MessageSquareText, Plus, Settings, UserSearch, Users, UsersRound } from "lucide-react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -30,7 +31,7 @@ import { diasRestantes } from "@/lib/claridad";
 import { CAMPOS_CANDIDATO, CAMPOS_EMPRESA, enlaceContacto, etapaDe, mensajePara, planActivo, type Candidato, type EmpresaPerfil, type Etapa, type Evento } from "@/lib/panel";
 import { rowToVacante, SELECT, type Vacante, type VacanteRow } from "@/lib/vacantes";
 
-const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "informe", "talento", "jornadas", "equipo", "mas"];
+const SECCIONES: Seccion[] = ["inicio", "candidatos", "agenda", "vacantes", "publicar", "mensajes", "empresa", "planes", "informe", "talento", "jornadas", "equipo", "opiniones", "mas"];
 type Search = { s?: Seccion; c?: string };
 
 export const Route = createFileRoute("/panel")({
@@ -249,6 +250,7 @@ function Panel() {
     { id: "jornadas", label: "Jornadas", Icono: CalendarCheck },
     { id: "mensajes", label: "Mensajes", Icono: MessageSquareText },
     { id: "informe", label: "Informe", Icono: BarChart3 },
+    { id: "opiniones", label: "Opiniones", Icono: Star },
     { id: "empresa", label: "Mi empresa", Icono: Settings },
     { id: "equipo", label: "Equipo", Icono: UsersRound },
     { id: "planes", label: planActivo(empresa) ? "Mi plan" : "Planes", Icono: Crown },
@@ -305,6 +307,7 @@ function Panel() {
           {seccion === "talento" && <Talento />}
           {seccion === "jornadas" && <JornadasEmpresa />}
           {seccion === "equipo" && <Equipo />}
+          {seccion === "opiniones" && <OpinionesEmpresa />}
           {seccion === "mas" && (
             <>
               <Titulo titulo="Más" />

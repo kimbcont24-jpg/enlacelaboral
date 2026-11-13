@@ -1,3 +1,4 @@
+import { CalificacionCorta } from "@/components/empresa/CalificacionCorta";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BadgeCheck, Briefcase, Building2, CalendarClock, CalendarDays, Calculator, ArrowLeft, CheckCircle2, ChevronRight, Circle, ExternalLink, FileText, GraduationCap, Image as ImageIcon, Layers, Link2, Mail, MapPin, MessageCircle, Monitor, Radar, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
@@ -161,8 +162,9 @@ function Detalle() {
               <EmpresaAvatar nombre={job.empresa} claro className="size-14 text-2xl sm:size-16 sm:text-3xl" />
               <div className="min-w-0">
                 <p className="truncate text-base font-bold text-white sm:text-lg">
-                  {sinEmpresa ? empresa : <Link to="/empleos/$slug" params={{ slug: slug(job.empresa) }} className="underline-offset-4 hover:underline">{empresa}</Link>}
+                  {sinEmpresa ? empresa : <Link to="/empresa/$id" params={{ id: slug(job.empresa) }} className="underline-offset-4 hover:underline">{empresa}</Link>}
                 </p>
+                {!sinEmpresa && <CalificacionCorta slug={slug(job.empresa)} />}
                 <p className="mt-0.5 text-sm text-white/70">{p.gestor && p.gestor !== job.empresa ? `Gestionada por ${p.gestor} · ` : ""}Publicada {job.publicado}</p>
               </div>
             </div>

@@ -18,6 +18,7 @@ import { Empresas } from "@/components/admin/Empresas";
 import { Inicio } from "@/components/admin/Inicio";
 import { Reportes } from "@/components/admin/Reportes";
 import { Usuarios } from "@/components/admin/Usuarios";
+import { Opiniones, contarOpinionesPendientes } from "@/components/admin/Opiniones";
 import type { TabId } from "@/components/admin/comun";
 import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/contenido";
 import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
@@ -54,6 +55,7 @@ function Admin() {
   const [reportesNuevos, setReportesNuevos] = useState(0);
   const [porAprobar, setPorAprobar] = useState(0);
   const [pedidosEmp, setPedidosEmp] = useState(0);
+  const [opinionesPend, setOpinionesPend] = useState(0);
 
   const contar = useCallback(async () => {
     const [{ count }, { count: rep }, { count: rev }] = await Promise.all([
@@ -63,6 +65,7 @@ function Admin() {
     ]);
     const { count: pe } = await supabase.from("solicitudes_empresa").select("id", { count: "exact", head: true }).eq("estado", "nueva");
     setPedidosEmp(pe ?? 0);
+    setOpinionesPend(await contarOpinionesPendientes());
     setPendientes(count ?? 0);
     setReportesNuevos(rep ?? 0);
     setPorAprobar(rev ?? 0);
@@ -115,7 +118,7 @@ function Admin() {
         { id: "reportes", label: reportesNuevos ? `Reportes (${reportesNuevos})` : "Reportes" },
       ],
     },
-    { id: "negocio", label: "Negocio", tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "exportar", label: "Descargar datos" }] },
+    { id: "negocio", label: "Negocio", aviso: opinionesPend, tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "opiniones", label: opinionesPend ? `Opiniones (${opinionesPend})` : "Opiniones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "exportar", label: "Descargar datos" }] },
     { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
     { id: "crecer", label: "Crecer", tabs: [{ id: "estudio", label: "Estudio viral" }] },
     { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }, { id: "apariencia", label: "Apariencia" }] },
@@ -167,6 +170,7 @@ function Admin() {
               {tab === "pedidos" && <Pedidos />}
               {tab === "reportes" && <Reportes onCambio={() => void contar()} />}
               {tab === "empresas" && <Empresas />}
+              {tab === "opiniones" && <Opiniones onCambio={() => void contar()} />}
               {tab === "control" && <Control />}
               {tab === "actividad" && <Actividad />}
               {tab === "usuarios" && <Usuarios uid={uid} />}

@@ -42,6 +42,9 @@ function Empleos() {
         <nav aria-label="Ruta" className="text-sm text-muted-foreground"><Link to="/" className="hover:text-primary">Inicio</Link> › <Link to="/vacantes" className="hover:text-primary">Vacantes</Link> › <span className="text-foreground">{titulo}</span></nav>
         <h1 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">{titulo}</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">{descripcionLanding(landing, lista.length)}</p>
+        {landing.tipo === "empresa" && (
+          <Link to="/empresa/$id" params={{ id: landing.slug }} className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-bold text-[#1557c4] hover:border-[#1d6ff2]">Ver perfil de {landing.nombre}: opiniones y calificaciones →</Link>
+        )}
 
         <div className="mt-8 grid gap-10 lg:grid-cols-12">
           <section className="min-w-0 lg:col-span-8" aria-label="Vacantes">
@@ -77,7 +80,7 @@ function Empleos() {
               <nav className="rounded-2xl border border-border bg-surface p-5" aria-label="Empresas que están contratando">
                 <p className="font-bold">Empresas contratando</p>
                 <ul className="mt-3 space-y-1.5 text-sm">
-                  {empresas.map((e) => <li key={e.slug}><Link to="/empleos/$slug" params={{ slug: e.slug }} className="flex justify-between gap-2 hover:text-primary"><span className="truncate">{e.nombre}</span><span className="text-muted-foreground">{e.total}</span></Link></li>)}
+                  {empresas.map((e) => <li key={e.slug}><Link to="/empresa/$id" params={{ id: e.slug }} className="flex justify-between gap-2 hover:text-primary"><span className="truncate">{e.nombre}</span><span className="text-muted-foreground">{e.total}</span></Link></li>)}
                 </ul>
               </nav>
             )}
