@@ -1,34 +1,17 @@
-// Sondeo: estructura real de Marriott y Computrabajo.
-const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36", "accept-language": "es-DO,es;q=0.9" };
-const get = async (u) => { const r = await fetch(u, { headers: UA, redirect: "follow", signal: AbortSignal.timeout(25000) }); return { s: r.status, u: r.url, t: await r.text() }; };
-const ld = (h) => [...h.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1].trim().slice(0, 700));
-
-// ---- Marriott
-try {
-  const m = await get("https://careers.marriott.com/brands/jw-marriott/jobs?location_name=Dominican+Republic&location_type=4");
-  console.log("### M status", m.s, m.t.length);
-  const i = m.t.indexOf("window.__PRELOAD_STATE__");
-  console.log("### M preload idx", i, JSON.stringify(m.t.slice(i, i + 200)));
-  const j = m.t.indexOf('"jobs":[');
-  console.log("### M jobs idx", j, JSON.stringify(m.t.slice(j, j + 1500)));
-} catch (e) { console.log("### M ERR", String(e)); }
-
-// ---- Computrabajo
-try {
-  const l = await get("https://do.computrabajo.com/ofertas-de-trabajo/?p=1");
-  console.log("### C list", l.s, l.u, l.t.length);
-  const hrefs = [...new Set([...l.t.matchAll(/href="([^"]*oferta-de-trabajo[^"]*)"/g)].map((x) => x[1]))];
-  console.log("### C hrefs", hrefs.length, JSON.stringify(hrefs.slice(0, 5)));
-  const art = [...l.t.matchAll(/<article[^>]*>/g)].length;
-  console.log("### C article tags", art, JSON.stringify(l.t.match(/<article[\s\S]{0,600}/)?.[0] ?? ""));
-  const un = hrefs.find((h) => /-en-/.test(h)) ?? hrefs[0];
-  if (un) {
-    const u = un.startsWith("http") ? un : "https://do.computrabajo.com" + un.split("#")[0];
-    const d = await get(u);
-    console.log("### C detail", d.s, d.u, d.t.length);
-    console.log("### C ld", JSON.stringify(ld(d.t)));
-    const t = d.t.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
-    console.log("### C text", JSON.stringify(t.slice(0, 1800)));
-    console.log("### C h1/h2", JSON.stringify([...d.t.matchAll(/<(h1|h2|p)[^>]*class="[^"]*(?:fs16|fc_base|title|company|mt5)[^"]*"[^>]*>([\s\S]*?)<\/\1>/g)].slice(0, 8).map((x) => x[2].replace(/<[^>]+>/g, "").trim().slice(0, 100))));
-  }
-} catch (e) { console.log("### C ERR", String(e)); }
+// Sondeo de nuevas fuentes autónomas (13 nov 2026): SmartRecruiters por empresa con vacantes en RD.
+const H = { accept: "application/json", "user-agent": "Mozilla/5.0" };
+const empresas = "Concentrix Teleperformance Conduent TELUS Sitel Transcom Hanesbrands CardinalHealth Sutherland Hilton Hyatt IHG Accor Cargill TeleTech Visa Cognizant Genpact Wipro Randstad Nearsol AbbVie Amgen Stryker Hologic BoschGroup Siemens Pfizer Abbott Medtronic BDBecton Kimberly-Clark Nestle Unilever Coca-Cola PepsiCo Mondelez Colgate Philips GE Honeywell Schneider-Electric Johnson&Johnson Baxter Fresenius Covidien Boston-Scientific ZimmerBiomet Edwards Terumo Teleperformance-DO ADP Scotiabank Citi JPMorgan Mastercard Accenture IBM Oracle SAP Deloitte KPMG PwC EY Uber Amazon Microsoft Cemex Holcim Cargill Bunge Sodexo Aramark Compass-Group Securitas Allied-Universal Brinks DHL FedEx UPS Maersk MSC Kuehne-Nagel Sykes StarTek Foundever Telus-International Majorel Atento Alorica Alsea Domino McDonalds Burger-King Subway KFC Pizza-Hut".split(/\s+/);
+for (const c of [...new Set(empresas)]) {
+  try {
+    const r = await fetch(`https://api.smartrecruiters.com/v1/companies/${c}/postings?country=do&limit=100`, { headers: H, signal: AbortSignal.timeout(15000) });
+    const j = await r.json();
+    if (j.totalFound > 0) console.log("SR", c, j.totalFound, (j.content ?? []).slice(0, 3).map((p) => p.name + " @" + p.location?.city).join(" ; "));
+  } catch (e) { /* nada */ }
+}
+// Workday / otros candidatos conocidos
+const wd = [["claro", "https://claro.wd3.myworkdayjobs.com"], ["hanes", "https://hanes.wd1.myworkdayjobs.com"], ["hologic", "https://hologic.wd1.myworkdayjobs.com"]];
+for (const [n, b] of wd) { try { const r = await fetch(b, { signal: AbortSignal.timeout(10000) }); console.log("WD", n, r.status); } catch { console.log("WD", n, "x"); } }
+// Portales de hoteles: ¿hay JSON-LD de JobPosting en RD?
+for (const u of ["https://jobs.hilton.com/us/en/search-results?keywords=Dominican", "https://careers.hyatt.com/", "https://careers.ihg.com/", "https://careers.accor.com/", "https://www.rtjobs.com/", "https://careers.melia.com/", "https://www.iberostar.com/es/trabaja-con-nosotros/", "https://www.barcelo.com/es-es/trabaja-con-nosotros/", "https://jobs.lever.co/", "https://careers.cardinalhealth.com/", "https://careers.teleperformance.com/en/jobs?country=Dominican+Republic"]) {
+  try { const r = await fetch(u, { headers: { "user-agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(12000) }); const t = await r.text(); console.log("URL", r.status, u, t.length, /JobPosting/.test(t) ? "JSONLD" : ""); } catch { console.log("URL x", u); }
+}
