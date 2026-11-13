@@ -44,7 +44,8 @@ export function Header() {
   }, []);
   const { ids } = useGuardados();
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
+    // Con margen: al encogerse la barra la página se mueve unos píxeles y, sin margen, entraba y salía sola.
+    const onScroll = () => { const y = window.scrollY; setScrolled((antes) => (y > 24 ? true : y < 8 ? false : antes)); };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -55,14 +56,19 @@ export function Header() {
   const { pathname } = useLocation();
   const enVacantes = pathname === "/vacantes" || pathname === "/vacantes/";
   // Celular: la franja de empleos se esconde al bajar y vuelve al subir (no estorba al leer).
+  // Va encima de la página (no ocupa alto): si empujara el contenido, el propio movimiento
+  // contaba como «subir» o «bajar» y la franja se quedaba parpadeando.
   const [franja, setFranja] = useState(true);
   useEffect(() => {
-    let ultimo = window.scrollY;
+    let ancla = window.scrollY;
     const onScroll = () => {
-      const y = window.scrollY;
-      if (y < 120 || y < ultimo - 6) setFranja(true);
-      else if (y > ultimo + 6) setFranja(false);
-      ultimo = y;
+      const tope = document.documentElement.scrollHeight - window.innerHeight;
+      // Sin contar el rebote del celular al llegar arriba o al final de la página.
+      const y = Math.min(Math.max(window.scrollY, 0), Math.max(tope, 0));
+      if (y < 120) { setFranja(true); ancla = y; return; }
+      // Hace falta un gesto claro (no un temblor del dedo) para cambiar.
+      if (y > ancla + 24) { setFranja(false); ancla = y; }
+      else if (y < ancla - 24) { setFranja(true); ancla = y; }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -114,12 +120,14 @@ export function Header() {
         </button>
       </div>
       {!enVacantes && !menu && (
-        <div className={cn("basis-full overflow-hidden transition-all duration-300 lg:hidden", franja ? "mt-2.5 max-h-14 opacity-100" : "mt-0 max-h-0 opacity-0")} aria-hidden={!franja}>
+        <div className="pointer-events-none absolute inset-x-0 top-full overflow-hidden pb-4 lg:hidden" aria-hidden={!franja}>
+          <div className={cn("border-b px-4 pb-3 transition-[transform,opacity] duration-300 ease-out sm:px-6", "bg-surface", scrolled ? "border-border/80 shadow-[var(--shadow-soft)]" : "border-transparent", franja ? "pointer-events-auto translate-y-0 opacity-100" : "-translate-y-full opacity-0")}>
           <Link to="/vacantes" tabIndex={franja ? 0 : -1} className="flex h-11 items-center gap-2.5 rounded-xl border border-[#1d6ff2]/30 bg-[#1d6ff2]/[0.07] pl-3.5 pr-1.5 text-[15px] font-semibold text-[#1557c4] active:scale-[0.99]">
             <Search className="size-[18px] shrink-0" aria-hidden="true" />
             <span className="min-w-0 flex-1 truncate">{total ? <>Ver <strong className="font-extrabold">{total.toLocaleString("es-DO")}</strong> empleos abiertos</> : "Buscar empleos"}</span>
             <span className="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg bg-[#1d6ff2] px-3 text-sm font-bold text-white">Ver <ArrowRight className="size-3.5" aria-hidden="true" /></span>
           </Link>
+          </div>
         </div>
       )}
       {menu && (
@@ -143,6 +151,8 @@ export function Header() {
         </>
       )}
     </nav>
+    {/* Hueco fijo para la franja en celular: se va con la página y así nada salta. */}
+    {!enVacantes && <div className="h-14 bg-surface lg:hidden" aria-hidden="true" />}
     </>
   );
 }
