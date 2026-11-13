@@ -313,3 +313,36 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 
 /* Perfil de empresa: manchas de color de la portada */
 @keyframes flota { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(40px, 18px) scale(1.08); } }
+
+/* ===== Estudio de CV (/cv) ===== */
+@layer components {
+.cve-subraya { background: linear-gradient(transparent 82%, rgb(255 216 77 / .28) 82%); border-radius: 2px; }
+.cve-escena { perspective: 1500px; }
+.cve-brillo { position: absolute; inset: 6% 2% 12%; border-radius: 9999px; background: radial-gradient(closest-side, rgb(98 164 255 / .6), transparent 72%); filter: blur(34px); }
+.cve-hojas { position: absolute; inset: 0 -1.5rem; overflow: hidden; perspective: 1500px; -webkit-mask-image: linear-gradient(#000 80%, transparent 100%); mask-image: linear-gradient(#000 80%, transparent 100%); }
+.cve-pagina { width: calc(794px * var(--s)); height: calc(1123px * var(--s)); overflow: hidden; border-radius: 12px; background: #fff; box-shadow: 0 44px 70px -34px rgb(2 12 30 / .85), 0 0 0 1px rgb(255 255 255 / .12); }
+.cve-pagina > div { width: 794px; transform: scale(var(--s)); transform-origin: top left; }
+.cve-pagina .cv-hoja { border: 0; border-radius: 0; box-shadow: none; max-width: none; }
+.cve-frente { position: absolute; left: 50%; top: 5%; margin-left: calc(794px * var(--s) * -0.44); animation: cve-flota 7s ease-in-out infinite; }
+.cve-inclina { transform: rotateY(-13deg) rotateX(6deg) rotateZ(1.5deg); transform-origin: 50% 30%; transition: transform .6s var(--ease-out-expo); }
+.cve-escena:hover .cve-inclina { transform: rotateY(-6deg) rotateX(3deg) rotateZ(.5deg); }
+.cve-atras { position: absolute; left: 50%; top: 11%; margin-left: calc(794px * var(--s) * -0.66); transform: rotate(-8deg) scale(.9); transform-origin: 50% 20%; opacity: .5; }
+.cve-cambia { animation: cve-cambia .7s var(--ease-out-expo) both; }
+.cve-chip { position: absolute; z-index: 2; display: flex; align-items: center; gap: .55rem; border-radius: 1rem; background: rgb(255 255 255 / .97); padding: .5rem .8rem; font-size: .8125rem; font-weight: 800; line-height: 1.2; color: #0a2f5c; white-space: nowrap; box-shadow: 0 20px 32px -18px rgb(2 12 30 / .75); animation: cve-flota 6s ease-in-out infinite; }
+@keyframes cve-flota { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+@keyframes cve-cambia { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
+.cve-paso-aqui { background-image: linear-gradient(135deg, #2b7cff 0%, var(--primary) 100%); box-shadow: 0 0 0 5px rgb(29 111 242 / .16), 0 10px 18px -10px rgb(10 47 92 / .7); }
+.cve-pasos { scrollbar-width: none; } .cve-pasos::-webkit-scrollbar { display: none; }
+.cve-mesa {
+  background-color: var(--portada-a, #0a2f5c);
+  background-image: radial-gradient(90% 55% at 100% 0%, rgb(29 111 242 / .5), transparent 62%), linear-gradient(rgb(255 255 255 / .045) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .045) 1px, transparent 1px);
+  background-size: auto, 28px 28px, 28px 28px;
+  box-shadow: 0 30px 50px -34px rgb(10 47 92 / .8);
+}
+.cve-mesa .cv-hoja { border: 0; box-shadow: 0 26px 44px -26px rgb(2 12 30 / .9); }
+.cve-ojo { background: linear-gradient(135deg, rgb(29 111 242 / .09), rgb(29 111 242 / .03)); border: 1px solid rgb(29 111 242 / .18); }
+.cve-tarjeta { transition: transform .25s var(--ease-out-expo), box-shadow .25s var(--ease-out-expo), border-color .25s; }
+.cve-tarjeta:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); border-color: rgb(29 111 242 / .45); }
+@media (prefers-reduced-motion: reduce) { .cve-frente, .cve-chip, .cve-cambia { animation: none; } .cve-inclina, .cve-tarjeta { transition: none; } }
+@media print { .cve-mesa { background: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; } .cve-mesa .cv-hoja { box-shadow: none !important; } }
+}
