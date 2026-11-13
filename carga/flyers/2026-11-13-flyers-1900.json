@@ -1,0 +1,32 @@
+[
+ {
+  "empresa": "Merkaven",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Lisamari.bueno@merkaven.com",
+  "redes": "si",
+  "titulo": "Ejecutiva de Ventas Internas",
+  "descripcion": "Merkaven busca Ejecutiva de Ventas Internas para su equipo en Santo Domingo Oeste.",
+  "requisitos": "Experiencia en el área | Buena presencia | Buena ortografía | Estudiante de término o graduada",
+  "imagen": "https://enlace-rd.vercel.app/flyers/merkaven-ejecutiva-ventas-internas.jpg"
+ },
+ {
+  "empresa": "Merkaven",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Lisamari.bueno@merkaven.com",
+  "redes": "si",
+  "titulo": "Control de Inventario",
+  "descripcion": "Merkaven busca personal para Control de Inventario en Santo Domingo Oeste.",
+  "requisitos": "Experiencia en despacho | Experiencia en tiendas de cerámica o ferreterías | Lic. en Administración, Mercadeo o áreas afines | Buena comunicación y trabajo en equipo",
+  "imagen": "https://enlace-rd.vercel.app/flyers/merkaven-control-de-inventario.jpg"
+ }
+]
