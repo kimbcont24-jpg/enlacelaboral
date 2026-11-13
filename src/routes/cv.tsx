@@ -1,3 +1,4 @@
+import { PromoInsignias } from "@/components/insignias/Promo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Expand, Layers, Mic, Wand2, Send, Upload, AlertTriangle, ArrowDown, ArrowUp, Briefcase, Check, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Eye, FileText, GraduationCap, Lightbulb, ListChecks, MessageCircle, Palette, Pencil, Plus, Search, Sparkles, Target, Trash2, User, Wrench, X } from "lucide-react";
@@ -576,6 +577,7 @@ function PasoHabilidades({ cv, setCV, rol }: P & { rol: Rol | null }) {
           </div>
         )}
       </div>
+      <PromoInsignias />
       <div>
         <p className={etiqueta}>Idiomas</p>
         <div className="flex flex-wrap gap-1.5">{idiomas.map((x) => <span key={x} className="inline-flex items-center gap-1 rounded-full bg-secondary py-1 pl-3 pr-1.5 text-[13px] font-semibold text-primary">{x}<button type="button" onClick={() => setCV({ ...cv, idiomas: idiomas.filter((y) => y !== x).join(", ") })} aria-label={`Quitar ${x}`} className="grid size-5 place-items-center rounded-full hover:bg-white"><X className="size-3" /></button></span>)}</div>

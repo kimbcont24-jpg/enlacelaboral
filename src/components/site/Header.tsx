@@ -20,6 +20,7 @@ const nav = [
   { to: "/empresas", label: "Empresas" },
   { to: "/recursos", label: "Consejos" },
   { to: "/cv", label: "Mi CV" },
+  { to: "/insignias", label: "Insignias" },
   // { to: "/impulso", label: "Impulso" }, // oculto temporalmente — no cobrar por ahora
   { to: "/herramientas", label: "Herramientas" },
   { to: "/jornadas", label: "Ferias de empleo" },

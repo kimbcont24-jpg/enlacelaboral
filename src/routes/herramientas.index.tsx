@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Calculator, Compass, Gift, Radar, Scale, ShieldCheck, Trophy } from "lucide-react";
+import { ArrowRight, BadgeCheck, Calculator, Compass, Gift, Radar, Scale, ShieldCheck, Trophy } from "lucide-react";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/herramientas/")({
 });
 
 const items = [
+  { to: "/insignias", icono: BadgeCheck, titulo: "Demuestra lo que sabes hacer", texto: "Pruebas cortas de Perfila: servicio al cliente, Excel y Word, ortografía o caja. Si logras el nivel, tu insignia verificada sale en tu CV.", etiqueta: "Nuevo · Insignias con Perfila" },
   { to: "/salarios", icono: Radar, titulo: "¿Cuánto pagan por tu puesto?", texto: "Radar salarial: salarios publicados en vacantes reales, por puesto, área y provincia. Te decimos cuántas vacantes hay detrás de cada cifra.", etiqueta: "Nuevo · Radar salarial" },
   { to: "/herramientas/regalia-pascual", icono: Gift, titulo: "¿Cuánto te toca de regalía pascual?", texto: "Tu doble sueldo 2026 en segundos: si trabajaste todo el año, si empezaste este año, si te fuiste o si tu salario cambió.", etiqueta: "Doble sueldo 2026" },
   { to: "/herramientas/salario-neto", icono: Calculator, titulo: "¿Cuánto te llega de tu salario?", texto: "Descuentos de AFP, SFS e ISR al detalle. También: qué bruto necesitas para ganar el neto que quieres.", etiqueta: "Salario neto 2026" },
@@ -40,7 +41,7 @@ function Herramientas() {
             <p className="mt-4 font-mono text-[11px] uppercase tracking-widest text-primary">{i.etiqueta}</p>
             <h2 className="mt-1 text-2xl font-extrabold">{i.titulo}</h2>
             <p className="mt-2 text-muted-foreground">{i.texto}</p>
-            <span className="mt-5 inline-flex items-center gap-2 font-bold text-primary">{i.to === "/salarios" ? "Explorar" : "Calcular"} <ArrowRight className="size-4 transition group-hover:translate-x-1" /></span>
+            <span className="mt-5 inline-flex items-center gap-2 font-bold text-primary">{i.to === "/salarios" ? "Explorar" : i.to === "/insignias" ? "Ganar mi insignia" : "Calcular"} <ArrowRight className="size-4 transition group-hover:translate-x-1" /></span>
           </Link>
         ))}
         <p className="text-sm text-muted-foreground md:col-span-2">Son cálculos orientativos. Para un reclamo, confirma con el Ministerio de Trabajo.</p>

@@ -1,3 +1,4 @@
+import { PromoInsignias } from "@/components/insignias/Promo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Bookmark, CalendarClock, CalendarPlus, Copy, FileText, Loader2, MessageCircle, Sparkles, StickyNote, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -86,6 +87,7 @@ function MiBusqueda() {
       <main className="px-4 pb-20 pt-6 sm:px-6"><div className="mx-auto max-w-6xl">
         <GuardarNube compacto className="mb-6" />
         <EnlaceTalento />
+        <PromoInsignias className="mb-6" />
         {proximas.length > 0 && (
           <div className="mb-6 flex flex-wrap items-center gap-3 rounded-2xl border border-[#c27803]/30 bg-[#c27803]/[0.07] p-4">
             <CalendarClock className="size-5 text-[#8a5200]" />

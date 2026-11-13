@@ -46,6 +46,7 @@ export function Footer() {
             <li><Link to="/herramientas/liquidacion" className="block py-1.5 hover:text-white md:inline md:py-0">Calculadora de liquidación</Link></li>
             <li><Link to="/herramientas/comparar-ofertas" className="block py-1.5 hover:text-white md:inline md:py-0">Comparador de ofertas</Link></li>
             <li><Link to="/herramientas/brujula" className="block py-1.5 hover:text-white md:inline md:py-0">Brújula del primer empleo</Link></li>
+            <li><Link to="/insignias" className="block py-1.5 hover:text-white md:inline md:py-0">Insignias de habilidades (Perfila)</Link></li>
             <li><Link to="/herramientas/verificar-oferta" className="block py-1.5 hover:text-white md:inline md:py-0">Verificador de estafas</Link></li>
           </ul>
         </nav>

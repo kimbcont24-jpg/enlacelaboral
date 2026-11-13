@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { esInsignia, textoInsignias, type Insignia } from "./insignias-datos";
 
 /** CV del candidato. Vive solo en su navegador (localStorage); nunca se sube a ningún servidor salvo que él lo incluya al aplicar. */
 export type Experiencia = { puesto: string; empresa: string; desde: string; hasta: string; logros: string };
@@ -22,6 +23,8 @@ export type CV = {
   referencias: boolean;
   /** Para quien empieza: estudios antes que experiencia. */
   formacionPrimero?: boolean;
+  /** Habilidades verificadas por Perfila (insignias ganadas en /insignias). */
+  insignias?: Insignia[];
 };
 
 export const cvVacio: CV = { nombre: "", puesto: "", telefono: "", correo: "", ciudad: "", resumen: "", experiencia: [{ puesto: "", empresa: "", desde: "", hasta: "", logros: "" }], educacion: [{ titulo: "", centro: "", anio: "" }], habilidades: "", idiomas: "", cursos: [], linkedin: "", licencia: "", disponibilidad: "", referencias: true };
@@ -95,6 +98,7 @@ export function textoCV(cv: CV): string {
     cv.idiomas ? `Idiomas: ${cv.idiomas}` : "",
     cv.licencia ? `Licencia de conducir: ${cv.licencia}` : "",
     cv.disponibilidad ? `Disponibilidad: ${cv.disponibilidad}` : "",
+    textoInsignias((cv.insignias ?? []).filter(esInsignia)),
   ].filter((x) => x !== "").join("\n").trim();
 }
 

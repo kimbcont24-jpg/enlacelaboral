@@ -1,3 +1,5 @@
+import { InsigniaFila } from "@/components/insignias/Sello";
+import { esInsignia } from "@/lib/insignias-datos";
 import type { CSSProperties, ReactNode } from "react";
 
 import { lineasLogros, type CV } from "@/lib/cv";
@@ -39,6 +41,7 @@ function preparar(cv: CV) {
     exp: cv.experiencia.filter((e) => e.puesto.trim() || e.empresa.trim()),
     edu: cv.educacion.filter((e) => e.titulo.trim()),
     cursos: (cv.cursos ?? []).filter((c) => c.nombre.trim()),
+    insignias: (cv.insignias ?? []).filter(esInsignia),
     extras: [cv.licencia.trim() && `Licencia de conducir: ${cv.licencia.trim()}`, cv.disponibilidad.trim() && `Disponibilidad: ${cv.disponibilidad.trim()}`].filter(Boolean) as string[],
     vacio: !cv.nombre && !cv.resumen && !cv.experiencia.some((e) => e.puesto.trim()),
   };
@@ -110,6 +113,12 @@ function Cuerpo({ d, cv, color, estilo, compacto = false }: { d: Datos; cv: CV; 
       {d.cursos.length > 0 && (
         <Seccion titulo="Cursos y certificaciones" color={color} estilo={estilo}>
           <ul className={`space-y-1 ${txt}`}>{d.cursos.map((c, i) => <li key={i}><span className="font-semibold">{c.nombre}</span>{c.centro && <span className="text-[#5b6678]"> · {c.centro}</span>}{c.anio && <span className="text-[#5b6678]"> · {c.anio}</span>}</li>)}</ul>
+        </Seccion>
+      )}
+      {d.insignias.length > 0 && (
+        <Seccion titulo="Habilidades verificadas" color={color} estilo={estilo}>
+          <ul className="grid gap-3 text-[13.5px] sm:grid-cols-2 print:grid-cols-2">{d.insignias.map((i) => <li key={i.ref}><InsigniaFila i={i} impresa /></li>)}</ul>
+          <p className="mt-2 text-[11px] text-[#5b6678]">Pruebas de Perfila. Verificables en enlace-rd.vercel.app/insignias</p>
         </Seccion>
       )}
     </>
@@ -206,6 +215,7 @@ export function HojaCV({ cv, plantilla, color: colorId, fuente = "s" }: { cv: CV
         {cv.formacionPrimero ? <>{d.edu.length > 0 && <Fila t="Formación"><ul className="space-y-1">{d.edu.map((e, i) => <li key={i}><span className="font-semibold">{e.titulo}</span>{e.centro && `, ${e.centro}`}{e.anio && <span className="text-[#5b6678]"> · {e.anio}</span>}</li>)}</ul></Fila>}{d.exp.length > 0 && <Fila t="Experiencia"><div className="space-y-4">{d.exp.map((e, i) => <div key={i} className="break-inside-avoid"><p className="font-bold">{e.puesto}{e.empresa && <span className="font-normal text-[#5b6678]">, {e.empresa}</span>}</p>{(e.desde || e.hasta) && <p className="text-[12.5px] text-[#5b6678]">{fechas(e.desde, e.hasta)}</p>}<Logros texto={e.logros} /></div>)}</div></Fila>}</> : <>{d.exp.length > 0 && <Fila t="Experiencia"><div className="space-y-4">{d.exp.map((e, i) => <div key={i} className="break-inside-avoid"><p className="font-bold">{e.puesto}{e.empresa && <span className="font-normal text-[#5b6678]">, {e.empresa}</span>}</p>{(e.desde || e.hasta) && <p className="text-[12.5px] text-[#5b6678]">{fechas(e.desde, e.hasta)}</p>}<Logros texto={e.logros} /></div>)}</div></Fila>}{d.edu.length > 0 && <Fila t="Formación"><ul className="space-y-1">{d.edu.map((e, i) => <li key={i}><span className="font-semibold">{e.titulo}</span>{e.centro && `, ${e.centro}`}{e.anio && <span className="text-[#5b6678]"> · {e.anio}</span>}</li>)}</ul></Fila>}</>}
         {d.cursos.length > 0 && <Fila t="Cursos"><ul className="space-y-1">{d.cursos.map((c, i) => <li key={i}>{c.nombre}{c.centro && `, ${c.centro}`}{c.anio && <span className="text-[#5b6678]"> · {c.anio}</span>}</li>)}</ul></Fila>}
         {d.habilidades.length > 0 && <Fila t="Habilidades"><p>{d.habilidades.join(" · ")}</p></Fila>}
+        {d.insignias.length > 0 && <Fila t="Verificadas"><ul className="grid gap-3 sm:grid-cols-2 print:grid-cols-2">{d.insignias.map((i) => <li key={i.ref}><InsigniaFila i={i} impresa /></li>)}</ul></Fila>}
         {(d.idiomas.length > 0 || d.extras.length > 0) && <Fila t="Otros"><ul className="space-y-1">{d.idiomas.length > 0 && <li>Idiomas: {d.idiomas.join(", ")}</li>}{d.extras.map((x) => <li key={x}>{x}</li>)}</ul></Fila>}
         {cv.referencias && <p className="mt-6 text-[13px] text-[#5b6678]">Referencias disponibles a solicitud.</p>}
       </article>
