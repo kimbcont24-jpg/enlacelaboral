@@ -15,3 +15,12 @@ for (const [n, b] of wd) { try { const r = await fetch(b, { signal: AbortSignal.
 for (const u of ["https://jobs.hilton.com/us/en/search-results?keywords=Dominican", "https://careers.hyatt.com/", "https://careers.ihg.com/", "https://careers.accor.com/", "https://www.rtjobs.com/", "https://careers.melia.com/", "https://www.iberostar.com/es/trabaja-con-nosotros/", "https://www.barcelo.com/es-es/trabaja-con-nosotros/", "https://jobs.lever.co/", "https://careers.cardinalhealth.com/", "https://careers.teleperformance.com/en/jobs?country=Dominican+Republic"]) {
   try { const r = await fetch(u, { headers: { "user-agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(12000) }); const t = await r.text(); console.log("URL", r.status, u, t.length, /JobPosting/.test(t) ? "JSONLD" : ""); } catch { console.log("URL x", u); }
 }
+// MAP Concursa (concursos públicos)
+try {
+  const r = await fetch("https://map.gob.do/Concursa/", { headers: { "user-agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(25000) });
+  const t = await r.text();
+  console.log("MAP status", r.status, t.length);
+  const enlaces = [...t.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map((m) => m[1] + " :: " + m[2].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 100)).filter((x) => /concurs|vacant|convoc|Concursa|\.pdf/i.test(x));
+  console.log("MAP enlaces", enlaces.length); enlaces.slice(0, 40).forEach((e) => console.log("MAP L", e));
+  console.log("MAP body", t.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").slice(0, 2500));
+} catch (e) { console.log("MAP ERR", String(e)); }
