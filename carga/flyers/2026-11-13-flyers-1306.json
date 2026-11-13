@@ -208,5 +208,35 @@
   "aplicar": "talentossheila@gmail.com",
   "imagen": "https://enlace-rd.vercel.app/flyers/sheila-asistente-operaciones.jpg",
   "redes": "si"
+ },
+ {
+  "titulo": "Médico General (Hemodiálisis)",
+  "provincia": "San Cristóbal",
+  "experiencia": "1-3 años",
+  "descripcion": "CIMER busca médico general para su sede de Haina: evaluación y cuidado del paciente durante la sesión de hemodiálisis.",
+  "requisitos": "Título de Doctor en Medicina | 1-2 años de experiencia en puestos similares | Pasantía completada | Manejo de emergencias médicas | Conocimientos de terapias renales",
+  "imagen": "https://enlace-rd.vercel.app/flyers/cimer-medico-general-haina.jpg",
+  "empresa": "CIMER (Centro Integral de Medicina Renal)",
+  "area": "Salud",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "talentos@cimer.com.do",
+  "redes": "si"
+ },
+ {
+  "titulo": "Nutriólogo",
+  "provincia": "Duarte",
+  "experiencia": "1-3 años",
+  "descripcion": "CIMER San Francisco (San Francisco de Macorís) busca nutriólogo para brindar atención nutricional a pacientes con enfermedad renal crónica atendidos en la unidad de diálisis: evaluación, diagnóstico, intervención y monitoreo, además de educación en salud.",
+  "requisitos": "Doctor en Medicina | Especialidad en Nutrición/Nutrición Clínica o Lic. en Nutrición | Mínimo 1 año en posiciones similares | Cálculo dietético y dieto-terapia en enfermedades crónicas no transmisibles | Conocimientos básicos de diálisis peritoneal y hemodiálisis | Experiencia clínica con pacientes ambulatorios | Manejo de indicadores clínicos | Trabajo con equipos multidisciplinarios",
+  "imagen": "https://enlace-rd.vercel.app/flyers/cimer-nutriologo-san-francisco.jpg",
+  "empresa": "CIMER (Centro Integral de Medicina Renal)",
+  "area": "Salud",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "talentos@cimer.com.do",
+  "redes": "si"
  }
 ]
