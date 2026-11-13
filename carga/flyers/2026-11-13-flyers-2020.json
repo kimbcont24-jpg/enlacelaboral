@@ -1,0 +1,31 @@
+[
+ {
+  "titulo": "Líder de Área",
+  "empresa": "Dumé Mercería · Papelería",
+  "provincia": "Distrito Nacional",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Dumé Mercería · Papelería busca un líder de área con experiencia en almacén y disponibilidad inmediata. Debe residir en el Distrito Nacional. Indicar la vacante en el asunto del correo.",
+  "requisitos": "Experiencia previa | Experiencia en almacén | Disponibilidad inmediata | Residente en el Distrito Nacional",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "recursoshumanos@dumemerceria.com (indicar la vacante en el asunto)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/dume-lider-de-area.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Profesor/a de Lengua Española y Literatura",
+  "empresa": "Centro educativo (confidencial)",
+  "provincia": "Distrito Nacional",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se busca profesor o profesora de Lengua Española y Literatura. Horario de 7:15 a. m. a 3:00 p. m. en el Distrito Nacional.",
+  "requisitos": "Experiencia previa impartiendo docencia en el área | Formación universitaria afín | Planificación de clases | Manejo de aula",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "mundocreativodepartamentopsico@gmail.com",
+  "redes": "si"
+ }
+]
