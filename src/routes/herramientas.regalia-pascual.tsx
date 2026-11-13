@@ -32,7 +32,7 @@ export const Route = createFileRoute("/herramientas/regalia-pascual")({
       { property: "og:title", content: `¿Cuánto te toca de regalía pascual ${ANIO}?` },
       { property: "og:description", content: "Calcula tu doble sueldo en segundos. Se paga a más tardar el 20 de diciembre." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/herramientas/regalia-pascual" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/herramientas/regalia-pascual" }],
     scripts: [{ type: "application/ld+json", children: JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: PREGUNTAS.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }) }],
   }),
   component: Regalia,

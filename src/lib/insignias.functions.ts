@@ -60,8 +60,8 @@ export const pedirInsignia = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     // Solo se vuelve a una página de Enlace (sitio publicado o local).
     const u = new URL(data.regreso);
-    const propio = u.hostname === "enlace-rd.vercel.app" || u.hostname.endsWith(".vercel.app") || u.hostname === "localhost" || u.hostname === "127.0.0.1";
-    const regreso = propio ? `${u.origin}/insignias` : "https://enlace-rd.vercel.app/insignias";
+    const propio = u.hostname === "enlacelaboralrd.com" || u.hostname === "www.enlacelaboralrd.com" || u.hostname.endsWith(".vercel.app") || u.hostname === "localhost" || u.hostname === "127.0.0.1";
+    const regreso = propio ? `${u.origin}/insignias` : "https://enlacelaboralrd.com/insignias";
     const r = await llamar({ action: "start", email: data.correo, name: data.nombre, test: data.prueba, returnUrl: regreso });
     const ref = typeof r["ref"] === "string" ? r["ref"] : "";
     const url = typeof r["url"] === "string" ? r["url"] : "";

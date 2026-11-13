@@ -157,7 +157,7 @@ export function enlaceAplicar(a: string): { href: string; label: string } | null
   return null;
 }
 
-export const SITIO = "https://enlace-rd.vercel.app";
+export const SITIO = "https://enlacelaboralrd.com";
 
 export function textoWhatsApp(job: Vacante, origen = SITIO): string {
   const lineas = [

@@ -118,7 +118,7 @@ function Cuerpo({ d, cv, color, estilo, compacto = false }: { d: Datos; cv: CV; 
       {d.insignias.length > 0 && (
         <Seccion titulo="Habilidades verificadas" color={color} estilo={estilo}>
           <ul className="grid gap-3 text-[13.5px] sm:grid-cols-2 print:grid-cols-2">{d.insignias.map((i) => <li key={i.ref}><InsigniaFila i={i} impresa /></li>)}</ul>
-          <p className="mt-2 text-[11px] text-[#5b6678]">Pruebas de Perfila. Verificables en enlace-rd.vercel.app/insignias</p>
+          <p className="mt-2 text-[11px] text-[#5b6678]">Pruebas de Perfila. Verificables en enlacelaboralrd.com/insignias</p>
         </Seccion>
       )}
     </>

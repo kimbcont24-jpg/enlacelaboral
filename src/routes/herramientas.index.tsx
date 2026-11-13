@@ -10,7 +10,7 @@ export const Route = createFileRoute("/herramientas/")({
       { title: "Herramientas gratis para trabajadores en RD | Enlace Laboral" },
       { name: "description", content: "Calculadora de regalía pascual, salario neto, liquidación, prestaciones laborales y comparador de ofertas de trabajo de República Dominicana. Gratis, sin registro." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/herramientas" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/herramientas" }],
   }),
   component: Herramientas,
 });

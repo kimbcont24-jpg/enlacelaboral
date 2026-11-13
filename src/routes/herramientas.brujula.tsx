@@ -17,7 +17,7 @@ export const Route = createFileRoute("/herramientas/brujula")({
       { property: "og:title", content: "Brújula del primer empleo · ¿Para qué trabajo eres bueno?" },
       { property: "og:description", content: "12 preguntas, 3 minutos. Te dice qué áreas van contigo y te muestra vacantes sin experiencia." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/herramientas/brujula" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/herramientas/brujula" }],
   }),
   component: Brujula,
 });

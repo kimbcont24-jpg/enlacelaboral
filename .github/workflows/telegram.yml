@@ -7,4 +7,4 @@ jobs:
   publicar:
     runs-on: ubuntu-latest
     steps:
-      - run: curl -fsS --max-time 60 https://enlace-rd.vercel.app/api/telegram
+      - run: curl -fsS --max-time 60 https://enlacelaboralrd.com/api/telegram

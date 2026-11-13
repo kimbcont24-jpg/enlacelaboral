@@ -373,7 +373,7 @@ async function tarjeta(grande: string, texto: string): Promise<Blob> {
   envolver(g, "¿Y el tuyo? Compáralo gratis con los salarios reales que publican las empresas.", 90, 1180, 900, 62);
   g.fillStyle = ORO; g.beginPath(); g.roundRect(90, 1700, 900, 120, 60); g.fill();
   g.fillStyle = NAVY; g.font = `800 50px ${fuente}`; g.textAlign = "center";
-  g.fillText("enlace-rd.vercel.app/salarios", 540, 1778);
+  g.fillText("enlacelaboralrd.com/salarios", 540, 1778);
   return new Promise((ok) => c.toBlob((b) => ok(b!), "image/png"));
 }
 

@@ -28,7 +28,7 @@ ul{margin-top:.25in;padding-left:28px;font-size:21px;line-height:1.5}
 <div class="puesto">${esc(v.titulo)}</div><div class="emp">${esc(v.provincia)} · ${esc(v.modalidad)} · ${esc(v.tipo)}</div>
 ${v.salario ? `<div><span class="sal">${esc(v.salario)} al mes</span></div>` : ""}
 ${req ? `<ul>${req}</ul>` : ""}
-<div class="qr"><img src="${qr}" alt="Código QR de la vacante"><div><h2>Escanea con tu celular y aplica en 1 minuto</h2><p>Sin crear cuenta. Tu aplicación nos llega directo.</p><p style="font-weight:700;color:#0a2f5c;margin-top:14px">enlace-rd.vercel.app</p></div></div>
+<div class="qr"><img src="${qr}" alt="Código QR de la vacante"><div><h2>Escanea con tu celular y aplica en 1 minuto</h2><p>Sin crear cuenta. Tu aplicación nos llega directo.</p><p style="font-weight:700;color:#0a2f5c;margin-top:14px">enlacelaboralrd.com</p></div></div>
 <div class="pie">Publicado en Enlace Laboral · Aplicar es gratis. Nunca pagues por un empleo.</div>
 </div><script>window.onload=()=>setTimeout(()=>window.print(),300)</script></body></html>`);
   w.document.close();

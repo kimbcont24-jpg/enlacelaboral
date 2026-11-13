@@ -70,7 +70,7 @@ function plantilla(d: Datos) {
         : h("div", { style: { display: "flex", marginTop: "auto" } }),
     ),
     h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 64px", height: 70, background: NAVY, color: "#fff", fontSize: 24, fontWeight: 700 } },
-      h("span", {}, "Aplica gratis en enlace-rd.vercel.app"),
+      h("span", {}, "Aplica gratis en enlacelaboralrd.com"),
       h("span", { style: { color: "#8ec1ff" } }, "Toca para ver la vacante »"),
     ),
   );

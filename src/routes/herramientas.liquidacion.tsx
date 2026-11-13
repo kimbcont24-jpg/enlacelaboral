@@ -25,7 +25,7 @@ export const Route = createFileRoute("/herramientas/liquidacion")({
       { property: "og:title", content: "¿Cuánto te deben de liquidación? Calculadora RD" },
       { property: "og:description", content: "Preaviso, cesantía, vacaciones y regalía según el Código de Trabajo. Gratis." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/herramientas/liquidacion" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/herramientas/liquidacion" }],
   }),
   component: Liquidacion,
 });

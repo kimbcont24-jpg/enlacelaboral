@@ -19,7 +19,7 @@ export const Route = createFileRoute("/impulso")({
       { property: "og:title", content: "Impulso Laboral | Enlace Laboral" },
       { property: "og:description", content: "CV profesional, carta, LinkedIn y orientación en vivo. Oferta de lanzamiento desde RD$500." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/impulso" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/impulso" }],
   }),
   component: Impulso,
 });

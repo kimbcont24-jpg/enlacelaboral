@@ -13,7 +13,7 @@ export const Route = createFileRoute("/herramientas/comparar-ofertas")({
       { property: "og:title", content: "¿Qué oferta de trabajo te conviene más? Compáralas en 1 minuto" },
       { property: "og:description", content: "Salario neto, pasaje, tiempo en el tapón, beneficios y bienestar, lado a lado." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/herramientas/comparar-ofertas" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/herramientas/comparar-ofertas" }],
   }),
   component: CompararOfertas,
 });

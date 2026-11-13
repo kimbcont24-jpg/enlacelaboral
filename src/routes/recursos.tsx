@@ -16,7 +16,7 @@ export const Route = createFileRoute("/recursos")({
       { property: "og:title", content: "Guías cortas para conseguir empleo · Enlace Laboral" },
       { property: "og:description", content: "Pasos claros y ejemplos listos para copiar. Se leen en 2 minutos." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/recursos" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/recursos" }],
   }),
   component: Recursos,
 });

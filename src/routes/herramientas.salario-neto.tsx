@@ -18,7 +18,7 @@ export const Route = createFileRoute("/herramientas/salario-neto")({
       { property: "og:title", content: "¿Cuánto te llega de tu salario? Calculadora RD 2026" },
       { property: "og:description", content: "AFP, SFS e ISR al detalle. Gratis, sin registro." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/herramientas/salario-neto" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/herramientas/salario-neto" }],
   }),
   component: SalarioNeto,
 });

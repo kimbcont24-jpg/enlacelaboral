@@ -185,7 +185,7 @@ export function dibujarVacante(f: Formato, v: Vacante, n: number, total: number)
   x.fillStyle = "#fff";
   x.textAlign = "center";
   x.font = `800 46px ${FUENTE}`;
-  x.fillText("Aplica gratis en enlace-rd.vercel.app", f.w / 2, by + 77);
+  x.fillText("Aplica gratis en enlacelaboralrd.com", f.w / 2, by + 77);
   x.textAlign = "left";
   x.fillStyle = "#6b7a90";
   x.font = `600 28px ${FUENTE}`;
@@ -209,7 +209,7 @@ export function dibujarCierre(f: Formato): HTMLCanvasElement {
   x.fillText("Más vacantes cada día:", 70, y1);
   x.fillStyle = "#fff";
   x.font = `800 56px ${FUENTE}`;
-  x.fillText("enlace-rd.vercel.app", 70, y1 + 80);
+  x.fillText("enlacelaboralrd.com", 70, y1 + 80);
   x.fillStyle = "rgba(255,255,255,0.85)";
   x.font = `600 38px ${FUENTE}`;
   x.fillText("Canal de WhatsApp: Enlace Laboral", 70, y1 + 150);

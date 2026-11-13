@@ -112,7 +112,7 @@ export function correoAplicacion(
     cv?.linkedin.trim() ? `LinkedIn: ${limpio(cv.linkedin)}` : "",
   ].filter((l, i) => l !== "" || i === 1);
 
-  const pie = job.id ? ["", "—", `Vacante vista en Enlace Laboral: https://enlace-rd.vercel.app/vacantes/${job.id}`] : [];
+  const pie = job.id ? ["", "—", `Vacante vista en Enlace Laboral: https://enlacelaboralrd.com/vacantes/${job.id}`] : [];
   return { asunto, cuerpo: [...p.flatMap((x) => [x, ""]), ...firma, ...pie].join("\n") };
 }
 

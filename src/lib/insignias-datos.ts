@@ -54,7 +54,7 @@ export const NIVEL_TXT: Record<Nivel, string> = { destacado: "Destacado", solido
 /** Insignia ganada: va dentro del CV. */
 export type Insignia = { ref: string; prueba: PruebaInsignia; nivel: Nivel; fecha: string };
 
-export const verificarUrl = (ref: string) => `https://enlace-rd.vercel.app/insignias/${ref}`;
+export const verificarUrl = (ref: string) => `https://enlacelaboralrd.com/insignias/${ref}`;
 
 export function esInsignia(i: unknown): i is Insignia {
   const x = i as Insignia | null;

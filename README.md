@@ -2,8 +2,8 @@
 
 Plataforma dominicana de empleo: conecta talento con oportunidades reales.
 
-- Sitio: https://enlace-rd.vercel.app
-- Panel de administración: https://enlace-rd.vercel.app/admin
+- Sitio: https://enlacelaboralrd.com
+- Panel de administración: https://enlacelaboralrd.com/admin
 
 ## Cómo funciona
 

@@ -14,7 +14,7 @@ export const Route = createFileRoute("/herramientas/verificar-oferta")({
       { property: "og:title", content: "¿Esta oferta de empleo es real o es estafa? Verifícala gratis" },
       { property: "og:description", content: "Pega la vacante y mira sus señales de alerta en segundos. No guardamos nada." },
     ],
-    links: [{ rel: "canonical", href: "https://enlace-rd.vercel.app/herramientas/verificar-oferta" }],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/herramientas/verificar-oferta" }],
   }),
   component: Verificador,
 });
