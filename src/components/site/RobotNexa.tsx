@@ -120,7 +120,7 @@ export function RobotNexa() {
   if (!visible || SIN_ROBOT.test(ruta)) return null;
 
   // En celular, la página de una vacante ya tiene una barra fija con "Aplicar": el robot se oculta para no tapar contenido.
-  const enVacante = /^\/vacantes\/[^/]+/.test(ruta);
+  const enVacante = /^\/(vacantes|empresa)\/[^/]+/.test(ruta);
   const cerrar = () => setAbierto(false);
   const buscar = (e: FormEvent) => {
     e.preventDefault();

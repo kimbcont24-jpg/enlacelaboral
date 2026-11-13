@@ -310,3 +310,6 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
   60% { transform: scale(1.08) rotate(3deg); opacity: 1; }
   100% { transform: scale(1) rotate(0); }
 }
+
+/* Perfil de empresa: manchas de color de la portada */
+@keyframes flota { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(40px, 18px) scale(1.08); } }

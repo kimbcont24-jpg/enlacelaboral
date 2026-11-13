@@ -22,7 +22,7 @@ export function Accesibilidad() {
   // En el panel de empresas (celular) hay barra abajo: el botón sube para no taparla.
   const enPanel = useRouterState({ select: (s) => /^\/(panel|admin)/.test(s.location.pathname) });
   // En la página de una vacante (celular) también hay una barra fija con "Aplicar".
-  const enVacante = useRouterState({ select: (s) => /^\/vacantes\/[^/]+/.test(s.location.pathname) });
+  const enVacante = useRouterState({ select: (s) => /^\/(vacantes|empresa)\/[^/]+/.test(s.location.pathname) });
   const subir = enPanel || enVacante;
   const [a, setA] = useState<Ajustes>(INICIAL);
   useEffect(() => { const x = leer(); setA(x); aplicar(x); }, []);
