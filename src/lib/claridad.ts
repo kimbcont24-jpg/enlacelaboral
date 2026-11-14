@@ -22,6 +22,10 @@ export function claridad(job: Vacante): Claridad {
   return { nivel, puntos, total: criterios.length, tiene, falta };
 }
 
+/** Vacante con los 6 criterios completos: lleva el sello «Vacante clara». Mide información, no la empresa. */
+export const esClara = (job: Vacante) => { const c = claridad(job); return c.puntos === c.total; };
+export const SELLO_CLARA = "Vacante clara";
+
 export const esNueva = (job: Vacante) => Date.now() - new Date(job.creado).getTime() < 24 * 3600 * 1000;
 
 /** Días que le quedan visible a la vacante (30 desde que se publicó). */

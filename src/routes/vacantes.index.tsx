@@ -11,7 +11,7 @@ import { FiltrosRapidos, filtrarJobs, filtrosVacios, type Filtros } from "@/comp
 import { useVacantes } from "@/lib/vacantes";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
-import { claridad } from "@/lib/claridad";
+import { claridad, esClara } from "@/lib/claridad";
 
 type Search = { q?: string; provincia?: string; area?: string; modalidad?: string; tipo?: string; experiencia?: string; salarioMin?: string; incl?: string };
 
@@ -45,7 +45,9 @@ function Vacantes() {
     const list = filtrarJobs(jobs, filtros, query);
     if (orden === "salario") return [...list].sort((a, b) => b.salarioMin - a.salarioMin);
     if (orden === "claridad") return [...list].sort((a, b) => claridad(b).puntos - claridad(a).puntos);
-    return list;
+    // Más recientes: dentro del mismo día, las vacantes claras 6/6 salen primero (premio a la transparencia).
+    const dia = (iso: string) => new Date(new Date(iso).getTime() - 4 * 3600e3).toISOString().slice(0, 10);
+    return [...list].sort((a, b) => Number(!!b.destacada) - Number(!!a.destacada) || dia(b.creado).localeCompare(dia(a.creado)) || Number(esClara(b)) - Number(esClara(a)));
   }, [jobs, filtros, query, orden]);
 
   // Al cambiar filtros, búsqueda u orden se vuelve a las primeras 30.

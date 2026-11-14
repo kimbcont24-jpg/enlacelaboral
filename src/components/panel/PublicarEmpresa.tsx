@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, Circle, ListChecks, Loader2, Plus, TrendingUp, Wand2, X } from "lucide-react";
+import { BadgeCheck, CheckCircle2, Circle, ListChecks, Loader2, Plus, TrendingUp, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -197,7 +197,18 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
         <div>
           <p className="text-sm font-bold">Claridad de tu vacante</p>
           <p className={`mt-1 text-2xl font-extrabold ${c.nivel === "Alta" ? "text-success" : c.nivel === "Media" ? "text-[#8a5200]" : "text-muted-foreground"}`}>{c.nivel} · {c.puntos}/{c.total}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Los candidatos ven esta misma medida en tu vacante.</p>
+          <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuemin={0} aria-valuemax={c.total} aria-valuenow={c.puntos} aria-label="Claridad de tu vacante">
+            <div className={`h-full rounded-full transition-[width] duration-500 ${c.puntos === c.total ? "bg-gradient-to-r from-[#0a7a4b] to-[#12a05f]" : "bg-[#1d6ff2]"}`} style={{ width: `${(c.puntos / c.total) * 100}%` }} />
+          </div>
+          {c.puntos === c.total ? (
+            <p className="mt-3 flex items-start gap-2 rounded-xl bg-success/10 p-3 text-[13px] font-semibold text-success"><BadgeCheck className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> ¡Listo! Tu vacante lleva el sello «Vacante clara 6/6», sale primero entre las de su día y aparece en el filtro de vacantes claras.</p>
+          ) : (
+            <p className="mt-3 rounded-xl bg-[#1d6ff2]/10 p-3 text-[13px] text-[#0a2f5c]">
+              <span className="font-bold">{c.total - c.puntos === 1 ? "Te falta 1 dato" : `Te faltan ${c.total - c.puntos} datos`} para el sello «Vacante clara».</span> Agrega {c.falta.map((f) => f.toLowerCase()).join(" y ")}: las vacantes con sello salen primero entre las de su día y quien busca empleo puede filtrarlas.
+              {c.falta.includes("Salario publicado") && <span className="mt-1.5 block text-xs text-muted-foreground">El salario es la primera pregunta de casi todo candidato. Un rango también cuenta.</span>}
+            </p>
+          )}
+          <p className="mt-2 text-xs text-muted-foreground">Los candidatos ven esta misma medida en tu vacante.</p>
         </div>
         <ul className="space-y-2 text-sm">
           {[...c.tiene.map((t) => [t, true] as const), ...c.falta.map((t) => [t, false] as const)].map(([t, ok]) => (

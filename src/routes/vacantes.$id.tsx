@@ -292,6 +292,11 @@ function Detalle() {
                 <ClaridadPill job={job} />
               </div>
               <p className="mt-1 text-sm text-muted-foreground">{c.puntos} de {c.total}. Mientras más completa, menos sorpresas al aplicar.</p>
+              {c.puntos === c.total && (
+                <p className="mt-3 rounded-2xl bg-success/10 p-3 text-sm text-foreground">
+                  <span className="font-extrabold text-success">Esta vacante tiene el sello «Vacante clara».</span> Trae los 6 datos que necesitas para decidir antes de aplicar. El sello mide la información publicada; no es una opinión sobre la empresa.
+                </p>
+              )}
               <ul className="mt-4 grid gap-2">
                 {c.tiene.map((x) => <li key={x} className="flex items-center gap-2 text-sm"><CheckCircle2 className="size-4 shrink-0 text-success" aria-hidden="true" /> {x}</li>)}
                 {c.falta.map((x) => <li key={x} className="flex items-center gap-2 text-sm text-muted-foreground"><Circle className="size-4 shrink-0" aria-hidden="true" /> {x}: no lo indica</li>)}

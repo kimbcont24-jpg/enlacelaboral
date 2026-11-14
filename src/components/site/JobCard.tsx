@@ -1,6 +1,6 @@
 import { InclusionPills } from "@/components/site/InclusionPills";
 import { Link } from "@tanstack/react-router";
-import { Bookmark, Briefcase, Clock, MapPin, Monitor } from "lucide-react";
+import { BadgeCheck, Bookmark, Briefcase, Clock, MapPin, Monitor } from "lucide-react";
 
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { AdminAcciones } from "@/components/site/AdminAcciones";
@@ -14,11 +14,21 @@ import { lema, nombreEmpresa } from "@/lib/presentar";
 
 export function ClaridadPill({ job, className = "" }: { job: Vacante; className?: string }) {
   const c = claridad(job);
+  if (c.puntos === c.total) return <SelloClara className={className} />;
   const tono = c.nivel === "Alta" ? "bg-success/10 text-success" : c.nivel === "Media" ? "bg-cta/15 text-[#8a5200]" : "bg-muted text-muted-foreground";
   return (
     <span title={`Tiene: ${c.tiene.join(", ") || "poca información"}`} className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${tono} ${className}`}>
       <span aria-hidden="true" className="flex gap-0.5">{Array.from({ length: c.total }, (_, i) => <span key={i} className={`h-2.5 w-1 rounded-full ${i < c.puntos ? "bg-current" : "bg-current opacity-20"}`} />)}</span>
       Claridad {c.nivel.toLowerCase()}
+    </span>
+  );
+}
+
+/** Sello para las vacantes 6/6. Dice que la información está completa, no que la empresa sea buena. */
+export function SelloClara({ className = "", grande = false }: { className?: string; grande?: boolean }) {
+  return (
+    <span title="Vacante clara: trae salario, empresa, requisitos, funciones, cómo aplicar y fuente (6 de 6). Mide la información, no la empresa." className={`inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#0a7a4b] to-[#12a05f] font-extrabold text-white shadow-[0_2px_8px_-2px_rgb(18_160_95/0.5)] ${grande ? "px-3.5 py-1.5 text-sm" : "px-2.5 py-1 text-xs"} ${className}`}>
+      <BadgeCheck className={grande ? "size-4" : "size-3.5"} aria-hidden="true" /> Vacante clara 6/6
     </span>
   );
 }

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 
-import { NIVELES, nivelDe } from "@/lib/claridad";
+import { esClara, NIVELES, nivelDe } from "@/lib/claridad";
+import type { Vacante } from "@/lib/vacantes";
 import { COMPROMISOS, enCamino } from "@/lib/inclusion";
 import { areas, modalidades, nivelesExperiencia, provincias, rangosSalario, tiposEmpleo } from "@/lib/data";
 
-export type Filtros = { area: string; provincia: string; salarioMin: string; modalidad: string; experiencia: string; tipo: string; fecha: string; conSalario: string; nivel: string; incl?: string };
+export type Filtros = { area: string; provincia: string; salarioMin: string; modalidad: string; experiencia: string; tipo: string; fecha: string; conSalario: string; nivel: string; incl?: string; claras?: string };
 
 export const filtrosVacios: Filtros = { area: "", provincia: "", salarioMin: "", modalidad: "", experiencia: "", tipo: "", fecha: "", conSalario: "", nivel: "" };
 
@@ -32,11 +33,12 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
   const set = (k: keyof Filtros) => (v: string) => onChange({ ...value, [k]: v });
   const hayFiltros = Object.values(value).some((v) => v !== "");
   const [mas, setMas] = useState(false);
-  const activos = [value.area, value.provincia, value.salarioMin, value.tipo, value.fecha, value.nivel, value.incl].filter(Boolean).length;
+  const activos = [value.area, value.provincia, value.salarioMin, value.tipo, value.fecha, value.nivel, value.incl, value.claras].filter(Boolean).length;
   return (
     <div className={`flex flex-col gap-3 ${className}`}>
       <div className="-mx-4 flex items-center justify-start gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6 md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden" role="group" aria-label="Atajos">
         <Chip activo={value.fecha === "1"} onClick={() => set("fecha")(value.fecha === "1" ? "" : "1")}>Publicadas hoy</Chip>
+        <Chip activo={value.claras === "si"} onClick={() => set("claras")(value.claras === "si" ? "" : "si")}>Vacantes claras 6/6</Chip>
         <Chip activo={value.conSalario === "si"} onClick={() => set("conSalario")(value.conSalario === "si" ? "" : "si")}>Con salario visible</Chip>
         <Chip activo={value.nivel === "Primer empleo"} onClick={() => set("nivel")(value.nivel === "Primer empleo" ? "" : "Primer empleo")}>Primer empleo</Chip>
         <Chip activo={value.incl === "discapacidad"} onClick={() => set("incl")(value.incl === "discapacidad" ? "" : "discapacidad")}>Inclusiva discapacidad</Chip>
@@ -73,6 +75,7 @@ export function filtrarJobs<T extends { area: string; provincia: string; modalid
     if (f.tipo && j.tipo !== f.tipo) return false;
     if (f.salarioMin && j.salarioMin < Number(f.salarioMin)) return false;
     if (f.conSalario && j.salarioMin <= 0) return false;
+    if (f.claras && !esClara(j as unknown as Vacante)) return false;
     if (f.incl && !(f.incl === "todas" ? j.categorias.some((c) => c.startsWith("incl:")) : enCamino(j, f.incl))) return false;
     if (f.fecha && Date.now() - new Date(j.creado).getTime() > Number(f.fecha) * 864e5) return false;
     return true;

@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Briefcase, Check, Clock, Gift, GraduationCap, Info, MapPin, Monitor, Plus, ShieldCheck, Target } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Briefcase, Check, Clock, Gift, GraduationCap, Info, MapPin, Monitor, Plus, ShieldCheck, Target } from "lucide-react";
 
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { BotonGuardar, ClaridadPill } from "@/components/site/JobCard";
 import { InclusionPills } from "@/components/site/InclusionPills";
 import { CompartirBoton } from "@/components/site/CompartirBoton";
 import { useApply } from "@/components/site/apply-context";
-import { diasRestantes, esNueva, venceTexto } from "@/lib/claridad";
+import { diasRestantes, esClara, esNueva, venceTexto } from "@/lib/claridad";
 import { viaAplicar } from "@/lib/mensajes";
 import { usePostulaciones } from "@/lib/postulaciones";
 import type { Vacante } from "@/lib/vacantes";
@@ -25,6 +25,7 @@ export function FilaVacante({ job, activa, onElegir }: { job: Vacante; activa: b
           <span className="flex flex-wrap items-center gap-1.5">
             {job.destacada && <span className="rounded-full bg-[#ffd84d] px-2 py-0.5 text-[10px] font-extrabold text-[#3d2f00]">Destacada</span>}
             {esNueva(job) && <span className="rounded-full bg-cta px-2 py-0.5 text-[10px] font-bold text-cta-foreground">Nueva</span>}
+            {esClara(job) && <span className="inline-flex items-center gap-1 rounded-full bg-[#0a7a4b] px-2 py-0.5 text-[10px] font-extrabold text-white"><BadgeCheck className="size-3" aria-hidden="true" /> Clara 6/6</span>}
             {yaAplico(job.id) && <span className="rounded-full bg-success/15 px-2 py-0.5 text-[10px] font-bold text-success">Ya aplicaste</span>}
           </span>
           <span className={`mt-0.5 block text-[15px] font-extrabold leading-snug ${activa ? "text-[#1557c4]" : "group-hover:text-[#1557c4]"}`}>{job.titulo}</span>
