@@ -353,3 +353,12 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 .cv-ajuste .cv-hoja section { margin-top: calc(1.5rem + var(--aire, 0px)); }
 .cv-pagina-llena .cv-hoja { min-height: calc((297mm - 1px) / var(--z, 1)); }
 #cv-imprimible { display: none; }
+/* Portada: acceso a Ferias de empleo (borde de luz que gira, destello y mapa que respira) */
+.faro-borde { background: conic-gradient(from 0deg, transparent 0deg, #ffd84d 50deg, #ffffff 70deg, transparent 120deg, transparent 180deg, #1d6ff2 230deg, #8ec1ff 250deg, transparent 300deg); animation: faro-gira 4.5s linear infinite; }
+@keyframes faro-gira { to { transform: translate(-50%, -50%) rotate(360deg); } }
+.faro-destello { animation: faro-destello 5s ease-in-out infinite; }
+@keyframes faro-destello { 0%, 55% { transform: translateX(0); } 100% { transform: translateX(450%); } }
+.faro-puntos { animation: faro-respira 3.6s ease-in-out infinite; }
+@keyframes faro-respira { 0%, 100% { opacity: .8; } 50% { opacity: 1.25; filter: brightness(1.5); } }
+.faro-ferias { animation: entra-arriba .7s var(--ease-out-expo) 240ms both; }
+@media (prefers-reduced-motion: reduce) { .faro-borde, .faro-destello, .faro-puntos, .faro-ferias { animation: none; } }

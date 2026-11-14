@@ -4,6 +4,7 @@ import { nombreEmpresa } from "@/lib/presentar";
 import { useApply } from "@/components/site/apply-context";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { SearchBar } from "@/components/site/SearchBar";
+import { FeriasFaro } from "@/components/site/FeriasFaro";
 import { esNueva } from "@/lib/claridad";
 import { textosPorDefecto, useContenido } from "@/lib/contenido";
 import { CANAL_WHATSAPP, type Vacante } from "@/lib/vacantes";
@@ -67,6 +68,8 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
           <SearchBar puesto={puesto} provincia={provincia} onPuesto={onPuesto} onProvincia={onProvincia} onSubmit={onBuscar} ctaLabel="Buscar" />
         </div>
 
+        <div className="flex flex-col">
+        <FeriasFaro className="order-first mt-5 md:order-last md:mt-6" />
         <p className="mt-5 text-sm text-white/75 md:hidden">Búsquedas populares:</p>
         <div className="-mx-4 mt-2 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:-mx-6 sm:px-6 md:mx-0 md:mt-5 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden [&>a]:shrink-0 [&>a]:whitespace-nowrap">
           <span className="mr-1 hidden text-sm text-white/75 md:inline">Búsquedas populares:</span>
@@ -76,6 +79,7 @@ export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total
           <Link to="/empleos/$slug" params={{ slug: "remoto" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Desde casa</Link>
           <Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} className="rounded-full bg-white/12 px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Primer empleo</Link>
           <Link to="/descubrir" className="order-first rounded-full bg-[#ffd84d] px-3.5 py-1.5 md:order-none text-sm font-extrabold text-[#3d2f00] hover:bg-[#ffe27a]">Descubrir deslizando</Link>
+        </div>
         </div>
 
         </div>
