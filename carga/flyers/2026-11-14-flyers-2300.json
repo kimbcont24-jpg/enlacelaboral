@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Herrero",
+  "empresa": "MAT Herrería SDE",
+  "provincia": "Santo Domingo",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "MAT Herrería SDE contrata herreros con experiencia comprobable en herrería. Ubicación: Santo Domingo Este.",
+  "requisitos": "Experiencia comprobable trabajando en herrería",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 829-875-7765 (o envía tu CV por DM)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/mat-herreria-herreros-y-ayudantes.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ayudante de Herrero",
+  "empresa": "MAT Herrería SDE",
+  "provincia": "Santo Domingo",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "MAT Herrería SDE contrata ayudantes de herrería con experiencia comprobable en herrería. Ubicación: Santo Domingo Este.",
+  "requisitos": "Experiencia comprobable trabajando en herrería",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 829-875-7765 (o envía tu CV por DM)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/mat-herreria-herreros-y-ayudantes.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Técnico Automotriz Diésel",
+  "empresa": "British Motors",
+  "provincia": "Distrito Nacional",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "British Motors busca un técnico automotriz diésel para reparación y mantenimiento de vehículos de carga. Ubicación por confirmar (Santo Domingo). Disponibilidad para viajar al interior del país cuando sea requerido.",
+  "requisitos": "Técnico en vehículos de carga diésel | Experiencia en reparación y mantenimiento de vehículos diésel | Conocimientos en diagnóstico de fallas mecánicas, eléctricas y electrónicas | Manejo de scanner y herramientas de diagnóstico | Experiencia con camiones o vehículos comerciales (preferible) | Disponibilidad para viajar al interior del país | Licencia de conducir categoría 3 al día | Responsabilidad, puntualidad y atención al detalle | Capacidad de diagnóstico y resolución de problemas | Trabajo en equipo, proactividad y compromiso",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "empleos@british.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/british-motors-tecnico-automotriz-diesel.jpg",
+  "redes": "si"
+ }
+]
