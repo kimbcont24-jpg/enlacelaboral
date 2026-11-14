@@ -443,6 +443,11 @@ const esConsultora = (f) => {
 const antes = conContacto.length;
 for (let i = conContacto.length - 1; i >= 0; i--) if (esConsultora(conContacto[i])) conContacto.splice(i, 1);
 log("descartadas por ser consultora / gestión humana", antes - conContacto.length);
+// 14 nov 2026 (Kim): del Estado se publica todo, MENOS la SISALRIL (Superintendencia de Salud y Riesgos Laborales).
+const SISALRIL = /sisalril|superintendencia\s+de\s+salud\s+y\s+riesgos\s+laborales/i;
+const antesSis = conContacto.length;
+for (let i = conContacto.length - 1; i >= 0; i--) { const f = conContacto[i]; if (SISALRIL.test(`${f.empresa ?? ""} ${f.aplicar ?? ""} ${f.fuente_url ?? ""} ${f.titulo ?? ""}`)) conContacto.splice(i, 1); }
+log("descartadas por ser de la SISALRIL", antesSis - conContacto.length);
 log("cargadas", conContacto.length, "sin correo ni WhatsApp", sinContacto, SOLO_CONTACTO ? "(no se cargan)" : "(se cargan con enlace al portal)");
 mkdirSync("carga", { recursive: true });
 writeFileSync("carga/auto-latest.json", JSON.stringify(conContacto.slice(0, 700)));
