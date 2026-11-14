@@ -4,7 +4,7 @@ import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { landingsArea, landingsProvincia, slug } from "./lib/empleos";
 import { imagenVacante } from "./lib/og";
-import { empresaDe, leerMeta, type VacanteRow } from "./lib/vacantes";
+import { empresaDe, leerMeta, SITIO, type VacanteRow } from "./lib/vacantes";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -46,7 +46,12 @@ function isH3SwallowedErrorBody(body: string): boolean {
 const SB_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const SB_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
 
-async function sitemap(origen: string): Promise<Response> {
+/** Direcciones viejas o alternas que deben llevar (301) al dominio oficial, para que Google indexe una sola versión. */
+const HOSTS_VIEJOS = new Set(["enlace-rd.vercel.app", "www.enlacelaboralrd.com"]);
+
+async function sitemap(): Promise<Response> {
+  const origen = SITIO;
+  const hoy = new Date().toISOString().slice(0, 10);
   const desde = new Date(Date.now() - 30 * 864e5).toISOString();
   let filas: { id: string; created_at: string; etiquetas: string[] | null }[] = [];
   try {
@@ -55,11 +60,11 @@ async function sitemap(origen: string): Promise<Response> {
   } catch {
     filas = [];
   }
-  const fijas = ["/", "/vacantes", "/empresas", "/recursos", "/cv", "/impulso", "/herramientas", "/salarios", "/herramientas/salario-neto", "/herramientas/liquidacion", "/herramientas/regalia-pascual", "/herramientas/comparar-ofertas", "/herramientas/brujula", "/herramientas/verificar-oferta", "/insignias", "/jornadas", "/alianzas", "/empleo-para-todos", "/legal", "/seguridad", "/terminos", "/privacidad", "/cookies", "/reembolsos", "/nosotros", "/contacto"].map((p) => `<url><loc>${origen}${p}</loc><changefreq>daily</changefreq></url>`);
+  const fijas = ["/", "/vacantes", "/empresas", "/recursos", "/cv", "/impulso", "/herramientas", "/salarios", "/herramientas/salario-neto", "/herramientas/liquidacion", "/herramientas/regalia-pascual", "/herramientas/comparar-ofertas", "/herramientas/brujula", "/herramientas/verificar-oferta", "/insignias", "/jornadas", "/alianzas", "/empleo-para-todos", "/legal", "/seguridad", "/terminos", "/privacidad", "/cookies", "/reembolsos", "/nosotros", "/contacto", "/descubrir"].map((p) => `<url><loc>${origen}${p === "/" ? "/" : p}</loc><lastmod>${hoy}</lastmod><changefreq>${p === "/" || p === "/vacantes" ? "hourly" : "weekly"}</changefreq></url>`);
   const vacantes = filas.map((f) => `<url><loc>${origen}/vacantes/${f.id}</loc><lastmod>${f.created_at.slice(0, 10)}</lastmod></url>`);
   const empresas = new Set<string>();
   for (const f of filas) for (const t of f.etiquetas ?? []) if (t.startsWith("m:empresa:") && t.length > 10) empresas.add(slug(t.slice(10)));
-  const landings = [...landingsProvincia, ...landingsArea].map((l) => l.slug).concat([...empresas]).filter(Boolean).map((s) => `<url><loc>${origen}/empleos/${s}</loc><changefreq>daily</changefreq></url>`);
+  const landings = [...landingsProvincia, ...landingsArea].map((l) => l.slug).concat([...empresas]).filter(Boolean).map((s) => `<url><loc>${origen}/empleos/${s}</loc><lastmod>${hoy}</lastmod><changefreq>daily</changefreq></url>`);
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${[...fijas, ...landings, ...vacantes].join("")}</urlset>`;
   return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
 }
@@ -178,13 +183,16 @@ async function aplicar(request: Request): Promise<Response> {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
+    if (HOSTS_VIEJOS.has(url.hostname) && !url.pathname.startsWith("/api/") && (request.method === "GET" || request.method === "HEAD")) {
+      return new Response(null, { status: 301, headers: { location: `${SITIO}${url.pathname}${url.search}`, "cache-control": "public, max-age=86400" } });
+    }
     if (url.pathname === "/api/telegram") return telegram();
     if (url.pathname === "/api/aplicar" && request.method === "POST") return aplicar(request);
-    if (url.pathname === "/sitemap.xml") return sitemap(url.origin);
+    if (url.pathname === "/sitemap.xml") return sitemap();
     const og = url.pathname.match(/^\/og\/vacantes\/([0-9a-f-]{36})\.png$/i);
     if (og) return ogVacante(og[1]!, url.origin);
     if (url.pathname === "/robots.txt") {
-      return new Response(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /panel\nDisallow: /auth\n\nSitemap: ${url.origin}/sitemap.xml\n`, { headers: { "content-type": "text/plain; charset=utf-8" } });
+      return new Response(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /panel\nDisallow: /auth\nDisallow: /api/\n\nSitemap: ${SITIO}/sitemap.xml\n`, { headers: { "content-type": "text/plain; charset=utf-8" } });
     }
     try {
       const handler = await getServerEntry();

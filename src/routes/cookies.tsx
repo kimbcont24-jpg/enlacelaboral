@@ -4,7 +4,7 @@ import { HardDrive, Megaphone, MousePointerClick } from "lucide-react";
 import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
 
 export const Route = createFileRoute("/cookies")({
-  head: () => ({ meta: [{ title: "Política de cookies | Enlace Laboral" }, { name: "description", content: "Enlace Laboral no usa cookies de publicidad ni de rastreo. Te explicamos qué guarda tu navegador y cómo borrarlo." }] }),
+  head: () => ({ meta: [{ title: "Política de cookies | Enlace Laboral" }, { name: "description", content: "Enlace Laboral no usa cookies de publicidad ni de rastreo. Te explicamos qué guarda tu navegador y cómo borrarlo." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/cookies" }] }),
   component: Cookies,
 });
 

@@ -13,6 +13,34 @@ import { iniciarNube } from "@/lib/nube";
 import { iniciarApariencia, scriptApariencia } from "@/lib/apariencia";
 import appCss from "../styles.css?url";
 
+/** Quién es el sitio, para que Google muestre «Enlace Laboral RD» como nombre y no lo confunda con otras marcas parecidas. */
+const MARCA_LD = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://enlacelaboralrd.com/#organizacion",
+      name: "Enlace Laboral RD",
+      alternateName: ["Enlace Laboral", "Enlace RD"],
+      url: "https://enlacelaboralrd.com/",
+      logo: "https://enlacelaboralrd.com/icon-512.png",
+      description: "Plataforma dominicana de empleo que conecta a personas que buscan trabajo con empresas de República Dominicana.",
+      areaServed: { "@type": "Country", name: "República Dominicana" },
+      sameAs: ["https://t.me/enlacelaboral", "https://whatsapp.com/channel/0029Vb7GW0UKLaHf3idEm62D"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://enlacelaboralrd.com/#sitio",
+      name: "Enlace Laboral RD",
+      alternateName: ["Enlace Laboral", "enlacelaboralrd.com"],
+      url: "https://enlacelaboralrd.com/",
+      inLanguage: "es-DO",
+      publisher: { "@id": "https://enlacelaboralrd.com/#organizacion" },
+      potentialAction: { "@type": "SearchAction", target: { "@type": "EntryPoint", urlTemplate: "https://enlacelaboralrd.com/vacantes?q={search_term_string}" }, "query-input": "required name=search_term_string" },
+    },
+  ],
+}).replace(/</g, "\\u003c");
+
 function NotFoundComponent() {
   const atajos = [["Ver todas las vacantes", "/vacantes"], ["Empleos desde casa", "/empleos/remoto"], ["Hacer mi CV gratis", "/cv"], ["Publicar una vacante", "/empresas"]] as const;
   return (
@@ -39,6 +67,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Enlace Laboral · Empleos en República Dominicana" },
       { name: "description", content: "Vacantes reales de empresas, portales e instituciones de República Dominicana, en un solo lugar. Aplicar es gratis." },
       { name: "theme-color", content: "#0a2f5c" },
+      { property: "og:site_name", content: "Enlace Laboral RD" },
+      { property: "og:locale", content: "es_DO" },
+      { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://enlacelaboralrd.com/enlace-laboral-logo.png" },
       { name: "google-site-verification", content: "nAeJKgDNM-yYtt0zmC-2lKd0eo_y-u7L07Re10v9NVg" },
     ],
     links: [
@@ -48,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
-    scripts: [{ children: scriptApariencia }, { children: scriptEntrada }],
+    scripts: [{ children: scriptApariencia }, { children: scriptEntrada }, { type: "application/ld+json", children: MARCA_LD }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -57,7 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es-DO">
       <head><HeadContent /></head>
       <body>{children}<Scripts /></body>
     </html>

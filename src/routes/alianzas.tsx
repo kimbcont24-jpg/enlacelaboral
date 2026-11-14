@@ -12,7 +12,7 @@ import { provincias } from "@/lib/data";
 import { useVacantes } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/alianzas")({
-  head: () => ({ meta: [{ title: "Alianzas para el empleo: universidades, INFOTEP y fundaciones | Enlace Laboral" }, { name: "description", content: "Del aula al empleo. Universidades, centros de formación, fundaciones e instituciones: conecten a su gente con empresas que contratan en toda República Dominicana. Sin costo." }] }),
+  head: () => ({ meta: [{ title: "Alianzas para el empleo: universidades, INFOTEP y fundaciones | Enlace Laboral" }, { name: "description", content: "Del aula al empleo. Universidades, centros de formación, fundaciones e instituciones: conecten a su gente con empresas que contratan en toda República Dominicana. Sin costo." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/alianzas" }] }),
   component: Alianzas,
 });
 

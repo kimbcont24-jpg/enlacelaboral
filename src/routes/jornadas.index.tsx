@@ -18,6 +18,7 @@ export const Route = createFileRoute("/jornadas/")({
       { property: "og:title", content: "Ferias de empleo en República Dominicana · Enlace Laboral" },
       { property: "og:description", content: "Todas las ferias de empleo en un mapa: dónde, cuándo y qué puestos ofrecen." },
     ],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/jornadas" }],
   }),
   component: Ferias,
 });

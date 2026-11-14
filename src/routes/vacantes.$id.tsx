@@ -48,6 +48,7 @@ export const Route = createFileRoute("/vacantes/$id")({
         { name: "twitter:card", content: "summary_large_image" }, { name: "twitter:image", content: `${SITIO}/og/vacantes/${job.id}.png` },
         ...(vencida ? [{ name: "robots", content: "noindex" }] : []),
       ],
+      links: [{ rel: "canonical", href: `${SITIO}/vacantes/${job.id}` }],
       scripts: ld && !vencida ? [{ type: "application/ld+json", children: ld }] : [],
     };
   },

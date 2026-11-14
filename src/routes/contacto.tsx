@@ -11,7 +11,7 @@ import { CANAL_WHATSAPP } from "@/lib/vacantes";
 type Tipo = "contacto" | "empresa" | "denuncia";
 export const Route = createFileRoute("/contacto")({
   validateSearch: (s: Record<string, unknown>): { tipo?: Tipo } => (["contacto", "empresa", "denuncia"].includes(s["tipo"] as string) ? { tipo: s["tipo"] as Tipo } : {}),
-  head: () => ({ meta: [{ title: "Contacto y ayuda | Enlace Laboral" }, { name: "description", content: "Preguntas frecuentes y formulario para escribirle al equipo de Enlace Laboral. Reporta ofertas sospechosas." }] }),
+  head: () => ({ meta: [{ title: "Contacto y ayuda | Enlace Laboral" }, { name: "description", content: "Preguntas frecuentes y formulario para escribirle al equipo de Enlace Laboral. Reporta ofertas sospechosas." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/contacto" }] }),
   component: Contacto,
 });
 

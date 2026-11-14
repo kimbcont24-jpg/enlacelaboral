@@ -7,7 +7,7 @@ import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal"
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/privacidad")({
-  head: () => ({ meta: [{ title: "Política de privacidad | Enlace Laboral" }, { name: "description", content: "Qué datos guardamos, para qué, quién los ve y cómo pedir que los corrijamos o borremos. Según la Ley 172-13 de República Dominicana." }] }),
+  head: () => ({ meta: [{ title: "Política de privacidad | Enlace Laboral" }, { name: "description", content: "Qué datos guardamos, para qué, quién los ve y cómo pedir que los corrijamos o borremos. Según la Ley 172-13 de República Dominicana." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/privacidad" }] }),
   component: Privacidad,
 });
 

@@ -20,9 +20,12 @@ import { useVacantes } from "@/lib/vacantes";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Empleos en República Dominicana | Enlace Laboral" },
-      { name: "description", content: "Busca empleo en República Dominicana. Vacantes de todo el país en un solo lugar, con la fuente original visible." },
+      { title: "Empleos en República Dominicana | Enlace Laboral RD" },
+      { name: "description", content: "Busca empleo en República Dominicana: vacantes reales en Santo Domingo, Santiago y todo el país, con salario visible cuando la empresa lo publica. Aplicar es gratis." },
+      { property: "og:title", content: "Enlace Laboral RD · Empleos en República Dominicana" },
+      { property: "og:url", content: "https://enlacelaboralrd.com/" },
     ],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/" }],
   }),
   component: Home,
 });

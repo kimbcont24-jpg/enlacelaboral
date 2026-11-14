@@ -6,7 +6,7 @@ import { Header } from "@/components/site/Header";
 import { PAGINAS_LEGALES } from "@/components/site/Legal";
 
 export const Route = createFileRoute("/legal")({
-  head: () => ({ meta: [{ title: "Confianza y legal | Enlace Laboral" }, { name: "description", content: "Términos, privacidad, cookies, pagos y reembolsos, empleo seguro y contacto de Enlace Laboral, en palabras sencillas." }] }),
+  head: () => ({ meta: [{ title: "Confianza y legal | Enlace Laboral" }, { name: "description", content: "Términos, privacidad, cookies, pagos y reembolsos, empleo seguro y contacto de Enlace Laboral, en palabras sencillas." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/legal" }] }),
   component: Legal,
 });
 

@@ -19,6 +19,7 @@ export const Route = createFileRoute("/empleo-para-todos")({
       { property: "og:title", content: "Empleo para todas las personas · Enlace Laboral" },
       { property: "og:description", content: "Vacantes reales para tu situación, un plan en 3 pasos y a quién acudir. Gratis y sin discriminación." },
     ],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/empleo-para-todos" }],
   }),
   component: EmpleoParaTodos,
 });

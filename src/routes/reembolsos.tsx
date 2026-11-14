@@ -4,7 +4,7 @@ import { BadgeDollarSign, CalendarX2, Undo2 } from "lucide-react";
 import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
 
 export const Route = createFileRoute("/reembolsos")({
-  head: () => ({ meta: [{ title: "Pagos y reembolsos | Enlace Laboral" }, { name: "description", content: "Cuándo pagas por los servicios de Enlace Laboral y cuándo te devolvemos tu dinero. Sin cobros automáticos." }] }),
+  head: () => ({ meta: [{ title: "Pagos y reembolsos | Enlace Laboral" }, { name: "description", content: "Cuándo pagas por los servicios de Enlace Laboral y cuándo te devolvemos tu dinero. Sin cobros automáticos." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/reembolsos" }] }),
   component: Reembolsos,
 });
 

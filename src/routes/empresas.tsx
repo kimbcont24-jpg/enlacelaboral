@@ -13,7 +13,7 @@ import { useControles } from "@/lib/controles";
 import { provincias } from "@/lib/data";
 
 export const Route = createFileRoute("/empresas")({
-  head: () => ({ meta: [{ title: "Publica vacantes gratis y elige candidatos | Enlace Laboral" }, { name: "description", content: "Publica tus vacantes gratis en República Dominicana. Recibe candidatos en tu panel, agenda entrevistas y escríbeles por WhatsApp con un toque." }] }),
+  head: () => ({ meta: [{ title: "Publica vacantes gratis y elige candidatos | Enlace Laboral" }, { name: "description", content: "Publica tus vacantes gratis en República Dominicana. Recibe candidatos en tu panel, agenda entrevistas y escríbeles por WhatsApp con un toque." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/empresas" }] }),
   component: Empresas,
 });
 

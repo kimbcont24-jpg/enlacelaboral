@@ -4,7 +4,7 @@ import { Ban, Gift, Scale } from "lucide-react";
 import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
 
 export const Route = createFileRoute("/terminos")({
-  head: () => ({ meta: [{ title: "Términos y condiciones | Enlace Laboral" }, { name: "description", content: "Las reglas para usar Enlace Laboral: candidatos, empresas, servicios pagados y responsabilidades. En palabras sencillas." }] }),
+  head: () => ({ meta: [{ title: "Términos y condiciones | Enlace Laboral" }, { name: "description", content: "Las reglas para usar Enlace Laboral: candidatos, empresas, servicios pagados y responsabilidades. En palabras sencillas." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/terminos" }] }),
   component: Terminos,
 });
 

@@ -16,7 +16,7 @@ import { usePostulaciones } from "@/lib/postulaciones";
 import { useVacantes, type Vacante } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/descubrir")({
-  head: () => ({ meta: [{ title: "Descubrir: vacantes que encajan contigo | Enlace Laboral" }, { name: "description", content: "Dinos dónde estás, qué sabes hacer y cuánta experiencia tienes. Te mostramos una vacante a la vez y te decimos por qué encaja." }] }),
+  head: () => ({ meta: [{ title: "Descubrir: vacantes que encajan contigo | Enlace Laboral" }, { name: "description", content: "Dinos dónde estás, qué sabes hacer y cuánta experiencia tienes. Te mostramos una vacante a la vez y te decimos por qué encaja." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/descubrir" }] }),
   component: Descubrir,
 });
 

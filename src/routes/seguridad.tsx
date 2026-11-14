@@ -4,7 +4,7 @@ import { BadgeCheck, Ban, Flag, Search, Siren } from "lucide-react";
 import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
 
 export const Route = createFileRoute("/seguridad")({
-  head: () => ({ meta: [{ title: "Empleo seguro: cómo evitar estafas | Enlace Laboral" }, { name: "description", content: "Señales de una oferta de empleo falsa en República Dominicana, cómo verificar una empresa y qué hacer si te estafaron." }] }),
+  head: () => ({ meta: [{ title: "Empleo seguro: cómo evitar estafas | Enlace Laboral" }, { name: "description", content: "Señales de una oferta de empleo falsa en República Dominicana, cómo verificar una empresa y qué hacer si te estafaron." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/seguridad" }] }),
   component: Seguridad,
 });
 

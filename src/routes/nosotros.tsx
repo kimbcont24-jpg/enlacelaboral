@@ -4,7 +4,7 @@ import { Accessibility, Handshake, Link2, Scale, Sparkles, Users } from "lucide-
 import { Bloque, PaginaLegal } from "@/components/site/Legal";
 
 export const Route = createFileRoute("/nosotros")({
-  head: () => ({ meta: [{ title: "Quiénes somos | Enlace Laboral" }, { name: "description", content: "Enlace Laboral es una plataforma dominicana que une a personas que buscan empleo con empresas, universidades, INFOTEP y fundaciones. Gratis para candidatos y sin discriminación." }] }),
+  head: () => ({ meta: [{ title: "Quiénes somos | Enlace Laboral" }, { name: "description", content: "Enlace Laboral es una plataforma dominicana que une a personas que buscan empleo con empresas, universidades, INFOTEP y fundaciones. Gratis para candidatos y sin discriminación." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/nosotros" }] }),
   component: Nosotros,
 });
 

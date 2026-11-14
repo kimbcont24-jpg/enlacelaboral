@@ -31,6 +31,7 @@ export const Route = createFileRoute("/cv")({
       { property: "og:title", content: "Crea tu CV gratis | Enlace Laboral" },
       { property: "og:description", content: "Ejemplos para tu puesto, revisor en vivo, 6 diseños y carta de presentación. Gratis y sin marca de agua." },
     ],
+    links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/cv" }],
   }),
   component: CrearCV,
 });
