@@ -23,7 +23,7 @@ function Nosotros() {
         { I: Link2, t: "Para empresas", d: "Publica gratis y maneja a tus candidatos en un solo lugar." },
         { I: Handshake, t: "Para aliados", d: "Universidades, INFOTEP, fundaciones e instituciones." },
       ]}
-      indice={[["que", "Qué hacemos"], ["creemos", "En qué creemos"], ["enlace", "Por qué «Enlace»"], ["fundadora", "Quién está detrás"], ["unete", "Súmate"]]}>
+      indice={[["que", "Qué hacemos"], ["creemos", "En qué creemos"], ["enlace", "Por qué «Enlace»"], ["unete", "Súmate"]]}>
       <Bloque id="que" titulo="Qué hacemos">
         <p>Reunimos vacantes reales de empresas, instituciones y fuentes públicas de todo el país, y las mostramos claras y fáciles de entender. Quien busca empleo aplica en minutos. Las empresas reciben a sus candidatos en un panel donde los ordenan, los entrevistan y les responden.</p>
       </Bloque>
@@ -34,9 +34,6 @@ function Nosotros() {
       </Bloque>
       <Bloque id="enlace" titulo="Por qué «Enlace»">
         <p>Porque no queremos ser solo una lista de anuncios. Queremos conectar a quien busca su primer empleo con la empresa que está dispuesta a enseñarle, a la universidad con las pasantías, a las fundaciones con empresas inclusivas, y a todos con información clara.</p>
-      </Bloque>
-      <Bloque id="fundadora" titulo="Quién está detrás">
-        <p>Enlace Laboral RD fue fundado por <a href="https://kimberlycontreras.vercel.app/sobre-kimberly-contreras" target="_blank" rel="noopener" className="font-semibold text-primary underline underline-offset-4">Kimberly Contreras</a>, psicóloga organizacional dominicana con más de 10 años en Gestión Humana y reclutamiento. Conoce su trabajo en <a href="https://kimberlycontreras.vercel.app/" target="_blank" rel="noopener" className="font-semibold text-primary underline underline-offset-4">kimberlycontreras.vercel.app</a>.</p>
       </Bloque>
       <Bloque id="unete" titulo="Súmate">
         <div className="flex flex-wrap gap-2">
