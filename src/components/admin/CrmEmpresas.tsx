@@ -4,7 +4,8 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Interruptor, Kpi, Tarjeta, campo, fechaRD, haceDesde, rotulo } from "@/components/admin/comun";
-import { supabase } from "@/integrations/supabase/client";
+import { crm } from "@/lib/crm-empresas";
+import { CuentasVista, FichaCuenta, MotorVista, Termometro } from "@/components/admin/MotorEmpresas";
 import { cn } from "@/lib/utils";
 
 /* ---------- Tipos ---------- */
@@ -13,7 +14,7 @@ type Prospecto = {
   correo: string; dominio: string; empresa: string; contacto_nombre: string | null; cargo: string | null; provincia: string | null; sector: string | null;
   puesto_ejemplo: string | null; vacante_id: string | null; vacantes_en_enlace: number | null; ultima_vacante: string | null; fuente: string;
   dominio_ok: boolean | null; mx_revisado: string | null; estado: Estado; paso: number; ultimo_envio: string | null; proximo_envio: string | null;
-  nota: string | null; creado: string; actualizado: string; n_envios: number; de_baja: boolean; cruce_nst: boolean;
+  nota: string | null; creado: string; actualizado: string; n_envios: number; de_baja: boolean; cruce_nst: boolean; temperatura: number | null; enviable: boolean; tipo_correo: string; telefono: string | null;
 };
 type Config = { activo: boolean; limite_diario: number; dias_paso2: number; dias_paso3: number; dias_paso4: number; inicio: string; remitente: string; actualizado: string };
 type Resumen = { total: number; dominio_verificado: number; por_contactar: number; en_secuencia: number; respondieron: number; registradas: number; no_interesadas: number; rebotados: number; secuencia_terminada: number; correos_enviados: number };
@@ -45,19 +46,6 @@ const FILTROS: { id: string; label: string; estados: Estado[] }[] = [
   { id: "cerradas", label: "Cerradas", estados: ["terminado", "no_interesado", "baja", "rebotado", "pausado", "excluida"] },
 ];
 
-/* ---------- Llamada al servidor (solo administradoras) ---------- */
-async function crm<T>(accion: string, args: Record<string, unknown> = {}): Promise<T> {
-  const { data } = await supabase.auth.getSession();
-  const r = await fetch("/api/crm-empresas", {
-    method: "POST",
-    headers: { "content-type": "application/json", authorization: `Bearer ${data.session?.access_token ?? ""}` },
-    body: JSON.stringify({ accion, args }),
-  });
-  const j = (await r.json().catch(() => ({}))) as T & { error?: string };
-  if (!r.ok) throw new Error(j.error ?? "No se pudo completar");
-  return j;
-}
-
 function Pastilla({ estado }: { estado: Estado }) {
   const e = ESTADOS[estado] ?? ESTADOS.nuevo;
   return <span className={cn("inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-bold", e.clase)}>{e.label}</span>;
@@ -75,7 +63,9 @@ const fechaCorta = (d: string | null) => (d ? new Date(`${d}T12:00:00`).toLocale
 
 /* ---------- Componente principal ---------- */
 export function CrmEmpresas() {
-  const [vista, setVista] = useState<"tablero" | "envios" | "correos" | "ajustes">("tablero");
+  const [vista, setVista] = useState<"motor" | "cuentas" | "tablero" | "envios" | "correos" | "ajustes">("motor");
+  const [cuentaAbierta, setCuentaAbierta] = useState<string | null>(null);
+  const [segmento, setSegmento] = useState("");
   const [datos, setDatos] = useState<Datos | null>(null);
   const [error, setError] = useState("");
   const [cargando, setCargando] = useState(true);
@@ -130,9 +120,9 @@ export function CrmEmpresas() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-xl font-extrabold">CRM de empresas</h2>
+          <h2 className="text-xl font-extrabold">Motor de empresas</h2>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Invitaciones automáticas a empresas con correo corporativo verificado para que publiquen gratis en Enlace. Salen desde info@enlacelaboralrd.com, de lunes a viernes a las 9:41 a. m., y la secuencia se detiene sola cuando la empresa responde.
+            Lee todas las vacantes de Enlace, detecta qué empresas están contratando, mide su temperatura y les escribe con el argumento que más les sirve. Los correos salen desde info@enlacelaboralrd.com de lunes a viernes a las 9:41 a. m. y la secuencia se detiene sola cuando la empresa responde.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -144,7 +134,7 @@ export function CrmEmpresas() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <Kpi titulo="Empresas" valor={r.total} nota={`${r.dominio_verificado} con dominio verificado`} />
+        <Kpi titulo="Contactos" valor={r.total} nota={`${r.dominio_verificado} con dominio verificado`} />
         <Kpi titulo="Por contactar" valor={r.por_contactar} onClick={() => { setVista("tablero"); setFiltro("nuevo"); }} />
         <Kpi titulo="En secuencia" valor={r.en_secuencia} onClick={() => { setVista("tablero"); setFiltro("en_secuencia"); }} />
         <Kpi titulo="Respondieron" valor={r.respondieron} tono={r.respondieron ? "bien" : "normal"} nota={r.correos_enviados ? `${tasa}% de las contactadas` : undefined} onClick={() => { setVista("tablero"); setFiltro("respuestas"); }} />
@@ -153,11 +143,13 @@ export function CrmEmpresas() {
       </div>
 
       <div className="flex flex-wrap gap-2 border-b border-border pb-3" role="group" aria-label="Secciones del CRM">
-        {([["tablero", "Empresas"], ["envios", "Envíos"], ["correos", "Correos de la secuencia"], ["ajustes", "Ajustes"]] as const).map(([id, label]) => (
+        {([["motor", "Estrategia"], ["cuentas", "Empresas"], ["tablero", "Contactos"], ["envios", "Envíos"], ["correos", "Correos de la secuencia"], ["ajustes", "Ajustes"]] as const).map(([id, label]) => (
           <Button key={id} size="sm" variant={vista === id ? "secondary" : "ghost"} className={vista === id ? "font-bold" : ""} onClick={() => setVista(id)}>{label}</Button>
         ))}
       </div>
 
+      {vista === "motor" && <MotorVista onAbrirCuenta={setCuentaAbierta} onFiltrar={(sg) => { setSegmento(sg); setVista("cuentas"); }} />}
+      {vista === "cuentas" && <CuentasVista segmentoInicial={segmento} onAbrirCuenta={setCuentaAbierta} />}
       {vista === "tablero" && (
         <>
           <div className="flex flex-wrap items-center gap-2">
@@ -191,8 +183,9 @@ export function CrmEmpresas() {
                       <td className="px-4 py-3">
                         <p className="flex items-center gap-1">{p.correo}{p.dominio_ok ? <ShieldCheck className="size-3.5 text-success" aria-label="Dominio verificado" /> : p.dominio_ok === false ? <Ban className="size-3.5 text-destructive" aria-label="Dominio sin correo" /> : null}</p>
                         {p.contacto_nombre && <p className="text-xs text-muted-foreground">{p.contacto_nombre}{p.cargo ? ` · ${p.cargo}` : ""}</p>}
+                        {!p.enviable && <p className="text-[11px] font-semibold text-[#be185d]">Correo personal · sin envío automático</p>}
                       </td>
-                      <td className="px-4 py-3"><Pastilla estado={p.estado} />{p.cruce_nst && p.estado === "nuevo" && <p className="mt-1 text-[11px] text-muted-foreground">Espera por NST</p>}</td>
+                      <td className="px-4 py-3"><Pastilla estado={p.estado} />{p.temperatura != null && <div className="mt-1"><Termometro valor={p.temperatura} /></div>}{p.cruce_nst && p.estado === "nuevo" && <p className="mt-1 text-[11px] text-muted-foreground">Espera por NST</p>}</td>
                       <td className="px-4 py-3"><Pasos paso={p.paso} /><p className="mt-1 text-xs text-muted-foreground">{p.ultimo_envio ? haceDesde(p.ultimo_envio) : "—"}</p></td>
                       <td className="px-4 py-3 text-xs">{p.proximo_envio ? `${PASOS[p.paso + 1] ?? ""} · ${fechaCorta(p.proximo_envio)}` : p.estado === "nuevo" && p.dominio_ok ? "En cola" : "—"}</td>
                       <td className="px-4 py-3 text-right"><Eye className="inline size-4 text-muted-foreground" /></td>
@@ -220,6 +213,7 @@ export function CrmEmpresas() {
       {vista === "correos" && <Correos ejemplo={datos.prospectos.find((p) => p.vacante_id && p.dominio_ok)?.correo ?? datos.prospectos[0]?.correo ?? ""} ejemploSin={datos.prospectos.find((p) => !p.vacante_id && p.dominio_ok)?.correo ?? ""} />}
       {vista === "ajustes" && <Ajustes config={c} onGuardado={() => void cargar()} />}
 
+      {cuentaAbierta && <FichaCuenta clave={cuentaAbierta} onCerrar={() => setCuentaAbierta(null)} onAbrirContacto={(correo) => { const p = datos.prospectos.find((x) => x.correo === correo); if (p) { setCuentaAbierta(null); setAbierta(p); } }} />}
       {abierta && <Ficha p={abierta} onCerrar={() => setAbierta(null)} onCambio={async () => { await cargar(); }} />}
       {agregar && <Agregar onCerrar={() => setAgregar(false)} onListo={async () => { setAgregar(false); await cargar(); }} />}
     </div>

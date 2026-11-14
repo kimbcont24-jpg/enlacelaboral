@@ -120,7 +120,7 @@ function Admin() {
         { id: "reportes", label: reportesNuevos ? `Reportes (${reportesNuevos})` : "Reportes" },
       ],
     },
-    { id: "negocio", label: "Negocio", aviso: opinionesPend, tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "opiniones", label: opinionesPend ? `Opiniones (${opinionesPend})` : "Opiniones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "crm", label: "CRM empresas" }, { id: "exportar", label: "Descargar datos" }] },
+    { id: "negocio", label: "Negocio", aviso: opinionesPend, tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "opiniones", label: opinionesPend ? `Opiniones (${opinionesPend})` : "Opiniones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "crm", label: "Motor de empresas" }, { id: "exportar", label: "Descargar datos" }] },
     { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
     { id: "crecer", label: "Crecer", tabs: [{ id: "estudio", label: "Estudio viral" }] },
     { id: "blog", label: "Blog", tabs: [{ id: "blog", label: "Artículos" }] },
