@@ -422,7 +422,8 @@ for (const f of resultado) {
 const flyers = [];
 try {
   const lim = Date.now() - 10 * 864e5;
-  for (const n of readdirSync("carga/flyers").filter((x) => /^\d{4}-\d{2}-\d{2}.*\.json$/.test(x)).sort()) {
+  // Más nuevos primero: la base acepta máximo 300 filas por carga (ver el recorte al final).
+  for (const n of readdirSync("carga/flyers").filter((x) => /^\d{4}-\d{2}-\d{2}.*\.json$/.test(x)).sort().reverse()) {
     if (new Date(n.slice(0, 10)).getTime() < lim) continue;
     try { const a = JSON.parse(readFileSync(`carga/flyers/${n}`, "utf8")); if (Array.isArray(a)) flyers.push(...a); } catch (e) { log("flyers", n, String(e).slice(0, 60)); }
   }
@@ -450,6 +451,13 @@ for (let i = conContacto.length - 1; i >= 0; i--) { const f = conContacto[i]; if
 log("descartadas por ser de la SISALRIL", antesSis - conContacto.length);
 log("cargadas", conContacto.length, "sin correo ni WhatsApp", sinContacto, SOLO_CONTACTO ? "(no se cargan)" : "(se cargan con enlace al portal)");
 mkdirSync("carga", { recursive: true });
-writeFileSync("carga/auto-latest.json", JSON.stringify(conContacto.slice(0, 700)));
+// 14 nov 2026: privado.importar rechaza TODO el archivo si trae más de 300 filas («máximo 300 filas por carga»);
+// del 14 nov 7:44 a. m. RD en adelante no entró nada por eso. Primero las del Estado (MAP Concursa y sector público),
+// luego los flyers (más nuevos primero) y después los portales; se recorta a 300.
+const MAX_FILAS = 300;
+const esEstado = (f) => /map concursa|map\.gob\.do\/concursa/i.test(`${f.fuente ?? ""} ${f.fuente_url ?? ""}`) || /^vacante en el sector p[uú]blico/i.test(String(f.descripcion ?? ""));
+const ordenadas = [...conContacto.filter(esEstado), ...conContacto.filter((f) => !esEstado(f))];
+if (ordenadas.length > MAX_FILAS) log("recortadas por el límite de 300 filas de la base", ordenadas.length - MAX_FILAS);
+writeFileSync("carga/auto-latest.json", JSON.stringify(ordenadas.slice(0, MAX_FILAS)));
 writeFileSync("carga/auto-resumen.json", JSON.stringify({ fecha: hoy.toISOString(), total: conContacto.length, revisadas: resultado.length, sin_contacto: sinContacto, regla: SOLO_CONTACTO ? "solo vacantes con correo o WhatsApp de la empresa" : "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral", resumen }, null, 2));
 log("TOTAL", resultado.length, JSON.stringify(resumen));
