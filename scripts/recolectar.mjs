@@ -334,11 +334,56 @@ async function nst() {
   return filas;
 }
 
+/* ---------------- MAP · Concursa (concursos públicos del Estado dominicano) ---------------- */
+// Pedido de Kim (13 nov 2026): fuente fija del radar. Solo concursos «abierto» y con fecha límite vigente. Trae salario real.
+const entidades = (t) => t.replace(/&#x([0-9a-f]+);/gi, (m, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (m, d) => String.fromCodePoint(Number(d)));
+async function map() {
+  const base = "https://map.gob.do";
+  const filas = [];
+  const vistos = new Set();
+  const paginas = [...Array(6).keys()].map((n) => `${base}/Concursa?discapacidad=False&pagina=${n}`).concat([`${base}/Concursa?discapacidad=true`]);
+  for (const u of paginas) {
+    let html;
+    try { html = await getText(u); } catch (e) { log("map", u, String(e).slice(0, 80)); continue; }
+    const arts = html.match(/<article class="concurso[\s\S]*?<\/article>/g) ?? [];
+    let abiertos = 0;
+    for (const a of arts) {
+      if (!/class="concurso row abierto"/.test(a)) continue;
+      abiertos++;
+      const id = (a.match(/AplicarVacante\?cargo=(\d+)/) ?? [])[1];
+      if (!id || vistos.has(id)) continue;
+      vistos.add(id);
+      const titulo = tituloBonito(limpiar(entidades((a.match(/<h3[^>]*>([\s\S]*?)<\/h3>/) ?? [])[1] ?? "")));
+      const inst = limpiar(entidades((a.match(/<\/h3>\s*<\/div>\s*<div class="col-sm-12">\s*([\s\S]*?)\s*<\/div>/) ?? [])[1] ?? "")).trim();
+      const muni = limpiar(entidades((a.match(/Municipio:<\/b>\s*([^<]*)/) ?? [])[1] ?? "")).trim();
+      const plazas = (a.match(/Plazas:<\/b>\s*(\d+)/) ?? [])[1] ?? "1";
+      const tipoC = (a.match(/Tipo:<\/b>\s*([A-Za-zÁ-ú]+)/) ?? [])[1] ?? "";
+      const lim = a.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      const carrera = limpiar(entidades((a.match(/Tipo de carrera:<\/b>\s*([^<]*)/) ?? [])[1] ?? "")).trim();
+      const sal = (a.match(/RD\$\s*([\d,\.]+)/) ?? [])[1];
+      const aviso = (a.match(/href="(\/Concursa\/Concurso\/ObtenerArchivoDePublicacion[^"]+)"/) ?? [])[1]?.replace(/&amp;/g, "&");
+      if (!titulo || !inst) continue;
+      if (lim && new Date(`${lim[3]}-${lim[2]}-${lim[1]}T23:59:59-04:00`) < hoy) continue;
+      const url = `${base}/Concursa/Portal/AplicarVacante?cargo=${id}`;
+      const interno = /interno/i.test(tipoC);
+      const prov = provinciaDe(`${muni} ${inst}`, "Santo Domingo");
+      filas.push({
+        titulo, empresa: inst.slice(0, 100), provincia: prov, area: areaDe(titulo, inst), modalidad: "Presencial", tipo: "Tiempo completo", experiencia: "1-3 años",
+        descripcion: `Concurso público de ${inst} para el puesto de ${titulo}${carrera ? ` (carrera ${carrera.toLowerCase()})` : ""}, ${plazas} plaza${plazas === "1" ? "" : "s"}${muni ? ` en ${muni.toLowerCase().replace(/(^|\s)\p{L}/gu, (c) => c.toUpperCase())}` : ""}.${sal ? ` Salario publicado en el concurso: RD$${sal} mensual.` : ""}${lim ? ` Fecha límite para aplicar: ${lim[1]}/${lim[2]}/${lim[3]}.` : ""}${interno ? " Convocatoria interna: dirigida a servidores públicos de la institución." : " Convocatoria externa: abierta al público."} Se aplica en el portal oficial Concursa del Ministerio de Administración Pública (MAP).`,
+        requisitos: [interno ? "Convocatoria interna (servidores públicos de la institución)" : "Convocatoria externa abierta al público", "Registrarse y aplicar en el portal Concursa del MAP", aviso ? `Requisitos completos en el aviso oficial: ${base}${aviso}` : "Requisitos completos en el aviso oficial del concurso"].join(" | "),
+        fuente: "MAP Concursa (concurso público)", fuente_url: url, aplicar: url, redes: "si",
+      });
+    }
+    if (!abiertos && !/discapacidad=true/.test(u)) break;
+  }
+  return filas;
+}
+
 // 10 nov 2026 (Kim): ya NO se cargan Aldaba ni Computrabajo; el foco son los flyers que Kim sube desde el celular.
 // Para reactivarlos: poner la variable CON_PORTALES=1 en el workflow.
 const fuentes = process.env.CON_PORTALES === "1"
-  ? { nst, aldaba, computrabajo, alorica, marriott, citi, medtronic, baxter, eaton }
-  : { nst, alorica, marriott, citi, medtronic, baxter, eaton };
+  ? { nst, aldaba, computrabajo, map, alorica, marriott, citi, medtronic, baxter, eaton }
+  : { nst, map, alorica, marriott, citi, medtronic, baxter, eaton };
 const resultado = [];
 const resumen = {};
 for (const [nombre, fn] of Object.entries(fuentes)) {
