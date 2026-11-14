@@ -181,6 +181,40 @@ async function aplicar(request: Request): Promise<Response> {
   return json({ enviado: true });
 }
 
+const ACCIONES_CRM = new Set(["listar", "detalle", "actualizar", "estado", "agregar", "verificar_mx", "config", "plantillas", "guardar_plantilla", "vista_previa"]);
+
+/** POST /api/crm-empresas → CRM de prospección de empresas. Solo administradoras de Enlace (se verifica la sesión y el rol). */
+async function crmEmpresas(request: Request): Promise<Response> {
+  const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
+  const url = process.env["CRM_EMPRESAS_URL"], key = process.env["CRM_EMPRESAS_KEY"], token = process.env["CRM_EMPRESAS_TOKEN"];
+  if (!url || !key || !token) return json({ error: "El CRM no está configurado en el servidor." }, 500);
+  const jwt = (request.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
+  if (!jwt) return json({ error: "Inicia sesión." }, 401);
+  const u = await fetch(`${SB_URL}/auth/v1/user`, { headers: { apikey: SB_KEY, authorization: `Bearer ${jwt}` } });
+  if (!u.ok) return json({ error: "Sesión vencida. Vuelve a entrar." }, 401);
+  const user = (await u.json()) as { id?: string; email?: string };
+  if (!user.id) return json({ error: "Sesión no válida." }, 401);
+  const roles = await fetch(`${SB_URL}/rest/v1/user_roles?select=role&user_id=eq.${user.id}&role=eq.admin`, { headers: { apikey: SB_KEY, authorization: `Bearer ${jwt}` } });
+  const lista = roles.ok ? ((await roles.json()) as unknown[]) : [];
+  if (!lista.length) return json({ error: "Solo para administradoras." }, 403);
+  let b: { accion?: string; args?: unknown };
+  try { b = (await request.json()) as typeof b; } catch { return json({ error: "datos" }, 400); }
+  const accion = String(b.accion ?? "");
+  if (!ACCIONES_CRM.has(accion)) return json({ error: "acción no permitida" }, 400);
+  const r = await fetch(`${url}/rest/v1/rpc/crm_enlace`, {
+    method: "POST",
+    headers: { apikey: key, authorization: `Bearer ${key}`, "content-type": "application/json" },
+    body: JSON.stringify({ p_token: token, p_accion: accion, p_args: b.args ?? {}, p_autor: user.email ?? user.id }),
+  });
+  const cuerpo = await r.text();
+  if (!r.ok) {
+    let msg = "No se pudo completar.";
+    try { msg = ((JSON.parse(cuerpo) as { message?: string }).message ?? msg); } catch { /* sin detalle */ }
+    return json({ error: msg }, r.status === 401 || r.status === 403 ? 502 : 400);
+  }
+  return new Response(cuerpo, { headers: { "content-type": "application/json", "cache-control": "no-store" } });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
@@ -189,6 +223,7 @@ export default {
     }
     if (url.pathname === "/api/telegram") return telegram();
     if (url.pathname === "/api/aplicar" && request.method === "POST") return aplicar(request);
+    if (url.pathname === "/api/crm-empresas" && request.method === "POST") return crmEmpresas(request);
     if (url.pathname === "/sitemap.xml") return sitemap();
     const og = url.pathname.match(/^\/og\/vacantes\/([0-9a-f-]{36})\.png$/i);
     if (og) return ogVacante(og[1]!, url.origin);

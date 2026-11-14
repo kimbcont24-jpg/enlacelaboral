@@ -15,6 +15,7 @@ import { Apariencia } from "@/components/admin/Apariencia";
 import { DesdeFotos } from "@/components/admin/DesdeFotos";
 import { Control } from "@/components/admin/Control";
 import { Empresas } from "@/components/admin/Empresas";
+import { CrmEmpresas } from "@/components/admin/CrmEmpresas";
 import { Inicio } from "@/components/admin/Inicio";
 import { Reportes } from "@/components/admin/Reportes";
 import { Usuarios } from "@/components/admin/Usuarios";
@@ -118,7 +119,7 @@ function Admin() {
         { id: "reportes", label: reportesNuevos ? `Reportes (${reportesNuevos})` : "Reportes" },
       ],
     },
-    { id: "negocio", label: "Negocio", aviso: opinionesPend, tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "opiniones", label: opinionesPend ? `Opiniones (${opinionesPend})` : "Opiniones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "exportar", label: "Descargar datos" }] },
+    { id: "negocio", label: "Negocio", aviso: opinionesPend, tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "opiniones", label: opinionesPend ? `Opiniones (${opinionesPend})` : "Opiniones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "crm", label: "CRM empresas" }, { id: "exportar", label: "Descargar datos" }] },
     { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
     { id: "crecer", label: "Crecer", tabs: [{ id: "estudio", label: "Estudio viral" }] },
     { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }, { id: "apariencia", label: "Apariencia" }] },
@@ -170,6 +171,7 @@ function Admin() {
               {tab === "pedidos" && <Pedidos />}
               {tab === "reportes" && <Reportes onCambio={() => void contar()} />}
               {tab === "empresas" && <Empresas />}
+              {tab === "crm" && <CrmEmpresas />}
               {tab === "opiniones" && <Opiniones onCambio={() => void contar()} />}
               {tab === "control" && <Control />}
               {tab === "actividad" && <Actividad />}
