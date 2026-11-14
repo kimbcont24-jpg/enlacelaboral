@@ -44,7 +44,7 @@ export const Route = createFileRoute("/vacantes/$id")({
         { title }, { name: "description", content: desc },
         { property: "og:title", content: title }, { property: "og:description", content: desc }, { property: "og:type", content: "website" },
         { property: "og:url", content: `${SITIO}/vacantes/${job.id}` },
-        { property: "og:image", content: `${SITIO}/og/vacantes/${job.id}.png` }, { property: "og:image:width", content: "1200" }, { property: "og:image:height", content: "630" },
+        { property: "og:image", content: `${SITIO}/og/vacantes/${job.id}.png` }, { property: "og:image:width", content: "1200" }, { property: "og:image:height", content: "630" }, { property: "og:image:alt", content: `Vacante: ${job.titulo} · ${job.empresa} · ${job.provincia}` },
         { name: "twitter:card", content: "summary_large_image" }, { name: "twitter:image", content: `${SITIO}/og/vacantes/${job.id}.png` },
         ...(vencida ? [{ name: "robots", content: "noindex" }] : []),
       ],
