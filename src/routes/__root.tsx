@@ -26,6 +26,7 @@ const MARCA_LD = JSON.stringify({
       logo: "https://enlacelaboralrd.com/icon-512.png",
       description: "Plataforma dominicana de empleo que conecta a personas que buscan trabajo con empresas de República Dominicana.",
       areaServed: { "@type": "Country", name: "República Dominicana" },
+      founder: { "@type": "Person", "@id": "https://kimberlycontreras.vercel.app/#persona", name: "Kimberly Mariel Contreras Liriano", alternateName: "Kimberly Contreras", url: "https://kimberlycontreras.vercel.app/sobre-kimberly-contreras" },
       sameAs: ["https://t.me/enlacelaboral", "https://whatsapp.com/channel/0029Vb7GW0UKLaHf3idEm62D"],
     },
     {

@@ -51,7 +51,7 @@ export function Footer() {
           </ul>
         </nav>
       </div>
-      <p className="relative mx-auto mt-10 flex max-w-7xl sm:pr-20 flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/50"><span>© 2026 Enlace Laboral. Hecho en República Dominicana.</span><span className="flex flex-wrap gap-x-4 gap-y-1"><Link to="/legal" className="font-semibold inline-block py-1.5 sm:py-0 text-white/80 hover:text-white">Confianza y legal</Link>{PAGINAS_LEGALES.map((p) => <Link key={p.to} to={p.to} className="font-semibold inline-block py-1.5 sm:py-0 hover:text-white">{p.t}</Link>)}</span></p>
+      <p className="relative mx-auto mt-10 flex max-w-7xl sm:pr-20 flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/50"><span>© 2026 Enlace Laboral. Hecho en República Dominicana. Fundado por <a href="https://kimberlycontreras.vercel.app/sobre-kimberly-contreras" target="_blank" rel="noopener" className="font-semibold text-white/80 underline-offset-4 hover:text-white hover:underline">Kimberly Contreras</a>.</span><span className="flex flex-wrap gap-x-4 gap-y-1"><Link to="/legal" className="font-semibold inline-block py-1.5 sm:py-0 text-white/80 hover:text-white">Confianza y legal</Link>{PAGINAS_LEGALES.map((p) => <Link key={p.to} to={p.to} className="font-semibold inline-block py-1.5 sm:py-0 hover:text-white">{p.t}</Link>)}</span></p>
     </footer>
   );
 }
