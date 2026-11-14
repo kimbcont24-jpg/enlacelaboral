@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { Briefcase, Car, Clock, GraduationCap, Languages, Link2, Loader2, MapPin, Search, Send, ShieldCheck, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -50,7 +51,7 @@ export function Talento() {
           <p className="text-sm text-white/85"><strong className="text-white">Así funciona el enlace:</strong> ves su experiencia sin sus datos de contacto. Le envías una invitación. Si acepta, aparece en tus Candidatos con su CV, teléfono o correo. Nadie recibe mensajes que no pidió.</p>
         </div>
         <div className="rounded-2xl border border-border bg-surface p-4 text-sm">
-          {pro ? <p><strong>Invitaciones sin límite</strong> con tu Plan Empresa.</p> : <p><strong className="text-lg tabular-nums">{quedan}</strong> de {LIMITE_GRATIS} invitaciones gratis este mes. <button type="button" onClick={() => p.ir("planes")} className="font-bold text-[#1557c4]">Sin límite con el plan</button></p>}
+          {pro ? <p><strong>Invitaciones sin límite</strong> con tu Plan Empresa.</p> : <p><strong className="text-lg tabular-nums">{quedan}</strong> de {LIMITE_GRATIS} invitaciones gratis este mes.{PAGOS_ACTIVOS && <> <button type="button" onClick={() => p.ir("planes")} className="font-bold text-[#1557c4]">Sin límite con el plan</button></>}</p>}
           {enviadas.length > 0 && <p className="mt-1 text-muted-foreground">Enviaste {enviadas.length} · {aceptadas} {aceptadas === 1 ? "aceptó" : "aceptaron"}</p>}
         </div>
       </section>

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { Ban, Gift, Scale } from "lucide-react";
 
 import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
@@ -16,7 +17,7 @@ function Terminos() {
         { I: Ban, t: "Cero discriminación", d: "Ninguna vacante puede pedir edad, sexo, foto ni estado civil." },
         { I: Scale, t: "Empresas reales y revisadas", d: "Con RNC o cédula. Quitamos lo que no cumple." },
       ]}
-      indice={[["que", "Qué es Enlace Laboral"], ["quien", "Quién puede usarlo"], ["candidatos", "Si buscas empleo"], ["empresas", "Si eres empresa"], ["otras", "Vacantes de otras fuentes"], ["pagos", "Servicios pagados"], ["prohibido", "Lo que no está permitido"], ["contenido", "Contenido y marca"], ["responsabilidad", "Hasta dónde respondemos"], ["cambios", "Suspensión y cambios"], ["ley", "Ley aplicable"]]}>
+      indice={[["que", "Qué es Enlace Laboral"], ["quien", "Quién puede usarlo"], ["candidatos", "Si buscas empleo"], ["empresas", "Si eres empresa"], ["otras", "Vacantes de otras fuentes"], ...(PAGOS_ACTIVOS ? [["pagos", "Servicios pagados"] as [string, string]] : []), ["prohibido", "Lo que no está permitido"], ["contenido", "Contenido y marca"], ["responsabilidad", "Hasta dónde respondemos"], ["cambios", "Suspensión y cambios"], ["ley", "Ley aplicable"]]}>
       <Bloque id="que" titulo="Qué es Enlace Laboral">
         <p>Enlace Laboral es una página que conecta a personas que buscan empleo con empresas que contratan en República Dominicana. Publicamos vacantes, recibimos aplicaciones y damos herramientas como el creador de CV, el panel de empresas y las jornadas de empleo.</p>
         <p><strong>No somos el empleador.</strong> La decisión de contratar y la relación de trabajo son entre la persona y la empresa. No garantizamos que una aplicación termine en entrevista o en empleo.</p>
@@ -28,7 +29,9 @@ function Terminos() {
       <Bloque id="candidatos" titulo="Si buscas empleo">
         <ul className="list-disc space-y-1.5 pl-5">
           <li>Buscar empleo y aplicar en Enlace Laboral es <strong>gratis</strong>. Nadie puede cobrarte por aplicar o por conseguir un puesto en nuestra página.</li>
-          <li>Ofrecemos servicios opcionales pagados, como <Link to="/impulso" className="font-semibold text-primary underline">Impulso Laboral</Link> (te hacemos el CV). Nunca son un requisito para aplicar ni te dan ventaja frente a las empresas.</li>
+          {PAGOS_ACTIVOS && (
+            <li>Ofrecemos servicios opcionales pagados, como <Link to="/impulso" className="font-semibold text-primary underline">Impulso Laboral</Link> (te hacemos el CV). Nunca son un requisito para aplicar ni te dan ventaja frente a las empresas.</li>
+          )}
           <li>Puedes aplicar sin crear cuenta. La cuenta es opcional y sirve para guardar tu CV y seguir tus aplicaciones.</li>
           <li>Escribe datos reales: tu nombre, tu contacto y tu experiencia. No uses los datos de otra persona.</li>
           <li>Cuando aplicas, la empresa de esa vacante recibe tus datos. Revisa la vacante antes de enviar.</li>
@@ -49,6 +52,7 @@ function Terminos() {
       <Bloque id="otras" titulo="Vacantes de otras fuentes">
         <p>Algunas vacantes vienen de fuentes públicas, como las páginas de empleo de las mismas empresas u otros portales. En esos casos mostramos de dónde vienen. Revisamos que tengan sentido y quitamos las que parecen estafas, pero no controlamos esas fuentes: confirma siempre los datos con la empresa.</p>
       </Bloque>
+      {PAGOS_ACTIVOS && (
       <Bloque id="pagos" titulo="Servicios pagados">
         <p>Publicar vacantes es gratis. Algunos servicios tienen costo: para empresas, el Plan Empresa, destacar una vacante o el reclutamiento asistido (precios en <Link to="/empresas" className="font-semibold text-primary underline">Empresas</Link>); para candidatos, Impulso Laboral (precios en <Link to="/impulso" className="font-semibold text-primary underline">Impulso</Link>). Lee también <Link to="/reembolsos" className="font-semibold text-primary underline">Pagos y reembolsos</Link>.</p>
         <ul className="list-disc space-y-1.5 pl-5">
@@ -57,6 +61,7 @@ function Terminos() {
           <li>Si tienes un reclamo, escríbenos. Respetamos tus derechos según la Ley 358-05 de Protección de los Derechos del Consumidor o Usuario.</li>
         </ul>
       </Bloque>
+      )}
       <Bloque id="prohibido" titulo="Lo que no está permitido">
         <ul className="list-disc space-y-1.5 pl-5">
           <li>Publicar ofertas falsas, engañosas, de esquemas piramidales o que pidan dinero.</li>

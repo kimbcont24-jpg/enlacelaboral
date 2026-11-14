@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { Copy, Crown, Loader2, MessageCircle, Trash2, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
 
@@ -35,7 +36,7 @@ export function Equipo() {
     setEnviando(true);
     const { error } = await supabase.rpc("equipo_invitar", { p_email: correo, p_nombre: nombre || null });
     setEnviando(false);
-    if (error) return void toast.error(error.message.includes("limite_equipo") ? (pro ? "Llegaste al máximo de 10 personas." : "En Gratis puedes agregar 1 persona. Con el Plan Empresa, hasta 10.") : error.message.includes("eres_tu") ? "Ese es tu propio correo." : /duplicate|unique/.test(error.message) ? "Ya invitaste ese correo." : "No se pudo invitar. Intenta otra vez.");
+    if (error) return void toast.error(error.message.includes("limite_equipo") ? (pro ? "Llegaste al máximo de 10 personas." : (PAGOS_ACTIVOS ? "En Gratis puedes agregar 1 persona. Con el Plan Empresa, hasta 10." : "Por ahora puedes agregar 1 persona de tu equipo.")) : error.message.includes("eres_tu") ? "Ese es tu propio correo." : /duplicate|unique/.test(error.message) ? "Ya invitaste ese correo." : "No se pudo invitar. Intenta otra vez.");
     toast.success("Listo. Ahora envíale el enlace para que entre.");
     const m = { email: correo.trim().toLowerCase(), nombre: nombre || null };
     setCorreo(""); setNombre("");
@@ -94,7 +95,7 @@ export function Equipo() {
             ) : (
               <div className="rounded-2xl border border-border bg-surface p-5 text-sm">
                 <p className="font-extrabold">{pro ? "Llegaste a 10 personas" : "En Gratis puedes agregar 1 persona"}</p>
-                {!pro && <p className="mt-1 text-muted-foreground">Con el Plan Empresa agregas hasta 10. <button type="button" onClick={() => p.ir("planes")} className="font-bold text-[#1557c4]">Ver planes</button></p>}
+                {!pro && PAGOS_ACTIVOS && <p className="mt-1 text-muted-foreground">Con el Plan Empresa agregas hasta 10. <button type="button" onClick={() => p.ir("planes")} className="font-bold text-[#1557c4]">Ver planes</button></p>}
               </div>
             )
           ) : <p className="rounded-2xl bg-secondary p-4 text-sm">Eres parte del equipo de <strong>{p.empresa.nombre}</strong>. Solo el dueño puede agregar o quitar personas.</p>}
@@ -107,7 +108,7 @@ export function Equipo() {
             <li>El historial de cada candidato dice quién lo movió o le escribió.</li>
             <li>Sin compartir contraseñas: cada quien entra con su correo.</li>
           </ul>
-          <p className="mt-4 text-white/60">{pro ? "Hasta 10 personas con tu plan." : "Gratis: 1 persona. Plan Empresa: hasta 10."}</p>
+          <p className="mt-4 text-white/60">{pro ? "Hasta 10 personas con tu plan." : PAGOS_ACTIVOS ? "Gratis: 1 persona. Plan Empresa: hasta 10." : "Puedes agregar 1 persona de tu equipo."}</p>
         </aside>
       </div>
     </>

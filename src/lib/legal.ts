@@ -1,4 +1,5 @@
 import { Cookie, HeartHandshake, LifeBuoy, ReceiptText, ScrollText, ShieldAlert, ShieldCheck, type LucideIcon } from "lucide-react";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 
 export type RutaLegal = "/terminos" | "/privacidad" | "/cookies" | "/reembolsos" | "/seguridad" | "/nosotros" | "/contacto";
 
@@ -8,7 +9,7 @@ export const PAGINAS_LEGALES: { to: RutaLegal; t: string; d: string; I: LucideIc
   { to: "/terminos", t: "Términos y condiciones", d: "Las reglas para candidatos y empresas.", I: ScrollText },
   { to: "/privacidad", t: "Privacidad", d: "Qué datos guardamos, quién los ve y tus derechos.", I: ShieldCheck },
   { to: "/cookies", t: "Cookies", d: "Sin publicidad ni rastreo. Qué guarda tu navegador.", I: Cookie },
-  { to: "/reembolsos", t: "Pagos y reembolsos", d: "Cuándo pagas y cuándo te devolvemos tu dinero.", I: ReceiptText },
+  ...(PAGOS_ACTIVOS ? [{ to: "/reembolsos" as RutaLegal, t: "Pagos y reembolsos", d: "Cuándo pagas y cuándo te devolvemos tu dinero.", I: ReceiptText }] : []),
   { to: "/nosotros", t: "Quiénes somos", d: "Qué es Enlace Laboral y en qué creemos.", I: HeartHandshake },
   { to: "/contacto", t: "Contacto y ayuda", d: "Preguntas frecuentes, mensajes y reportes.", I: LifeBuoy },
 ];

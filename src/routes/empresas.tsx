@@ -11,6 +11,7 @@ import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useControles } from "@/lib/controles";
 import { provincias } from "@/lib/data";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 
 export const Route = createFileRoute("/empresas")({
   head: () => ({ meta: [{ title: "Publica vacantes gratis y elige candidatos | Enlace Laboral" }, { name: "description", content: "Publica tus vacantes gratis en República Dominicana. Recibe candidatos en tu panel, agenda entrevistas y escríbeles por WhatsApp con un toque." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/empresas" }] }),
@@ -89,6 +90,7 @@ function Empresas() {
         </div>
       </section>
 
+      {PAGOS_ACTIVOS && (
       <section id="precios" aria-labelledby="t-precios" className="scroll-mt-20 px-4 py-16 sm:px-6 md:py-20">
         <div className="mx-auto max-w-6xl">
           <h2 id="t-precios" className="max-w-2xl text-balance font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">Empieza gratis. Paga solo si quieres llegar más lejos.</h2>
@@ -111,6 +113,7 @@ function Empresas() {
           </div>
         </div>
       </section>
+      )}
 
       <section aria-labelledby="t-sin-discriminacion" className="px-4 pb-4 sm:px-6">
         <div className="mx-auto max-w-6xl rounded-3xl border border-border bg-surface p-6 sm:p-8">

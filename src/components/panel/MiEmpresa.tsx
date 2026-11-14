@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { BadgeCheck, Check, Clock, ShieldCheck, Code2, Copy, Crown, Link2, QrCode, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
@@ -56,6 +57,7 @@ export function MiEmpresa() {
         </form>
 
         <aside className="h-fit space-y-4">
+          {PAGOS_ACTIVOS && (
           <button type="button" onClick={() => p.ir("planes")} className="block w-full rounded-2xl bg-[#0a2f5c] p-5 text-left text-white">
             <p className="flex items-center gap-2 text-sm font-semibold text-white/75">{planActivo(e) ? <Crown className="size-4 text-[#ffd84d]" /> : <Sparkles className="size-4 text-[#ffd84d]" />} Tu plan</p>
             <p className="mt-1 font-display text-2xl font-extrabold">{planActivo(e) ? "Plan Empresa" : "Gratis"}</p>
@@ -65,6 +67,7 @@ export function MiEmpresa() {
             </ul>
             <p className="mt-4 text-sm font-bold text-[#8ec1ff]">{planActivo(e) ? "Ver mi plan" : "Ver planes"}</p>
           </button>
+          )}
           <a href={`/empresa/${e.id}`} target="_blank" rel="noopener noreferrer" className="block rounded-2xl border border-border bg-surface p-5 text-sm hover:border-primary">
             <p className="font-extrabold">Tu página de empresa</p>
             <p className="mt-1 text-muted-foreground">Los candidatos ven tu descripción y todas tus vacantes abiertas. Compártela en tus redes.</p>

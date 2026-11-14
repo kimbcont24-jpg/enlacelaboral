@@ -1,4 +1,5 @@
 import "./lib/error-capture";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
@@ -60,7 +61,7 @@ async function sitemap(): Promise<Response> {
   } catch {
     filas = [];
   }
-  const fijas = ["/", "/vacantes", "/empresas", "/recursos", "/cv", "/impulso", "/herramientas", "/salarios", "/herramientas/salario-neto", "/herramientas/liquidacion", "/herramientas/regalia-pascual", "/herramientas/comparar-ofertas", "/herramientas/brujula", "/herramientas/verificar-oferta", "/insignias", "/jornadas", "/alianzas", "/empleo-para-todos", "/legal", "/seguridad", "/terminos", "/privacidad", "/cookies", "/reembolsos", "/nosotros", "/contacto", "/descubrir", "/explorar"].map((p) => `<url><loc>${origen}${p === "/" ? "/" : p}</loc><lastmod>${hoy}</lastmod><changefreq>${p === "/" || p === "/vacantes" ? "hourly" : "weekly"}</changefreq></url>`);
+  const fijas = ["/", "/vacantes", "/empresas", "/recursos", "/cv", ...(PAGOS_ACTIVOS ? ["/impulso"] : []), "/herramientas", "/salarios", "/herramientas/salario-neto", "/herramientas/liquidacion", "/herramientas/regalia-pascual", "/herramientas/comparar-ofertas", "/herramientas/brujula", "/herramientas/verificar-oferta", "/insignias", "/jornadas", "/alianzas", "/empleo-para-todos", "/legal", "/seguridad", "/terminos", "/privacidad", "/cookies", ...(PAGOS_ACTIVOS ? ["/reembolsos"] : []), "/nosotros", "/contacto", "/descubrir", "/explorar"].map((p) => `<url><loc>${origen}${p === "/" ? "/" : p}</loc><lastmod>${hoy}</lastmod><changefreq>${p === "/" || p === "/vacantes" ? "hourly" : "weekly"}</changefreq></url>`);
   const vacantes = filas.map((f) => `<url><loc>${origen}/vacantes/${f.id}</loc><lastmod>${f.created_at.slice(0, 10)}</lastmod></url>`);
   const empresas = new Set<string>();
   for (const f of filas) for (const t of f.etiquetas ?? []) if (t.startsWith("m:empresa:") && t.length > 10) empresas.add(slug(t.slice(10)));

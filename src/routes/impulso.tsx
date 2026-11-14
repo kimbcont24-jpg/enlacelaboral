@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link } from "@tanstack/react-router";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, BadgeCheck, CheckCircle2, ChevronDown, Clock, Flame, GraduationCap, Loader2, MessageCircle, Rocket, ShieldCheck, Sparkles, Target, Video, Wallet, XCircle } from "lucide-react";
 
@@ -12,6 +13,10 @@ import { diagnosticarCV } from "@/lib/diagnostico";
 import { OFERTA_TEXTO, PAQUETES, ofertaVigente, pesosRD, precioActual, useCuentaRegresiva, type Paquete } from "@/lib/impulso";
 
 export const Route = createFileRoute("/impulso")({
+  // Pagos ocultos temporalmente: quien entre aquí va al inicio.
+  beforeLoad: () => {
+    if (!PAGOS_ACTIVOS) throw redirect({ to: "/" });
+  },
   head: () => ({
     meta: [
       { title: "Impulso Laboral: CV profesional y orientación | Enlace Laboral" },

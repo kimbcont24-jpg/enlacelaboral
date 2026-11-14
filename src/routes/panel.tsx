@@ -19,6 +19,7 @@ import { PublicarEmpresa } from "@/components/panel/PublicarEmpresa";
 import { Mensajes } from "@/components/panel/Mensajes";
 import { MiEmpresa } from "@/components/panel/MiEmpresa";
 import { Planes } from "@/components/panel/Planes";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { Informe } from "@/components/panel/Informe";
 import { Talento } from "@/components/panel/Talento";
 import { JornadasEmpresa } from "@/components/panel/JornadasEmpresa";
@@ -253,7 +254,7 @@ function Panel() {
     { id: "opiniones", label: "Opiniones", Icono: Star },
     { id: "empresa", label: "Mi empresa", Icono: Settings },
     { id: "equipo", label: "Equipo", Icono: UsersRound },
-    { id: "planes", label: planActivo(empresa) ? "Mi plan" : "Planes", Icono: Crown },
+    ...(PAGOS_ACTIVOS ? [{ id: "planes" as Seccion, label: planActivo(empresa) ? "Mi plan" : "Planes", Icono: Crown }] : []),
   ];
   const abierto = search.c ? candidatos.find((c) => c.id === search.c) : undefined;
 
@@ -302,7 +303,7 @@ function Panel() {
           )}
           {seccion === "mensajes" && <Mensajes />}
           {seccion === "empresa" && <MiEmpresa />}
-          {seccion === "planes" && <Planes />}
+          {seccion === "planes" && PAGOS_ACTIVOS && <Planes />}
           {seccion === "informe" && <Informe />}
           {seccion === "talento" && <Talento />}
           {seccion === "jornadas" && <JornadasEmpresa />}
@@ -319,7 +320,7 @@ function Panel() {
                   { t: "Informe para gerencia", I: BarChart3, f: () => ir("informe") },
                   { t: "Mi empresa", I: Settings, f: () => ir("empresa") },
                   { t: "Equipo", I: UsersRound, f: () => ir("equipo") },
-                  { t: planActivo(empresa) ? "Mi plan" : "Planes y servicios", I: Crown, f: () => ir("planes") },
+                  ...(PAGOS_ACTIVOS ? [{ t: planActivo(empresa) ? "Mi plan" : "Planes y servicios", I: Crown, f: () => ir("planes") }] : []),
                   { t: avisos === "granted" ? "Avisos activados" : "Activar avisos en este teléfono", I: Bell, f: () => void pedirAvisos() },
                   { t: "Ver la página de empleos", I: ExternalLink, f: () => void navigate({ to: "/" }) },
                   { t: "Salir", I: LogOut, f: () => void salir() },

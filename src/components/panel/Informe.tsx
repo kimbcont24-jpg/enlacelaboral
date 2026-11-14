@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { Crown, Lock, Printer } from "lucide-react";
 
 import { usePanel } from "@/components/panel/contexto";
@@ -103,13 +104,13 @@ export function Informe() {
     <>
       <div className="print:hidden">
         <Titulo titulo="Informe" sub="Para presentarle a gerencia cómo va el reclutamiento. Imprímelo o guárdalo en PDF.">
-          {pro && <button type="button" onClick={() => window.print()} className="btn-aplicar inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm"><Printer className="size-4" /> Imprimir o PDF</button>}
+          {(pro || !PAGOS_ACTIVOS) && <button type="button" onClick={() => window.print()} className="btn-aplicar inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm"><Printer className="size-4" /> Imprimir o PDF</button>}
         </Titulo>
         <div className="mb-4 flex gap-2" role="tablist" aria-label="Periodo">
           {[30, 90].map((n) => <button key={n} type="button" role="tab" aria-selected={dias === n} onClick={() => setDias(n)} className={`h-9 rounded-full border px-3.5 text-sm font-semibold ${dias === n ? "border-[#0a2f5c] bg-[#0a2f5c] text-white" : "border-border bg-surface"}`}>Últimos {n} días</button>)}
         </div>
       </div>
-      {pro ? contenido : (
+      {pro || !PAGOS_ACTIVOS ? contenido : (
         <div className="relative">
           <div aria-hidden="true" className="pointer-events-none select-none blur-[5px]">{contenido}</div>
           <div className="absolute inset-0 grid place-items-start justify-center pt-16 sm:pt-24">

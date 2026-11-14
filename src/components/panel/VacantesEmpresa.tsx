@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { Link } from "@tanstack/react-router";
 import { Copy, ExternalLink, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, QrCode, Share2, Star, Users, XCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -115,7 +116,7 @@ function Tarjeta({ v }: { v: Vacante }) {
         {(e.id === "vencida" || (e.id === "activa" && dias <= 5)) && <button type="button" onClick={() => void p.accionVacante(v, "renovar")} className={`${btnLinea} border-[#1d6ff2] text-[#1557c4]`}><RefreshCw className="size-4" /> Renovar</button>}
         {e.id === "activa" && (pro ? (
           <button type="button" disabled={cambiando} onClick={() => void destacar(!v.destacada)} className={`${btnLinea} ${v.destacada ? "border-[#e0b400] bg-[#ffd84d]/20 text-[#6b5000]" : "border-[#e0b400] text-[#6b5000]"}`}><Star className={`size-4 ${v.destacada ? "fill-current" : ""}`} /> {v.destacada ? "Quitar destacado" : "Destacar"}</button>
-        ) : !v.destacada && (pedida ? <span className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-[#ffd84d]/20 px-3 text-sm font-semibold text-[#6b5000]"><Star className="size-4" /> Destacado pedido</span>
+        ) : PAGOS_ACTIVOS && !v.destacada && (pedida ? <span className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-[#ffd84d]/20 px-3 text-sm font-semibold text-[#6b5000]"><Star className="size-4" /> Destacado pedido</span>
           : <button type="button" onClick={() => void p.pedir("destacar", v.id)} className={`${btnLinea} border-[#e0b400] text-[#6b5000]`} title="Sale primero 7 días y la compartimos en nuestros canales. Pagas cuando esté activa."><Star className="size-4" /> Destacar · RD$500</button>))}
         {e.id === "activa" && <a href={enlaceWhatsApp(v)} target="_blank" rel="noopener noreferrer" className={btnLinea}><Share2 className="size-4" /> Compartir</a>}
         {e.id === "activa" && <Link to="/vacantes/$id" params={{ id: v.id }} target="_blank" className={btnLinea} aria-label="Ver como candidato"><ExternalLink className="size-4" /></Link>}

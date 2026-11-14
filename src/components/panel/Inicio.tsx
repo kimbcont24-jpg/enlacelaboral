@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { AlertCircle, CalendarClock, ChevronRight, Clock3, Crown, Eye, Plus } from "lucide-react";
 
 import { usePanel } from "@/components/panel/contexto";
@@ -157,7 +158,7 @@ export function Inicio() {
         </section>
       </div>
 
-      {pro && quedan !== null && quedan <= 5 ? (
+      {!PAGOS_ACTIVOS ? null : pro && quedan !== null && quedan <= 5 ? (
         <button type="button" onClick={() => p.ir("planes")} className="flex w-full items-center gap-4 rounded-2xl border border-[#e0b400]/50 bg-[#ffd84d]/15 p-4 text-left">
           <Crown className="size-6 shrink-0 text-[#a37f00]" />
           <span className="min-w-0 flex-1 text-sm"><span className="block font-extrabold">Tu Plan Empresa termina en {quedan === 1 ? "1 día" : `${quedan} días`}</span><span className="text-muted-foreground">Después vuelves a Gratis sin perder nada. Si quieres seguir, avísanos desde aquí.</span></span>

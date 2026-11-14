@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { ArrowLeft, CalendarDays, Check, Download, ExternalLink, Loader2, MapPin, MessageCircle, Plus, Share2, Users, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -46,7 +47,7 @@ export function JornadasEmpresa() {
   return (
     <>
       <Titulo titulo="Jornadas de empleo" sub="Entrevista en persona a mucha gente en un solo día. Se apuntan con su CV y te llegan aquí.">
-        <button type="button" onClick={() => (puedeCrear ? setVista("nueva") : toast.error("En Gratis puedes tener 1 jornada próxima. Con el Plan Empresa, sin límite."))} className="btn-aplicar inline-flex h-10 items-center gap-1.5 rounded-xl px-4 text-sm"><Plus className="size-4" /> Nueva jornada</button>
+        <button type="button" onClick={() => (puedeCrear ? setVista("nueva") : toast.error((PAGOS_ACTIVOS ? "En Gratis puedes tener 1 jornada próxima. Con el Plan Empresa, sin límite." : "Por ahora puedes tener 1 jornada próxima a la vez.")))} className="btn-aplicar inline-flex h-10 items-center gap-1.5 rounded-xl px-4 text-sm"><Plus className="size-4" /> Nueva jornada</button>
       </Titulo>
       {lista.length === 0 ? (
         <Vacio titulo="Organiza tu primera jornada" texto="Pon fecha, lugar y puestos. La publicamos en Enlace Laboral, la gente se apunta con su CV y tú sabes cuántos van a llegar.">
@@ -105,7 +106,7 @@ function NuevaJornada({ onListo, onCancelar }: { onListo: () => void; onCancelar
       puestos: f.puestos.split(/[,\n]/).map((x) => x.trim()).filter(Boolean).slice(0, 15), descripcion: f.descripcion.trim() || null, llevar: f.llevar.trim() || null, cupo: Number(f.cupo) || null, estado: "publicada",
     }).select("estado").single();
     setGuardando(false);
-    if (error) return void toast.error(error.message.includes("limite_jornadas") ? "En Gratis puedes tener 1 jornada próxima. Con el Plan Empresa, sin límite." : "No se pudo crear. Revisa los datos e intenta otra vez.");
+    if (error) return void toast.error(error.message.includes("limite_jornadas") ? (PAGOS_ACTIVOS ? "En Gratis puedes tener 1 jornada próxima. Con el Plan Empresa, sin límite." : "Por ahora puedes tener 1 jornada próxima a la vez.") : "No se pudo crear. Revisa los datos e intenta otra vez.");
     toast.success((data as { estado: string }).estado === "revision" ? "Recibida. La revisamos y sale publicada en cuanto la aprobemos." : "¡Publicada! Ya aparece en Jornadas de empleo.");
     onListo();
   };

@@ -1,9 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, redirect, Link } from "@tanstack/react-router";
+import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { BadgeDollarSign, CalendarX2, Undo2 } from "lucide-react";
 
 import { Bloque, LEGAL_ACTUALIZADO, PaginaLegal } from "@/components/site/Legal";
 
 export const Route = createFileRoute("/reembolsos")({
+  // Pagos ocultos temporalmente: quien entre aquí va al inicio.
+  beforeLoad: () => {
+    if (!PAGOS_ACTIVOS) throw redirect({ to: "/" });
+  },
   head: () => ({ meta: [{ title: "Pagos y reembolsos | Enlace Laboral" }, { name: "description", content: "Cuándo pagas por los servicios de Enlace Laboral y cuándo te devolvemos tu dinero. Sin cobros automáticos." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/reembolsos" }] }),
   component: Reembolsos,
 });
