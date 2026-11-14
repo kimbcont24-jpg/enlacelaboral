@@ -445,6 +445,6 @@ for (let i = conContacto.length - 1; i >= 0; i--) if (esConsultora(conContacto[i
 log("descartadas por ser consultora / gestión humana", antes - conContacto.length);
 log("cargadas", conContacto.length, "sin correo ni WhatsApp", sinContacto, SOLO_CONTACTO ? "(no se cargan)" : "(se cargan con enlace al portal)");
 mkdirSync("carga", { recursive: true });
-writeFileSync("carga/auto-latest.json", JSON.stringify(conContacto.slice(0, 300)));
+writeFileSync("carga/auto-latest.json", JSON.stringify(conContacto.slice(0, 700)));
 writeFileSync("carga/auto-resumen.json", JSON.stringify({ fecha: hoy.toISOString(), total: conContacto.length, revisadas: resultado.length, sin_contacto: sinContacto, regla: SOLO_CONTACTO ? "solo vacantes con correo o WhatsApp de la empresa" : "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral", resumen }, null, 2));
 log("TOTAL", resultado.length, JSON.stringify(resumen));
