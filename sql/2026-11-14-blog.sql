@@ -31,7 +31,8 @@ create trigger blog_tocar before insert or update on public.blog_articulos for e
 
 alter table public.blog_articulos enable row level security;
 drop policy if exists "blog lectura publica" on public.blog_articulos;
-create policy "blog lectura publica" on public.blog_articulos for select to anon, authenticated using (estado = 'publicado' or public.has_role(auth.uid(), 'admin'::app_role));
+-- Visitantes: solo lo publicado. La administradora ve también los borradores por la regla «blog admin escribe».
+create policy "blog lectura publica" on public.blog_articulos for select to anon, authenticated using (estado = 'publicado');
 drop policy if exists "blog admin escribe" on public.blog_articulos;
 create policy "blog admin escribe" on public.blog_articulos for all to authenticated using (public.has_role(auth.uid(), 'admin'::app_role)) with check (public.has_role(auth.uid(), 'admin'::app_role));
 grant select on public.blog_articulos to anon, authenticated;
@@ -159,3 +160,5 @@ Primero conversa con Gestión Humana de la empresa; a veces se trata de un error
 
 Este artículo es informativo y no sustituye la asesoría de un abogado laboral. Si tu caso tiene detalles particulares, como comisiones, salarios variables o una salida en conflicto, vale la pena consultarlo con el Ministerio de Trabajo.$t$)
 on conflict (slug) do nothing;
+
+notify pgrst, 'reload schema';
