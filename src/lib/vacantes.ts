@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { salarioDelTexto } from "@/lib/radar-salarial";
 
 /** Centro de contenido (generador de piezas para Instagram). Se abre con la vacante ya cargada. */
 export const CENTRO_CONTENIDO = "https://claude.ai/artifact/UmhZSbiFjeTqkxTC9mpRK6";
@@ -95,8 +96,13 @@ const REQUISITO_EXCLUYE = /(\bedad\b.*\d{2}|\b\d{2}\s*(a|y|-|–)\s*\d{2}\s*año
 
 export function rowToVacante(r: VacanteRow): Vacante {
   const { meta, tags } = leerMeta(r.etiquetas);
-  const max = r.salario_max && r.salario_max > r.salario_min ? r.salario_max : null;
-  const salario = r.salario_min > 0 ? (max ? `${pesos(r.salario_min)} - ${pesos(max)}` : pesos(r.salario_min)) : "";
+  // Si la ficha no trae el salario pero la descripción sí ("Salario: RD$142,500 mensual"), se toma del texto,
+  // igual que en el radar salarial. Así la tarjeta, el índice de claridad, los filtros y Google dicen lo mismo.
+  const delTexto = !(r.salario_min > 0) ? salarioDelTexto(r.descripcion) : null;
+  const min = delTexto ? delTexto.min : r.salario_min;
+  const maxBruto = delTexto ? delTexto.max : r.salario_max;
+  const max = maxBruto && maxBruto > min ? maxBruto : null;
+  const salario = min > 0 ? (max ? `${pesos(min)} - ${pesos(max)}` : pesos(min)) : "";
   return {
     id: r.id,
     titulo: r.titulo.replace(SEXO_EN_TITULO, "").trim() || r.titulo,
@@ -106,7 +112,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
     tipo: r.tipo,
     experiencia: r.experiencia,
     area: r.area,
-    salarioMin: r.salario_min,
+    salarioMin: min,
     salarioMax: max,
     salario,
     descripcion: r.descripcion,
