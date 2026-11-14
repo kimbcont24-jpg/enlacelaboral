@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { MarcaPerfila, Medalla } from "@/components/insignias/Sello";
+import { MarcaEnlace, Medalla } from "@/components/insignias/Sello";
 import { PRUEBAS, useInsignias } from "@/lib/insignias";
 
-/** Tarjeta corta (colores de Perfila) para invitar a ganar insignias desde Mi CV y Mi búsqueda. */
+/** Tarjeta corta (colores de las insignias) para invitar a ganar insignias desde Mi CV y Mi búsqueda. */
 export function PromoInsignias({ className = "" }: { className?: string }) {
   const { ganadas, pendientes } = useInsignias();
   const faltan = PRUEBAS.length - ganadas.length;
@@ -14,7 +14,7 @@ export function PromoInsignias({ className = "" }: { className?: string }) {
         {(ganadas.length ? ganadas.slice(0, 3).map((g) => <Medalla key={g.ref} prueba={g.prueba} nivel={g.nivel} size={46} />) : PRUEBAS.slice(0, 3).map((p) => <Medalla key={p.id} prueba={p.id} size={46} />))}
       </span>
       <span className="relative min-w-0 flex-1">
-        <span className="flex items-center gap-1.5 text-xs font-bold text-[#f9c400]"><MarcaPerfila size={16} /> Verificadas por Perfila</span>
+        <span className="flex items-center gap-1.5 text-xs font-bold text-[#f9c400]"><MarcaEnlace size={16} /> Verificadas por Enlace Laboral</span>
         <span className="mt-0.5 block text-[17px] font-extrabold leading-tight">
           {ganadas.length ? `Tienes ${ganadas.length} ${ganadas.length === 1 ? "insignia" : "insignias"} en tu CV` : "Demuestra lo que sabes hacer"}
         </span>

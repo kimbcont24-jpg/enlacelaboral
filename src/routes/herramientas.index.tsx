@@ -16,7 +16,7 @@ export const Route = createFileRoute("/herramientas/")({
 });
 
 const items = [
-  { to: "/insignias", icono: BadgeCheck, titulo: "Demuestra lo que sabes hacer", texto: "Pruebas cortas de Perfila: servicio al cliente, Excel y Word, ortografía o caja. Si logras el nivel, tu insignia verificada sale en tu CV.", etiqueta: "Nuevo · Insignias con Perfila" },
+  { to: "/insignias", icono: BadgeCheck, titulo: "Demuestra lo que sabes hacer", texto: "Pruebas cortas y gratis: servicio al cliente, Excel y Word, ortografía o caja. Si logras el nivel, tu insignia verificada sale en tu CV.", etiqueta: "Nuevo · Insignias verificadas" },
   { to: "/salarios", icono: Radar, titulo: "¿Cuánto pagan por tu puesto?", texto: "Radar salarial: salarios publicados en vacantes reales, por puesto, área y provincia. Te decimos cuántas vacantes hay detrás de cada cifra.", etiqueta: "Nuevo · Radar salarial" },
   { to: "/herramientas/regalia-pascual", icono: Gift, titulo: "¿Cuánto te toca de regalía pascual?", texto: "Tu doble sueldo 2026 en segundos: si trabajaste todo el año, si empezaste este año, si te fuiste o si tu salario cambió.", etiqueta: "Doble sueldo 2026" },
   { to: "/herramientas/salario-neto", icono: Calculator, titulo: "¿Cuánto te llega de tu salario?", texto: "Descuentos de AFP, SFS e ISR al detalle. También: qué bruto necesitas para ganar el neto que quieres.", etiqueta: "Salario neto 2026" },

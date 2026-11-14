@@ -23,7 +23,7 @@ export type CV = {
   referencias: boolean;
   /** Para quien empieza: estudios antes que experiencia. */
   formacionPrimero?: boolean;
-  /** Habilidades verificadas por Perfila (insignias ganadas en /insignias). */
+  /** Habilidades verificadas (insignias ganadas en /insignias). */
   insignias?: Insignia[];
 };
 

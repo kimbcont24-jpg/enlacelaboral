@@ -285,7 +285,7 @@ export function ADN({ r }: { r: Radiografia }) {
           {r.habilidades.some((h) => /Excel|Office|Servicio|caja/i.test(h.t)) && (
             <Link to="/insignias" className="mt-4 flex items-center gap-3 rounded-2xl border border-[#5B39F9]/25 bg-[#5B39F9]/[0.06] p-4 text-sm hover:bg-[#5B39F9]/10">
               <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#5B39F9] text-white"><Brain className="size-5" /></span>
-              <span className="flex-1"><b>Demuéstralo antes de aplicar.</b> Saca tu insignia verificada con Perfila y sale en tu CV.</span>
+              <span className="flex-1"><b>Demuéstralo antes de aplicar.</b> Saca tu insignia verificada en Enlace Laboral y sale en tu CV.</span>
               <ArrowRight className="size-4 text-[#5B39F9]" />
             </Link>
           )}

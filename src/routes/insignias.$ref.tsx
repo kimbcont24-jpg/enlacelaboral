@@ -3,7 +3,7 @@ import { ArrowRight, BadgeCheck, ShieldAlert } from "lucide-react";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { MarcaPerfila, Medalla } from "@/components/insignias/Sello";
+import { MarcaEnlace, Medalla } from "@/components/insignias/Sello";
 import { NIVEL_TXT, PERFILA, infoPrueba } from "@/lib/insignias-datos";
 import { consultarInsignias, type EstadoInsignia } from "@/lib/insignias.functions";
 
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/insignias/$ref")({
   },
   head: () => ({
     meta: [
-      { title: "Verificar insignia | Enlace Laboral · Perfila" },
+      { title: "Verificar insignia | Enlace Laboral" },
       { name: "robots", content: "noindex, nofollow" },
     ],
     links: [{ rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" }],
@@ -55,13 +55,13 @@ function Verificar() {
               <div className="flex justify-between gap-4"><dt className="text-[#4b4680]">Qué mide</dt><dd className="max-w-[60%] text-right">{info.queMide}</dd></div>
               <div className="flex justify-between gap-4"><dt className="text-[#4b4680]">Nivel</dt><dd className="text-right">{insignia.nivel === "destacado" ? "85 % o más de aciertos" : "70 % o más de aciertos"}</dd></div>
             </dl>
-            <p className="flex items-center gap-2 border-t border-[#ece9f7] px-6 py-4 text-sm text-[#4b4680]"><MarcaPerfila size={22} /> Prueba hecha en Perfila, con reloj y control de trampas. Enlace solo recibe el nivel.</p>
+            <p className="flex items-center gap-2 border-t border-[#ece9f7] px-6 py-4 text-sm text-[#4b4680]"><MarcaEnlace size={22} className="ring-1 ring-[#ece9f7]" /> Prueba hecha en Enlace Laboral, con reloj y control de trampas. La empresa ve el nivel, nunca las respuestas.</p>
           </div>
         ) : (
           <div className="rounded-[1.75rem] bg-white p-8 text-center">
             <ShieldAlert className="mx-auto size-12 text-[#f2557a]" />
             <h1 className="mt-4 text-2xl font-extrabold">{error ? "No pudimos verificar ahora" : "Esta insignia no está verificada"}</h1>
-            <p className="mt-2 text-[#4b4680]">{error ? "Perfila no respondió. Intenta de nuevo en unos minutos." : "El enlace no corresponde a una insignia terminada en Perfila. Si te la mostraron en un CV, pídele a la persona el enlace correcto."}</p>
+            <p className="mt-2 text-[#4b4680]">{error ? "No hubo respuesta del servidor. Intenta de nuevo en unos minutos." : "El enlace no corresponde a una insignia terminada en Enlace Laboral. Si te la mostraron en un CV, pídele a la persona el enlace correcto."}</p>
           </div>
         )}
         <Link to="/insignias" className="mx-auto mt-6 flex w-fit items-center gap-2 rounded-full bg-[#06004b] px-5 py-3 text-sm font-bold text-white hover:bg-[#15106a]">Gana tu propia insignia <ArrowRight className="size-4" /></Link>

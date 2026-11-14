@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { MarcaPerfila, Medalla } from "@/components/insignias/Sello";
+import { MarcaEnlace, Medalla } from "@/components/insignias/Sello";
 import { leerCV } from "@/lib/cv";
 import {
   NIVEL_TXT, PERFILA, agregarPendiente, guardarInsignia, infoPrueba, leerPendientes, ordenarPorPuesto,
@@ -21,9 +21,9 @@ export const Route = createFileRoute("/insignias/")({
     typeof s["insignia"] === "string" && UUID.test(s["insignia"]) ? { insignia: s["insignia"] } : {},
   head: () => ({
     meta: [
-      { title: "Insignias de habilidades verificadas por Perfila | Enlace Laboral" },
+      { title: "Insignias de habilidades verificadas | Enlace Laboral" },
       { name: "description", content: "Demuestra lo que sabes hacer con una prueba corta y gratis: servicio al cliente, Excel y Word, ortografía o caja. Si logras el nivel, tu insignia verificada sale en tu CV." },
-      { property: "og:title", content: "Demuestra lo que sabes hacer · Insignias verificadas por Perfila" },
+      { property: "og:title", content: "Demuestra lo que sabes hacer · Insignias verificadas por Enlace Laboral" },
       { property: "og:description", content: "Pruebas cortas y gratis desde el celular. Tu insignia sale en tu CV y la empresa la puede verificar." },
     ],
     links: [
@@ -54,7 +54,7 @@ function PaginaInsignias() {
     insigniasActivas().then((r) => setActivas(r.activas)).catch(() => setActivas(false));
   }, []);
 
-  // Al volver de Perfila (o al abrir la página con pruebas pendientes), se consulta el resultado.
+  // Al volver de la prueba (o al abrir la página con pruebas pendientes), se consulta el resultado.
   async function revisar(mostrar: boolean) {
     const refs = [...new Set([...(refRegreso ? [refRegreso] : []), ...leerPendientes().map((p) => p.ref)])].slice(0, 20);
     if (!refs.length) return;
@@ -66,7 +66,7 @@ function PaginaInsignias() {
         if (e.estado === "terminada") {
           quitarPendiente(e.ref);
           if (e.nivel) {
-            const ins: Insignia = { ref: e.ref, prueba: e.prueba, nivel: e.nivel, fecha: e.fecha ?? new Date().toISOString() };
+            const ins: Insignia = { ref: e.ref, prueba: e.prueba, nivel: e.nivel, fecha: e.fecha ?? new Date().toISOString(), emisor: "enlace" };
             guardarInsignia(ins);
             if (!mostrado || e.ref === refRegreso) mostrado = { tipo: "ganada", insignia: ins };
           } else if (!mostrado || e.ref === refRegreso) {
@@ -101,14 +101,14 @@ function PaginaInsignias() {
     <div className="min-h-screen bg-white text-[#06004b]" style={FUENTE}>
       <Header />
       <main>
-        {/* Portada en los colores de Perfila */}
+        {/* Portada */}
         <section className="relative overflow-hidden text-white" style={{ backgroundColor: PERFILA.azul }}>
           <div aria-hidden="true" className="pointer-events-none absolute -left-24 -top-24 size-[28rem] rounded-full opacity-50 blur-3xl" style={{ background: "radial-gradient(circle, #5B39F9, transparent 70%)" }} />
           <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 right-0 size-[26rem] rounded-full opacity-35 blur-3xl" style={{ background: "radial-gradient(circle, #12a5a0, transparent 70%)" }} />
           <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-12 sm:px-6 md:grid-cols-[1.15fr_1fr] md:pb-20 md:pt-16">
             <div>
               <p className="inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pl-1.5 pr-4 text-sm font-bold ring-1 ring-white/15">
-                <MarcaPerfila size={24} /> Insignias de Enlace, con Perfila
+                <MarcaEnlace size={24} /> Insignias de Enlace Laboral
               </p>
               <h1 className="mt-5 text-[40px] font-extrabold leading-[1.02] tracking-[-0.04em] sm:text-[58px]">
                 Demuestra lo que <span className="bg-gradient-to-r from-[#ffc24b] via-[#ff8a5b] to-[#ff6f91] bg-clip-text text-transparent">sabes hacer.</span>
@@ -136,7 +136,7 @@ function PaginaInsignias() {
                 <div key={p.id} className="rounded-[1.6rem] bg-white/[0.07] p-5 text-center ring-1 ring-white/10 backdrop-blur" style={{ transform: `translateY(${i % 2 ? 22 : 0}px) rotate(${i % 2 ? 2 : -2}deg)` }}>
                   <Medalla prueba={p.id} nivel={i === 0 ? "destacado" : "solido"} size={78} />
                   <p className="mt-3 text-sm font-extrabold leading-tight">{p.corto}</p>
-                  <p className="mt-1 text-[11px] font-semibold text-white/60">Verificada por Perfila</p>
+                  <p className="mt-1 text-[11px] font-semibold text-white/60">Verificada por Enlace</p>
                 </div>
               ))}
             </div>
@@ -213,7 +213,7 @@ function PaginaInsignias() {
                     {pen ? (
                       <a href={pen.url} className="inline-flex h-12 items-center gap-2 rounded-full bg-[#06004b] px-6 text-[15px] font-bold text-white hover:bg-[#15106a]">Continuar mi prueba <ArrowRight className="size-5" /></a>
                     ) : activas === false ? (
-                      <p className="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-[#4b4680]">Muy pronto: estamos terminando de conectar Perfila.</p>
+                      <p className="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-[#4b4680]">Muy pronto.</p>
                     ) : (
                       <button type="button" onClick={() => setElegida(p)} disabled={activas === null} className="inline-flex h-12 items-center gap-2 rounded-full bg-[#f9c400] px-6 text-[15px] font-extrabold text-[#06004b] transition hover:bg-[#ffd21f] disabled:opacity-60">
                         {g ? "Repetir para subir de nivel" : "Hacer la prueba"} <ArrowRight className="size-5" />
@@ -232,9 +232,9 @@ function PaginaInsignias() {
             <h2 className="text-[34px] font-extrabold leading-[1.05] tracking-[-0.04em] sm:text-[44px]">Así de simple</h2>
             <ol className="mt-8 grid gap-5 md:grid-cols-3">
               {[
-                ["Eliges y empiezas", "Pones tu nombre y tu correo. La prueba se abre en Perfila, en tu celular, con letra grande y sin descargar nada."],
+                ["Eliges y empiezas", "Pones tu nombre y tu correo. La prueba se abre aquí mismo, en tu celular, con letra grande y sin descargar nada."],
                 ["Respondes con calma", "Situaciones reales del trabajo, con reloj. Guarda tu avance solo: si se te va el internet, sigues donde ibas."],
-                ["Vuelves con tu insignia", "Al terminar, Perfila le dice a Enlace tu nivel (nunca tus respuestas). Si lo lograste, tu insignia aparece en tu CV."],
+                ["Vuelves con tu insignia", "Al terminar ves cuántas acertaste. Si lograste el nivel, tu insignia aparece en tu CV; la empresa ve tu nivel, nunca tus respuestas."],
               ].map(([t, d], i) => (
                 <li key={t} className="rounded-[1.6rem] bg-white p-6">
                   <span className="grid size-10 place-items-center rounded-full bg-[#5B39F9] text-lg font-extrabold text-white">{i + 1}</span>
@@ -297,7 +297,7 @@ function Pedir({ prueba, onCerrar }: { prueba: InfoPrueba; onCerrar: () => void 
           <div className="flex items-center gap-3">
             <Medalla prueba={prueba.id} size={52} />
             <div>
-              <p className="text-xs font-bold text-[#5B39F9]">Prueba de Perfila · {prueba.minutos} min</p>
+              <p className="text-xs font-bold text-[#5B39F9]">Prueba de Enlace Laboral · {prueba.minutos} min</p>
               <h2 className="text-xl font-extrabold leading-tight">{prueba.nombre}</h2>
             </div>
           </div>
@@ -308,12 +308,12 @@ function Pedir({ prueba, onCerrar }: { prueba: InfoPrueba; onCerrar: () => void 
         <p className="mt-1.5 text-xs text-[#4b4680]">Con tu correo guardamos tu prueba por si la retomas después.</p>
         <label className="mt-4 flex items-start gap-2.5 text-sm">
           <input type="checkbox" checked={acepto} onChange={(e) => setAcepto(e.target.checked)} className="mt-0.5 size-5 accent-[#5B39F9]" />
-          <span>Acepto que Perfila guarde mis respuestas para calificar la prueba y que le diga a Enlace solo mi nivel. <a href={`${PERFILA.url}/legal/privacidad`} target="_blank" rel="noopener noreferrer" className="font-bold text-[#5B39F9] underline">Privacidad de Perfila</a></span>
+          <span>Acepto que Enlace Laboral guarde mis respuestas para calificar la prueba y que las empresas vean solo mi nivel. <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="font-bold text-[#5B39F9] underline">Privacidad</a></span>
         </label>
         <button type="submit" disabled={enviando} className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f9c400] text-[15px] font-extrabold text-[#06004b] transition hover:bg-[#ffd21f] disabled:opacity-60">
-          {enviando ? <><Loader2 className="size-5 animate-spin" /> Abriendo Perfila…</> : <>Empezar en Perfila <ArrowRight className="size-5" /></>}
+          {enviando ? <><Loader2 className="size-5 animate-spin" /> Abriendo la prueba…</> : <>Empezar la prueba <ArrowRight className="size-5" /></>}
         </button>
-        <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-[#4b4680]"><MarcaPerfila size={16} /> La prueba se abre en Perfila y al final vuelves aquí.</p>
+        <p className="mt-3 text-center text-xs text-[#4b4680]">Tienes {prueba.minutos} minutos más 10 de reserva. Mantente en la pantalla de la prueba hasta terminar.</p>
       </form>
     </div>
   );
@@ -324,7 +324,7 @@ function Resultado({ r, onCerrar, onOtra }: { r: NonNullable<Resultado>; onCerra
   const info = infoPrueba(prueba);
   const nivel: Nivel | undefined = r.tipo === "ganada" ? r.insignia.nivel : undefined;
   const compartir = r.tipo === "ganada"
-    ? `https://wa.me/?text=${encodeURIComponent(`Gané mi insignia de ${info?.nombre} (nivel ${NIVEL_TXT[r.insignia.nivel]}) verificada por Perfila en Enlace Laboral: ${verificarUrl(r.insignia.ref)}`)}`
+    ? `https://wa.me/?text=${encodeURIComponent(`Gané mi insignia de ${info?.nombre} (nivel ${NIVEL_TXT[r.insignia.nivel]}) verificada en Enlace Laboral: ${verificarUrl(r.insignia.ref)}`)}`
     : "";
   return (
     <div className="fixed inset-0 z-[90] grid place-items-center bg-[#06004b]/70 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" onClick={onCerrar}>
@@ -338,7 +338,7 @@ function Resultado({ r, onCerrar, onOtra }: { r: NonNullable<Resultado>; onCerra
           {r.tipo === "ganada" ? (
             <>
               <h2 className="mt-5 text-3xl font-extrabold leading-tight">¡Ganaste tu insignia!</h2>
-              <p className="mt-2 text-white/80"><b className="text-white">{info?.nombre}</b> · nivel <b className="text-[#f9c400]">{NIVEL_TXT[r.insignia.nivel]}</b>. Ya está en tu CV, verificada por Perfila.</p>
+              <p className="mt-2 text-white/80"><b className="text-white">{info?.nombre}</b> · nivel <b className="text-[#f9c400]">{NIVEL_TXT[r.insignia.nivel]}</b>. Ya está en tu CV, verificada por Enlace Laboral.</p>
               <div className="mt-6 grid gap-2">
                 <Link to="/cv" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#f9c400] font-extrabold text-[#06004b] hover:bg-[#ffd21f]">Ver mi CV <ArrowRight className="size-5" /></Link>
                 <a href={compartir} target="_blank" rel="noopener noreferrer" className="inline-flex h-12 items-center justify-center gap-2 rounded-full border-[1.5px] border-white/60 font-bold hover:bg-white/10"><MessageCircle className="size-5" /> Compartir por WhatsApp</a>

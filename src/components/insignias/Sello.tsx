@@ -1,5 +1,6 @@
 import { BadgeCheck, Calculator, FileSpreadsheet, Headset, PenLine, Star } from "lucide-react";
-import { NIVEL_TXT, PERFILA, infoPrueba, type Insignia, type Nivel, type PruebaInsignia } from "@/lib/insignias-datos";
+import { LogoMarca } from "@/components/site/Logo";
+import { NIVEL_TXT, PERFILA, emisorTxt, infoPrueba, type Insignia, type Nivel, type PruebaInsignia } from "@/lib/insignias-datos";
 
 const ICONO: Record<PruebaInsignia, typeof Headset> = {
   servicio_cliente: Headset,
@@ -15,6 +16,15 @@ export function MarcaPerfila({ size = 28, className = "" }: { size?: number; cla
       style={{ width: size, height: size, backgroundColor: PERFILA.amarillo, color: PERFILA.azul, fontSize: size * 0.5, fontFamily: "Manrope, Figtree, system-ui, sans-serif" }}>
       P
       <span className="absolute -bottom-0.5 -right-0.5 rounded-full border-2" style={{ width: size * 0.32, height: size * 0.32, backgroundColor: PERFILA.violeta, borderColor: PERFILA.azul }} />
+    </span>
+  );
+}
+
+/** Sello de Enlace Laboral para las insignias (pruebas hechas en Enlace). */
+export function MarcaEnlace({ size = 28, className = "" }: { size?: number; className?: string }) {
+  return (
+    <span aria-hidden="true" className={`inline-grid shrink-0 place-items-center rounded-[28%] bg-white ${className}`} style={{ width: size, height: size }}>
+      <LogoMarca className="h-[72%] w-auto" />
     </span>
   );
 }
@@ -47,7 +57,7 @@ export function Medalla({ prueba, nivel, size = 72, apagada = false }: { prueba:
   );
 }
 
-/** Insignia compacta para el CV y las listas: medalla + nombre + nivel + «Verificada por Perfila». */
+/** Insignia compacta para el CV y las listas: medalla + nombre + nivel + «Verificada por Enlace Laboral». */
 export function InsigniaFila({ i, impresa = false }: { i: Insignia; impresa?: boolean }) {
   const info = infoPrueba(i.prueba);
   return (
@@ -56,7 +66,7 @@ export function InsigniaFila({ i, impresa = false }: { i: Insignia; impresa?: bo
       <span className="leading-tight">
         <span className="block font-bold">{info?.nombre}</span>
         <span className={`flex items-center gap-1 ${impresa ? "text-[11px]" : "text-xs"} text-[#5b6678]`}>
-          Nivel {NIVEL_TXT[i.nivel]} · <BadgeCheck className="size-3.5" style={{ color: PERFILA.violeta }} /> Verificada por Perfila
+          Nivel {NIVEL_TXT[i.nivel]} · <BadgeCheck className="size-3.5" style={{ color: PERFILA.violeta }} /> {emisorTxt(i)}
         </span>
       </span>
     </span>

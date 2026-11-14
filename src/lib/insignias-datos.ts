@@ -1,4 +1,4 @@
-/** Datos de las insignias de Perfila (sin dependencias, para el CV y el servidor). */
+/** Datos de las insignias (pruebas de Enlace Laboral; antes de Perfila) (sin dependencias, para el CV y el servidor). */
 export const PERFILA = {
   azul: "#06004b",
   violeta: "#5B39F9",
@@ -52,7 +52,10 @@ export const infoPrueba = (id: string) => PRUEBAS.find((p) => p.id === id) ?? nu
 export const NIVEL_TXT: Record<Nivel, string> = { destacado: "Destacado", solido: "Sólido" };
 
 /** Insignia ganada: va dentro del CV. */
-export type Insignia = { ref: string; prueba: PruebaInsignia; nivel: Nivel; fecha: string };
+export type Insignia = { ref: string; prueba: PruebaInsignia; nivel: Nivel; fecha: string; emisor?: "enlace" | "perfila" };
+
+/** Quién verificó la insignia. Las de ahora son de Enlace; cuando las pruebas pasen a Perfila, dirá Perfila. */
+export const emisorTxt = (i: Pick<Insignia, "emisor">) => (i.emisor === "perfila" ? "Verificada por Perfila" : "Verificada por Enlace Laboral");
 
 export const verificarUrl = (ref: string) => `https://enlacelaboralrd.com/insignias/${ref}`;
 
@@ -64,5 +67,5 @@ export function esInsignia(i: unknown): i is Insignia {
 /** Bloque para el CV en texto (aplicar, WhatsApp). */
 export function textoInsignias(l: Insignia[]): string {
   if (!l.length) return "";
-  return `\nHabilidades verificadas por Perfila\n${l.map((i) => `• ${infoPrueba(i.prueba)?.nombre ?? i.prueba}: nivel ${NIVEL_TXT[i.nivel]} (verifícala en ${verificarUrl(i.ref)})`).join("\n")}`;
+  return `\nHabilidades verificadas\n${l.map((i) => `• ${infoPrueba(i.prueba)?.nombre ?? i.prueba}: nivel ${NIVEL_TXT[i.nivel]} (verifícala en ${verificarUrl(i.ref)})`).join("\n")}`;
 }
