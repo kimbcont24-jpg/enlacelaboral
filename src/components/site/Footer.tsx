@@ -51,6 +51,7 @@ export function Footer() {
             <li><Link to="/jornadas" className="block py-1.5 hover:text-white md:inline md:py-0">Ferias de empleo</Link></li>
             <li><Link to="/alianzas" className="block py-1.5 hover:text-white md:inline md:py-0">Alianzas: universidades y fundaciones</Link></li>
             <li><Link to="/empresas" className="block py-1.5 hover:text-white md:inline md:py-0">Publicar una vacante</Link></li>
+            <li><Link to="/blog" className="block py-1.5 hover:text-white md:inline md:py-0">Blog «Entre líneas»</Link></li>
             <li><Link to="/recursos" className="block py-1.5 hover:text-white md:inline md:py-0">Consejos y guías</Link></li>
             <li><Link to="/salarios" className="block py-1.5 hover:text-white md:inline md:py-0">Radar salarial: cuánto pagan los puestos</Link></li>
             <li><Link to="/herramientas/regalia-pascual" className="block py-1.5 hover:text-white md:inline md:py-0">Calculadora de regalía pascual</Link></li>

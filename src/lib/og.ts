@@ -159,3 +159,35 @@ export async function imagenVacante(d: Datos, origen: string): Promise<Uint8Arra
   const png = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render().asPng();
   return png;
 }
+
+/* ───────── Artículo del blog «Entre líneas» ───────── */
+type DatosArticulo = { titulo: string; tema: string; color: string; autor: string; minutos: number };
+
+function modeloArticulo(d: DatosArticulo): Nodo {
+  const tt = tamTitulo(d.titulo, 40, 70, 70, 58, 48);
+  return h("div", { style: { width: 1200, height: 630, flexDirection: "column", fontFamily: "Figtree", color: "#fff", background: "linear-gradient(135deg, #06162e 0%, #0a2f5c 70%)", position: "relative", overflow: "hidden" } },
+    h("div", { style: { position: "absolute", left: -200, top: -200, width: 620, height: 620, borderRadius: 999, background: d.color, opacity: 0.35 } }),
+    h("div", { style: { position: "absolute", right: -120, bottom: -160, width: 520, height: 380, borderRadius: 999, border: `46px solid rgba(142,193,255,0.16)` } }),
+    h("div", { style: { position: "absolute", right: 120, top: -110, width: 380, height: 280, borderRadius: 999, border: "40px solid rgba(255,255,255,0.07)" } }),
+    h("div", { style: { alignItems: "center", justifyContent: "space-between", padding: "46px 64px 0" } },
+      h("div", { style: { alignItems: "center", gap: 14 } },
+        h("div", { style: { flexDirection: "column", gap: 6 } }, h("div", { style: { width: 54, height: 7, borderRadius: 9, background: AZUL } }), h("div", { style: { width: 34, height: 7, borderRadius: 9, background: CIELO } })),
+        h("div", { style: { fontSize: 34, fontWeight: 800, letterSpacing: -1 } }, "Entre líneas")),
+      h("div", { style: { padding: "10px 22px", borderRadius: 999, background: "rgba(255,255,255,0.12)", border: "2px solid rgba(255,255,255,0.22)", fontSize: 21, fontWeight: 800, letterSpacing: 2.5 } }, d.tema.toUpperCase()),
+    ),
+    h("div", { style: { flex: 1, alignItems: "center", padding: "0 64px" } },
+      h("div", { style: { fontSize: tt, fontWeight: 800, lineHeight: 1.08, letterSpacing: -1.5, display: "block", lineClamp: 3, maxWidth: 1060 } }, d.titulo)),
+    h("div", { style: { alignItems: "center", justifyContent: "space-between", padding: "0 64px 46px" } },
+      h("div", { style: { flexDirection: "column" } },
+        h("div", { style: { fontSize: 26, fontWeight: 800 } }, d.autor),
+        h("div", { style: { fontSize: 22, fontWeight: 600, color: CIELO, marginTop: 4 } }, `${d.minutos} min de lectura · enlacelaboralrd.com/blog`)),
+      h("div", { style: { alignItems: "center", gap: 10 } }, marca(48, "#ffffff", CIELO), nombre(28, "#fff", CIELO)),
+    ),
+  );
+}
+
+export async function imagenArticulo(d: DatosArticulo, origen: string): Promise<Uint8Array> {
+  await preparar(origen);
+  const svg = await satori(modeloArticulo(d) as never, { width: 1200, height: 630, fonts: fuentes! });
+  return new Resvg(svg, { fitTo: { mode: "width", value: 1200 } }).render().asPng();
+}

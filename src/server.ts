@@ -4,7 +4,8 @@ import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { landingsArea, landingsColeccion, landingsProvincia, slug } from "./lib/empleos";
-import { imagenVacante } from "./lib/og";
+import { imagenArticulo, imagenVacante } from "./lib/og";
+import { categoria, minutosLectura } from "./lib/blog";
 import { empresaDe, leerMeta, SITIO, type VacanteRow } from "./lib/vacantes";
 
 type ServerEntry = {
@@ -63,14 +64,43 @@ async function sitemap(): Promise<Response> {
   }
   const fijas = ["/", "/vacantes", "/empresas", "/recursos", "/cv", ...(PAGOS_ACTIVOS ? ["/impulso"] : []), "/herramientas", "/salarios", "/herramientas/salario-neto", "/herramientas/liquidacion", "/herramientas/regalia-pascual", "/herramientas/comparar-ofertas", "/herramientas/brujula", "/herramientas/verificar-oferta", "/insignias", "/jornadas", "/alianzas", "/empleo-para-todos", "/legal", "/seguridad", "/terminos", "/privacidad", "/cookies", ...(PAGOS_ACTIVOS ? ["/reembolsos"] : []), "/nosotros", "/contacto", "/descubrir", "/explorar"].map((p) => `<url><loc>${origen}${p === "/" ? "/" : p}</loc><lastmod>${hoy}</lastmod><changefreq>${p === "/" || p === "/vacantes" ? "hourly" : "weekly"}</changefreq></url>`);
   const vacantes = filas.map((f) => `<url><loc>${origen}/vacantes/${f.id}</loc><lastmod>${f.created_at.slice(0, 10)}</lastmod></url>`);
+  let notas: { slug: string; updated_at: string }[] = [];
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/blog_articulos?select=slug,updated_at&estado=eq.publicado&order=publicado_at.desc&limit=500`, { headers: { apikey: SB_KEY } });
+    if (r.ok) notas = (await r.json()) as typeof notas;
+  } catch {
+    notas = [];
+  }
+  const blog = [`<url><loc>${origen}/blog</loc><lastmod>${hoy}</lastmod><changefreq>daily</changefreq></url>`, ...notas.map((n) => `<url><loc>${origen}/blog/${n.slug}</loc><lastmod>${n.updated_at.slice(0, 10)}</lastmod></url>`)];
   const empresas = new Set<string>();
   for (const f of filas) for (const t of f.etiquetas ?? []) if (t.startsWith("m:empresa:") && t.length > 10) empresas.add(slug(t.slice(10)));
   const landings = [...landingsColeccion, ...landingsProvincia, ...landingsArea].map((l) => l.slug).concat([...empresas]).filter(Boolean).map((s) => `<url><loc>${origen}/empleos/${s}</loc><lastmod>${hoy}</lastmod><changefreq>daily</changefreq></url>`);
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${[...fijas, ...landings, ...vacantes].join("")}</urlset>`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${[...fijas, ...blog, ...landings, ...vacantes].join("")}</urlset>`;
   return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
 }
 
 const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
+
+/** /og/blog/<slug>.png → imagen de vista previa de un artículo del blog. */
+async function ogArticulo(slugArt: string, origen: string): Promise<Response> {
+  type Nota = { titulo: string; categoria: string; autor: string; contenido: string };
+  let fila: Nota | null = null;
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/blog_articulos?select=titulo,categoria,autor,contenido&slug=eq.${encodeURIComponent(slugArt)}&estado=eq.publicado&limit=1`, { headers: { apikey: SB_KEY } });
+    if (r.ok) fila = ((await r.json()) as Nota[])[0] ?? null;
+  } catch {
+    fila = null;
+  }
+  if (!fila) return new Response("No encontrado", { status: 404 });
+  const c = categoria(fila.categoria);
+  try {
+    const png = await imagenArticulo({ titulo: fila.titulo, tema: c.t, color: c.color, autor: fila.autor, minutos: minutosLectura(fila.contenido) }, origen);
+    return new Response(png as BodyInit, { headers: { "content-type": "image/png", "cache-control": "public, max-age=3600, s-maxage=86400" } });
+  } catch (e) {
+    console.error(e);
+    return new Response("Error", { status: 500 });
+  }
+}
 
 /** /og/vacantes/<id>.png → imagen de vista previa para redes y WhatsApp. */
 async function ogVacante(id: string, origen: string): Promise<Response> {
@@ -227,6 +257,8 @@ export default {
     if (url.pathname === "/sitemap.xml") return sitemap();
     const og = url.pathname.match(/^\/og\/vacantes\/([0-9a-f-]{36})\.png$/i);
     if (og) return ogVacante(og[1]!, url.origin);
+    const ogBlog = url.pathname.match(/^\/og\/blog\/([a-z0-9-]{1,90})\.png$/);
+    if (ogBlog) return ogArticulo(ogBlog[1]!, url.origin);
     if (url.pathname === "/robots.txt") {
       return new Response(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /panel\nDisallow: /auth\nDisallow: /api/\n\nSitemap: ${SITIO}/sitemap.xml\n`, { headers: { "content-type": "text/plain; charset=utf-8" } });
     }

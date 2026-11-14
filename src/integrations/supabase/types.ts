@@ -16,6 +16,12 @@ export type Database = {
         Update: { [k: string]: unknown };
         Relationships: [];
       };
+      blog_articulos: {
+        Row: { id: string; slug: string; titulo: string; bajada: string; contenido: string; categoria: string; etiquetas: string[]; portada: string | null; autor: string; autor_cargo: string; estado: string; destacado: boolean; publicado_at: string | null; created_at: string; updated_at: string };
+        Insert: { slug: string; titulo: string; [k: string]: unknown };
+        Update: { [k: string]: unknown };
+        Relationships: [];
+      };
       contenido_sitio: {
         Row: { clave: string; updated_at: string; valor: string };
         Insert: { clave: string; updated_at?: string; valor?: string };

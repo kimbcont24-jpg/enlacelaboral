@@ -367,3 +367,15 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 @keyframes mosaico-entra { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
 .mosaico-tile { animation: mosaico-entra .45s cubic-bezier(.2,.8,.2,1) both; }
 @media (prefers-reduced-motion: reduce) { .mosaico-tile { animation: none; } }
+
+/* ── Blog «Entre líneas» ── */
+.blog-cuerpo > * + * { margin-top: 1.35em; }
+.blog-cuerpo > h2 + *, .blog-cuerpo > h3 + * { margin-top: 0.7em; }
+.blog-capital::first-letter {
+  float: left; font-family: var(--font-display); font-weight: 800; color: var(--cap, #1d6ff2);
+  font-size: 4.1em; line-height: 0.82; margin: 0.06em 0.12em 0 0;
+}
+.blog-tapa-titulo { text-wrap: balance; }
+@keyframes blog-sube { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.blog-entra { animation: blog-sube .7s var(--ease-out-expo, cubic-bezier(.19,1,.22,1)) both; }
+@media (prefers-reduced-motion: reduce) { .blog-entra { animation: none; } }

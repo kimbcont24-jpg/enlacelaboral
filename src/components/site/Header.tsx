@@ -19,6 +19,7 @@ const nav = [
   { to: "/descubrir", label: "Descubrir" },
   { to: "/explorar", label: "Mapa del empleo" },
   { to: "/empresas", label: "Empresas" },
+  { to: "/blog", label: "Blog" },
   { to: "/recursos", label: "Consejos" },
   { to: "/cv", label: "Mi CV" },
   { to: "/insignias", label: "Insignias" },

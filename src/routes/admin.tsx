@@ -12,6 +12,7 @@ import { Actividad } from "@/components/admin/Actividad";
 import { Exportar } from "@/components/admin/Exportar";
 import { Estudio } from "@/components/admin/Estudio";
 import { Apariencia } from "@/components/admin/Apariencia";
+import { Blog } from "@/components/admin/Blog";
 import { DesdeFotos } from "@/components/admin/DesdeFotos";
 import { Control } from "@/components/admin/Control";
 import { Empresas } from "@/components/admin/Empresas";
@@ -122,6 +123,7 @@ function Admin() {
     { id: "negocio", label: "Negocio", aviso: opinionesPend, tabs: [{ id: "aplicaciones", label: "Aplicaciones" }, { id: "opiniones", label: opinionesPend ? `Opiniones (${opinionesPend})` : "Opiniones" }, { id: "pedidos", label: "Pedidos de CV" }, { id: "empresas", label: pedidosEmp ? `Empresas (${pedidosEmp} pedidos)` : "Empresas" }, { id: "crm", label: "CRM empresas" }, { id: "exportar", label: "Descargar datos" }] },
     { id: "control", label: "Control", tabs: [{ id: "control", label: "Interruptores y avisos" }, { id: "actividad", label: "Actividad" }, { id: "usuarios", label: "Usuarios" }] },
     { id: "crecer", label: "Crecer", tabs: [{ id: "estudio", label: "Estudio viral" }] },
+    { id: "blog", label: "Blog", tabs: [{ id: "blog", label: "Artículos" }] },
     { id: "sitio", label: "Sitio", tabs: [{ id: "textos", label: "Textos" }, { id: "apariencia", label: "Apariencia" }] },
   ];
   const grupoActual = grupos.find((g) => g.tabs.some((t) => t.id === tab)) ?? grupos[0]!;
@@ -178,6 +180,7 @@ function Admin() {
               {tab === "usuarios" && <Usuarios uid={uid} />}
               {tab === "textos" && <Textos />}
               {tab === "apariencia" && <Apariencia />}
+              {tab === "blog" && <Blog />}
             </div>
           </>
         )}
