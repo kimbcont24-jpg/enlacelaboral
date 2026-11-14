@@ -125,7 +125,7 @@ const CAMINOS: Camino[] = [
     ],
     derechos: [
       "Ningún aviso en Enlace Laboral puede pedir «sin autismo», «sin TDAH» o «sin trastornos mentales».",
-      "Si tu condición está reconocida como discapacidad, la Ley 5-13 también te protege y puedes acudir a CONADIS.",
+      "La Ley 34-23 protege los derechos de las personas autistas a la atención y la inclusión. Si tu condición está reconocida como discapacidad, la Ley 5-13 también te protege y puedes acudir a CONADIS.",
     ],
     recursos: [CONADIS, SENAE],
     vacio: { texto: "Todavía ninguna empresa ha marcado sus vacantes como inclusivas para personas neurodivergentes. Las estamos invitando. Mientras tanto, mira las vacantes desde casa.", link: { to: "/vacantes", search: { modalidad: "Remoto" }, t: "Ver vacantes desde casa" } },
