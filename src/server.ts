@@ -211,7 +211,7 @@ async function aplicar(request: Request): Promise<Response> {
   return json({ enviado: true });
 }
 
-const ACCIONES_CRM = new Set(["listar", "motor", "cuenta", "priorizar", "excluir_cuenta", "recalcular", "detalle", "actualizar", "estado", "agregar", "verificar_mx", "config", "plantillas", "guardar_plantilla", "vista_previa"]);
+const ACCIONES_CRM = new Set(["listar", "motor", "cuenta", "priorizar", "excluir_cuenta", "recalcular", "detalle", "actualizar", "estado", "agregar", "verificar_mx", "config", "plantillas", "guardar_plantilla", "vista_previa", "aliados_listar", "aliado_estado", "aliado_guardar", "aliado_previa", "aliados_config"]);
 
 /** POST /api/crm-empresas → CRM de prospección de empresas. Solo administradoras de Enlace (se verifica la sesión y el rol). */
 async function crmEmpresas(request: Request): Promise<Response> {

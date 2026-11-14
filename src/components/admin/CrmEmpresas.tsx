@@ -7,6 +7,7 @@ import { Interruptor, Kpi, Tarjeta, campo, fechaRD, haceDesde, rotulo } from "@/
 import { crm } from "@/lib/crm-empresas";
 import { CuentasVista, FichaCuenta, MotorVista, Termometro } from "@/components/admin/MotorEmpresas";
 import { cn } from "@/lib/utils";
+import { AlianzasInclusivas } from "@/components/admin/AlianzasInclusivas";
 
 /* ---------- Tipos ---------- */
 type Estado = "nuevo" | "en_secuencia" | "terminado" | "respondio" | "interesado" | "registrada" | "no_interesado" | "baja" | "rebotado" | "pausado" | "excluida";
@@ -64,7 +65,7 @@ const fechaCorta = (d: string | null) => (d ? new Date(`${d}T12:00:00`).toLocale
 
 /* ---------- Componente principal ---------- */
 export function CrmEmpresas() {
-  const [vista, setVista] = useState<"motor" | "cuentas" | "tablero" | "envios" | "correos" | "ajustes">("motor");
+  const [vista, setVista] = useState<"motor" | "cuentas" | "tablero" | "alianzas" | "envios" | "correos" | "ajustes">("motor");
   const [cuentaAbierta, setCuentaAbierta] = useState<string | null>(null);
   const [segmento, setSegmento] = useState("");
   const [datos, setDatos] = useState<Datos | null>(null);
@@ -144,7 +145,7 @@ export function CrmEmpresas() {
       </div>
 
       <div className="flex flex-wrap gap-2 border-b border-border pb-3" role="group" aria-label="Secciones del CRM">
-        {([["motor", "Estrategia"], ["cuentas", "Empresas"], ["tablero", "Contactos"], ["envios", "Envíos"], ["correos", "Correos de la secuencia"], ["ajustes", "Ajustes"]] as const).map(([id, label]) => (
+        {([["motor", "Estrategia"], ["cuentas", "Empresas"], ["tablero", "Contactos"], ["alianzas", "Alianzas inclusivas"], ["envios", "Envíos"], ["correos", "Correos de la secuencia"], ["ajustes", "Ajustes"]] as const).map(([id, label]) => (
           <Button key={id} size="sm" variant={vista === id ? "secondary" : "ghost"} className={vista === id ? "font-bold" : ""} onClick={() => setVista(id)}>{label}</Button>
         ))}
       </div>
@@ -210,6 +211,7 @@ export function CrmEmpresas() {
         </>
       )}
 
+      {vista === "alianzas" && <AlianzasInclusivas />}
       {vista === "envios" && <Envios envios={datos.envios} />}
       {vista === "correos" && <Correos ejemplo={datos.prospectos.find((p) => p.vacante_id && p.dominio_ok)?.correo ?? datos.prospectos[0]?.correo ?? ""} ejemploSin={datos.prospectos.find((p) => !p.vacante_id && p.dominio_ok)?.correo ?? ""} />}
       {vista === "ajustes" && <Ajustes config={c} onGuardado={() => void cargar()} />}
