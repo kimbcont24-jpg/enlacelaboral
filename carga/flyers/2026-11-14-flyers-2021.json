@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Chofer/Mensajero",
+  "empresa": "Talleres Mena SRL",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Talleres Mena SRL busca chofer/mensajero con licencia categoría 2 sin restricciones y experiencia en manejo de vehículo mecánico. Debe residir desde el Km 9 hasta el Km 25 de la Autopista Duarte, Alcarrizos o zonas aledañas.",
+  "requisitos": "Licencia categoría 02 sin restricciones | 2 años de experiencia comprobable (imprescindible) | Conocimiento de la ciudad | Aptitud de servicio | Certificado de no antecedentes y reporte crediticio recientes | Referencias de trabajos anteriores (imprescindible)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "paopatri2002@yahoo.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/talleres-mena-chofer-mensajero.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Mensajeros Motorizados",
+  "empresa": "Khlothia Pack",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Khlothia Pack busca mensajeros motorizados en Santo Domingo. Horario: lunes a viernes de 8am a 6pm y sábados de 8am a 4pm. Ofrece salario fijo más comisión por entrega, bonos diarios, semanales y mensuales, seguro complementario y beneficios de ley.",
+  "requisitos": "Responsable, educado y proactivo | Experiencia en entrega de paquetes contraentrega | Licencia de conducir y seguro al día | Certificación de no antecedentes penales | Garante | Motor propio en buenas condiciones (será evaluado)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "info@khlothiapack.com · WhatsApp (849) 539-7064",
+  "imagen": "https://enlace-rd.vercel.app/flyers/khlothia-pack-mensajeros-motorizados.jpg",
+  "redes": "si"
+ }
+]
