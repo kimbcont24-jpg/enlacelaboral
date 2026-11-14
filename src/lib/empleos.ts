@@ -1,11 +1,12 @@
 import { areas, provincias } from "@/lib/data";
+import { coleccionPorSlug, colecciones } from "@/lib/colecciones";
 import type { Vacante } from "@/lib/vacantes";
 
 /**
  * Páginas de empleos por provincia, área y empresa: /empleos/santiago, /empleos/ventas, /empleos/claro.
  * Sirven para que Google indexe "empleos en Santiago" y para que cada empresa tenga su página.
  */
-export type Landing = { tipo: "provincia" | "area" | "empresa"; nombre: string; slug: string };
+export type Landing = { tipo: "provincia" | "area" | "empresa" | "coleccion"; nombre: string; slug: string };
 
 export function slug(texto: string): string {
   return texto
@@ -21,6 +22,8 @@ const nombreCorto = (p: string) => p.replace(/\s*\(.*?\)\s*/g, "").replace("Remo
 
 export const landingsProvincia: Landing[] = provincias.slice(1).map((p) => ({ tipo: "provincia", nombre: p, slug: slug(nombreCorto(p)) }));
 export const landingsArea: Landing[] = areas.map((a) => ({ tipo: "area", nombre: a, slug: slug(a) }));
+/** Colecciones con página propia (sector público, zonas francas, sin experiencia…). «Remoto» ya tenía la suya. */
+export const landingsColeccion: Landing[] = colecciones.filter((c) => c.landingNueva).map((c) => ({ tipo: "coleccion", nombre: c.nombre, slug: c.slug }));
 
 export function landingEmpresa(empresa: string): Landing {
   return { tipo: "empresa", nombre: empresa, slug: slug(empresa) };
@@ -28,7 +31,7 @@ export function landingEmpresa(empresa: string): Landing {
 
 /** Resuelve un slug contra provincias, áreas y, por último, las empresas presentes en las vacantes. */
 export function resolverLanding(s: string, jobs: Vacante[]): Landing | null {
-  const fija = [...landingsProvincia, ...landingsArea].find((l) => l.slug === s);
+  const fija = [...landingsColeccion, ...landingsProvincia, ...landingsArea].find((l) => l.slug === s);
   if (fija) return fija;
   const empresa = jobs.map((j) => j.empresa).find((e) => e && slug(e) === s);
   return empresa ? landingEmpresa(empresa) : null;
@@ -37,12 +40,14 @@ export function resolverLanding(s: string, jobs: Vacante[]): Landing | null {
 export function filtrarLanding(l: Landing, jobs: Vacante[]): Vacante[] {
   if (l.tipo === "provincia") return jobs.filter((j) => j.provincia === l.nombre || (l.nombre === "Remoto desde RD" && j.modalidad === "Remoto"));
   if (l.tipo === "area") return jobs.filter((j) => j.area === l.nombre);
+  if (l.tipo === "coleccion") { const c = coleccionPorSlug(l.slug); return c ? jobs.filter(c.enColeccion) : []; }
   return jobs.filter((j) => j.empresa === l.nombre);
 }
 
 export function tituloLanding(l: Landing): string {
   if (l.tipo === "provincia") return l.nombre === "Remoto desde RD" ? "Empleos remotos desde República Dominicana" : `Empleos en ${nombreCorto(l.nombre)}`;
   if (l.tipo === "area") return `Empleos de ${l.nombre}`;
+  if (l.tipo === "coleccion") return ({ "sector-publico": "Empleos en el sector público", "zonas-francas": "Empleos en zonas francas", "sin-experiencia": "Empleos sin experiencia", "con-salario-visible": "Empleos con salario visible", "empleos-bilingues": "Empleos bilingües" } as Record<string, string>)[l.slug] ?? `Empleos: ${l.nombre}`;
   return `Vacantes en ${l.nombre}`;
 }
 
@@ -50,6 +55,7 @@ export function descripcionLanding(l: Landing, n: number): string {
   const cuantas = n === 1 ? "1 vacante publicada" : `${n} vacantes publicadas`;
   if (l.tipo === "provincia") return `${cuantas} ${l.nombre === "Remoto desde RD" ? "para trabajar desde casa" : `en ${nombreCorto(l.nombre)}`} en los últimos 30 días. Con salario visible cuando la empresa lo indica y aplicación gratis.`;
   if (l.tipo === "area") return `${cuantas} de ${l.nombre} en República Dominicana en los últimos 30 días. Aplica gratis, sin cuenta.`;
+  if (l.tipo === "coleccion") return `${cuantas} en los últimos 30 días. ${coleccionPorSlug(l.slug)?.frase ?? ""} Aplica gratis, sin cuenta.`;
   return `${cuantas} de ${l.nombre} en Enlace Laboral. Información clara y aplicación directa.`;
 }
 

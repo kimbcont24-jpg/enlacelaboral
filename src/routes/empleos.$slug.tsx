@@ -5,6 +5,7 @@ import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { JobCard } from "@/components/site/JobCard";
+import { CONCURSA_GUIA, CONCURSA_URL, colecciones } from "@/lib/colecciones";
 import { descripcionLanding, empresasActivas, filtrarLanding, landingsArea, landingsProvincia, resolverLanding, tituloLanding } from "@/lib/empleos";
 import { fetchPublicadas, SITIO } from "@/lib/vacantes";
 
@@ -45,6 +46,7 @@ function Empleos() {
         {landing.tipo === "empresa" && (
           <Link to="/empresa/$id" params={{ id: landing.slug }} className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-bold text-[#1557c4] hover:border-[#1d6ff2]">Ver perfil de {landing.nombre}: opiniones y calificaciones →</Link>
         )}
+        {landing.slug === "sector-publico" && <ComoAplicarEstado />}
 
         <div className="mt-8 grid gap-10 lg:grid-cols-12">
           <section className="min-w-0 lg:col-span-8" aria-label="Vacantes">
@@ -64,6 +66,12 @@ function Empleos() {
 
           <aside className="space-y-6 lg:col-span-4">
             <CanalWhatsApp variante="tarjeta" />
+            <nav className="rounded-2xl border border-border bg-surface p-5" aria-label="Empleos por tipo de oportunidad">
+              <p className="font-bold">Por tipo de oportunidad</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {colecciones.map((c) => <li key={c.slug}><Link to="/empleos/$slug" params={{ slug: c.slug }} className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium hover:border-primary hover:text-primary ${c.slug === landing.slug ? "border-primary bg-secondary text-primary" : "border-border"}`}><span aria-hidden="true" className="size-2 rounded-full" style={{ background: c.color }} />{c.nombre}</Link></li>)}
+              </ul>
+            </nav>
             <nav className="rounded-2xl border border-border bg-surface p-5" aria-label="Empleos por provincia">
               <p className="font-bold">Por provincia</p>
               <ul className="mt-3 flex flex-wrap gap-2">
@@ -89,5 +97,36 @@ function Empleos() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+/** Guía corta para entrar al Estado: casi todas las plazas se concursan por el portal Concursa del MAP. */
+function ComoAplicarEstado() {
+  const pasos = [
+    ["Crea tu perfil en Concursa", "Es el portal oficial de concursos públicos del Ministerio de Administración Pública (MAP). Las postulaciones a concursos son solo por ahí, no en persona."],
+    ["Carga tus documentos", "Cédula, títulos y certificaciones. Los avisos suelen pedir ser dominicano/a y no estar jubilado/a ni pensionado/a por el Estado."],
+    ["Aplica dentro del plazo", "Cada aviso trae fechas exactas para enviar documentos. Si se pasa la fecha, el sistema ya no te deja aplicar."],
+    ["Mira si es plaza o registro", "Algunos concursos cubren una vacante de inmediato; otros forman un «registro de elegibles» para plazas futuras."],
+  ];
+  return (
+    <section aria-label="Cómo aplicar a empleos del Estado" className="relative mt-6 overflow-hidden rounded-3xl bg-[#0a2f5c] p-6 text-white sm:p-7">
+      <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-[#c8102e]" />
+      <p className="text-xs font-bold uppercase tracking-wider text-white/70">Antes de aplicar</p>
+      <h2 className="mt-1 text-xl font-extrabold sm:text-2xl">Cómo entrar a trabajar en el Estado</h2>
+      <ol className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {pasos.map(([t, d], i) => (
+          <li key={t} className="rounded-2xl bg-white/[0.07] p-4 ring-1 ring-white/10">
+            <span className="grid size-7 place-items-center rounded-full bg-[#c8102e] text-sm font-extrabold">{i + 1}</span>
+            <p className="mt-2 font-bold leading-tight">{t}</p>
+            <p className="mt-1 text-sm text-white/75">{d}</p>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-5 flex flex-wrap gap-2.5">
+        <a href={CONCURSA_URL} target="_blank" rel="noopener" className="inline-flex h-11 items-center rounded-xl bg-white px-5 font-bold text-[#0a2f5c]">Ir a Concursa (MAP)</a>
+        <a href={CONCURSA_GUIA} target="_blank" rel="noopener" className="inline-flex h-11 items-center rounded-xl bg-white/10 px-5 font-bold ring-1 ring-white/30 hover:bg-white/20">Guía oficial para ciudadanos (PDF)</a>
+      </div>
+      <p className="mt-4 text-xs text-white/60">Nadie puede cobrarte por «conseguirte» una plaza pública. Si alguien te pide dinero, no es un proceso oficial.</p>
+    </section>
   );
 }

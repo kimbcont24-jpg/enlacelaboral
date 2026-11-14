@@ -2,7 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
-import { landingsArea, landingsProvincia, slug } from "./lib/empleos";
+import { landingsArea, landingsColeccion, landingsProvincia, slug } from "./lib/empleos";
 import { imagenVacante } from "./lib/og";
 import { empresaDe, leerMeta, SITIO, type VacanteRow } from "./lib/vacantes";
 
@@ -64,7 +64,7 @@ async function sitemap(): Promise<Response> {
   const vacantes = filas.map((f) => `<url><loc>${origen}/vacantes/${f.id}</loc><lastmod>${f.created_at.slice(0, 10)}</lastmod></url>`);
   const empresas = new Set<string>();
   for (const f of filas) for (const t of f.etiquetas ?? []) if (t.startsWith("m:empresa:") && t.length > 10) empresas.add(slug(t.slice(10)));
-  const landings = [...landingsProvincia, ...landingsArea].map((l) => l.slug).concat([...empresas]).filter(Boolean).map((s) => `<url><loc>${origen}/empleos/${s}</loc><lastmod>${hoy}</lastmod><changefreq>daily</changefreq></url>`);
+  const landings = [...landingsColeccion, ...landingsProvincia, ...landingsArea].map((l) => l.slug).concat([...empresas]).filter(Boolean).map((s) => `<url><loc>${origen}/empleos/${s}</loc><lastmod>${hoy}</lastmod><changefreq>daily</changefreq></url>`);
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${[...fijas, ...landings, ...vacantes].join("")}</urlset>`;
   return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
 }
