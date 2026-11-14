@@ -1,0 +1,14 @@
+{
+  "name": "Enlace Laboral RD",
+  "short_name": "Enlace Laboral",
+  "description": "Empleos en República Dominicana. Aplicar es gratis.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a2f5c",
+  "theme_color": "#0a2f5c",
+  "lang": "es-DO",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
