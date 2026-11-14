@@ -1,8 +1,8 @@
 {
-  "fecha": "2026-11-14T10:52:22.358Z",
-  "total": 428,
-  "revisadas": 130,
-  "sin_contacto": 130,
+  "fecha": "2026-11-14T10:54:24.036Z",
+  "total": 393,
+  "revisadas": 93,
+  "sin_contacto": 93,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "nst": 0,
@@ -11,6 +11,6 @@
     "citi": 2,
     "medtronic": "error: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
     "baxter": 3,
-    "eaton": 59
+    "eaton": 22
   }
 }
