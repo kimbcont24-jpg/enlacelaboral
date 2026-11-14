@@ -1,15 +1,15 @@
 {
-  "fecha": "2026-11-14T00:32:56.370Z",
-  "total": 419,
-  "revisadas": 134,
-  "sin_contacto": 134,
+  "fecha": "2026-11-14T10:43:44.233Z",
+  "total": 415,
+  "revisadas": 130,
+  "sin_contacto": 130,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "nst": 0,
     "alorica": 11,
     "marriott": 55,
     "citi": 2,
-    "medtronic": 4,
+    "medtronic": "error: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
     "baxter": 3,
     "eaton": 59
   }
