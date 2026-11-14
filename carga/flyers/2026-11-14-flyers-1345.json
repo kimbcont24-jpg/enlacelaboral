@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Doméstica",
+  "empresa": "Hogar familiar (confidencial)",
+  "provincia": "Santiago",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se busca doméstica para hogar en la Av. Hispanoamericana, Santiago: cocinar, lavado de ropa en lavadora automática y limpieza general. Lunes a viernes de 8:00 a. m. a 5:00 p. m. Salario publicado en el flyer: base RD$16,000 más RD$2,000 de aporte de transporte.",
+  "requisitos": "Referencia laboral | Puntualidad y respeto | Honestidad e higiene",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Tel./WhatsApp 829-847-0311 o 809-467-7639",
+  "imagen": "https://enlace-rd.vercel.app/flyers/domestica-av-hispanoamericana-santiago.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Personal de limpieza",
+  "empresa": "Las Palmas Cleaning",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Las Palmas Cleaning busca personal de limpieza (ubicación por confirmar). Ofrece prestaciones de ley, estabilidad y oportunidad de crecimiento.",
+  "requisitos": "Experiencia en limpieza | Responsabilidad | Honestidad | Puntualidad | Interés en el crecimiento y desarrollo de la empresa",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "laspalmascleaning2@gmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/las-palmas-cleaning-personal-limpieza.jpg",
+  "redes": "si"
+ }
+]
