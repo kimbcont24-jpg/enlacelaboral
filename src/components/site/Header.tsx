@@ -17,6 +17,7 @@ const nav = [
   { to: "/alianzas", label: "Alianzas" },
   { to: "/empleo-para-todos", label: "Empleo para todos" },
   { to: "/descubrir", label: "Descubrir" },
+  { to: "/explorar", label: "Mapa del empleo" },
   { to: "/empresas", label: "Empresas" },
   { to: "/recursos", label: "Consejos" },
   { to: "/cv", label: "Mi CV" },

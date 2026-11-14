@@ -69,7 +69,7 @@ function Empleos() {
             <nav className="rounded-2xl border border-border bg-surface p-5" aria-label="Empleos por tipo de oportunidad">
               <p className="font-bold">Por tipo de oportunidad</p>
               <ul className="mt-3 flex flex-wrap gap-2">
-                {colecciones.map((c) => <li key={c.slug}><Link to="/empleos/$slug" params={{ slug: c.slug }} className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium hover:border-primary hover:text-primary ${c.slug === landing.slug ? "border-primary bg-secondary text-primary" : "border-border"}`}><span aria-hidden="true" className="size-2 rounded-full" style={{ background: c.color }} />{c.nombre}</Link></li>)}
+                {colecciones.map((c) => <li key={c.slug}><Link to="/empleos/$slug" params={{ slug: c.slug }} className={`inline-block rounded-full border px-3 py-1 text-sm font-medium hover:border-primary hover:text-primary ${c.slug === landing.slug ? "border-primary bg-secondary text-primary" : "border-border"}`}>{c.nombre}</Link></li>)}
               </ul>
             </nav>
             <nav className="rounded-2xl border border-border bg-surface p-5" aria-label="Empleos por provincia">
