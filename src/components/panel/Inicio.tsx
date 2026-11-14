@@ -3,6 +3,7 @@ import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { AlertCircle, CalendarClock, ChevronRight, Clock3, Crown, Eye, Plus } from "lucide-react";
 
 import { usePanel } from "@/components/panel/contexto";
+import { PulsoEmpresa } from "@/components/panel/MarcaPanel";
 import { Coincide, Persona, Vacio } from "@/components/panel/comun";
 import { coincidencia, diasPlan, ETAPAS, estadoVacante, planActivo, horaCorta, horasRespuesta, partirMensaje, pendientesDe, textoHoras, type Pendiente } from "@/lib/panel";
 
@@ -69,6 +70,7 @@ export function Inicio() {
           ))}
         </div>
         <button type="button" onClick={() => p.ir("publicar")} className="btn-aplicar mt-6 inline-flex h-12 items-center gap-2 rounded-xl px-6"><Plus className="size-4" /> Publicar mi primera vacante</button>
+        <div className="mt-6"><PulsoEmpresa /></div>
       </div>
     );
   }
@@ -79,6 +81,8 @@ export function Inicio() {
         <p className="text-sm font-semibold text-muted-foreground">{saludo()} · {hoy.toLocaleDateString("es-DO", { weekday: "long", day: "numeric", month: "long" })}</p>
         <h1 className="mt-1 text-balance font-display text-2xl font-extrabold tracking-tight sm:text-[1.75rem]">{resumen ? `Hoy tienes ${resumen}.` : "Todo al día. Buen trabajo."}</h1>
       </div>
+
+      <PulsoEmpresa />
 
       {/* El proceso completo de un vistazo */}
       <section aria-label="Tu proceso de selección" className="overflow-hidden rounded-3xl bg-[#0a2f5c] text-white">

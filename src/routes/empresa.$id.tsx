@@ -1,12 +1,16 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { BadgeCheck, Bell, BellRing, Briefcase, CheckCircle2, ChevronDown, Globe, MapPin, PenLine, Share2, ShieldCheck, Sparkles, Star } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Award, BadgeCheck, Bell, BellRing, Briefcase, CheckCircle2, ChevronDown, Globe, MapPin, PenLine, Share2, ShieldCheck, Sparkles, Star, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { Calificaciones } from "@/components/empresa/Calificaciones";
 import { Estrellas } from "@/components/empresa/Estrellas";
 import { ADN, Aparece, Clima, Contador, MapaContrata, Parecidas, Preparate, Salarios, Transparencia } from "@/components/empresa/Radiografia";
 import { Opinar } from "@/components/empresa/Opinar";
+import { MarcaEmpleadora } from "@/components/empresa/Marca";
+import { ReclamaEmpresa } from "@/components/empresa/Reclama";
+import { SelloEmpresa } from "@/components/empresa/Sello";
+import { selloDe, useAudiencia, useMarca } from "@/lib/motivar-empresas";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -49,6 +53,19 @@ export const Route = createFileRoute("/empresa/$id")({
         nombre = typeof data === "string" ? data : "";
       }
       if (!nombre || /confidencial|^empresa no indicada$/i.test(nombre)) throw notFound();
+      // Si una empresa verificada reclamó este perfil, se muestran sus datos y también las vacantes que publica ella.
+      const { data: aud } = await supabase.rpc("empresa_audiencia" as never, { p_slug: id } as never);
+      const eid = (aud as { empresa_id?: string | null } | null)?.empresa_id ?? null;
+      if (eid) {
+        const { data } = await supabase.rpc("empresa_publica", { p_empresa: eid, p_vacante: null });
+        cuenta = ((data ?? []) as EmpresaPublica[])[0] ?? null;
+        if (cuenta) {
+          const { data: v } = await supabase.from("vacantes").select(SELECT).eq("empresa_id", eid).eq("estado", "publicada").gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString()).order("created_at", { ascending: false }).limit(60);
+          const propias = ((v ?? []) as unknown as VacanteRow[]).map(rowToVacante);
+          const ya = new Set(vacantes.map((x) => x.id));
+          vacantes = [...propias.filter((x) => !ya.has(x.id)), ...vacantes];
+        }
+      }
     }
     const slug = slugDe(nombre);
     const opiniones = await cargarOpiniones(slug).catch(() => null);
@@ -84,7 +101,7 @@ export const Route = createFileRoute("/empresa/$id")({
   component: PerfilEmpresa,
 });
 
-const SECCIONES: [string, string][] = [["sobre", "Resumen"], ["vacantes", "Vacantes"], ["transparencia", "Transparencia"], ["salarios", "Lo que paga"], ["clima", "Clima"], ["calificaciones", "Opiniones"], ["preparate", "Entrevista"]];
+const SECCIONES: [string, string][] = [["sobre", "Resumen"], ["cultura", "Por qué aquí"], ["vacantes", "Vacantes"], ["transparencia", "Transparencia"], ["salarios", "Lo que paga"], ["clima", "Clima"], ["calificaciones", "Opiniones"], ["preparate", "Entrevista"]];
 
 function PerfilEmpresa() {
   const d = Route.useLoaderData();
@@ -97,8 +114,15 @@ function PerfilEmpresa() {
   const v = d.vacantes;
   const rx = d.rx;
   const color = colorEmpresa(d.nombre);
-  const seguir = useSeguirEmpresa(d.slug, d.nombre);
-  const activa = useSeccionActiva(SECCIONES.map(([id]) => id));
+  const { data: aud, refetch: recargarAud } = useAudiencia(d.slug);
+  const alCambiar = useCallback(() => void recargarAud(), [recargarAud]);
+  const seguir = useSeguirEmpresa(d.slug, d.nombre, alCambiar);
+  const { data: marca } = useMarca(e?.id);
+  const conMarca = !!marca && !!((marca.fotos ?? []).length || (marca.beneficios ?? []).length || marca.cultura || marca.dia);
+  const secciones = useMemo(() => SECCIONES.filter(([id]) => id !== "cultura" || conMarca), [conMarca]);
+  const activa = useSeccionActiva(secciones.map(([id]) => id));
+  const sello = rx.transparencia ? selloDe(rx.transparencia.puntaje, v.length) : null;
+  const seguidores = aud?.seguidores ?? 0;
 
   // Vacantes nuevas desde la última visita (solo si la sigue en este navegador).
   const nuevas = useMemo(() => new Set(seguir.sigue && seguir.visto ? v.filter((x) => x.creado > seguir.visto!).map((x) => x.id) : []), [seguir.sigue, seguir.visto, v]);
@@ -140,13 +164,14 @@ function PerfilEmpresa() {
         <section className="relative rounded-3xl border border-white/60 bg-surface/95 p-5 shadow-[0_30px_60px_-35px_rgb(10_47_92/0.55)] backdrop-blur sm:p-7">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-end">
             <div className="relative -mt-16 w-fit sm:-mt-24">
-              <div className="rounded-[1.75rem] bg-white p-2 shadow-xl"><EmpresaAvatar nombre={d.nombre} className="size-20 text-4xl sm:size-28 sm:text-6xl" /></div>
+              <div className="rounded-[1.75rem] bg-white p-2 shadow-xl">{marca?.logo ? <img src={marca.logo} alt={`Logo de ${d.nombre}`} className="size-20 rounded-2xl object-contain sm:size-28" /> : <EmpresaAvatar nombre={d.nombre} className="size-20 text-4xl sm:size-28 sm:text-6xl" />}</div>
               {contratando && <span className="absolute -bottom-2 left-1/2 inline-flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#0f7a43] px-2.5 py-1 text-[11px] font-extrabold text-white shadow-lg"><span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" /><span className="relative inline-flex size-2 rounded-full bg-white" /></span> Contratando</span>}
             </div>
             <div className="min-w-0 flex-1">
               <h1 className="flex flex-wrap items-center gap-2.5 font-display text-[1.6rem] font-bold leading-tight tracking-tight md:text-[2.3rem]">
                 {d.nombre}
                 {e?.verificada && <span className="inline-flex items-center gap-1 rounded-full bg-[#0f7a43]/10 px-2.5 py-1 font-sans text-xs font-bold text-[#0f7a43]"><BadgeCheck className="size-4" /> Verificada</span>}
+                {sello && <a href="#transparencia"><SelloEmpresa s={sello} /></a>}
               </h1>
               <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground">
                 {e?.sector && <span className="inline-flex items-center gap-1.5"><Briefcase className="size-4" /> {e.sector}</span>}
@@ -162,6 +187,7 @@ function PerfilEmpresa() {
                 )}
                 <span className="text-border">·</span>
                 <button type="button" onClick={() => setOpinar("trabajo")} className="inline-flex items-center gap-1.5 text-sm font-bold text-[#1557c4] hover:underline"><PenLine className="size-4" /> Calificar empresa</button>
+                {seguidores >= 3 && <><span className="text-border">·</span><span className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground"><Users className="size-4" /> {seguidores.toLocaleString("es-DO")} la siguen</span></>}
               </div>
             </div>
             <div className="hidden gap-2 sm:flex sm:self-start">
@@ -179,12 +205,14 @@ function PerfilEmpresa() {
           </dl>
 
           <nav className="sticky top-16 z-20 -mx-5 mt-5 -mb-2 flex gap-1 overflow-x-auto bg-surface/95 px-5 py-2 text-sm font-bold backdrop-blur [scrollbar-width:none] sm:-mx-7 sm:px-7" aria-label="Secciones">
-            {SECCIONES.map(([id, t]) => (
+            {secciones.map(([id, t]) => (
               <a key={id} href={`#${id}`} aria-current={activa === id ? "true" : undefined}
                 className={`shrink-0 rounded-full px-4 py-2 transition-colors ${activa === id ? "bg-[#0a2f5c] text-white" : "text-muted-foreground hover:bg-secondary hover:text-foreground"}`}>{t}{id === "vacantes" ? ` (${v.length})` : ""}</a>
             ))}
           </nav>
         </section>
+
+        {!e && <ReclamaEmpresa slug={d.slug} nombre={d.nombre} a={aud} vacantes={v.length} puntaje={rx.transparencia?.puntaje ?? null} sello={sello} />}
 
         {seguir.sigue && nuevas.size > 0 && (
           <a href="#vacantes" className="mt-4 flex items-center gap-3 rounded-2xl bg-[#0f7a43] p-4 font-bold text-white shadow-lg entra">
@@ -203,6 +231,8 @@ function PerfilEmpresa() {
                 <ul className="mt-4 space-y-1.5 text-sm">{senalesEmpresa(e).map((t) => <li key={t} className="flex items-center gap-2 font-semibold"><CheckCircle2 className="size-4 text-[#0f7a43]" /> {t}</li>)}</ul>
               )}
             </Aparece>
+
+            {marca && <MarcaEmpleadora m={marca} nombre={d.nombre} />}
 
             {/* Vacantes */}
             <Aparece id="vacantes">
@@ -264,6 +294,10 @@ function PerfilEmpresa() {
               <p className="mt-1 text-sm text-muted-foreground">Síguela y, cuando vuelvas, te marcamos lo nuevo.</p>
               <div className="mt-3"><BotonSeguir sigue={seguir.sigue} onClick={alternarSeguir} ancho /></div>
             </div>
+            <Link to="/empresas-claras" className="flex gap-3 rounded-3xl border border-border bg-surface p-5 text-sm hover:border-[#f5a700]">
+              <Award className="size-5 shrink-0 text-[#e0a200]" />
+              <span><span className="block font-extrabold">{sello ? `${d.nombre} tiene el sello ${sello.t}` : "Empresas que publican claro"}</span><span className="text-muted-foreground">Mira el ranking del mes: las que dicen sueldo, requisitos y funciones.</span></span>
+            </Link>
             <div className="flex gap-3 rounded-3xl border border-border bg-surface p-5 text-sm text-muted-foreground">
               <ShieldCheck className="size-5 shrink-0 text-[#0f7a43]" />
               <p>{e?.verificada ? "Verificamos que esta empresa existe con su RNC y un contacto real." : "Revisamos cada vacante de esta empresa antes de publicarla."} Aplicar es gratis: ninguna empresa seria te cobra por contratarte.</p>

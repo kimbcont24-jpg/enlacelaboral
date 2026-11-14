@@ -1,3 +1,5 @@
+import { SelloEmpresa } from "@/components/empresa/Sello";
+import { faltaParaSello, selloDe } from "@/lib/motivar-empresas";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowRight, Brain, Check, Copy, Eye, Lock, MapPin, MessageCircleQuestion, Mic, Sparkles, TrendingUp, Wifi } from "lucide-react";
@@ -90,6 +92,8 @@ export function Anillo({ valor, size = 148, grosor = 14, children }: { valor: nu
 export function Transparencia({ r, nombre }: { r: Radiografia; nombre: string }) {
   const t = r.transparencia;
   if (!t) return null;
+  const sello = selloDe(t.puntaje, r.total);
+  const falta = faltaParaSello(t.puntaje, r.total);
   const tono = tonoDe(t.puntaje);
   const criterios = [...t.criterios].sort((a, b) => b.pct - a.pct);
   return (
@@ -101,6 +105,8 @@ export function Transparencia({ r, nombre }: { r: Radiografia; nombre: string })
             <div><p className="font-display text-4xl font-bold leading-none" style={{ color: tono.c }}><Contador a={t.puntaje} /></p><p className="mt-1 text-xs font-bold text-muted-foreground">de 100</p></div>
           </Anillo>
           <p className="mt-3 rounded-full px-3 py-1 text-sm font-extrabold" style={{ color: tono.c, backgroundColor: `${tono.c}14` }}>{tono.t}</p>
+          {sello && <SelloEmpresa s={sello} tam="grande" className="mt-4" />}
+          {falta && <p className="mt-2 max-w-[15rem] text-center text-xs text-muted-foreground">{falta.puntaje > 0 ? `A ${falta.puntaje} puntos` : `A ${falta.vacantes} vacante${falta.vacantes === 1 ? "" : "s"} clara${falta.vacantes === 1 ? "" : "s"}`} del sello {falta.t}.{falta.puntaje > 0 ? " Lo que más suma: publicar el sueldo." : ""}{" "}<Link to="/empresas-claras" className="font-bold text-[#1557c4] hover:underline">Ver ranking</Link></p>}
         </div>
         <div>
           {t.percentil != null && (

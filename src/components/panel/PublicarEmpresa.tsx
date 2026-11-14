@@ -13,8 +13,10 @@ import { salarioMercado } from "@/lib/mercado";
 import { PLANTILLAS_VACANTE } from "@/lib/plantillas-vacante";
 import { nuevaId, SUGERIDAS, type Pregunta } from "@/lib/preguntas";
 import { COMPROMISOS, etiquetaCompromiso, revisarDiscriminacion, type Compromiso } from "@/lib/inclusion";
+import { DesdeFlyer, type Leido } from "@/components/panel/DesdeFlyer";
 
 const FUENTE = "Publicada por la empresa";
+const en = (xs: readonly string[], v: string) => xs.includes(v);
 const campo = "h-12 w-full rounded-xl border border-border bg-background px-3.5 text-base outline-none focus:border-primary focus:ring-2 focus:ring-primary/20";
 const etiqueta = "mb-1.5 block text-sm font-bold";
 
@@ -49,7 +51,34 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
   const usarPlantilla = (t: (typeof PLANTILLAS_VACANTE)[number]) => setB((x) => ({ ...x, titulo: t.puesto, area: t.area, descripcion: t.descripcion, requisitos: t.requisitos.join("\n") }));
   const ponPregunta = (id: string, cambios: Partial<Pregunta>) => setPreguntas((ps) => ps.map((q) => (q.id === id ? { ...q, ...cambios } : q)));
   const agregarPregunta = (q?: Omit<Pregunta, "id">) => setPreguntas((ps) => (ps.length >= 3 ? ps : [...ps, { id: nuevaId(), ...(q ?? { texto: "", tipo: "si_no", esperada: "si" }) }]));
-  const pon = <K extends keyof Borrador>(k: K, v: Borrador[K]) => setB((x) => ({ ...x, [k]: v }));
+  const [dudas, setDudas] = useState<Set<keyof Borrador>>(new Set());
+  const [avisos, setAvisos] = useState<string[]>([]);
+  const [varias, setVarias] = useState<Borrador[]>([]);
+  const [flyer, setFlyer] = useState<{ blob: Blob; url: string } | null>(null);
+  const [conFoto, setConFoto] = useState(true);
+  const pon = <K extends keyof Borrador>(k: K, v: Borrador[K]) => { setB((x) => ({ ...x, [k]: v })); setDudas((d) => { if (!d.has(k)) return d; const n = new Set(d); n.delete(k); return n; }); };
+  /** Campo que el lector adivinó: se marca en amarillo hasta que la empresa lo toque. */
+  const duda = (k: keyof Borrador) => (dudas.has(k) ? " !border-[#f5a700] ring-2 ring-[#f5a700]/25" : "");
+  const llenarDesde = (x: Borrador) => setB((prev) => ({
+    ...prev,
+    titulo: x.titulo || prev.titulo,
+    area: en(areas, x.area) ? x.area : prev.area,
+    provincia: en(provincias, x.provincia) && x.provincia !== "Toda República Dominicana" ? x.provincia : prev.provincia,
+    modalidad: en(modalidades, x.modalidad) ? x.modalidad : prev.modalidad,
+    tipo: en(tiposEmpleo, x.tipo) ? x.tipo : prev.tipo,
+    experiencia: en(nivelesExperiencia, x.experiencia) ? x.experiencia : prev.experiencia,
+    salarioMin: x.salarioMin || prev.salarioMin,
+    salarioMax: x.salarioMax || prev.salarioMax,
+    descripcion: x.descripcion || prev.descripcion,
+    requisitos: x.requisitos || prev.requisitos,
+  }));
+  const alLeer = (l: Leido) => {
+    llenarDesde(l.b);
+    setDudas(new Set(l.dudas));
+    setAvisos(l.avisos);
+    setVarias(l.varias.length > 1 ? l.varias : []);
+    if (l.foto) { setFlyer((f) => { if (f) URL.revokeObjectURL(f.url); return l.foto; }); setConFoto(true); }
+  };
 
   // Vista de claridad en vivo: la misma medida que ven los candidatos.
   const c = claridad({
@@ -72,7 +101,14 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
     setGuardando(true);
     // Sin "cómo aplicar": la gente aplica en Enlace Laboral y llega a este panel.
     const limpias = preguntas.map((q) => ({ ...q, texto: q.texto.trim().slice(0, 200) })).filter((q) => q.texto.length >= 5);
-    const basica = filaDesde({ ...b, empresa: empresa.nombre, fuente: FUENTE, fuenteUrl: "", aplicar: "", redes: false, imagen: "" });
+    // Si vino de un flyer, se guarda la foto en la carpeta de la empresa y sale en la vacante.
+    let imagen = "";
+    if (flyer && conFoto && !editar) {
+      const ruta = `${empresa.id}/flyer-${Date.now()}.jpg`;
+      const { error: eFoto } = await supabase.storage.from("empresas").upload(ruta, flyer.blob, { contentType: "image/jpeg", cacheControl: "31536000" });
+      if (!eFoto) imagen = supabase.storage.from("empresas").getPublicUrl(ruta).data.publicUrl;
+    }
+    const basica = filaDesde({ ...b, empresa: empresa.nombre, fuente: FUENTE, fuenteUrl: "", aplicar: "", redes: false, imagen });
     const fila = { ...basica, etiquetas: [...basica.etiquetas, ...compromisos.map(etiquetaCompromiso)], preguntas: limpias };
     const q = editar
       ? supabase.from("vacantes").update(fila).eq("id", editar.id).select("estado").single()
@@ -88,6 +124,27 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
   return (
     <form onSubmit={(e) => void guardar(e)} className="grid gap-6 lg:grid-cols-[1fr_18rem]">
       <div className="space-y-5 rounded-2xl border border-border bg-surface p-5 sm:p-6">
+        {!editar && <DesdeFlyer onLeido={alLeer} />}
+        {(flyer || avisos.length > 0 || varias.length > 0) && (
+          <div className="rounded-2xl border border-[#f5a700]/40 bg-[#fff8e6] p-4 text-sm">
+            <div className="flex gap-4">
+              {flyer && <img src={flyer.url} alt="Tu flyer" className="h-24 w-20 shrink-0 rounded-lg object-cover shadow" />}
+              <div className="min-w-0 flex-1">
+                <p className="font-extrabold">Revisa antes de publicar</p>
+                {dudas.size > 0 && <p className="mt-0.5 text-[13px]">Lo marcado en amarillo lo deducimos del flyer: confírmalo o cámbialo.</p>}
+                {avisos.length > 0 && <ul className="mt-1.5 list-disc space-y-0.5 pl-4 text-[13px] text-muted-foreground">{avisos.slice(0, 4).map((a) => <li key={a}>{a}</li>)}</ul>}
+                {flyer && <label className="mt-2 flex items-center gap-2 text-[13px] font-semibold"><input type="checkbox" checked={conFoto} onChange={(e) => setConFoto(e.target.checked)} className="size-4" /> Mostrar la foto del flyer en la vacante</label>}
+              </div>
+            </div>
+            {varias.length > 1 && (
+              <div className="mt-3 border-t border-[#f5a700]/30 pt-3">
+                <p className="text-[13px] font-bold">Tu flyer trae {varias.length} puestos. Publica uno a la vez: elige cuál llenar.</p>
+                <div className="mt-2 flex flex-wrap gap-2">{varias.map((v, i) => <button key={`${v.titulo}-${i}`} type="button" onClick={() => llenarDesde(v)} className={`rounded-full px-3 py-1.5 text-[13px] font-bold ${b.titulo === v.titulo ? "bg-[#0a2f5c] text-white" : "border border-border bg-white"}`}>{v.titulo}</button>)}</div>
+                <p className="mt-1.5 text-xs text-muted-foreground">Después de publicar, en Vacantes usa «Duplicar» para el siguiente.</p>
+              </div>
+            )}
+          </div>
+        )}
         {!editar && !b.descripcion.trim() && (
           <div className="rounded-2xl bg-[#1d6ff2]/[0.06] p-4">
             <p className="flex items-center gap-2 text-sm font-extrabold"><Wand2 className="size-4 text-[#1d6ff2]" /> Empieza con un ejemplo</p>
@@ -97,20 +154,20 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
         )}
         <div>
           <label className={etiqueta} htmlFor="p-titulo">Puesto</label>
-          <input id="p-titulo" value={b.titulo} onChange={(e) => pon("titulo", e.target.value)} placeholder="Ej.: Auxiliar de almacén" className={campo} maxLength={120} required />
+          <input id="p-titulo" value={b.titulo} onChange={(e) => pon("titulo", e.target.value)} placeholder="Ej.: Auxiliar de almacén" className={campo + duda("titulo")} maxLength={120} required />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Sel id="p-area" label="Área" value={b.area} onChange={(v) => pon("area", v)} opciones={areas} />
-          <Sel id="p-prov" label="Dónde" value={b.provincia} onChange={(v) => pon("provincia", v)} opciones={provincias.filter((p) => p !== "Toda República Dominicana")} />
-          <Sel id="p-mod" label="Modalidad" value={b.modalidad} onChange={(v) => pon("modalidad", v)} opciones={modalidades} />
-          <Sel id="p-tipo" label="Jornada" value={b.tipo} onChange={(v) => pon("tipo", v)} opciones={tiposEmpleo} />
-          <Sel id="p-exp" label="Experiencia" value={b.experiencia} onChange={(v) => pon("experiencia", v)} opciones={nivelesExperiencia} />
+          <Sel id="p-area" label="Área" value={b.area} onChange={(v) => pon("area", v)} opciones={areas} extra={duda("area")} />
+          <Sel id="p-prov" label="Dónde" value={b.provincia} onChange={(v) => pon("provincia", v)} opciones={provincias.filter((p) => p !== "Toda República Dominicana")} extra={duda("provincia")} />
+          <Sel id="p-mod" label="Modalidad" value={b.modalidad} onChange={(v) => pon("modalidad", v)} opciones={modalidades} extra={duda("modalidad")} />
+          <Sel id="p-tipo" label="Jornada" value={b.tipo} onChange={(v) => pon("tipo", v)} opciones={tiposEmpleo} extra={duda("tipo")} />
+          <Sel id="p-exp" label="Experiencia" value={b.experiencia} onChange={(v) => pon("experiencia", v)} opciones={nivelesExperiencia} extra={duda("experiencia")} />
         </div>
         <fieldset>
           <legend className={etiqueta}>Salario mensual (RD$)</legend>
           <div className="grid grid-cols-2 gap-3">
-            <input inputMode="numeric" aria-label="Salario desde" value={b.salarioMin} onChange={(e) => pon("salarioMin", e.target.value.replace(/\D/g, ""))} placeholder="Desde" className={campo} />
-            <input inputMode="numeric" aria-label="Salario hasta" value={b.salarioMax} onChange={(e) => pon("salarioMax", e.target.value.replace(/\D/g, ""))} placeholder="Hasta (opcional)" className={campo} />
+            <input inputMode="numeric" aria-label="Salario desde" value={b.salarioMin} onChange={(e) => pon("salarioMin", e.target.value.replace(/\D/g, ""))} placeholder="Desde" className={campo + duda("salarioMin")} />
+            <input inputMode="numeric" aria-label="Salario hasta" value={b.salarioMax} onChange={(e) => pon("salarioMax", e.target.value.replace(/\D/g, ""))} placeholder="Hasta (opcional)" className={campo + duda("salarioMax")} />
           </div>
           {mercado ? (
             <div className="mt-2.5 rounded-xl border border-border bg-background p-3.5">
@@ -125,11 +182,11 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
         </fieldset>
         <div>
           <label className={etiqueta} htmlFor="p-desc">Qué hará la persona</label>
-          <textarea id="p-desc" value={b.descripcion} onChange={(e) => pon("descripcion", e.target.value)} rows={5} maxLength={4000} placeholder="Funciones, horario, beneficios…" className={`${campo} h-auto py-3`} />
+          <textarea id="p-desc" value={b.descripcion} onChange={(e) => pon("descripcion", e.target.value)} rows={5} maxLength={4000} placeholder="Funciones, horario, beneficios…" className={`${campo} h-auto py-3${duda("descripcion")}`} />
         </div>
         <div>
           <label className={etiqueta} htmlFor="p-req">Requisitos <span className="font-normal text-muted-foreground">(uno por línea)</span></label>
-          <textarea id="p-req" value={b.requisitos} onChange={(e) => pon("requisitos", e.target.value)} rows={4} maxLength={3000} placeholder={"Bachiller\nManejo de Excel\nDisponibilidad de horario"} className={`${campo} h-auto py-3`} />
+          <textarea id="p-req" value={b.requisitos} onChange={(e) => pon("requisitos", e.target.value)} rows={4} maxLength={3000} placeholder={"Bachiller\nManejo de Excel\nDisponibilidad de horario"} className={`${campo} h-auto py-3${duda("requisitos")}`} />
           <p className="mt-1.5 text-xs text-muted-foreground">No pidas edad, sexo, foto ni estado civil: pide lo que necesita el trabajo.</p>
           {exclusiones.length > 0 && (
             <div role="alert" className="mt-3 rounded-xl border border-destructive/30 bg-destructive/5 p-3.5 text-sm">
@@ -223,11 +280,11 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
   );
 }
 
-function Sel({ id, label, value, onChange, opciones }: { id: string; label: string; value: string; onChange: (v: string) => void; opciones: readonly string[] }) {
+function Sel({ id, label, value, onChange, opciones, extra = "" }: { id: string; label: string; value: string; onChange: (v: string) => void; opciones: readonly string[]; extra?: string }) {
   return (
     <div>
       <label className={etiqueta} htmlFor={id}>{label}</label>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className={campo}>
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className={campo + extra}>
         {!opciones.includes(value) && value && <option value={value}>{value}</option>}
         {opciones.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>

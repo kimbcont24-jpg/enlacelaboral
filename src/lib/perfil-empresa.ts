@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { claridad, nivelDe } from "@/lib/claridad";
 import { slug as slugDe } from "@/lib/empleos";
 import { salarioMercado } from "@/lib/mercado";
+import { guardarSeguimiento } from "@/lib/motivar-empresas";
 import type { OpinionesEmpresa } from "@/lib/opiniones";
 import type { Vacante } from "@/lib/vacantes";
 
@@ -180,14 +181,14 @@ function escribir(s: Seguidas) {
 }
 
 /** Seguir una empresa: guarda la última visita y dice qué vacantes son nuevas desde entonces. */
-export function useSeguirEmpresa(slug: string, nombre: string) {
+export function useSeguirEmpresa(slug: string, nombre: string, onCambio?: () => void) {
   const [estado, setEstado] = useState<{ sigue: boolean; visto: string | null }>({ sigue: false, visto: null });
   useEffect(() => {
     const s = leer();
     const previo = s[slug]?.visto ?? null;
     setEstado({ sigue: !!s[slug], visto: previo });
-    // La visita de hoy cuenta para la próxima vez.
-    if (s[slug]) { s[slug] = { nombre, visto: new Date().toISOString() }; escribir(s); }
+    // La visita de hoy cuenta para la próxima vez. Y se cuenta en la base (por si la siguió antes de que existiera el contador).
+    if (s[slug]) { s[slug] = { nombre, visto: new Date().toISOString() }; escribir(s); void guardarSeguimiento(slug, true); }
   }, [slug, nombre]);
   const alternar = useCallback(() => {
     const s = leer();
@@ -195,7 +196,8 @@ export function useSeguirEmpresa(slug: string, nombre: string) {
     else s[slug] = { nombre, visto: new Date().toISOString() };
     escribir(s);
     setEstado((e) => ({ sigue: !!s[slug], visto: e.visto }));
+    void guardarSeguimiento(slug, !!s[slug]).then(() => onCambio?.());
     return !!s[slug];
-  }, [slug, nombre]);
+  }, [slug, nombre, onCambio]);
   return { ...estado, alternar };
 }

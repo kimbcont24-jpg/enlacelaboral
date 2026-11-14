@@ -48,6 +48,12 @@ export function Empresas() {
     const emp = filas.find((x) => x.id === s.empresa_id);
     if (estado === "pagada" && s.tipo === "plan_empresa" && emp) await darPlan(emp, 1);
     if (estado === "pagada" && s.tipo === "prueba" && emp) await darPlan(emp, 0, 14);
+    if (estado === "pagada" && s.tipo === "reclamo" && emp) {
+      // Aprobar el reclamo: une el perfil público (slug) a la cuenta y la verifica.
+      const slug = (s.detalle ?? "").split(" · ")[0]?.trim() ?? "";
+      const { error: e2 } = await supabase.from("empresas").update({ perfil_slug: slug || null, verificada: true } as never).eq("id", emp.id);
+      toast[e2 ? "error" : "success"](e2 ? "No se pudo unir el perfil (¿ya lo tiene otra empresa?)" : `${emp.nombre} verificada y unida a /empresa/${slug}`);
+    }
     if (estado !== "pagada" || s.tipo === "asistido" || s.tipo === "destacar") toast.success(estado === "pagada" ? (s.tipo === "destacar" ? "Pagada: vacante destacada." : "Marcada como cerrada.") : "Listo");
     await cargar();
   };
@@ -112,10 +118,10 @@ export function Empresas() {
             const e = filas.find((f) => f.id === x.empresa_id);
             return (
               <div key={x.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-muted/50 p-3 text-sm">
-                <div className="min-w-0"><p className="font-bold">{x.tipo === "destacar" ? `Destacar: ${x.vacantes?.titulo ?? "vacante"}` : x.tipo === "prueba" ? "Quiere probar Plan Empresa 14 días" : x.tipo === "asistido" ? "Quiere Reclutamiento Asistido" : "Quiere el Plan Empresa"} · {e?.nombre ?? "Empresa"}</p><p className="text-muted-foreground">{[e?.contacto_nombre, e?.contacto_telefono, e?.contacto_email].filter(Boolean).join(" · ") || "Sin contacto"} · {haceDesde(x.created_at)}{x.estado === "contactada" ? " · ya contactada" : ""}</p>{x.detalle && <p className="mt-1 whitespace-pre-wrap">{x.detalle}</p>}</div>
+                <div className="min-w-0"><p className="font-bold">{x.tipo === "destacar" ? `Destacar: ${x.vacantes?.titulo ?? "vacante"}` : x.tipo === "prueba" ? "Quiere probar Plan Empresa 14 días" : x.tipo === "asistido" ? "Quiere Reclutamiento Asistido" : x.tipo === "reclamo" ? "Reclama su perfil público" : "Quiere el Plan Empresa"} · {e?.nombre ?? "Empresa"}</p><p className="text-muted-foreground">{[e?.contacto_nombre, e?.contacto_telefono, e?.contacto_email].filter(Boolean).join(" · ") || "Sin contacto"} · {haceDesde(x.created_at)}{x.estado === "contactada" ? " · ya contactada" : ""}</p>{x.detalle && <p className="mt-1 whitespace-pre-wrap">{x.detalle}</p>}{x.tipo === "reclamo" && <p className="mt-1">RNC: <b>{(e as unknown as { rnc?: string } | undefined)?.rnc ?? "—"}</b> · <a href={`/empresa/${(x.detalle ?? "").split(" · ")[0]}`} target="_blank" rel="noopener noreferrer" className="font-bold text-primary underline">Ver el perfil que reclama</a></p>}</div>
                 <div className="flex gap-2">
                   {x.estado === "nueva" && <Button size="sm" variant="outline" onClick={() => void marcar(x, "contactada")}>Ya la contacté</Button>}
-                  <Button size="sm" onClick={() => void marcar(x, "pagada")}>{x.tipo === "prueba" ? "Activar prueba 14 días" : x.tipo === "asistido" ? "Ya lo acordamos" : "Pagó: activar"}</Button>
+                  <Button size="sm" onClick={() => void marcar(x, "pagada")}>{x.tipo === "prueba" ? "Activar prueba 14 días" : x.tipo === "asistido" ? "Ya lo acordamos" : x.tipo === "reclamo" ? "Revisé el RNC: aprobar" : "Pagó: activar"}</Button>
                   <Button size="sm" variant="ghost" onClick={() => void marcar(x, "descartada")}>Descartar</Button>
                 </div>
               </div>

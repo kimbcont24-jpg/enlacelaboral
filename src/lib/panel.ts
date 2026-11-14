@@ -50,8 +50,12 @@ export type EmpresaPerfil = {
   plan_hasta: string | null;
   prueba_usada?: boolean;
   plantillas: Plantillas;
+  /** Marca empleadora (logo, fotos, beneficios, cultura). Se limpia con marcaDe() antes de usarla. */
+  marca?: unknown;
+  /** Perfil público que reclamó y se le aprobó (/empresa/<slug>). */
+  perfil_slug?: string | null;
 };
-export const CAMPOS_EMPRESA = "id,nombre,verificada,contacto_nombre,contacto_email,contacto_telefono,sector,provincia,descripcion,sitio_web,plan,plan_hasta,prueba_usada,plantillas";
+export const CAMPOS_EMPRESA = "id,nombre,verificada,contacto_nombre,contacto_email,contacto_telefono,sector,provincia,descripcion,sitio_web,plan,plan_hasta,prueba_usada,plantillas,marca,perfil_slug";
 
 /** Días que le quedan al plan (null si no tiene fecha de fin). */
 export const diasPlan = (e: Pick<EmpresaPerfil, "plan_hasta">) => (e.plan_hasta ? Math.max(0, Math.ceil((new Date(`${e.plan_hasta}T23:59:59`).getTime() - Date.now()) / 864e5)) : null);

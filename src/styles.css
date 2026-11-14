@@ -379,3 +379,9 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 @keyframes blog-sube { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 .blog-entra { animation: blog-sube .7s var(--ease-out-expo, cubic-bezier(.19,1,.22,1)) both; }
 @media (prefers-reduced-motion: reduce) { .blog-entra { animation: none; } }
+
+/* Línea que «escanea» el flyer mientras se lee */
+@keyframes escanea {
+  0%, 100% { top: 0.3rem; }
+  50% { top: calc(100% - 0.45rem); }
+}

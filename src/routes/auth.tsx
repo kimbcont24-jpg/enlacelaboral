@@ -28,7 +28,7 @@ function Auth() {
   const [modo, setModo] = useState<"registro" | "login" | "equipo">(inicial ?? "login");
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [empresa, setEmpresa] = useState("");
+  const [empresa, setEmpresa] = useState(search.modo === "registro" ? (search.empresa ?? "") : "");
   const [rnc, setRnc] = useState("");
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState(search.correo ?? "");

@@ -25,6 +25,7 @@ import { Talento } from "@/components/panel/Talento";
 import { JornadasEmpresa } from "@/components/panel/JornadasEmpresa";
 import { Equipo } from "@/components/panel/Equipo";
 import { leerRespuestas } from "@/lib/preguntas";
+import { borrarReclamo, leerReclamo, MENSAJE_RECLAMO } from "@/lib/motivar-empresas";
 import { cargarVistas, type Vistas } from "@/lib/vistas";
 import { Titulo } from "@/components/panel/comun";
 import { supabase } from "@/integrations/supabase/client";
@@ -139,6 +140,19 @@ function Panel() {
       await cargarTodo(dueno);
     })();
   }, [navigate, cargarTodo]);
+
+  // Si llegó desde «Reclamar mi empresa» en un perfil, se manda la solicitud (una vez).
+  useEffect(() => {
+    if (!empresa?.id || !yo.dueno) return;
+    const r = leerReclamo();
+    if (!r) return;
+    void supabase.rpc("reclamar_empresa" as never, { p_slug: r.slug } as never).then(({ data, error }) => {
+      const k = error ? "" : String(data ?? "");
+      if (k !== "sin_empresa") borrarReclamo();
+      if (k === "ok") toast.success(`Solicitud enviada: perfil de ${r.nombre || "tu empresa"}`, { description: MENSAJE_RECLAMO["ok"], duration: 9000 });
+      else if (MENSAJE_RECLAMO[k]) toast.info(MENSAJE_RECLAMO[k]);
+    });
+  }, [empresa?.id, yo.dueno]);
 
   // Llegan solos: en vivo cuando se puede, y revisión cada 90 s por si acaso.
   useEffect(() => {
@@ -367,7 +381,7 @@ function CrearEmpresa({ uid, onListo, onSalir }: { uid: string; onListo: (e: Emp
     void supabase.auth.getUser().then(({ data }) => {
       const m = (data.user?.user_metadata ?? {}) as { empresa?: string; rnc?: string; nombre?: string };
       const r = (m.rnc ?? "").replace(/\D/g, "");
-      setNombre(m.empresa ?? ""); setRnc(r); setContacto(m.nombre ?? "");
+      setNombre(m.empresa ?? leerReclamo()?.nombre ?? ""); setRnc(r); setContacto(m.nombre ?? "");
       if ((m.empresa ?? "").trim().length >= 2 && (r.length === 9 || r.length === 11)) void crear(m.empresa!, r, m.nombre ?? "", data.user?.email ?? null);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

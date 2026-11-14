@@ -4,6 +4,7 @@ import { BadgeCheck, Check, Clock, ShieldCheck, Code2, Copy, Crown, Link2, QrCod
 import { toast } from "sonner";
 
 import { usePanel } from "@/components/panel/contexto";
+import { MarcaPanel } from "@/components/panel/MarcaPanel";
 import { campoPanel, Titulo } from "@/components/panel/comun";
 import { supabase } from "@/integrations/supabase/client";
 import { provincias } from "@/lib/data";
@@ -81,6 +82,7 @@ export function MiEmpresa() {
           </div>
         </aside>
       </div>
+      <MarcaPanel />
     </>
   );
 }
