@@ -5,13 +5,13 @@ import { toast } from "sonner";
 
 import { Consentimiento } from "@/components/site/Consentimiento";
 import { Bloque, PaginaLegal } from "@/components/site/Legal";
+import { CanalesContacto } from "@/components/site/Redes";
 import { supabase } from "@/integrations/supabase/client";
-import { CANAL_WHATSAPP } from "@/lib/vacantes";
 
 type Tipo = "contacto" | "empresa" | "denuncia";
 export const Route = createFileRoute("/contacto")({
   validateSearch: (s: Record<string, unknown>): { tipo?: Tipo } => (["contacto", "empresa", "denuncia"].includes(s["tipo"] as string) ? { tipo: s["tipo"] as Tipo } : {}),
-  head: () => ({ meta: [{ title: "Contacto y ayuda | Enlace Laboral" }, { name: "description", content: "Preguntas frecuentes y formulario para escribirle al equipo de Enlace Laboral. Reporta ofertas sospechosas." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/contacto" }] }),
+  head: () => ({ meta: [{ title: "Contacto y ayuda | Enlace Laboral" }, { name: "description", content: "Correos oficiales, canal de WhatsApp y Telegram, Instagram, preguntas frecuentes y formulario para escribirle al equipo de Enlace Laboral." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/contacto" }] }),
   component: Contacto,
 });
 
@@ -32,7 +32,10 @@ function Contacto() {
         { I: Flag, t: "Reporta una estafa", d: "Si alguien te pidió dinero por un empleo, avísanos aquí." },
         { I: Clock3, t: "Tus datos personales", d: "Para ver, corregir o borrarlos, usa el formulario de Privacidad." },
       ]}
-      indice={[["preguntas", "Preguntas frecuentes"], ["escribir", "Escríbenos"]]}>
+      indice={[["canales", "Correos y redes"], ["preguntas", "Preguntas frecuentes"], ["escribir", "Formulario"]]}>
+      <Bloque id="canales" titulo="Correos y redes oficiales">
+        <CanalesContacto />
+      </Bloque>
       <Bloque id="preguntas" titulo="Preguntas frecuentes">
         <div className="divide-y divide-border rounded-2xl border border-border bg-surface">
           {PREGUNTAS.map(([p, r]) => (
@@ -42,9 +45,8 @@ function Contacto() {
             </details>
           ))}
         </div>
-        <p className="text-sm">Recibe vacantes nuevas en el <a href={CANAL_WHATSAPP} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary underline">canal de WhatsApp de Enlace Laboral</a>.</p>
       </Bloque>
-      <Bloque id="escribir" titulo="Escríbenos">
+      <Bloque id="escribir" titulo="O escríbenos aquí">
         <Formulario />
       </Bloque>
     </PaginaLegal>

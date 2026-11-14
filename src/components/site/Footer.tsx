@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Logo, LogoMarca } from "@/components/site/Logo";
 import { landingsArea, landingsProvincia } from "@/lib/empleos";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
+import { RedesIconos } from "@/components/site/Redes";
+import { CORREO_EMPRESAS, CORREO_INFO } from "@/lib/vacantes";
 import { PAGINAS_LEGALES } from "@/lib/legal";
 
 export function Footer() {
@@ -14,6 +16,16 @@ export function Footer() {
           <Logo invertido tamano="text-[26px]" />
           <p className="mt-4 max-w-xs text-sm text-white/70">Reunimos vacantes de empresas, portales e instituciones de República Dominicana. Aplicar siempre es gratis.</p>
           <div className="mt-4 max-w-xs"><CanalWhatsApp variante="boton" /></div>
+          <div className="mt-5">
+            <p className="text-sm font-bold text-white">Síguenos</p>
+            <div className="mt-2"><RedesIconos /></div>
+          </div>
+          <div className="mt-5 text-sm">
+            <p className="font-bold text-white">Escríbenos</p>
+            <a href={`mailto:${CORREO_INFO}`} className="mt-1 block break-all py-1 text-white/75 hover:text-white">{CORREO_INFO}</a>
+            <a href={`mailto:${CORREO_EMPRESAS}`} className="block break-all py-1 text-white/75 hover:text-white">{CORREO_EMPRESAS} <span className="text-white/50">· empresas</span></a>
+            <Link to="/contacto" className="mt-1 inline-block py-1 font-semibold text-[#ffd84d] underline">Contacto y ayuda</Link>
+          </div>
           <p className="mt-4 max-w-xs rounded-xl bg-white/8 p-3 text-sm text-white/85"><strong>Cuídate:</strong> ninguna empresa seria te cobra por entrevistarte o contratarte. <Link to="/seguridad" className="font-semibold inline-block py-1.5 sm:py-0 text-[#ffd84d] underline">Cómo evitar estafas</Link></p>
         </div>
         <nav aria-label="Empleos por provincia">

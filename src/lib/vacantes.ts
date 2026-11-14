@@ -219,6 +219,11 @@ export function jobPostingLd(job: Vacante): string | null {
 }
 
 export const CANAL_WHATSAPP = "https://whatsapp.com/channel/0029Vb7GW0UKLaHf3idEm62D";
+export const CANAL_TELEGRAM = "https://t.me/enlacelaboral";
+export const INSTAGRAM = "https://www.instagram.com/enlacelaboralrd";
+/** Correos oficiales (Zoho Mail). aplicaciones@ es solo remitente de avisos automáticos: no se publica. */
+export const CORREO_INFO = "info@enlacelaboralrd.com";
+export const CORREO_EMPRESAS = "empresas@enlacelaboralrd.com";
 
 // ---------- Total de vacantes abiertas (para el menú) ----------
 // Consulta liviana (solo cuenta, sin traer las vacantes) y se recuerda en la sesión.
