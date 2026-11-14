@@ -15,6 +15,7 @@ type Prospecto = {
   puesto_ejemplo: string | null; vacante_id: string | null; vacantes_en_enlace: number | null; ultima_vacante: string | null; fuente: string;
   dominio_ok: boolean | null; mx_revisado: string | null; estado: Estado; paso: number; ultimo_envio: string | null; proximo_envio: string | null;
   nota: string | null; creado: string; actualizado: string; n_envios: number; de_baja: boolean; cruce_nst: boolean; temperatura: number | null; enviable: boolean; tipo_correo: string; telefono: string | null;
+  respondio_en: string | null; respuesta: string | null; siguiente_paso: string | null; seguimiento_en: string | null; seguimientos_resp: number;
 };
 type Config = { activo: boolean; limite_diario: number; dias_paso2: number; dias_paso3: number; dias_paso4: number; inicio: string; remitente: string; actualizado: string };
 type Resumen = { total: number; dominio_verificado: number; por_contactar: number; en_secuencia: number; respondieron: number; registradas: number; no_interesadas: number; rebotados: number; secuencia_terminada: number; correos_enviados: number };
@@ -185,9 +186,9 @@ export function CrmEmpresas() {
                         {p.contacto_nombre && <p className="text-xs text-muted-foreground">{p.contacto_nombre}{p.cargo ? ` · ${p.cargo}` : ""}</p>}
                         {!p.enviable && <p className="text-[11px] font-semibold text-[#be185d]">Correo personal · sin envío automático</p>}
                       </td>
-                      <td className="px-4 py-3"><Pastilla estado={p.estado} />{p.temperatura != null && <div className="mt-1"><Termometro valor={p.temperatura} /></div>}{p.cruce_nst && p.estado === "nuevo" && <p className="mt-1 text-[11px] text-muted-foreground">Espera por NST</p>}</td>
+                      <td className="px-4 py-3"><Pastilla estado={p.estado} />{p.temperatura != null && <div className="mt-1"><Termometro valor={p.temperatura} /></div>}{p.cruce_nst && p.estado === "nuevo" && <p className="mt-1 text-[11px] text-muted-foreground">Espera por NST</p>}{p.respuesta && <p className="mt-1 max-w-[16rem] truncate text-[11px] italic text-foreground/80" title={p.respuesta}>«{p.respuesta}»</p>}</td>
                       <td className="px-4 py-3"><Pasos paso={p.paso} /><p className="mt-1 text-xs text-muted-foreground">{p.ultimo_envio ? haceDesde(p.ultimo_envio) : "—"}</p></td>
-                      <td className="px-4 py-3 text-xs">{p.proximo_envio ? `${PASOS[p.paso + 1] ?? ""} · ${fechaCorta(p.proximo_envio)}` : p.estado === "nuevo" && p.dominio_ok ? "En cola" : "—"}</td>
+                      <td className="px-4 py-3 text-xs">{p.siguiente_paso && p.respondio_en ? <><p className="max-w-[14rem] font-semibold">{p.siguiente_paso}</p>{p.seguimiento_en && <p className="text-muted-foreground">Seguimiento: {fechaCorta(p.seguimiento_en.slice(0, 10))}</p>}</> : p.proximo_envio ? `${PASOS[p.paso + 1] ?? ""} · ${fechaCorta(p.proximo_envio)}` : p.estado === "nuevo" && p.dominio_ok ? "En cola" : "—"}</td>
                       <td className="px-4 py-3 text-right"><Eye className="inline size-4 text-muted-foreground" /></td>
                     </tr>
                   ))}
@@ -270,6 +271,15 @@ function Ficha({ p, onCerrar, onCambio }: { p: Prospecto; onCerrar: () => void; 
           {p.proximo_envio && <span className="text-sm text-muted-foreground">Próximo: {PASOS[p.paso + 1]} el {fechaCorta(p.proximo_envio)}</span>}
           {p.cruce_nst && <span className="text-xs text-muted-foreground">Neuro STEM Talent le escribió hace poco: Enlace espera 45 días.</span>}
         </div>
+
+        {p.respondio_en && (
+          <div className="mt-4 rounded-2xl border-2 border-primary/25 bg-primary/5 p-4">
+            <p className={rotulo}>Lo que respondieron · {haceDesde(p.respondio_en)}</p>
+            {p.respuesta ? <blockquote className="mt-2 border-l-4 border-primary/40 pl-3 text-sm italic">«{p.respuesta}»</blockquote> : <p className="mt-2 text-sm text-muted-foreground">Sin texto guardado.</p>}
+            {p.siguiente_paso && <p className="mt-3 text-sm"><span className="font-bold">Siguiente paso:</span> {p.siguiente_paso}</p>}
+            {p.seguimiento_en && <p className="mt-1 text-xs text-muted-foreground">Seguimiento automático el {fechaCorta(p.seguimiento_en.slice(0, 10))}{p.seguimientos_resp ? ` · ${p.seguimientos_resp} seguimiento(s) enviado(s)` : ""}</p>}
+          </div>
+        )}
 
         <div className="mt-4 grid grid-cols-2 gap-2">
           <Button size="sm" variant="secondary" disabled={ocupado} onClick={() => void accion("interesado", "Marcada como interesada")}><Sparkles className="size-4" /> Interesada</Button>

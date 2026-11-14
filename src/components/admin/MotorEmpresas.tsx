@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Building2, Flame, Loader2, Mail, MessageCircle, Phone, Radar, RefreshCw, Search, Star, Target, X } from "lucide-react";
+import { ArrowRight, Building2, CalendarClock, Flame, Loader2, Mail, MessageCircle, MessageSquareQuote, Phone, Radar, RefreshCw, Search, Star, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Tarjeta, fechaRD, rotulo } from "@/components/admin/comun";
-import { ESTADO_CUENTA, SEGMENTOS, crm, enlaceWhatsApp, type Cuenta, type Motor } from "@/lib/crm-empresas";
+import { Tarjeta, fechaRD, haceDesde, rotulo } from "@/components/admin/comun";
+import { ESTADO_CUENTA, SEGMENTOS, crm, enlaceWhatsApp, type Cuenta, type Motor, type Respuesta } from "@/lib/crm-empresas";
 import { cn } from "@/lib/utils";
 
 const pesos = (n: number | null | undefined) => (n ? `RD$${Math.round(n).toLocaleString("es-DO")}` : "—");
@@ -54,6 +54,72 @@ function BotonWhatsApp({ c, size = "sm" }: { c: Cuenta; size?: "sm" | "icon" }) 
   );
 }
 
+/* ---------- Respuestas de empresas ---------- */
+const ESTADO_RESPUESTA: Record<string, { label: string; clase: string; borde: string }> = {
+  interesado: { label: "Interesada", clase: "bg-success/15 text-success", borde: "border-success/40" },
+  registrada: { label: "Registrada", clase: "bg-success text-white", borde: "border-success/40" },
+  respondio: { label: "Respondió", clase: "bg-[#fff4d6] text-[#7a5600]", borde: "border-[#f0d58a]" },
+  no_interesado: { label: "No interesada", clase: "bg-muted text-muted-foreground", borde: "border-border" },
+  baja: { label: "Pidió no escribir más", clase: "bg-destructive/10 text-destructive", borde: "border-border" },
+};
+
+function BandejaRespuestas({ lista, onAbrirCuenta }: { lista: Respuesta[]; onAbrirCuenta: (clave: string) => void }) {
+  const [todas, setTodas] = useState(false);
+  const abiertas = lista.filter((r) => ["interesado", "registrada", "respondio"].includes(r.estado));
+  const cerradas = lista.length - abiertas.length;
+  const ver = todas ? lista : abiertas;
+  const hoy = new Date().toISOString().slice(0, 10);
+  return (
+    <section className="rounded-2xl border-2 border-primary/25 bg-surface p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="flex items-center gap-2 text-base font-extrabold"><MessageSquareQuote className="size-5 text-primary" /> Respuestas de empresas
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">{abiertas.length} por atender</span>
+        </p>
+        {cerradas > 0 && <Button size="sm" variant="ghost" onClick={() => setTodas(!todas)}>{todas ? "Ver solo las abiertas" : `Ver también las cerradas (${cerradas})`}</Button>}
+      </div>
+      {lista.length === 0 ? (
+        <p className="mt-3 rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">
+          Todavía ninguna empresa ha respondido. Cuando una lo haga, aparece aquí con lo que dijo, el siguiente paso y la fecha del seguimiento. También te llega un aviso al correo.
+        </p>
+      ) : ver.length === 0 ? (
+        <p className="mt-3 text-sm text-muted-foreground">No hay respuestas abiertas ahora mismo.</p>
+      ) : (
+        <ul className="mt-3 grid gap-3 lg:grid-cols-2">
+          {ver.map((r) => {
+            const e = ESTADO_RESPUESTA[r.estado] ?? ESTADO_RESPUESTA.respondio!;
+            const vence = r.seguimiento_en && r.seguimiento_en.slice(0, 10) <= hoy;
+            const wa = r.telefono ? enlaceWhatsApp(r.telefono, r.empresa, r.puesto) : null;
+            return (
+              <li key={r.correo} className={cn("rounded-xl border bg-background p-4", e.borde)}>
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="truncate font-extrabold">{r.empresa}</p>
+                    <p className="truncate text-xs text-muted-foreground">{r.contacto ? `${r.contacto} · ` : ""}{r.correo}</p>
+                  </div>
+                  <span className={cn("inline-flex whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-bold", e.clase)}>{e.label}</span>
+                </div>
+                {r.respuesta && <blockquote className="mt-3 border-l-4 border-primary/40 pl-3 text-sm italic text-foreground/90">«{r.respuesta}»</blockquote>}
+                <p className="mt-2 text-[11px] text-muted-foreground">Respondió {haceDesde(r.respondio_en)}</p>
+                {r.siguiente_paso && (
+                  <div className={cn("mt-3 rounded-lg px-3 py-2 text-sm", vence ? "bg-[#fff4d6] text-[#7a5600]" : "bg-muted/60")}>
+                    <p className="font-bold">Siguiente paso</p>
+                    <p>{r.siguiente_paso}</p>
+                    {r.seguimiento_en && <p className="mt-1 flex items-center gap-1 text-xs"><CalendarClock className="size-3.5" />{vence ? "Seguimiento automático: hoy" : `Seguimiento automático: ${fechaCorta(r.seguimiento_en)}`}{r.seguimientos ? ` · ${r.seguimientos} enviado(s)` : ""}</p>}
+                  </div>
+                )}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {r.clave && <Button size="sm" variant="secondary" onClick={() => onAbrirCuenta(r.clave!)}>Abrir empresa <ArrowRight className="size-4" /></Button>}
+                  {wa && <Button size="sm" variant="ghost" asChild><a href={wa} target="_blank" rel="noreferrer"><MessageCircle className="size-4 text-[#128C7E]" /> WhatsApp</a></Button>}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  );
+}
+
 /* ---------- Tablero estratégico ---------- */
 export function MotorVista({ onAbrirCuenta, onFiltrar }: { onAbrirCuenta: (clave: string) => void; onFiltrar: (segmento: string) => void }) {
   const [m, setM] = useState<Motor | null>(null);
@@ -87,7 +153,6 @@ export function MotorVista({ onAbrirCuenta, onFiltrar }: { onAbrirCuenta: (clave
       contratandoAhora: seg("Contratando ahora").length,
       whatsapp: c.filter((x) => x.n_corporativos === 0 && (x.telefonos?.length ?? 0) > 0 && !["no_interesada", "registrada"].includes(x.estado)).slice(0, 10),
       segmentos: Object.keys(SEGMENTOS).map((s) => ({ s, n: seg(s).length, top: seg(s).slice(0, 3).map((x) => x.nombre) })).filter((x) => x.n > 0),
-      cerrar: c.filter((x) => ["interesada", "respondio"].includes(x.estado)),
     };
   }, [m]);
 
@@ -130,15 +195,8 @@ export function MotorVista({ onAbrirCuenta, onFiltrar }: { onAbrirCuenta: (clave
         </div>
       </section>
 
-      {/* Cerrar hoy */}
-      {d.cerrar.length > 0 && (
-        <section className="rounded-2xl border-2 border-success/40 bg-success/5 p-4">
-          <p className="flex items-center gap-2 font-extrabold text-success"><Target className="size-4" /> Para cerrar hoy ({d.cerrar.length})</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {d.cerrar.map((c) => <button key={c.clave} type="button" onClick={() => onAbrirCuenta(c.clave)} className="rounded-xl border border-success/30 bg-surface px-3 py-2 text-left text-sm hover:border-success"><span className="font-bold">{c.nombre}</span> <EstadoCuenta e={c.estado} /></button>)}
-          </div>
-        </section>
-      )}
+      {/* Respuestas */}
+      <BandejaRespuestas lista={m.respuestas ?? []} onAbrirCuenta={onAbrirCuenta} />
 
       <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         {/* Empresas calientes */}

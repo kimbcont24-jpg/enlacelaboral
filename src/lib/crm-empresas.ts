@@ -20,8 +20,15 @@ export type Cuenta = {
   n_contactos: number; n_corporativos: number; estado: string; temperatura: number; segmentos: string[]; accion: string | null; motivo: string | null;
 };
 
+/** Empresa que respondió a la prospección: qué dijo y qué toca. */
+export type Respuesta = {
+  correo: string; empresa: string; clave: string | null; contacto: string | null; estado: string; respuesta: string | null;
+  respondio_en: string | null; siguiente_paso: string | null; seguimiento_en: string | null; seguimientos: number; puesto: string | null; telefono: string | null;
+};
+
 export type Motor = {
   cuentas: Cuenta[];
+  respuestas?: Respuesta[];
   cola: { correo: string; empresa: string; paso_siguiente: number; temperatura: number; motivo: string | null }[];
   por_area: { area: string; vacantes: number; empresas: number; con_salario: number }[];
   por_provincia: { provincia: string; vacantes: number; empresas: number }[];
