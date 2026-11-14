@@ -346,3 +346,10 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
 @media (prefers-reduced-motion: reduce) { .cve-frente, .cve-chip, .cve-cambia { animation: none; } .cve-inclina, .cve-tarjeta { transition: none; } }
 @media print { .cve-mesa { background: none !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; } .cve-mesa .cv-hoja { box-shadow: none !important; } }
 }
+
+/* Hoja del CV ajustada a una página A4 completa (/cv). Fuera de @layer para ganarle a las utilidades de Tailwind. */
+.cv-medidor { position: absolute; left: -10000px; top: 0; visibility: hidden; pointer-events: none; }
+.cv-ajuste .cv-hoja { max-width: none; }
+.cv-ajuste .cv-hoja section { margin-top: calc(1.5rem + var(--aire, 0px)); }
+.cv-pagina-llena .cv-hoja { min-height: calc((297mm - 1px) / var(--z, 1)); }
+#cv-imprimible { display: none; }

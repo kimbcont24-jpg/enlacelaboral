@@ -1,6 +1,7 @@
 import { PromoInsignias } from "@/components/insignias/Promo";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Expand, Layers, Mic, Wand2, Send, Upload, AlertTriangle, ArrowDown, ArrowUp, Briefcase, Check, CheckCircle2, ChevronLeft, ChevronRight, Copy, Download, Eye, FileText, GraduationCap, Lightbulb, ListChecks, MessageCircle, Palette, Pencil, Plus, Search, Sparkles, Target, Trash2, User, Wrench, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -9,6 +10,7 @@ import { Header } from "@/components/site/Header";
 import { GuardarNube } from "@/components/site/GuardarNube";
 import { COLORES, FUENTES, HojaCV, PLANTILLAS, type Color, type Fuente, type Plantilla } from "@/components/cv/Hojas";
 import { EnviarCV } from "@/components/cv/EnviarCV";
+import { HojaPagina, useAjuste, type Ajuste } from "@/components/cv/Pagina";
 import { Anillo, CambioRapido, CV_MUESTRA, MasQueUnPDF, nivelCV, OjoReclutadora, PasosCV, PortadaCV } from "@/components/cv/Estudio";
 import { Entrevista } from "@/components/cv/Entrevista";
 import { mejorarLogro, perfilDesdeDatos } from "@/lib/cv-redactar";
@@ -86,6 +88,10 @@ function CrearCV() {
     window.dispatchEvent(new Event("enlace-cv-cambio"));
   };
 
+  const { ajuste, medidor } = useAjuste(cv, estilo);
+  const [montado, setMontado] = useState(false);
+  useEffect(() => { setMontado(true); }, []);
+
   const rol: Rol | null = ROLES.find((r) => r.id === rolElegido) ?? rolDe(cv);
   const revision = useMemo(() => revisar(cv), [cv]);
   const hecho: Record<Paso, boolean> = {
@@ -113,6 +119,12 @@ function CrearCV() {
   const descargar = (que: "cv" | "carta" = "cv") => {
     if (que === "cv" && !cv.nombre.trim()) return void toast.error("Escribe al menos tu nombre.");
     setImprimir(que);
+    // El título de la pestaña es el nombre que el navegador propone para el PDF.
+    const previo = document.title;
+    const nombre = cv.nombre.trim();
+    document.title = que === "cv" ? `CV ${nombre}` : `Carta de presentación${nombre ? ` ${nombre}` : ""}`;
+    const volver = () => { document.title = previo; window.removeEventListener("afterprint", volver); };
+    window.addEventListener("afterprint", volver);
     requestAnimationFrame(() => requestAnimationFrame(() => window.print()));
   };
   const copiar = async () => { try { await navigator.clipboard.writeText(textoCV(cv)); toast.success("CV copiado como texto."); } catch { toast.error("No se pudo copiar."); } };
@@ -275,7 +287,7 @@ function CrearCV() {
             <div className="lg:sticky lg:top-24">
               <div className="cve-mesa rounded-3xl p-3 sm:p-4">
                 <CambioRapido estilo={estilo} onEstilo={guardarEstilo} />
-                <Vista cv={cv} estilo={estilo} onAmpliar={() => setAmpliar(true)} />
+                <Vista cv={cv} estilo={estilo} ajuste={ajuste} onAmpliar={() => setAmpliar(true)} />
                 <div className="no-print mt-3 grid grid-cols-2 gap-2">
                   <button type="button" onClick={() => descargar()} className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-white px-3 text-sm font-extrabold text-[#0a2f5c] transition-transform hover:-translate-y-0.5"><Download className="size-4" /> Descargar PDF</button>
                   <a href="#enviar-cv" className="btn-aplicar inline-flex h-12 items-center justify-center gap-2 rounded-xl px-3 text-sm"><Send className="size-4" /> Enviar a vacantes</a>
@@ -294,29 +306,33 @@ function CrearCV() {
         <div className="no-print fixed inset-0 z-[70] overflow-y-auto bg-[#0a1a33]/80 p-4 sm:p-8" role="dialog" aria-modal="true" aria-label="Tu CV en grande" onClick={() => setAmpliar(false)}>
           <div className="mx-auto max-w-[820px]" onClick={(e) => e.stopPropagation()}>
             <div className="mb-3 flex items-center justify-between text-white"><p className="font-bold">Así lo verá la empresa</p><button type="button" onClick={() => setAmpliar(false)} className="inline-flex items-center gap-1 rounded-lg bg-white/10 px-3 py-1.5 text-sm font-bold hover:bg-white/20"><X className="size-4" /> Cerrar</button></div>
-            <Vista cv={cv} estilo={estilo} />
+            <Vista cv={cv} estilo={estilo} ajuste={ajuste} />
           </div>
         </div>
       )}
       {herramienta === "importar" && <Importar actual={cv} onUsar={(nuevo) => { setCV(nuevo); setPaso("datos"); setHerramienta(null); toast.success("Listo. Revisa cada paso: lo que no reconocimos, agrégalo a mano."); }} onCerrar={() => setHerramienta(null)} />}
       {herramienta === "carta" && <Carta inicial={cartaPara} texto={textoCarta} setTexto={setTextoCarta} cv={cv} onCerrar={() => setHerramienta(null)} onDescargar={() => descargar("carta")} />}
-      <div id="carta-imprimir" className="hidden whitespace-pre-line p-0 text-[15px] leading-relaxed" style={{ fontFamily: "Figtree, system-ui, sans-serif" }}>{textoCarta}</div>
+      {medidor}
+      {montado && createPortal(
+        <div id="cv-imprimible" aria-hidden="true">
+          {imprimir === "cv" ? <HojaPagina cv={cv} estilo={estilo} ajuste={ajuste} /> : <div className="carta-hoja whitespace-pre-line text-[15px] leading-relaxed text-[#14213a]" style={{ fontFamily: "Figtree, system-ui, sans-serif" }}>{textoCarta}</div>}
+        </div>,
+        document.body,
+      )}
 
       <div className="no-print"><Footer /></div>
       <style>{`
         @media print {
-          @page { size: A4; margin: 12mm; }
-          body, .bg-background { background: #fff !important; }
-          .no-print, nav, footer { display: none !important; }
-          #cv-vista { display: block !important; }
-          #cv-vista > div { position: static !important; }
-          #cv-escala { transform: none !important; width: auto !important; height: auto !important; position: static !important; }
-          #cv-marco { height: auto !important; overflow: visible !important; }
-          .cv-hoja { box-shadow: none !important; border: 0 !important; border-radius: 0 !important; width: auto !important; max-width: none !important; }
-          .min-h-screen { min-height: 0 !important; }
-          [data-imprimir="carta"] #cv-vista { display: none !important; }
-          [data-imprimir="carta"] #carta-imprimir { display: block !important; }
-          [data-imprimir="cv"] #carta-imprimir { display: none !important; }
+          /* Sin márgenes: así el navegador no agrega fecha, título, enlace ni número de página. */
+          @page { size: A4; margin: 0; }
+          html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+          body > *:not(#cv-imprimible) { display: none !important; }
+          #cv-imprimible { display: block !important; }
+          #cv-imprimible .cv-hoja { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+          #cv-imprimible .carta-hoja { padding: 22mm 22mm; }
+          /* Si el CV pasa de una página, se corta entre trabajos, no deja la primera hoja vacía. */
+          #cv-imprimible .cv-hoja section { break-inside: auto !important; }
+          #cv-imprimible .cv-hoja h3 { break-after: avoid; }
         }
       `}</style>
     </div>
@@ -326,7 +342,7 @@ function CrearCV() {
 /* ───────── Vista previa a escala, con aviso de una página ───────── */
 
 const ANCHO = 794; // A4 a 96 ppp
-function Vista({ cv, estilo, onAmpliar }: { cv: CV; estilo: Estilo; onAmpliar?: () => void }) {
+function Vista({ cv, estilo, ajuste, onAmpliar }: { cv: CV; estilo: Estilo; ajuste: Ajuste; onAmpliar?: () => void }) {
   const marco = useRef<HTMLDivElement>(null);
   const hoja = useRef<HTMLDivElement>(null);
   const [escala, setEscala] = useState(1);
@@ -350,7 +366,7 @@ function Vista({ cv, estilo, onAmpliar }: { cv: CV; estilo: Estilo; onAmpliar?: 
       </div>
       <div id="cv-marco" ref={marco} className="relative w-full" style={{ height: alto * escala }}>
         <div id="cv-escala" ref={hoja} className="absolute left-0 top-0 origin-top-left" style={{ width: ANCHO, transform: `scale(${escala})` }}>
-          <HojaCV cv={cv} plantilla={estilo.plantilla} color={estilo.color} fuente={estilo.fuente} />
+          <HojaPagina cv={cv} estilo={estilo} ajuste={ajuste} />
         </div>
         {paginas > 1.02 && <div aria-hidden="true" className="no-print pointer-events-none absolute inset-x-0 border-t-2 border-dashed border-[#c27803]/60" style={{ top: ANCHO * 1.414 * escala }}><span className="absolute right-2 -top-6 rounded bg-[#c27803] px-1.5 py-0.5 text-[10px] font-bold text-white">Fin de la página 1</span></div>}
       </div>
