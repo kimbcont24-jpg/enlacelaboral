@@ -353,9 +353,12 @@ function salarioDelTexto(texto) {
   if (!m || m.index === undefined) return null;
   const alrededor = sinTilde(texto.slice(Math.max(0, m.index - 12), m.index + m[0].length + 30));
   if (/us\$|usd|dolar|por hora|la hora|\/hora|diario|por dia|al dia/.test(alrededor)) return null;
+  // Cobros al candidato (inscripción, depósito, gastos, no reembolsable): no son salario. Ej.: «se paga RD$1,000 por gastos».
+  if (/se paga|pagar|inscripci|deposit|gasto|reembols|cuota|costo|tarifa|cargo por|en efectivo/.test(alrededor)) return null;
   const factor = /quincena/.test(alrededor) ? 2 : /semana/.test(alrededor) ? 4.33 : 1;
   const min = Math.round(aEntero(m[1]) * factor), max = Math.round(aEntero(m[2]) * factor);
-  if (!min || min > 9_999_999) return null;
+  // Menos de RD$10,000 al mes no es un sueldo real (por debajo de cualquier mínimo): se ignora.
+  if (!min || min < 10_000 || min > 9_999_999) return null;
   return { min, max: max > min && max <= 9_999_999 ? max : null };
 }
 

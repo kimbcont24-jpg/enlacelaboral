@@ -194,16 +194,21 @@ const aNumero = (t?: string) => (t ? Number(t.replace(/[.,](?=\d{3}\b)/g, "").re
  * Salario dicho en la descripción cuando la ficha no lo trae ("Salario publicado en el flyer: RD$27,987").
  * Solo montos mensuales en pesos: se descartan dólares, por hora y por día; quincenal y semanal se pasan a mes.
  */
+const COBRO = /se paga|pagar|inscripci|deposit|gasto|reembols|cuota|costo|tarifa|cargo por|en efectivo/;
+const SALARIO_MIN_REAL = 10_000;
 export function salarioDelTexto(texto: string | null | undefined): { min: number; max: number | null } | null {
   if (!texto) return null;
   const m = texto.match(RE_TEXTO) ?? texto.match(RE_RD);
   if (!m || m.index === undefined) return null;
   const alrededor = norm(texto.slice(Math.max(0, m.index - 12), m.index + m[0].length + 30));
   if (/us\$|usd|dolar|por hora|la hora|\/hora|diario|por dia|al dia/.test(alrededor)) return null;
+  // Cobros al candidato (inscripción, depósito, gastos, no reembolsable): no son salario. Ej.: «se paga RD$1,000 por gastos».
+  if (COBRO.test(alrededor)) return null;
   const factor = /quincena/.test(alrededor) ? 2 : /semana/.test(alrededor) ? 4.33 : 1;
   const min = Math.round(aNumero(m[1]) * factor);
   const max2 = Math.round(aNumero(m[2]) * factor);
-  if (!min) return null;
+  // Menos de RD$10,000 al mes no es un sueldo real (está por debajo de cualquier mínimo): se ignora.
+  if (!min || min < SALARIO_MIN_REAL) return null;
   return { min, max: max2 > min ? max2 : null };
 }
 
