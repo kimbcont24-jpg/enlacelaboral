@@ -42,6 +42,7 @@ export function FiltrosRapidos({ value, onChange, className = "" }: { value: Fil
         <Chip activo={value.conSalario === "si"} onClick={() => set("conSalario")(value.conSalario === "si" ? "" : "si")}>Con salario visible</Chip>
         <Chip activo={value.nivel === "Primer empleo"} onClick={() => set("nivel")(value.nivel === "Primer empleo" ? "" : "Primer empleo")}>Primer empleo</Chip>
         <Chip activo={value.incl === "discapacidad"} onClick={() => set("incl")(value.incl === "discapacidad" ? "" : "discapacidad")}>Inclusiva discapacidad</Chip>
+        <Chip activo={value.incl === "neurodivergencia"} onClick={() => set("incl")(value.incl === "neurodivergencia" ? "" : "neurodivergencia")}>Neurodiversidad</Chip>
         <Chip activo={value.modalidad === "Remoto"} onClick={() => set("modalidad")(value.modalidad === "Remoto" ? "" : "Remoto")}>Desde casa</Chip>
       </div>
       <button type="button" onClick={() => setMas((m) => !m)} aria-expanded={mas} className="mx-auto inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-primary md:hidden">

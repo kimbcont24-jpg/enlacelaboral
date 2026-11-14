@@ -25,6 +25,7 @@ export function InclusionBloque({ categorias }: { categorias: string[] }) {
       <h2 className="flex items-center gap-2 text-base font-extrabold text-[#0b5e33]"><HeartHandshake className="size-5" aria-hidden="true" /> Esta empresa se compromete</h2>
       <ul className="mt-3 grid gap-2 sm:grid-cols-2">{cs.map((c) => <li key={c.id} className="rounded-xl bg-surface p-3 text-sm"><span className="block font-bold">{c.t}</span><span className="text-muted-foreground">{c.d}</span></li>)}</ul>
       {cs.some((c) => c.id === "discapacidad") && <p className="mt-3 text-sm text-muted-foreground">Si necesitas un ajuste para la entrevista (por ejemplo, intérprete de lengua de señas o un lugar accesible), escríbelo en tu mensaje al aplicar.</p>}
+      {cs.some((c) => c.id === "neurodivergencia") && <p className="mt-3 text-sm text-muted-foreground">Si te ayuda recibir las preguntas por escrito, un lugar tranquilo o más tiempo para una prueba, pídelo en tu mensaje al aplicar.</p>}
     </section>
   );
 }

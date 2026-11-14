@@ -3,6 +3,7 @@
 export const COMPROMISOS = [
   { id: "primer-empleo", corto: "Primer empleo", t: "Primer empleo bienvenido", d: "No pedimos experiencia previa: enseñamos el trabajo." },
   { id: "discapacidad", corto: "Inclusiva", t: "Inclusiva para personas con discapacidad", d: "Adaptamos la entrevista y el puesto cuando hace falta." },
+  { id: "neurodivergencia", corto: "Neurodiversidad", t: "Inclusiva para personas neurodivergentes", d: "Autismo, TDAH, dislexia y otras formas de pensar: instrucciones claras y ajustes en la entrevista y el puesto." },
   { id: "estudiantes", corto: "Para estudiantes", t: "Horario compatible con estudios", d: "Ideal si estudias en la universidad o en INFOTEP." },
   { id: "horario-flexible", corto: "Horario flexible", t: "Horario flexible para madres y padres", d: "Acordamos horarios que funcionen con tu familia." },
 ] as const;
@@ -33,6 +34,7 @@ const REGLAS: { re: RegExp; motivo: string }[] = [
   { re: /\b(?:estatura|peso|talla|complexi[óo]n|tez|color de piel)\b/gi, motivo: "Pide rasgos físicos que no son del trabajo." },
   { re: /\b(?:religi[óo]n|cristian[oa]|cat[óo]lic[oa]|evang[ée]lic[oa])\b/gi, motivo: "Pide una creencia religiosa." },
   { re: /\b(?:sin\s+discapacidad|sin\s+limitaciones\s+f[íi]sicas|perfecto\s+estado\s+de\s+salud)\b/gi, motivo: "Excluye a personas con discapacidad." },
+  { re: /\bsin\s+(?:autismo|tdah|trastornos?\s+(?:mentales|psicol[óo]gicos|de\s+aprendizaje)|condiciones\s+(?:mentales|psicol[óo]gicas))\b/gi, motivo: "Excluye a personas neurodivergentes o con condiciones de salud mental." },
   { re: /\b(?:hasta|m[áa]ximo|no\s+m[áa]s\s+de)\s+(?:los\s+)?\d{2}\s+años(?!\s+de\s+(?:experiencia|labor|trabajo|servicio))/gi, motivo: "Pone un límite de edad." },
   { re: /\b\d{2}\s+años\s+(?:m[áa]ximo|como\s+m[áa]ximo|o\s+menos)\b/gi, motivo: "Pone un límite de edad." },
   { re: /\b(?:persona|personal|chic[oa]s?|muchach[oa]s?)\s+j[óo]ven(?:es)?\b|\bj[óo]ven(?:es)?\s+(?:din[áa]mic[oa]s?|entusiasta|proactiv[oa]s?)\b/gi, motivo: "Pide que la persona sea joven: excluye por edad." },
@@ -66,7 +68,7 @@ export function revisarVacante(v: { titulo: string; descripcion?: string; requis
 
 // ---------- Caminos de «Empleo para todas las personas» ----------
 // No se crean caminos por edad, sexo u otra condición personal: eso también sería separar a la gente.
-// Solo por el tipo de puesto (sin experiencia, pasantía, horario) o por compromisos que la ley promueve (discapacidad).
+// Solo por el tipo de puesto (sin experiencia, pasantía, horario) o por compromisos que la ley promueve (discapacidad) o que la empresa marca (neurodiversidad).
 // Una sola regla para contar y para filtrar: lo que dice el número es lo que sale en la lista.
 
 type JobCamino = { titulo: string; experiencia: string; tipo: string; modalidad: string; categorias: string[]; descripcion?: string; requisitos?: string[] };
@@ -76,7 +78,7 @@ type JobCamino = { titulo: string; experiencia: string; tipo: string; modalidad:
  * - Siempre cuenta si la empresa marcó el compromiso.
  * - Primer empleo: no pide experiencia. Estudiantes: pasantía o medio tiempo.
  * - Horario flexible: medio tiempo o desde casa.
- * - Discapacidad: solo si la empresa lo marcó (no se adivina).
+ * - Discapacidad y neurodiversidad: solo si la empresa lo marcó (no se adivina).
  */
 export function enCamino(j: JobCamino, id: string): boolean {
   if (j.categorias.includes(`incl:${id}`)) return true;

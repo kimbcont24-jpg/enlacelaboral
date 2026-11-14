@@ -43,6 +43,7 @@ const INTERESES = [
   "Pasantías para estudiantes",
   "Empleo para egresados",
   "Inclusión de personas con discapacidad",
+  "Inclusión de personas neurodivergentes (autismo, TDAH)",
   "Primer empleo para jóvenes",
   "Jornada o feria de empleo",
   "Talleres de CV y entrevista",

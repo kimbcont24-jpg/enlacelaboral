@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useMemo, useRef } from "react";
-import { Accessibility, ArrowRight, Clock, GraduationCap, HeartHandshake, ShieldCheck, Sprout } from "lucide-react";
+import { Accessibility, ArrowRight, Brain, Clock, GraduationCap, HeartHandshake, ShieldCheck, Sprout } from "lucide-react";
 
 import { LOGO_BROCHE, LOGO_CABEZA, LOGO_CUERPO, LOGO_MALETIN, LOGO_VIEWBOX } from "@/components/site/logo-paths";
 import { enCamino } from "@/lib/inclusion";
@@ -12,6 +12,7 @@ const CAMINOS = [
   { id: "estudiantes", I: GraduationCap, t: "Estudiantes", d: "Pasantías y medio tiempo", c: "#8ec1ff" },
   { id: "horario-flexible", I: Clock, t: "Horario flexible", d: "Medio tiempo o desde casa", c: "#f9a8d4" },
   { id: "discapacidad", I: Accessibility, t: "Con discapacidad", d: "Empresas comprometidas", c: "#c4b5fd" },
+  { id: "neurodivergencia", I: Brain, t: "Neurodivergentes", d: "Autismo, TDAH, dislexia", c: "#7dd3e0" },
 ] as const;
 
 /**
@@ -74,14 +75,14 @@ export function EmpleoParaTodosBanda() {
             {CAMINOS.map(({ id, I, t, d, c }) => {
               const n = cuenta[id] ?? 0;
               return (
-                <li key={id}>
+                <li key={id} className="last:col-span-2">
                   <Link to="/empleo-para-todos" hash={id}
                     className="group flex h-full flex-col rounded-3xl border border-white/20 bg-white/[0.08] p-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.15)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-white/40 hover:bg-white/[0.14] sm:p-5">
                     <span className="grid size-11 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/20" style={{ color: c }}><I className="size-5" aria-hidden="true" /></span>
                     <span className="mt-3 text-[15px] font-extrabold leading-snug sm:text-base">{t}</span>
                     <span className="mt-0.5 text-xs text-white/70 sm:text-sm">{d}</span>
                     <span className="mt-auto flex items-center justify-between pt-3 text-xs font-bold" style={{ color: c }}>
-                      {id === "discapacidad" ? "Ver opciones" : cargando ? "Contando…" : `${n} ${n === 1 ? "vacante" : "vacantes"}`}
+                      {id === "discapacidad" || id === "neurodivergencia" ? "Ver opciones" : cargando ? "Contando…" : `${n} ${n === 1 ? "vacante" : "vacantes"}`}
                       <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                     </span>
                   </Link>

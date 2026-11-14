@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { Accessibility, ArrowRight, ChevronDown, ChevronRight, BellRing, Clock, BookOpen, Building2, Compass, CheckCircle2, ExternalLink, Flag, GraduationCap, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
+import { Accessibility, ArrowRight, Brain, ChevronDown, ChevronRight, BellRing, Clock, BookOpen, Building2, Compass, CheckCircle2, ExternalLink, Flag, GraduationCap, HeartHandshake, Landmark, MessageCircle, Scale, Search, ShieldCheck, Sparkles, Sprout, X } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/empleo-para-todos")({
 type Recurso = { n: string; d: string; url?: string };
 type Paso = { t: string; d: string; link?: { to: string; search?: Record<string, string>; t: string } };
 type Camino = {
-  id: "primer-empleo" | "estudiantes" | "horario-flexible" | "discapacidad";
+  id: "primer-empleo" | "estudiantes" | "horario-flexible" | "discapacidad" | "neurodivergencia";
   I: typeof Sprout;
   color: string; // acento del camino
   suave: string; // fondo suave del camino
@@ -113,6 +113,23 @@ const CAMINOS: Camino[] = [
     recursos: [CONADIS, SENAE],
     vacio: { texto: "Todavía ninguna empresa ha marcado sus vacantes como inclusivas. Las estamos invitando a hacerlo. Mientras tanto, mira las vacantes desde casa.", link: { to: "/vacantes", search: { modalidad: "Remoto" }, t: "Ver vacantes desde casa" } },
   },
+  {
+    id: "neurodivergencia", I: Brain, color: "#0e7490", suave: "#e0f4f8", t: "Soy neurodivergente", d: "Autismo, TDAH, dislexia: empresas que se adaptan a tu forma de pensar.",
+    titulo: "Personas neurodivergentes", frase: "Tu cerebro funciona distinto, y eso también es talento. Busca empresas que lo valoren.",
+    nota: "Vacantes que la empresa marcó como inclusivas para personas neurodivergentes.",
+    plan: [
+      { t: "Tú decides qué contar y cuándo", d: "No tienes que poner tu diagnóstico en el CV. Si lo cuentas, que sea porque te ayuda a pedir lo que necesitas." },
+      { t: "Pide lo que te ayuda a rendir", d: "Las preguntas por escrito antes de la entrevista, un lugar tranquilo, instrucciones paso a paso o más tiempo para una prueba. Escríbelo en el mensaje al aplicar." },
+      { t: "Muestra lo que haces bien", d: "Atención al detalle, ideas distintas, memoria, enfoque profundo en lo que te apasiona: dilo con ejemplos concretos.", link: { to: "/cv", t: "Hacer mi CV" } },
+      { t: "Apóyate en tu red", d: "Fundaciones y asociaciones de autismo y TDAH orientan a familias y personas adultas, y a veces conocen empresas que contratan." },
+    ],
+    derechos: [
+      "Ningún aviso en Enlace Laboral puede pedir «sin autismo», «sin TDAH» o «sin trastornos mentales».",
+      "Si tu condición está reconocida como discapacidad, la Ley 5-13 también te protege y puedes acudir a CONADIS.",
+    ],
+    recursos: [CONADIS, SENAE],
+    vacio: { texto: "Todavía ninguna empresa ha marcado sus vacantes como inclusivas para personas neurodivergentes. Las estamos invitando. Mientras tanto, mira las vacantes desde casa.", link: { to: "/vacantes", search: { modalidad: "Remoto" }, t: "Ver vacantes desde casa" } },
+  },
 ];
 
 const textoAviso = (j: Vacante) => `${j.titulo}\n${j.descripcion}\n${j.requisitos.join("\n")}`;
@@ -149,9 +166,9 @@ function Cuenta({ n, sufijo = "" }: { n: number; sufijo?: string }) {
   return <>{v.toLocaleString("es-DO")}{sufijo}</>;
 }
 
-/** La idea de Enlace en un dibujo: cinco caminos que se conectan en el centro. */
+/** La idea de Enlace en un dibujo: los caminos que se conectan en el centro. */
 function Constelacion({ porCamino, cargando }: { porCamino: Record<Camino["id"], Vacante[]>; cargando: boolean }) {
-  const pos = [[50, 9], [91, 50], [50, 91], [9, 50]] as const;
+  const pos = [[50, 8], [91, 37], [75, 88], [25, 88], [9, 37]] as const;
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[26rem]" aria-hidden="true">
       <svg viewBox="0 0 100 100" className="absolute inset-0 size-full overflow-visible">
@@ -220,9 +237,9 @@ function EmpleoParaTodos() {
           <div className="hidden lg:block"><Constelacion porCamino={porCamino} cargando={cargando} /></div>
         </div>
 
-        <nav aria-label="Elige tu camino" className="relative mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-3 lg:grid-cols-4">
+        <nav aria-label="Elige tu camino" className="relative mx-auto mt-10 grid max-w-6xl grid-cols-2 gap-3 lg:grid-cols-5">
           {CAMINOS.map((c, i) => (
-            <a key={c.id} href={`#${c.id}`} style={{ ...acento(c), animationDelay: `${150 + i * 70}ms` }} className={`entra group relative overflow-hidden rounded-2xl bg-white/[0.07] p-4 ring-1 ring-white/15 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.13] hover:ring-white/30`}>
+            <a key={c.id} href={`#${c.id}`} style={{ ...acento(c), animationDelay: `${150 + i * 70}ms` }} className={`entra group relative overflow-hidden rounded-2xl bg-white/[0.07] p-4 last:col-span-2 lg:last:col-span-1 ring-1 ring-white/15 transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.13] hover:ring-white/30`}>
               <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1" style={{ background: c.color }} />
               <span className="grid size-10 place-items-center rounded-xl bg-white text-[var(--acento)] shadow-sm"><c.I className="size-5" aria-hidden="true" /></span>
               <p className="mt-3 text-[15px] font-extrabold leading-snug sm:text-base">{c.t}</p>
