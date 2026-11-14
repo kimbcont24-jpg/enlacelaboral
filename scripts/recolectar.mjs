@@ -334,6 +334,31 @@ async function nst() {
   return filas;
 }
 
+/* ---------------- Salario dicho en el texto ----------------
+ * Misma regla que src/lib/radar-salarial.ts (salarioDelTexto): solo montos mensuales en pesos;
+ * se descartan dólares, por hora y por día; quincenal y semanal se pasan a mes. Si cambias una, cambia la otra. */
+const aEntero = (t) => (t ? Math.round(Number(String(t).replace(/\.\d{2}$/, "").replace(/[.,](?=\d{3}\b)/g, "").replace(/,/g, ""))) || 0 : 0);
+const NUM_S = String.raw`(\d{1,3}(?:[,.]\d{3})+|\d{4,6})(?:\.\d{2})?`;
+const RE_SAL_TEXTO = new RegExp(String.raw`(?:salario|sueldo|pago|paga|ofrecemos)[^\n\d]{0,45}?(?:RD\$|DOP|\$)?\s*` + NUM_S + String.raw`(?:\s*(?:-|–|a|hasta|y)\s*(?:RD\$|\$)?\s*` + NUM_S + ")?", "i");
+const RE_SAL_RD = new RegExp(String.raw`RD\$\s*` + NUM_S + String.raw`(?:\s*(?:-|–|a|hasta)\s*(?:RD\$)?\s*` + NUM_S + ")?", "i");
+const sinTilde = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const salarioAlCampo = (f) => {
+  if (Number(String(f.salario_min ?? "").replace(/\D/g, "")) > 0) return;
+  const s = salarioDelTexto(`${f.descripcion ?? ""} ${f.requisitos ?? ""}`);
+  if (s) { f.salario_min = String(s.min); if (s.max) f.salario_max = String(s.max); }
+};
+function salarioDelTexto(texto) {
+  if (!texto) return null;
+  const m = texto.match(RE_SAL_TEXTO) ?? texto.match(RE_SAL_RD);
+  if (!m || m.index === undefined) return null;
+  const alrededor = sinTilde(texto.slice(Math.max(0, m.index - 12), m.index + m[0].length + 30));
+  if (/us\$|usd|dolar|por hora|la hora|\/hora|diario|por dia|al dia/.test(alrededor)) return null;
+  const factor = /quincena/.test(alrededor) ? 2 : /semana/.test(alrededor) ? 4.33 : 1;
+  const min = Math.round(aEntero(m[1]) * factor), max = Math.round(aEntero(m[2]) * factor);
+  if (!min || min > 9_999_999) return null;
+  return { min, max: max > min && max <= 9_999_999 ? max : null };
+}
+
 /* ---------------- MAP · Concursa (concursos públicos del Estado dominicano) ---------------- */
 // Pedido de Kim (13 nov 2026): fuente fija del radar. Solo concursos «abierto» y con fecha límite vigente. Trae salario real.
 const entidades = (t) => t.replace(/&#x([0-9a-f]+);/gi, (m, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (m, d) => String.fromCodePoint(Number(d)));
@@ -372,6 +397,7 @@ async function map() {
         descripcion: `Concurso público de ${inst} para el puesto de ${titulo}${carrera ? ` (carrera ${carrera.toLowerCase()})` : ""}, ${plazas} plaza${plazas === "1" ? "" : "s"}${muni ? ` en ${muni.toLowerCase().replace(/(^|\s)\p{L}/gu, (c) => c.toUpperCase())}` : ""}.${sal ? ` Salario publicado en el concurso: RD$${sal} mensual.` : ""}${lim ? ` Fecha límite para aplicar: ${lim[1]}/${lim[2]}/${lim[3]}.` : ""}${interno ? " Convocatoria interna: dirigida a servidores públicos de la institución." : " Convocatoria externa: abierta al público."} Se aplica en el portal oficial Concursa del Ministerio de Administración Pública (MAP).`,
         requisitos: [interno ? "Convocatoria interna (servidores públicos de la institución)" : "Convocatoria externa abierta al público", "Registrarse y aplicar en el portal Concursa del MAP", aviso ? `Requisitos completos en el aviso oficial: ${base}${aviso}` : "Requisitos completos en el aviso oficial del concurso"].join(" | "),
         fuente: "MAP Concursa (concurso público)", fuente_url: url, aplicar: url, redes: "si",
+        ...(sal && aEntero(sal) >= 5000 ? { salario_min: String(aEntero(sal)) } : {}),
       });
     }
     if (!abiertos && !/discapacidad=true/.test(u)) break;
@@ -400,6 +426,8 @@ const whatsappDe = (t) => { const m = String(t ?? "").match(/(?:whats?app|wa\.me
 // Cero discriminación: fuera pedidos de sexo, edad, foto, estado civil o apariencia (Código de Trabajo, Principio VII).
 const EXCLUYE = /(\bedad\b.*\d{2}|\b\d{2}\s*(a|y|-|–)\s*\d{2}\s*años(?!\s*de\s*experiencia)|\bsexo\b|preferiblemente\s+(hombre|mujer|masculino|femenin)|\b(solo|sólo)\s+(hombres|mujeres|damas|caballeros)\b|buena presencia|\bfotos?\b|\bfotograf[íi]a\s+(reciente|actual|tipo)|curr[íi]cul\w*\s+(con|y)\s+foto|cv\s+(con|y)\s+foto|edad\s+(m[áa]xima|m[íi]nima|l[íi]mite|requerida)|estado civil|\bsolter[oa]|\bcasad[oa]\b|estatura|\bpeso\b|menor(es)? de \d{2} años)/i;
 for (const f of resultado) {
+  // 14 nov 2026 (Kim): si la vacante no trae el salario en su campo pero el texto sí lo dice, se guarda en salario_min.
+  salarioAlCampo(f);
   f.titulo = String(f.titulo).replace(/\s*[(\-–]?\s*(masculino|femenina|femenino)\s*\)?\s*$/i, "").trim();
   f.requisitos = String(f.requisitos ?? "").split(" | ").filter((x) => x && !EXCLUYE.test(x)).join(" | ") || "Ver requisitos en la oferta original";
   // También en la descripción: se quitan las frases o viñetas que piden edad, sexo, foto, estado civil o apariencia.
@@ -428,6 +456,7 @@ try {
     try { const a = JSON.parse(readFileSync(`carga/flyers/${n}`, "utf8")); if (Array.isArray(a)) flyers.push(...a); } catch (e) { log("flyers", n, String(e).slice(0, 60)); }
   }
 } catch {}
+for (const f of flyers) salarioAlCampo(f);
 conContacto.unshift(...flyers);
 log("flyers de Kim", flyers.length);
 // 11 nov 2026 (Kim): NINGUNA consultora ni empresa de gestión humana / reclutamiento (People Group, Manpower, Verox,
