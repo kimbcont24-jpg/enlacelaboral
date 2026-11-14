@@ -11,7 +11,7 @@ function Linea({ trozos }: { trozos: Trozo[] }): ReactNode {
     const href = enlaceSeguro(x.href);
     if (!href) return <Fragment key={i}>{x.v}</Fragment>;
     const fuera = /^https?:/.test(href) && !href.includes("enlacelaboralrd.com");
-    return <a key={i} href={href} {...(fuera ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="font-semibold text-[#1557c4] underline decoration-[#8ec1ff] decoration-2 underline-offset-4 hover:decoration-[#1d6ff2]">{x.v}</a>;
+    return <a key={i} href={href} {...(fuera ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="font-semibold text-[#1557c4] underline [overflow-wrap:anywhere] decoration-[#8ec1ff] decoration-2 underline-offset-4 hover:decoration-[#1d6ff2]">{x.v}</a>;
   });
 }
 
