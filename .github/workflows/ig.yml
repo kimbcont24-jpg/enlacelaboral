@@ -21,6 +21,9 @@ jobs:
       - run: npx tsx scripts/ig.mts
         env:
           IDS: ${{ inputs.ids }}
+      - name: Pasar a JPG (Instagram solo acepta JPG de forma fiable)
+        run: |
+          for f in carga/ig/*.png; do [ -e "$f" ] || continue; convert "$f" -quality 92 "${f%.png}.jpg" && rm "$f"; done
       - run: |
           git config user.name "Imágenes Enlace Laboral"
           git config user.email "bot@enlacelaboralrd.com"

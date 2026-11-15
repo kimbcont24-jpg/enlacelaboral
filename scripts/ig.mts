@@ -1,5 +1,6 @@
 // Imágenes de Instagram (1080×1350) generadas en GitHub Actions, sin depender de Vercel (15 nov 2026).
 // Uso: IDS="id1,id2,..." npx tsx scripts/ig.mts  → carga/ig/<id>.png por vacante + carga/ig/portada-<primer id>.png
+// (el workflow los pasa a .jpg: Instagram rechaza los PNG)
 // Se sirven por raw.githubusercontent.com. Se borran las de más de 3 días para no llenar el repo.
 import { readFileSync, writeFileSync, readdirSync, statSync, unlinkSync, mkdirSync } from "node:fs";
 const env = Object.fromEntries(readFileSync(".env", "utf8").split("\n").filter((l) => l.includes("=")).map((l) => { const i = l.indexOf("="); return [l.slice(0, i).trim(), l.slice(i + 1).trim().replace(/^"|"$/g, "")]; }));
