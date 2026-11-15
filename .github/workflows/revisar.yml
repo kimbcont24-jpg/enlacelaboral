@@ -3,6 +3,7 @@ on:
   schedule:
     # 5:37 a. m. RD (GitHub suele atrasarlo; la vigilancia lo lee a las 8:17 a. m.)
     - cron: "37 9 * * *"
+    - cron: "7 20 * * *"   # 4:07 p. m. RD: refresca carga/redes.json para la publicación de la tarde
   workflow_dispatch:
 jobs:
   revisar:
@@ -19,7 +20,7 @@ jobs:
       - run: |
           git config user.name "Revisor Enlace Laboral"
           git config user.email "bot@enlacelaboralrd.com"
-          git add carga/salud.json
+          git add carga/salud.json carga/redes.json
           git commit -m "Salud del día [skip ci]" || echo "sin cambios"
           git pull --rebase -X theirs origin main || true
           git push
