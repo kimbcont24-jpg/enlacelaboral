@@ -4,7 +4,7 @@ import { PAGOS_ACTIVOS } from "@/lib/pagos";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { landingsArea, landingsColeccion, landingsProvincia, slug } from "./lib/empleos";
-import { imagenArticulo, imagenVacante } from "./lib/og";
+import { imagenArticulo, imagenPortadaIG, imagenVacante, imagenVacanteIG } from "./lib/og";
 import { categoria, minutosLectura } from "./lib/blog";
 import { empresaDe, leerMeta, SITIO, type VacanteRow } from "./lib/vacantes";
 
@@ -102,8 +102,32 @@ async function ogArticulo(slugArt: string, origen: string): Promise<Response> {
   }
 }
 
-/** /og/vacantes/<id>.png → imagen de vista previa para redes y WhatsApp. */
-async function ogVacante(id: string, origen: string): Promise<Response> {
+/** /og/ig/portada.png?ids=a,b,c → primera lámina del carrusel de Instagram con la lista de vacantes del día (máx. 5). */
+async function ogPortadaIG(ids: string, origen: string): Promise<Response> {
+  const lista = ids.split(",").filter((x) => /^[0-9a-f-]{36}$/i.test(x)).slice(0, 5);
+  if (!lista.length) return new Response("Faltan ids", { status: 400 });
+  let filas: VacanteRow[] = [];
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,titulo,provincia,modalidad,tipo,salario_min,salario_max,requisitos,etiquetas,estado&id=in.(${lista.join(",")})`, { headers: { apikey: SB_KEY } });
+    if (r.ok) filas = (await r.json()) as VacanteRow[];
+  } catch { filas = []; }
+  const orden = lista.map((id) => filas.find((f) => f.id === id)).filter(Boolean) as VacanteRow[];
+  if (!orden.length) return new Response("No encontradas", { status: 404 });
+  const fecha = new Date(Date.now() - 4 * 3600e3).toLocaleDateString("es-DO", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+  try {
+    const png = await imagenPortadaIG(orden.map((f) => {
+      const { meta } = leerMeta(f.etiquetas); const min = f.salario_min ?? 0;
+      return { titulo: f.titulo, empresa: empresaDe(meta["empresa"]), provincia: f.provincia, salario: min > 0 ? pesos(min) : "" };
+    }), fecha.charAt(0).toUpperCase() + fecha.slice(1), origen);
+    return new Response(png as BodyInit, { headers: { "content-type": "image/png", "cache-control": "public, max-age=3600, s-maxage=86400" } });
+  } catch (e) {
+    console.error(e);
+    return new Response("Error", { status: 500 });
+  }
+}
+
+/** /og/vacantes/<id>.png → imagen de vista previa para redes y WhatsApp. /og/ig/<id>.png → versión vertical 1080×1350 para Instagram. */
+async function ogVacante(id: string, origen: string, ig = false): Promise<Response> {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return new Response("No encontrada", { status: 404 });
   let fila: VacanteRow | null = null;
   try {
@@ -116,7 +140,7 @@ async function ogVacante(id: string, origen: string): Promise<Response> {
   const { meta } = leerMeta(fila.etiquetas);
   const min = fila.salario_min ?? 0, max = fila.salario_max ?? 0;
   try {
-    const png = await imagenVacante({
+    const png = await (ig ? imagenVacanteIG : imagenVacante)({
       titulo: fila.titulo, empresa: empresaDe(meta["empresa"]), provincia: fila.provincia, modalidad: fila.modalidad, tipo: fila.tipo,
       conSalario: min > 0, salario: max > min ? `${pesos(min)} – ${pesos(max)}` : min > 0 ? pesos(min) : "",
     }, origen);
@@ -257,6 +281,9 @@ export default {
     if (url.pathname === "/sitemap.xml") return sitemap();
     const og = url.pathname.match(/^\/og\/vacantes\/([0-9a-f-]{36})\.png$/i);
     if (og) return ogVacante(og[1]!, url.origin);
+    const ogIG = url.pathname.match(/^\/og\/ig\/([0-9a-f-]{36})\.png$/i);
+    if (ogIG) return ogVacante(ogIG[1]!, url.origin, true);
+    if (url.pathname === "/og/ig/portada.png") return ogPortadaIG(url.searchParams.get("ids") ?? "", url.origin);
     const ogBlog = url.pathname.match(/^\/og\/blog\/([a-z0-9-]{1,90})\.png$/);
     if (ogBlog) return ogArticulo(ogBlog[1]!, url.origin);
     if (url.pathname === "/robots.txt") {

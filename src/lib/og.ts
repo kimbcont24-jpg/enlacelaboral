@@ -160,6 +160,97 @@ export async function imagenVacante(d: Datos, origen: string): Promise<Uint8Arra
   return png;
 }
 
+
+/* ───────── Instagram (1080×1350, vertical 4:5) ─────────
+ * Instagram recorta las imágenes horizontales en su cuadrícula; estas van al tamaño exacto del feed.
+ * Misma línea gráfica que las piezas de marca (fondo navy, titular grande, marco redondeado).
+ */
+const ORO = "#ffd166";
+function fondoIG(...hijos: unknown[]): Nodo {
+  return h("div", { style: { width: 1080, height: 1350, flexDirection: "column", fontFamily: "Figtree", color: "#fff", background: "linear-gradient(160deg, #0d3a70 0%, #0a2f5c 45%, #061a35 100%)", position: "relative", overflow: "hidden" } },
+    h("div", { style: { position: "absolute", right: -260, top: -260, width: 620, height: 620, borderRadius: 999, background: "rgba(29,111,242,0.28)" } }),
+    h("div", { style: { position: "absolute", right: -120, bottom: -140, width: 560, height: 520, borderRadius: 120, border: "34px solid rgba(29,111,242,0.55)" } }),
+    h("div", { style: { position: "absolute", left: -90, bottom: 260, width: 220, height: 220, borderRadius: 999, border: "3px solid rgba(142,193,255,0.22)" } }),
+    ...hijos);
+}
+const cabeceraIG = (etiqueta: string) => h("div", { style: { alignItems: "center", justifyContent: "space-between", padding: "64px 72px 0" } },
+  h("div", { style: { alignItems: "center", gap: 14 } }, marca(58, "#ffffff", CIELO), nombre(38, "#fff", CIELO)),
+  h("div", { style: { padding: "12px 26px", borderRadius: 999, background: CIELO, color: NAVY, fontSize: 24, fontWeight: 800, letterSpacing: 3 } }, etiqueta));
+const pieIG = () => h("div", { style: { flexDirection: "column", padding: "0 72px 60px" } },
+  h("div", { style: { height: 2, background: "rgba(255,255,255,0.18)", marginBottom: 26 } }),
+  h("div", { style: { alignItems: "center", justifyContent: "space-between" } },
+    h("div", { style: { fontSize: 26, fontWeight: 600, color: "rgba(255,255,255,0.75)" } }, "@enlacelaboralrd"),
+    h("div", { style: { fontSize: 26, fontWeight: 800, color: "#fff" } }, "Síguenos y activa las alertas")));
+
+function modeloIG(d: Datos): Nodo {
+  const tt = tamTitulo(d.titulo, 24, 46, 96, 80, 64);
+  const chip = (t: string) => h("div", { style: { padding: "14px 28px", borderRadius: 999, background: "rgba(255,255,255,0.10)", border: "2px solid rgba(255,255,255,0.28)", fontSize: 30, fontWeight: 600 } }, t);
+  return fondoIG(
+    cabeceraIG("NUEVA VACANTE"),
+    h("div", { style: { flexDirection: "column", flex: 1, justifyContent: "center", padding: "0 72px 40px" } },
+      d.empresa !== SIN
+        ? h("div", { style: { alignItems: "center", gap: 18 } },
+            h("div", { style: { width: 72, height: 72, borderRadius: 20, background: "#fff", color: NAVY, fontSize: 38, fontWeight: 800, alignItems: "center", justifyContent: "center" } }, d.empresa.trim().charAt(0).toUpperCase()),
+            h("div", { style: { flexDirection: "column" } },
+              h("div", { style: { fontSize: 22, fontWeight: 800, color: CIELO, letterSpacing: 3 } }, "ESTÁ CONTRATANDO"),
+              h("div", { style: { fontSize: 34, fontWeight: 800, display: "block", lineClamp: 1, maxWidth: 820 } }, d.empresa)))
+        : h("div", { style: { fontSize: 24, fontWeight: 800, color: CIELO, letterSpacing: 3 } }, "OPORTUNIDAD DE EMPLEO"),
+      h("div", { style: { marginTop: 40, fontSize: tt, fontWeight: 800, lineHeight: 1.04, letterSpacing: -2, display: "block", lineClamp: 4, maxWidth: 940 } }, d.titulo),
+      h("div", { style: { gap: 14, marginTop: 40, flexWrap: "wrap", maxWidth: 940 } }, chip(`📍 ${d.provincia}`), chip(d.modalidad), chip(d.tipo)),
+      h("div", { style: { marginTop: 64, flexDirection: "column", alignSelf: "flex-start", padding: "30px 40px", borderRadius: 32, background: "#ffffff", color: NAVY, boxShadow: "0 24px 50px rgba(0,0,0,0.30)" } },
+        d.conSalario
+          ? h("div", { style: { flexDirection: "column" } },
+              h("div", { style: { fontSize: 22, fontWeight: 800, color: VERDE, letterSpacing: 3 } }, "SALARIO PUBLICADO"),
+              h("div", { style: { fontSize: d.salario.length > 14 ? 52 : 64, fontWeight: 800, color: VERDE, marginTop: 4 } }, d.salario),
+              h("div", { style: { fontSize: 26, fontWeight: 600, color: GRIS, marginTop: 6 } }, "Aplica gratis en enlacelaboralrd.com"))
+          : h("div", { style: { flexDirection: "column" } },
+              h("div", { style: { fontSize: 22, fontWeight: 800, color: AZUL, letterSpacing: 3 } }, "APLICA GRATIS"),
+              h("div", { style: { fontSize: 46, fontWeight: 800, color: NAVY, marginTop: 6 } }, "enlacelaboralrd.com"),
+              h("div", { style: { fontSize: 26, fontWeight: 600, color: GRIS, marginTop: 6 } }, "Requisitos y cómo aplicar, en un solo lugar"))),
+    ),
+    pieIG(),
+  );
+}
+
+type Resumen = { titulo: string; empresa: string; provincia: string; salario: string };
+function portadaIG(lista: Resumen[], fecha: string): Nodo {
+  const fila = (v: Resumen, i: number) => h("div", { style: { alignItems: "center", gap: 22, padding: "20px 0", borderTop: i ? "2px solid rgba(255,255,255,0.12)" : "none" } },
+    h("div", { style: { width: 54, height: 54, borderRadius: 16, background: AZUL, fontSize: 28, fontWeight: 800, alignItems: "center", justifyContent: "center", flexShrink: 0 } }, String(i + 1)),
+    h("div", { style: { flexDirection: "column", flex: 1 } },
+      h("div", { style: { fontSize: 34, fontWeight: 800, display: "block", lineClamp: 1, maxWidth: 640 } }, v.titulo),
+      h("div", { style: { fontSize: 24, fontWeight: 600, color: CIELO, marginTop: 2, display: "block", lineClamp: 1, maxWidth: 640 } }, [v.empresa !== SIN ? v.empresa : "", v.provincia].filter(Boolean).join(" · "))),
+    v.salario ? h("div", { style: { fontSize: 28, fontWeight: 800, color: "#6ee7a0", flexShrink: 0 } }, v.salario) : null);
+  return fondoIG(
+    cabeceraIG("HOY EN RD"),
+    h("div", { style: { flexDirection: "column", padding: "70px 72px 0" } },
+      h("div", { style: { fontSize: 104, fontWeight: 800, lineHeight: 1.0, letterSpacing: -3 } }, `${lista.length} vacantes`),
+      h("div", { style: { fontSize: 104, fontWeight: 800, lineHeight: 1.0, letterSpacing: -3, color: CIELO } }, "nuevas para ti"),
+      h("div", { style: { fontSize: 30, fontWeight: 600, color: "rgba(255,255,255,0.8)", marginTop: 24 } }, `${fecha} · Desliza para ver cada una »`)),
+    h("div", { style: { flexDirection: "column", margin: "48px 72px 0", padding: "14px 36px", borderRadius: 32, background: "#0c2a52", border: "2px solid rgba(255,255,255,0.14)" } },
+      ...lista.slice(0, 5).map(fila)),
+    h("div", { style: { marginTop: "auto", marginBottom: 36, marginLeft: 72, alignItems: "center", gap: 14, alignSelf: "flex-start", padding: "16px 28px", borderRadius: 18, background: ORO, color: NAVY, fontSize: 26, fontWeight: 800 } }, "⚠️ Ninguna empresa seria cobra por contratarte"),
+    pieIG(),
+  );
+}
+
+async function render(nodo: Nodo, w: number, alto: number, origen: string): Promise<Uint8Array> {
+  await preparar(origen);
+  const svg = await satori(nodo as never, { width: w, height: alto, fonts: fuentes!, loadAdditionalAsset: async (code: string, seg: string) => (code === "emoji" ? `data:image/svg+xml;base64,${btoa(await emoji(seg))}` : seg) });
+  return new Resvg(svg, { fitTo: { mode: "width", value: w } }).render().asPng();
+}
+const emojiCache = new Map<string, string>();
+async function emoji(seg: string): Promise<string> {
+  const cp = [...seg].map((c) => c.codePointAt(0)!.toString(16)).filter((x) => x !== "fe0f").join("-");
+  if (emojiCache.has(cp)) return emojiCache.get(cp)!;
+  const r = await fetch(`https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/${cp}.svg`);
+  const t = r.ok ? await r.text() : "<svg xmlns='http://www.w3.org/2000/svg'/>";
+  emojiCache.set(cp, t);
+  return t;
+}
+
+export const imagenVacanteIG = (d: Datos, origen: string) => render(modeloIG(d), 1080, 1350, origen);
+export const imagenPortadaIG = (lista: Resumen[], fecha: string, origen: string) => render(portadaIG(lista, fecha), 1080, 1350, origen);
+
 /* ───────── Artículo del blog «Entre líneas» ───────── */
 type DatosArticulo = { titulo: string; tema: string; color: string; autor: string; minutos: number };
 
