@@ -1,17 +1,13 @@
-name: Revisar vacantes y salud
+name: Salud de Enlace Laboral
 on:
   schedule:
-    # 5:37 a. m. RD (GitHub suele atrasarlo; la base aplica los cierres cada 2 horas y la vigilancia lee a las 8:17 a. m.)
+    # 5:37 a. m. RD (GitHub suele atrasarlo; la vigilancia lo lee a las 8:17 a. m.)
     - cron: "37 9 * * *"
   workflow_dispatch:
-    inputs:
-      seco:
-        description: "1 = prueba sin cerrar nada"
-        default: "0"
 jobs:
   revisar:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
@@ -20,12 +16,10 @@ jobs:
         with:
           node-version: 20
       - run: node scripts/revisar.mjs
-        env:
-          SECO: ${{ inputs.seco || '0' }}
       - run: |
           git config user.name "Revisor Enlace Laboral"
           git config user.email "bot@enlacelaboralrd.com"
-          git add carga/cerrar.json carga/salud.json
-          git commit -m "Revisor: cierres y salud del día [skip ci]" || echo "sin cambios"
+          git add carga/salud.json
+          git commit -m "Salud del día [skip ci]" || echo "sin cambios"
           git pull --rebase -X theirs origin main || true
           git push
