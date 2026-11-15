@@ -1,0 +1,30 @@
+name: Imágenes Instagram
+on:
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: "IDs de vacantes separados por coma (máx. 9; la primera encabeza la portada)"
+        required: true
+jobs:
+  ig:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx tsx scripts/ig.mts
+        env:
+          IDS: ${{ inputs.ids }}
+      - run: |
+          git config user.name "Imágenes Enlace Laboral"
+          git config user.email "bot@enlacelaboralrd.com"
+          git add -A carga/ig
+          git commit -m "Imágenes de Instagram [skip ci]" || echo "sin cambios"
+          git pull --rebase -X theirs origin main || true
+          git push
