@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Vendedor(a)",
+  "empresa": "Smartcraft Print Shop",
+  "provincia": "Distrito Nacional",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Smartcraft Print Shop solicita personal para su sucursal de Rómulo Betancourt: vendedor(a). Pasantes o con experiencia.",
+  "requisitos": "Pasante o con experiencia en ventas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "sbaez@rotulpak.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smartcraft-print-shop-vacantes.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Diseñador(a) Gráfico",
+  "empresa": "Smartcraft Print Shop",
+  "provincia": "Distrito Nacional",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Smartcraft Print Shop solicita personal para su sucursal de Rómulo Betancourt: diseñador(a) gráfico. Pasantes o con experiencia.",
+  "requisitos": "Pasante o con experiencia en diseño gráfico",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "sbaez@rotulpak.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smartcraft-print-shop-vacantes.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Operador(a) de Equipos de Impresión",
+  "empresa": "Smartcraft Print Shop",
+  "provincia": "Distrito Nacional",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Smartcraft Print Shop solicita personal para su sucursal de Rómulo Betancourt: operador(a) de equipos de impresión. Pasantes o con experiencia.",
+  "requisitos": "Pasante o con experiencia en equipos de impresión",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "sbaez@rotulpak.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smartcraft-print-shop-vacantes.jpg",
+  "redes": "si"
+ }
+]
