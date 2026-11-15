@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Supervisor de Seguridad",
+  "empresa": "Seguridad Integral",
+  "provincia": "Distrito Nacional",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Seguridad Integral busca supervisor de seguridad en el Distrito Nacional. Oficina: José Tapia Brea #280, casi esquina Roberto Pastoriza, Evaristo Morales, Santo Domingo.",
+  "requisitos": "Motor propio | Licencia de conducir",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "info@seguridadintegralsrl.com · Tel. 809-567-4747 ext. 31",
+  "imagen": "https://enlace-rd.vercel.app/flyers/seguridad-integral-supervisor-seguridad.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Oficial de Seguridad",
+  "empresa": "Seguridad Integral",
+  "provincia": "Distrito Nacional",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Seguridad Integral busca oficiales de seguridad para formar parte de su equipo. Oficina: José Tapia Brea #280, casi esquina Roberto Pastoriza, Evaristo Morales, Santo Domingo.",
+  "requisitos": "Currículum actualizado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "info@seguridadintegralsrl.com · Tel. 809-567-4747 ext. 31",
+  "imagen": "https://enlace-rd.vercel.app/flyers/seguridad-integral-oficiales-seguridad.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Oficial de Monitoreo",
+  "empresa": "Seguridad Integral",
+  "provincia": "Distrito Nacional",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Seguridad Integral busca oficial de monitoreo en el Distrito Nacional: monitoreo 24/7, respuesta oportuna, control y prevención, trabajo en equipo. Oficina: José Tapia Brea #280, casi esquina Roberto Pastoriza, Evaristo Morales, Santo Domingo.",
+  "requisitos": "Disponibilidad para monitoreo 24/7",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "info@seguridadintegralsrl.com · Tel. 809-567-4747 ext. 31",
+  "imagen": "https://enlace-rd.vercel.app/flyers/seguridad-integral-oficial-monitoreo.jpg",
+  "redes": "si"
+ }
+]
