@@ -1,0 +1,64 @@
+{
+  "semana": "2026-11-16",
+  "estado": "pendiente",
+  "nota": "Primera semana del feed editorial. Kim aprueba por correo («APROBADO»); el publicador diario solo publica semanas con estado «aprobada».",
+  "posts": [
+    {
+      "slug": "buscar-empleo-es-un-trabajo", "dia": "2026-11-16", "paleta": "crema", "formato": "Frase",
+      "laminas": [{ "tipo": "frase", "texto": "Buscar empleo también es un trabajo. Dale horario, haz pausas y celebra cada avance, por pequeño que sea.", "resaltar": "también es un trabajo", "firma": "Equipo Enlace Laboral" }],
+      "caption": "Buscar empleo cansa. Y cansa más cuando se hace a cualquier hora, sin pausas y sin ver avances.\n\nTres ideas que ayudan:\n🕘 Ponle horario: por ejemplo, 2 horas en la mañana para buscar y aplicar.\n☕ Haz pausas reales: tu mente también necesita descansar para rendir.\n✅ Celebra lo pequeño: un CV mejorado, una llamada, una entrevista ya es avance.\n\nCuidarte mientras buscas no es perder tiempo: es lo que te permite llegar con energía a la entrevista.\n\nVacantes reales y con salario claro en enlacelaboralrd.com (enlace en la bio).\n\n#EmpleoRD #BuscarEmpleo #SaludMental #EnlaceLaboral #TrabajoRD"
+    },
+    {
+      "slug": "senales-vacante-estafa", "dia": "2026-11-17", "paleta": "azul", "formato": "Carrusel",
+      "laminas": [
+        { "tipo": "portada", "kicker": "Cuídate", "titulo": "5 señales de que una vacante es una estafa", "resaltar": "estafa", "sub": "Si ves una de estas, detente antes de enviar tus datos." },
+        { "tipo": "punto", "n": 1, "titulo": "Te piden dinero", "texto": "Para inscribirte, para un curso, para el uniforme o «para separar tu cupo». Una empresa seria no cobra por contratarte." },
+        { "tipo": "punto", "n": 2, "titulo": "El salario es demasiado bueno", "texto": "Mucho dinero por pocas horas, sin experiencia y sin explicar qué harías. Si suena irreal, probablemente lo es." },
+        { "tipo": "punto", "n": 3, "titulo": "No sabes quién contrata", "texto": "No dicen el nombre de la empresa, no hay dirección y todo es por un WhatsApp personal." },
+        { "tipo": "punto", "n": 4, "titulo": "Piden datos sensibles antes de tiempo", "texto": "Cédula, cuenta de banco, contraseñas o fotos personales antes de una entrevista. Esos datos se piden al contratar, no al aplicar." },
+        { "tipo": "punto", "n": 5, "titulo": "Te presionan", "texto": "«Responde hoy o pierdes el puesto». La prisa es una táctica para que no pienses ni preguntes." },
+        { "tipo": "cierre", "titulo": "Ninguna empresa seria cobra por contratarte", "texto": "¿Viste algo raro? Repórtalo en enlacelaboralrd.com" }
+      ],
+      "caption": "Cada semana alguien pierde dinero o datos por una vacante falsa. Que no te pase 👇\n\n1️⃣ Te piden dinero\n2️⃣ El salario es demasiado bueno\n3️⃣ No sabes quién contrata\n4️⃣ Piden datos sensibles antes de tiempo\n5️⃣ Te presionan para responder ya\n\nEn Enlace Laboral revisamos las vacantes y puedes reportar cualquier publicación sospechosa con un clic.\n\nGuarda este post y compártelo con quien está buscando empleo 💙\n\n#EmpleoRD #Estafas #VacantesRD #EnlaceLaboral #CuidaTusDatos"
+    },
+    {
+      "slug": "mito-requisitos-100", "dia": "2026-11-18", "paleta": "cielo", "formato": "Mito o realidad",
+      "laminas": [{ "tipo": "mito", "mito": "Si no cumplo el 100% de los requisitos, mejor no aplico.", "realidad": "Los requisitos son una guía. Si cumples la mayoría y puedes mostrar que aprendes rápido, aplica: que decida la empresa, no tu miedo." }],
+      "caption": "¿Cuántas veces has dejado de aplicar porque te faltaba «un requisito»? 🤔\n\nComo reclutadora te lo digo: la lista de requisitos describe a la persona ideal, y esa persona casi nunca existe. Lo que buscamos es alguien que cumpla lo esencial y tenga ganas de crecer.\n\nAntes de descartarte:\n✔️ Marca los requisitos que sí cumples.\n✔️ Piensa en un ejemplo de algo que aprendiste rápido.\n✔️ Si cumples la mayoría, aplica.\n\nCuéntanos en comentarios: ¿te ha pasado?\n\n#EmpleoRD #Reclutamiento #ConsejosDeEmpleo #EnlaceLaboral #TrabajoRD"
+    },
+    {
+      "slug": "checklist-entrevista", "dia": "2026-11-19", "paleta": "oro", "formato": "Lista",
+      "laminas": [{ "tipo": "lista", "titulo": "Antes de tu entrevista, ten listo:", "items": ["Tu CV impreso y en PDF en el celular", "3 logros con ejemplos concretos", "Qué hace la empresa y por qué te interesa", "Tu respuesta corta a «háblame de ti»", "2 preguntas para hacerle a la empresa", "La ruta y la hora para llegar 10 minutos antes"] }],
+      "caption": "La entrevista empieza el día antes ✨\n\nGuarda esta lista y repásala la noche anterior. Llegar preparado baja los nervios y se nota en cómo hablas.\n\nUn truco: para «háblame de ti», usa 3 partes cortas: qué haces hoy, qué has logrado y por qué te interesa este puesto. Un minuto, no más.\n\nEncuentra tu próxima entrevista en enlacelaboralrd.com (enlace en la bio).\n\n#EntrevistaDeTrabajo #EmpleoRD #ConsejosDeEmpleo #EnlaceLaboral"
+    },
+    {
+      "slug": "hablar-de-salario", "dia": "2026-11-20", "paleta": "crema", "formato": "Carrusel",
+      "laminas": [
+        { "tipo": "portada", "kicker": "Salario", "titulo": "Cómo hablar de salario sin miedo", "resaltar": "sin miedo", "sub": "Pedir lo justo no es ser exigente: es conocer tu valor." },
+        { "tipo": "punto", "n": 1, "titulo": "Investiga antes de la entrevista", "texto": "Mira cuánto pagan puestos parecidos en tu provincia. En enlacelaboralrd.com/salarios tienes el radar salarial con vacantes reales." },
+        { "tipo": "punto", "n": 2, "titulo": "Da un rango, no un número", "texto": "Por ejemplo: «Según mi experiencia y el mercado, busco entre RD$35,000 y RD$40,000». Te da espacio para negociar." },
+        { "tipo": "punto", "n": 3, "titulo": "Mira el paquete completo", "texto": "Seguro médico, transporte, horario, bonos y crecimiento también son parte de la oferta. Pregunta por todo antes de decidir." },
+        { "tipo": "punto", "n": 4, "titulo": "Pide tiempo para pensar", "texto": "Decir «déjeme revisarlo y le respondo mañana» es profesional. Las buenas empresas lo respetan." },
+        { "tipo": "cierre", "titulo": "Tu trabajo tiene valor. Dilo con datos.", "texto": "Consulta el radar salarial en enlacelaboralrd.com" }
+      ],
+      "caption": "Hablar de dinero da nervios, pero se puede hacer con calma y con datos 💬\n\n1️⃣ Investiga cuánto se paga antes de la entrevista\n2️⃣ Da un rango, no un número exacto\n3️⃣ Mira el paquete completo, no solo el sueldo\n4️⃣ Pide tiempo para pensar\n\nEn Enlace Laboral mostramos el salario cuando la empresa lo comparte, para que llegues a la conversación sabiendo cuánto vale el puesto.\n\nGuárdalo para tu próxima entrevista 📌\n\n#Salario #EmpleoRD #Negociación #EnlaceLaboral #TrabajoRD"
+    },
+    {
+      "slug": "un-no-no-es-tu-talento", "dia": "2026-11-21", "paleta": "azul", "formato": "Frase",
+      "laminas": [{ "tipo": "frase", "texto": "Un «no» a una vacante no es un «no» a tu talento. Es una señal para ajustar el camino, no para abandonarlo.", "resaltar": "no es un «no» a tu talento", "firma": "Equipo Enlace Laboral" }],
+      "caption": "Que no te escojan duele. Es normal sentirlo 💙\n\nPero un rechazo casi nunca habla de tu valor como persona. A veces el puesto ya tenía candidato, cambió el presupuesto o buscaban algo muy específico.\n\nLo que sí puedes hacer:\n🔎 Pregunta, con respeto, en qué podrías mejorar.\n📝 Anota qué te preguntaron y cómo respondiste.\n➡️ Aplica a la siguiente con lo aprendido.\n\nSigue. Tu oportunidad está en camino.\n\n#EmpleoRD #Motivación #BuscarEmpleo #EnlaceLaboral"
+    },
+    {
+      "slug": "cv-lo-que-mira-el-reclutador", "dia": "2026-11-22", "paleta": "cielo", "formato": "Carrusel",
+      "laminas": [
+        { "tipo": "portada", "kicker": "Tu CV", "titulo": "Lo que un reclutador mira primero en tu CV", "resaltar": "mira primero", "sub": "Consejos desde el lado de quien revisa cientos de CV." },
+        { "tipo": "punto", "n": 1, "titulo": "Tu nombre y el puesto, bien claros", "texto": "Arriba, grande y fácil de leer. Que en un vistazo se sepa quién eres y a qué aplicas." },
+        { "tipo": "punto", "n": 2, "titulo": "Tu experiencia más reciente", "texto": "Empieza por el trabajo actual o el último. Lo más relevante para la vacante, primero." },
+        { "tipo": "punto", "n": 3, "titulo": "Logros, no solo funciones", "texto": "En vez de «atención al cliente», escribe «atendía unos 80 clientes al día y resolvía quejas en el momento»." },
+        { "tipo": "punto", "n": 4, "titulo": "Que se lea fácil", "texto": "Una o dos páginas, letra limpia, sin colores fuertes ni datos de más. Lo simple se lee mejor." },
+        { "tipo": "cierre", "titulo": "Haz tu CV gratis en Enlace Laboral", "texto": "enlacelaboralrd.com/cv · listo en PDF en minutos" }
+      ],
+      "caption": "Tu CV tiene poco tiempo para causar buena impresión. Haz que cuente 📄\n\n1️⃣ Nombre y puesto bien claros\n2️⃣ Tu experiencia más reciente primero\n3️⃣ Logros, no solo funciones\n4️⃣ Que se lea fácil\n\n¿Quieres hacerlo en minutos? Usa el creador de CV gratis en enlacelaboralrd.com/cv (enlace en la bio).\n\nGuarda este post y compártelo con alguien que esté actualizando su CV 🙌\n\n#CV #Currículum #EmpleoRD #ConsejosDeEmpleo #EnlaceLaboral"
+    }
+  ]
+}

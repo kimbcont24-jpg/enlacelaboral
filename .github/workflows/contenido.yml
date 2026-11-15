@@ -1,0 +1,33 @@
+name: Contenido del feed
+on:
+  workflow_dispatch:
+    inputs:
+      semana:
+        description: "Lunes de la semana (AAAA-MM-DD): lee carga/contenido/<semana>.json"
+        required: true
+jobs:
+  contenido:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npx tsx scripts/contenido.mts
+        env:
+          SEMANA: ${{ inputs.semana }}
+      - name: Pasar a JPG (Instagram rechaza PNG)
+        run: |
+          for f in carga/contenido/img/*/*.png; do [ -e "$f" ] || continue; convert "$f" -quality 92 "${f%.png}.jpg" && rm "$f"; done
+      - run: |
+          git config user.name "Contenido Enlace Laboral"
+          git config user.email "bot@enlacelaboralrd.com"
+          git add -A carga/contenido
+          git commit -m "Contenido del feed: semana ${{ inputs.semana }} [skip ci]" || echo "sin cambios"
+          git pull --rebase -X theirs origin main || true
+          git push
