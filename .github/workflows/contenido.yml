@@ -23,7 +23,9 @@ jobs:
           SEMANA: ${{ inputs.semana }}
       - name: Pasar a JPG (Instagram rechaza PNG)
         run: |
-          for f in carga/contenido/img/*/*.png; do [ -e "$f" ] || continue; convert "$f" -quality 92 "${f%.png}.jpg" && rm "$f"; done
+          pip install -q pillow
+          python3 -c "import glob,os;from PIL import Image
+          [ (Image.open(f).convert('RGB').save(f[:-4]+'.jpg','JPEG',quality=92), os.remove(f)) for f in glob.glob('carga/contenido/img/*/*.png') ]"
       - run: |
           git config user.name "Contenido Enlace Laboral"
           git config user.email "bot@enlacelaboralrd.com"
