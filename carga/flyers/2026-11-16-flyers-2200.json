@@ -1,35 +1,5 @@
 [
  {
-  "titulo": "Ejecutivo de Negocios",
-  "empresa": "BP Medical",
-  "provincia": "La Vega",
-  "area": "Ventas",
-  "modalidad": "Presencial",
-  "tipo": "Tiempo completo",
-  "experiencia": "Sin experiencia",
-  "descripcion": "BP Medical está creciendo y busca Ejecutivos de Negocios en La Vega. Ofrece salario base, comisiones, asignación de combustible, mantenimiento de vehículo y viáticos.",
-  "requisitos": "Lic. en Mercadeo, Ing. Biomédica o carreras afines relacionadas a equipos médicos | Experiencia en ventas, preferiblemente en el sector salud o equipos médicos | Venta consultiva, negociación y cierre | Inglés | Vehículo propio y licencia de conducir al día | Buena planificación y organización | Manejo de herramientas tecnológicas",
-  "fuente": "Flyer de la empresa",
-  "aplicar": "gestionhumana@bpmedical.net",
-  "imagen": "https://enlace-rd.vercel.app/flyers/bp-medical-ejecutivos-de-negocios.jpg",
-  "redes": "si"
- },
- {
-  "titulo": "Ejecutivo de Negocios",
-  "empresa": "BP Medical",
-  "provincia": "Santiago",
-  "area": "Ventas",
-  "modalidad": "Presencial",
-  "tipo": "Tiempo completo",
-  "experiencia": "Sin experiencia",
-  "descripcion": "BP Medical está creciendo y busca Ejecutivos de Negocios en Santiago. Ofrece salario base, comisiones, asignación de combustible, mantenimiento de vehículo y viáticos.",
-  "requisitos": "Lic. en Mercadeo, Ing. Biomédica o carreras afines relacionadas a equipos médicos | Experiencia en ventas, preferiblemente en el sector salud o equipos médicos | Venta consultiva, negociación y cierre | Inglés | Vehículo propio y licencia de conducir al día | Buena planificación y organización | Manejo de herramientas tecnológicas",
-  "fuente": "Flyer de la empresa",
-  "aplicar": "gestionhumana@bpmedical.net",
-  "imagen": "https://enlace-rd.vercel.app/flyers/bp-medical-ejecutivos-de-negocios.jpg",
-  "redes": "si"
- },
- {
   "titulo": "Supervisor del Área de Mantenimiento y Conserjería",
   "empresa": "Verinside",
   "provincia": "Santo Domingo",
