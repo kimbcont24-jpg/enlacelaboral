@@ -5,6 +5,8 @@ import { initWasm, Resvg } from "@resvg/resvg-wasm";
  * Plantillas del feed editorial de Instagram/Facebook (15 nov 2026): contenido que NO es vacante
  * (frases, consejos, mito o realidad, listas). 1080×1350 (4:5). Cinco paletas que se alternan para que
  * la cuadrícula se vea ordenada y no todo azul. Se generan en GitHub Actions (scripts/contenido.mts).
+ * 15 nov 2026 (semana 2): titulares en Unbounded (como el sitio), barra de avance en los carruseles,
+ * el eslabón de la marca como marca de agua y cuatro láminas nuevas: dato, cuenta, guion y señal.
  */
 
 export type Paleta = "navy" | "azul" | "crema" | "cielo" | "oro";
@@ -14,22 +16,27 @@ export type Lamina =
   | { tipo: "punto"; n: number; titulo: string; texto: string }
   | { tipo: "mito"; mito: string; realidad: string }
   | { tipo: "lista"; titulo: string; items: string[] }
-  | { tipo: "cierre"; titulo: string; texto?: string };
+  | { tipo: "cierre"; titulo: string; texto?: string }
+  // Semana 2 (23 nov 2026): láminas nuevas para que el feed no sea solo texto.
+  | { tipo: "dato"; kicker: string; grande: string; texto: string }
+  | { tipo: "cuenta"; titulo: string; formula: [string, string]; ejemplos: [string, string][]; nota?: string }
+  | { tipo: "guion"; titulo: string; lineas: { rotulo: string; texto: string }[]; nota?: string }
+  | { tipo: "senal"; n: number; titulo: string; buena: string; alerta: string };
 
 const P: Record<Paleta, { fondo: string; tinta: string; suave: string; acento: string; deco: string; deco2: string; chip: string; chipTinta: string; marca: [string, string] }> = {
   navy: { fondo: "linear-gradient(160deg, #0d3a70 0%, #0a2f5c 45%, #061a35 100%)", tinta: "#ffffff", suave: "rgba(255,255,255,0.78)", acento: "#8ec1ff", deco: "rgba(29,111,242,0.30)", deco2: "rgba(142,193,255,0.25)", chip: "#8ec1ff", chipTinta: "#0a2f5c", marca: ["#ffffff", "#8ec1ff"] },
   azul: { fondo: "linear-gradient(160deg, #2b7bff 0%, #1d6ff2 50%, #1557c4 100%)", tinta: "#ffffff", suave: "rgba(255,255,255,0.85)", acento: "#ffd166", deco: "rgba(255,255,255,0.14)", deco2: "rgba(255,209,102,0.45)", chip: "#ffd166", chipTinta: "#0a2f5c", marca: ["#ffffff", "#ffd166"] },
   crema: { fondo: "#f7f2e8", tinta: "#0a2f5c", suave: "#4a5b73", acento: "#1d6ff2", deco: "rgba(255,209,102,0.55)", deco2: "rgba(29,111,242,0.18)", chip: "#0a2f5c", chipTinta: "#ffffff", marca: ["#0a2f5c", "#1d6ff2"] },
   cielo: { fondo: "linear-gradient(160deg, #e6f0ff 0%, #d4e6ff 100%)", tinta: "#0a2f5c", suave: "#3d5a80", acento: "#1d6ff2", deco: "rgba(29,111,242,0.16)", deco2: "rgba(10,47,92,0.12)", chip: "#1d6ff2", chipTinta: "#ffffff", marca: ["#0a2f5c", "#1d6ff2"] },
-  oro: { fondo: "linear-gradient(160deg, #ffdb7a 0%, #ffd166 60%, #f7c44f 100%)", tinta: "#0a2f5c", suave: "#2c4466", acento: "#0a2f5c", deco: "rgba(255,255,255,0.45)", deco2: "rgba(10,47,92,0.14)", chip: "#0a2f5c", chipTinta: "#ffd166", marca: ["#0a2f5c", "#1d6ff2"] },
+  oro: { fondo: "linear-gradient(160deg, #ffdb7a 0%, #ffd166 60%, #f7c44f 100%)", tinta: "#0a2f5c", suave: "#2c4466", acento: "#1557c4", deco: "rgba(255,255,255,0.45)", deco2: "rgba(10,47,92,0.14)", chip: "#0a2f5c", chipTinta: "#ffd166", marca: ["#0a2f5c", "#1d6ff2"] },
 };
 
-let fuentes: { name: string; data: ArrayBuffer; weight: 600 | 800; style: "normal" }[] | null = null;
+let fuentes: { name: string; data: ArrayBuffer; weight: 600 | 700 | 800; style: "normal" }[] | null = null;
 let wasmListo: Promise<void> | null = null;
 async function preparar(origen: string) {
   if (!fuentes) {
-    const [a, b] = await Promise.all([fetch(`${origen}/og/figtree-600.woff`), fetch(`${origen}/og/figtree-800.woff`)]);
-    fuentes = [{ name: "Figtree", data: await a.arrayBuffer(), weight: 600, style: "normal" }, { name: "Figtree", data: await b.arrayBuffer(), weight: 800, style: "normal" }];
+    const [a, b, u] = await Promise.all([fetch(`${origen}/og/figtree-600.woff`), fetch(`${origen}/og/figtree-800.woff`), fetch(`${origen}/og/unbounded-700.woff`)]);
+    fuentes = [{ name: "Figtree", data: await a.arrayBuffer(), weight: 600, style: "normal" }, { name: "Figtree", data: await b.arrayBuffer(), weight: 800, style: "normal" }, { name: "Unbounded", data: await u.arrayBuffer(), weight: 700, style: "normal" }];
   }
   if (!wasmListo) wasmListo = fetch(`${origen}/og/resvg.wasm`).then((r) => r.arrayBuffer()).then((b) => initWasm(b));
   await wasmListo;
@@ -64,73 +71,125 @@ function conResalte(texto: string, resaltar: string | undefined, color: string, 
 }
 const tam = (t: string, cortes: [number, number][], min: number) => { for (const [largo, px] of cortes) if (t.length <= largo) return px; return min; };
 
+const U = { fontFamily: "Unbounded", fontWeight: 700 } as const;
+const VERDE = "#0f7a43";
+const ROJO = "#ce1126";
+const icono = (d: string, color: string, px: number) => h("svg", { width: px, height: px, viewBox: "0 0 24 24" }, h("path", { d, fill: "none", stroke: color, "stroke-width": 3.2, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+const CHECK = "M5 12.5l4.5 4.5L19 7.5";
+const EQUIS = "M6.5 6.5l11 11M17.5 6.5l-11 11";
+
 function lienzo(p: Paleta, pagina: string | null, ...contenido: unknown[]): Nodo {
   const c = P[p];
   const claro = p === "crema" || p === "cielo" || p === "oro";
+  const agua = p === "oro" ? "rgba(10,47,92,0.04)" : claro ? "rgba(10,47,92,0.05)" : "rgba(255,255,255,0.07)";
+  const [i, n] = pagina ? pagina.split("/").map(Number) as [number, number] : [0, 0];
   return h("div", { style: { width: 1080, height: 1350, flexDirection: "column", fontFamily: "Figtree", color: c.tinta, background: c.fondo, position: "relative", overflow: "hidden" } },
-    // Decoración: un círculo grande arriba y el marco redondeado de la marca abajo.
+    // Decoración de marca: el círculo de la persona arriba y el eslabón gigante, cortados por el borde.
     h("div", { style: { position: "absolute", right: -230, top: -230, width: 560, height: 560, borderRadius: 999, background: c.deco } }),
-    h("div", { style: { position: "absolute", left: -230, bottom: -210, width: 520, height: 480, borderRadius: 120, border: `30px solid ${c.deco2}` } }),
-    claro ? h("div", { style: { position: "absolute", left: 72, top: 64, width: 120, height: 10, borderRadius: 10, background: c.acento } }) : null,
-    h("div", { style: { flexDirection: "column", flex: 1, padding: claro ? "110px 80px 0" : "80px 80px 0" } }, ...contenido),
+    h("div", { style: { position: "absolute", right: -170, bottom: -150 } }, marca(640, agua, agua)),
+    // Arriba: barra de avance del carrusel (o la raya de acento en piezas de una sola lámina).
+    n > 1
+      ? h("div", { style: { position: "absolute", left: 80, top: 66, width: 920, gap: 10 } }, ...Array.from({ length: n }, (_, k) => h("div", { style: { flex: 1, height: 8, borderRadius: 8, background: k < i ? c.acento : claro ? "rgba(10,47,92,0.14)" : "rgba(255,255,255,0.24)" } })))
+      : h("div", { style: { position: "absolute", left: 80, top: 66, width: 120, height: 10, borderRadius: 10, background: c.acento } }),
+    h("div", { style: { flexDirection: "column", flex: 1, padding: "120px 80px 0" } }, ...contenido),
     h("div", { style: { alignItems: "center", justifyContent: "space-between", padding: "0 80px 60px" } },
       h("div", { style: { alignItems: "center", gap: 12 } }, marca(40, c.marca[0], c.marca[1]), h("div", { style: { fontSize: 26, fontWeight: 800, color: c.tinta } }, "@enlacelaboralrd")),
-      pagina ? h("div", { style: { fontSize: 24, fontWeight: 800, color: c.suave, letterSpacing: 2 } }, pagina) : h("div", { style: { fontSize: 24, fontWeight: 600, color: c.suave } }, "enlacelaboralrd.com")));
+      pagina ? h("div", { style: { ...U, fontSize: 20, color: c.suave, letterSpacing: 2 } }, pagina) : h("div", { style: { fontSize: 24, fontWeight: 600, color: c.suave } }, "enlacelaboralrd.com")));
 }
 
 function lamina(l: Lamina, p: Paleta, pagina: string | null): Nodo {
   const c = P[p];
-  const chip = (t: string) => h("div", { style: { alignSelf: "flex-start", padding: "12px 26px", borderRadius: 999, background: c.chip, color: c.chipTinta, fontSize: 24, fontWeight: 800, letterSpacing: 3 } }, t.toUpperCase());
+  const claro = p === "crema" || p === "cielo" || p === "oro";
+  const chip = (t: string) => h("div", { style: { alignSelf: "flex-start", padding: "13px 26px", borderRadius: 999, background: c.chip, color: c.chipTinta, ...U, fontSize: 19, letterSpacing: 2.5 } }, t.toUpperCase());
+  const centro = (...x: unknown[]) => h("div", { style: { flexDirection: "column", flex: 1, justifyContent: "center" } }, ...x);
+  const tarjeta = { background: "#ffffff", color: "#0a2f5c", borderRadius: 36, boxShadow: "0 26px 60px rgba(6,26,53,0.22)" };
   switch (l.tipo) {
     case "frase": {
       const px = tam(l.texto, [[60, 92], [100, 78], [150, 66], [200, 56]], 50);
-      return lienzo(p, pagina,
-        h("div", { style: { flexDirection: "column", flex: 1, justifyContent: "center" } },
-          h("div", { style: { fontSize: 260, fontWeight: 800, color: c.acento, lineHeight: 0.8, height: 150 } }, "“"),
-          conResalte(l.texto, l.resaltar, c.acento, px, { fontWeight: 800, lineHeight: 1.12, letterSpacing: -1.5 }),
-          l.firma ? h("div", { style: { marginTop: 44, alignItems: "center", gap: 18 } }, h("div", { style: { width: 60, height: 6, borderRadius: 6, background: c.acento } }), h("div", { style: { fontSize: 30, fontWeight: 600, color: c.suave } }, l.firma)) : null));
+      return lienzo(p, pagina, centro(
+        h("div", { style: { ...U, fontSize: 230, color: c.acento, lineHeight: 0.8, height: 130 } }, "“"),
+        conResalte(l.texto, l.resaltar, c.acento, px, { fontWeight: 800, lineHeight: 1.12, letterSpacing: -1.5 }),
+        l.firma ? h("div", { style: { marginTop: 48, alignItems: "center", gap: 18 } }, h("div", { style: { width: 60, height: 6, borderRadius: 6, background: c.acento } }), h("div", { style: { fontSize: 30, fontWeight: 600, color: c.suave } }, l.firma)) : null));
     }
     case "portada": {
-      const px = tam(l.titulo, [[30, 118], [55, 100], [80, 86]], 74);
-      return lienzo(p, pagina,
-        h("div", { style: { flexDirection: "column", flex: 1, justifyContent: "center" } },
-          chip(l.kicker),
-          conResalte(l.titulo, l.resaltar, c.acento, px, { marginTop: 44, fontWeight: 800, lineHeight: 1.02, letterSpacing: -3 }),
-          l.sub ? h("div", { style: { marginTop: 36, fontSize: 36, fontWeight: 600, color: c.suave, lineHeight: 1.35, maxWidth: 880 } }, l.sub) : null,
-          h("div", { style: { marginTop: 60, alignItems: "center", gap: 16, fontSize: 30, fontWeight: 800, color: c.acento } }, "Desliza", h("div", { style: { width: 70, height: 6, borderRadius: 6, background: c.acento } }), "»")));
+      const px = tam(l.titulo, [[22, 98], [36, 84], [52, 72]], 62);
+      return lienzo(p, pagina, centro(
+        chip(l.kicker),
+        conResalte(l.titulo, l.resaltar, c.acento, px, { ...U, marginTop: 44, lineHeight: 1.1, letterSpacing: -2.5 }),
+        l.sub ? h("div", { style: { marginTop: 38, fontSize: 38, fontWeight: 600, color: c.suave, lineHeight: 1.35, maxWidth: 860, display: "block" } }, l.sub) : null,
+        h("div", { style: { marginTop: 62, alignSelf: "flex-start", alignItems: "center", gap: 16, padding: "18px 30px", borderRadius: 999, border: `3px solid ${c.acento}`, fontSize: 30, fontWeight: 800, color: c.acento } }, "Desliza", h("div", { style: { width: 54, height: 5, borderRadius: 5, background: c.acento } }), "»")));
     }
     case "punto":
-      return lienzo(p, pagina,
-        h("div", { style: { flexDirection: "column", flex: 1, justifyContent: "center" } },
-          h("div", { style: { fontSize: 230, fontWeight: 800, color: c.acento, lineHeight: 0.9, letterSpacing: -8 } }, String(l.n).padStart(2, "0")),
-          h("div", { style: { marginTop: 36, fontSize: tam(l.titulo, [[30, 76], [55, 64]], 54), fontWeight: 800, lineHeight: 1.08, letterSpacing: -1.5, display: "block" } }, l.titulo),
-          h("div", { style: { marginTop: 34, fontSize: tam(l.texto, [[140, 38], [240, 34]], 31), fontWeight: 600, color: c.suave, lineHeight: 1.42, display: "block" } }, l.texto)));
+      return lienzo(p, pagina, centro(
+        h("div", { style: { ...U, fontSize: 190, color: c.acento, lineHeight: 0.95, letterSpacing: -8 } }, String(l.n).padStart(2, "0")),
+        h("div", { style: { ...U, marginTop: 40, fontSize: tam(l.titulo, [[20, 64], [32, 54], [46, 46]], 40), lineHeight: 1.14, letterSpacing: -1.5, display: "block" } }, l.titulo),
+        h("div", { style: { marginTop: 34, fontSize: tam(l.texto, [[140, 40], [240, 36]], 32), fontWeight: 600, color: c.suave, lineHeight: 1.42, display: "block" } }, l.texto)));
     case "mito":
       return lienzo(p, pagina,
         h("div", { style: { flexDirection: "column", flex: 1, justifyContent: "center", gap: 34 } },
-          h("div", { style: { flexDirection: "column", padding: "40px 44px", borderRadius: 36, background: "rgba(220,53,69,0.10)", border: "3px solid rgba(220,53,69,0.45)" } },
-            h("div", { style: { fontSize: 26, fontWeight: 800, color: "#d93848", letterSpacing: 4 } }, "MITO"),
-            h("div", { style: { marginTop: 16, fontSize: tam(l.mito, [[60, 54], [110, 46]], 40), fontWeight: 800, lineHeight: 1.15, display: "block", textDecoration: "line-through", textDecorationColor: "rgba(217,56,72,0.6)" } }, l.mito)),
-          h("div", { style: { flexDirection: "column", padding: "40px 44px", borderRadius: 36, background: "#ffffff", color: "#0a2f5c", boxShadow: "0 24px 50px rgba(10,47,92,0.18)" } },
-            h("div", { style: { fontSize: 26, fontWeight: 800, color: "#0f7a43", letterSpacing: 4 } }, "REALIDAD"),
-            h("div", { style: { marginTop: 16, fontSize: tam(l.realidad, [[90, 46], [160, 40], [230, 35]], 32), fontWeight: 800, lineHeight: 1.25, display: "block" } }, l.realidad))));
+          chip("Mito o realidad"),
+          h("div", { style: { flexDirection: "column", padding: "40px 44px", borderRadius: 36, background: "rgba(206,17,38,0.08)", border: "3px solid rgba(206,17,38,0.4)" } },
+            h("div", { style: { alignItems: "center", gap: 14 } }, h("div", { style: { width: 44, height: 44, borderRadius: 44, background: ROJO, alignItems: "center", justifyContent: "center" } }, icono(EQUIS, "#ffffff", 26)), h("div", { style: { ...U, fontSize: 22, color: ROJO, letterSpacing: 3 } }, "MITO")),
+            h("div", { style: { marginTop: 20, fontSize: tam(l.mito, [[60, 54], [110, 46]], 40), fontWeight: 800, lineHeight: 1.15, display: "block", textDecoration: "line-through", textDecorationColor: "rgba(206,17,38,0.55)" } }, l.mito)),
+          h("div", { style: { flexDirection: "column", padding: "40px 44px", ...tarjeta } },
+            h("div", { style: { alignItems: "center", gap: 14 } }, h("div", { style: { width: 44, height: 44, borderRadius: 44, background: VERDE, alignItems: "center", justifyContent: "center" } }, icono(CHECK, "#ffffff", 26)), h("div", { style: { ...U, fontSize: 22, color: VERDE, letterSpacing: 3 } }, "REALIDAD")),
+            h("div", { style: { marginTop: 20, fontSize: tam(l.realidad, [[90, 46], [160, 40], [230, 35]], 32), fontWeight: 800, lineHeight: 1.25, display: "block" } }, l.realidad))));
     case "lista":
-      return lienzo(p, pagina,
-        h("div", { style: { flexDirection: "column", flex: 1, justifyContent: "center" } },
-          h("div", { style: { fontSize: tam(l.titulo, [[30, 74], [55, 62]], 54), fontWeight: 800, lineHeight: 1.06, letterSpacing: -1.5, display: "block" } }, l.titulo),
-          h("div", { style: { flexDirection: "column", gap: 22, marginTop: 50 } },
-            ...l.items.slice(0, 6).map((it, i) => h("div", { style: { alignItems: "center", gap: 24 } },
-              h("div", { style: { width: 54, height: 54, borderRadius: 16, background: c.chip, color: c.chipTinta, fontSize: 32, fontWeight: 800, alignItems: "center", justifyContent: "center", flexShrink: 0 } }, String(i + 1)),
-              h("div", { style: { fontSize: tam(it, [[40, 38], [70, 34]], 30), fontWeight: 600, lineHeight: 1.3, display: "block", maxWidth: 820 } }, it))))));
+      return lienzo(p, pagina, centro(
+        h("div", { style: { ...U, fontSize: tam(l.titulo, [[24, 66], [40, 56], [56, 48]], 42), lineHeight: 1.12, letterSpacing: -1.5, display: "block" } }, l.titulo),
+        h("div", { style: { flexDirection: "column", gap: 16, marginTop: 46 } },
+          ...l.items.slice(0, 6).map((it, i) => h("div", { style: { alignItems: "center", gap: 22, padding: "24px 28px", borderRadius: 26, background: claro ? "rgba(255,255,255,0.62)" : "rgba(255,255,255,0.13)" } },
+            h("div", { style: { width: 54, height: 54, borderRadius: 16, background: c.chip, color: c.chipTinta, ...U, fontSize: 24, alignItems: "center", justifyContent: "center", flexShrink: 0 } }, String(i + 1)),
+            h("div", { style: { fontSize: tam(it, [[30, 42], [44, 38], [60, 33]], 30), fontWeight: 800, lineHeight: 1.25, display: "block", maxWidth: 780 } }, it))))));
     case "cierre":
       return lienzo(p, pagina,
         h("div", { style: { flexDirection: "column", flex: 1, justifyContent: "center", alignItems: "center", textAlign: "center" } },
           marca(150, c.marca[0], c.marca[1]),
-          h("div", { style: { marginTop: 50, fontSize: tam(l.titulo, [[30, 80], [55, 66]], 56), fontWeight: 800, lineHeight: 1.08, letterSpacing: -2, display: "block", textAlign: "center", maxWidth: 900 } }, l.titulo),
-          l.texto ? h("div", { style: { marginTop: 30, fontSize: 34, fontWeight: 600, color: c.suave, lineHeight: 1.4, maxWidth: 860, textAlign: "center" } }, l.texto) : null,
+          h("div", { style: { ...U, marginTop: 54, fontSize: tam(l.titulo, [[22, 68], [36, 58], [50, 50]], 44), lineHeight: 1.14, letterSpacing: -2, display: "block", textAlign: "center", maxWidth: 900 } }, l.titulo),
+          l.texto ? h("div", { style: { marginTop: 30, fontSize: 34, fontWeight: 600, color: c.suave, lineHeight: 1.4, maxWidth: 860, textAlign: "center", display: "block" } }, l.texto) : null,
           h("div", { style: { marginTop: 56, gap: 18 } },
             h("div", { style: { padding: "18px 32px", borderRadius: 18, background: c.chip, color: c.chipTinta, fontSize: 28, fontWeight: 800 } }, "Guárdalo"),
             h("div", { style: { padding: "18px 32px", borderRadius: 18, border: `3px solid ${c.chip}`, color: c.tinta, fontSize: 28, fontWeight: 800 } }, "Compártelo"))));
+    case "dato":
+      return lienzo(p, pagina, centro(
+        chip(l.kicker),
+        h("div", { style: { ...U, marginTop: 40, fontSize: tam(l.grande, [[5, 250], [7, 200], [10, 150]], 120), color: c.acento, lineHeight: 1, letterSpacing: -8, display: "block" } }, l.grande),
+        h("div", { style: { marginTop: 20, width: 140, height: 10, borderRadius: 10, background: c.tinta } }),
+        h("div", { style: { marginTop: 40, fontSize: tam(l.texto, [[110, 46], [170, 40]], 36), fontWeight: 800, lineHeight: 1.3, display: "block", maxWidth: 880 } }, l.texto)));
+    case "cuenta":
+      return lienzo(p, pagina, centro(
+        h("div", { style: { ...U, fontSize: tam(l.titulo, [[24, 62], [40, 52]], 44), lineHeight: 1.12, letterSpacing: -1.5, display: "block" } }, l.titulo),
+        h("div", { style: { flexDirection: "column", marginTop: 44, padding: "44px 44px 40px", ...tarjeta } },
+          h("div", { style: { alignItems: "center", justifyContent: "space-between", gap: 24 } },
+            h("div", { style: { fontSize: 36, fontWeight: 800, lineHeight: 1.25, display: "block", maxWidth: 560 } }, l.formula[0]),
+            h("div", { style: { ...U, padding: "18px 28px", borderRadius: 22, background: "#0a2f5c", color: "#ffffff", fontSize: 40, flexShrink: 0 } }, l.formula[1])),
+          h("div", { style: { margin: "36px 0 8px", height: 3, background: "rgba(10,47,92,0.12)" } }),
+          ...l.ejemplos.map(([a, b], k) => h("div", { style: { alignItems: "center", justifyContent: "space-between", gap: 24, padding: "24px 0", borderTop: k ? "2px dashed rgba(10,47,92,0.16)" : "0px solid #fff" } },
+            h("div", { style: { fontSize: 31, fontWeight: 600, color: "#4a5b73", lineHeight: 1.3, display: "block", maxWidth: 470 } }, a),
+            h("div", { style: { ...U, fontSize: 40, color: VERDE, letterSpacing: -1.5, flexShrink: 0 } }, b)))),
+        l.nota ? h("div", { style: { marginTop: 30, fontSize: 27, fontWeight: 600, color: c.suave, lineHeight: 1.4, display: "block" } }, l.nota) : null));
+    case "guion":
+      return lienzo(p, pagina, centro(
+        h("div", { style: { ...U, fontSize: tam(l.titulo, [[24, 62], [40, 52]], 44), lineHeight: 1.12, letterSpacing: -1.5, display: "block" } }, l.titulo),
+        h("div", { style: { flexDirection: "column", gap: 22, marginTop: 44 } },
+          ...l.lineas.slice(0, 3).map((x, k) => h("div", { style: { flexDirection: "column", gap: 14, padding: "30px 36px", marginLeft: k % 2 ? 50 : 0, marginRight: k % 2 ? 0 : 50, ...tarjeta, borderRadius: 34, borderBottomLeftRadius: k % 2 ? 34 : 8, borderBottomRightRadius: k % 2 ? 8 : 34 } },
+            h("div", { style: { alignSelf: "flex-start", padding: "8px 18px", borderRadius: 999, background: "#1d6ff2", color: "#ffffff", ...U, fontSize: 16, letterSpacing: 2 } }, x.rotulo.toUpperCase()),
+            h("div", { style: { fontSize: tam(x.texto, [[90, 37], [130, 33]], 30), fontWeight: 600, lineHeight: 1.36, display: "block" } }, x.texto)))),
+        l.nota ? h("div", { style: { marginTop: 30, fontSize: 27, fontWeight: 600, color: c.suave, lineHeight: 1.4, display: "block" } }, l.nota) : null));
+    case "senal": {
+      const fila = (rot: string, color: string, d: string, t: string, fondo: Record<string, unknown>) => h("div", { style: { gap: 26, padding: "44px 40px", borderRadius: 36, ...fondo } },
+        h("div", { style: { width: 64, height: 64, borderRadius: 64, background: color, alignItems: "center", justifyContent: "center", flexShrink: 0 } }, icono(d, "#ffffff", 38)),
+        h("div", { style: { flexDirection: "column", gap: 10, flex: 1 } },
+          h("div", { style: { ...U, fontSize: 21, color: claro || color === VERDE ? color : "#ffffff", letterSpacing: 2.5 } }, rot),
+          h("div", { style: { fontSize: tam(t, [[45, 46], [70, 42], [90, 37]], 33), fontWeight: 800, lineHeight: 1.25, display: "block" } }, t)));
+      return lienzo(p, pagina, centro(
+        h("div", { style: { alignItems: "center", gap: 24 } },
+          h("div", { style: { ...U, fontSize: 96, color: c.acento, letterSpacing: -4, lineHeight: 1 } }, String(l.n).padStart(2, "0")),
+          h("div", { style: { ...U, fontSize: tam(l.titulo, [[16, 56], [24, 46]], 38), lineHeight: 1.12, letterSpacing: -1.5, display: "block", flex: 1 } }, l.titulo)),
+        h("div", { style: { flexDirection: "column", gap: 26, marginTop: 50 } },
+          fila("BUENA SEÑAL", VERDE, CHECK, l.buena, tarjeta),
+          fila("SEÑAL DE ALERTA", ROJO, EQUIS, l.alerta, { background: claro ? "rgba(206,17,38,0.08)" : "rgba(255,255,255,0.14)", border: `3px solid ${claro ? "rgba(206,17,38,0.4)" : "rgba(255,255,255,0.45)"}`, color: c.tinta }))));
+    }
   }
 }
 
