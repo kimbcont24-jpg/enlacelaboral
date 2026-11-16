@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Analista de Operaciones",
+  "empresa": "Interworld Freight",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Interworld Freight busca Analista de Operaciones para coordinar y dar seguimiento a las operaciones diarias de importación y exportación, coordinar con agentes, líneas navieras, transportistas y proveedores, mantener comunicación proactiva con los clientes y monitorear indicadores operativos para proponer mejoras. Ubicación por confirmar (Santo Domingo).",
+  "requisitos": "Estudiante universitario de Negocios Internacionales, Comercio Internacional o carreras afines | Experiencia mínima de 1 año en posiciones operativas o de coordinación | Manejo de Microsoft Office (Excel, Word, Outlook) | Organizado(a), proactivo(a) y con ganas de aprender",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento.rd@interwf.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/interworld-freight-analista-de-operaciones.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Supervisor de Tiendas",
+  "empresa": "Cellumovil (Altice)",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Cellumovil (Altice) busca Supervisor de Tiendas para supervisar equipos de ventas, garantizar el cumplimiento de metas y objetivos de las tiendas, motivar, capacitar y entrenar al personal, con disponibilidad para cubrir turnos. Ubicación por confirmar (Santo Domingo).",
+  "requisitos": "Experiencia en supervisión de ventas (telecomunicaciones o retail) | Vehículo propio | Disponibilidad de lunes a sábado | Liderazgo y compromiso",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "RRHH@cellumovil.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/cellumovil-supervisor-de-tiendas.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Asistente Administrativa",
+  "empresa": "Cellumovil (Altice)",
+  "provincia": "Santo Domingo",
+  "area": "Administración",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Cellumovil (Altice) busca Asistente Administrativa con manejo de agenda administrativa, gastos y compras y conciliación de caja y efectivo. Ofrece salario competitivo y beneficios de ley. Preferiblemente residente en Santo Domingo Este.",
+  "requisitos": "Licenciatura y/o estudiante de Administración o Contabilidad | Excel intermedio/avanzado | Conciliación de caja y efectivo | Manejo de agenda administrativa, gastos y compras | Trabajo en equipo y bajo presión | Habilidad en redacción y análisis | Servicio al cliente | Preferiblemente residente en Santo Domingo Este",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "RRHH@cellumovil.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/cellumovil-asistente-administrativa.jpg",
+  "redes": "si"
+ }
+]
