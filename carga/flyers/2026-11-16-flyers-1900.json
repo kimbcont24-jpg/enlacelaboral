@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Gerente de Contabilidad",
+  "empresa": "Manuel Corripio",
+  "provincia": "Santo Domingo",
+  "area": "Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Manuel Corripio busca un Gerente de Contabilidad que guíe e impulse el crecimiento del departamento: dirigir y supervisar las operaciones de Contabilidad, cierres mensuales, revisión de impuestos, control interno, cierre anual, estados financieros y análisis con el presupuesto. Ofrece oportunidades de crecimiento y desarrollo, ambiente laboral colaborativo, bonificación y beneficios de ley y salario competitivo. Ubicación por confirmar.",
+  "requisitos": "Egresado de Contabilidad, Finanzas o áreas afines | Maestría en el área (preferible) | Manejo de sistemas contables (preferiblemente Dynamics 365 Finance) | Dominio de paquete de Office (Planner) | 5 años de experiencia en roles similares | Experiencia en supervisión de personal | Dominio de impuestos (mensual y anual) | Dominio de normas NIIF y NIAS | Conocimiento de auditoría interna y externa | Conocimiento de presupuesto financiero | Comunicación efectiva, organización, proactividad y atención al detalle",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Manuel.corripiogyg@corripio.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/corripio-gerente-de-contabilidad.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Gondolero",
+  "empresa": "ISTO Ferretería y Hogar",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "ISTO Ferretería y Hogar busca un Gondolero encargado de mantener la presentación visual y la disponibilidad de productos en la tienda, asegurando que pasillos y estantes estén organizados y atractivos para los clientes. Ofrece oportunidades de crecimiento y desarrollo, ambiente laboral colaborativo, beneficios de ley y paquete de compensación. Ubicación por confirmar.",
+  "requisitos": "Estudiante universitario | Experiencia previa en áreas similares (preferible en ferreterías) | Habilidades organizativas y atención al detalle | Capacidad para levantar y transportar objetos pesados | Conocimiento básico de merchandising y presentación visual | Buena comunicación y habilidades interpersonales | Flexibilidad de horario, disponible días festivos y fines de semana",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Manuel.corripiogyg@corripio.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/isto-gondolero.jpg",
+  "redes": "si"
+ }
+]
