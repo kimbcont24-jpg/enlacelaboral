@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Asistente de Repostería",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Distrito Nacional",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se busca Asistente de Repostería para apoyar la producción en Bella Vista, Distrito Nacional. Horario: martes a domingo, 7:00 a. m. a 4:00 p. m. Paquete salarial: RD$25,000.",
+  "requisitos": "Conocimientos básicos de repostería | Experiencia en el área (deseable) | Organización | Trabajo en equipo",
+  "salario": "RD$25,000",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "stephanie.talentos@gmail.com · Asunto: Asistente de Repostería",
+  "imagen": "https://enlace-rd.vercel.app/flyers/confidencial-asistente-de-reposteria.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista Contable",
+  "empresa": "Malaca (confidencial)",
+  "provincia": "San Cristóbal",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Se busca Analista Contable en Bajos de Haina: recibir, revisar y registrar facturas de proveedores y emisión de facturas de ventas; reportes 606, 607, IR-3, IR-17 e IT-1; conciliaciones bancarias, pago de TSS, pagos a suplidores y nóminas; registro y validación de asientos contables. Ofrecen sueldo competitivo, prestaciones de ley, buen ambiente laboral y oportunidad de crecimiento.",
+  "requisitos": "Licenciado/a en contabilidad que domine la parte fiscal | Experiencia mínima de 1-2 años | Manejo del ciclo contable | Manejo de programas contables y Office",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "deptorecursoshumanosmalaca@gmail.com · Asunto: Analista Contable",
+  "imagen": "https://enlace-rd.vercel.app/flyers/malaca-analista-contable.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Oficial de Recuperación (Cobros)",
+  "empresa": "FDD",
+  "provincia": "La Vega",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Contribuir a la reducción de la mora de la institución mediante gestión de cobros presencial y telefónica: gestiones de cobro en campo y por teléfono, seguimiento a acuerdos de pago, localizar clientes, apoyo en cobranza legal y judicial, documentación de cartera y reportes de gestiones. Desplazamiento por localidades de la Región Norte.",
+  "requisitos": "Estudiante universitario de Derecho, Administración de Empresas o afines | Mínimo 1 año en cobros, recuperación de cartera, ventas o áreas relacionadas | Motor propio con documentación al día | Licencia de conducir vigente | Disponibilidad para desplazarse por la Región Norte | Manejo de herramientas tecnológicas y reportes | Negociación y servicio al cliente",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "chespiritu@fdd.org.do · Asunto: Oficial de Recuperación - La Vega · WhatsApp 829-345-4612",
+  "redes": "si"
+ }
+]
