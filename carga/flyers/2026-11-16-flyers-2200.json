@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Ejecutivo de Negocios",
+  "empresa": "BP Medical",
+  "provincia": "La Vega",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "BP Medical está creciendo y busca Ejecutivos de Negocios en La Vega. Ofrece salario base, comisiones, asignación de combustible, mantenimiento de vehículo y viáticos.",
+  "requisitos": "Lic. en Mercadeo, Ing. Biomédica o carreras afines relacionadas a equipos médicos | Experiencia en ventas, preferiblemente en el sector salud o equipos médicos | Venta consultiva, negociación y cierre | Inglés | Vehículo propio y licencia de conducir al día | Buena planificación y organización | Manejo de herramientas tecnológicas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@bpmedical.net",
+  "imagen": "https://enlace-rd.vercel.app/flyers/bp-medical-ejecutivos-de-negocios.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ejecutivo de Negocios",
+  "empresa": "BP Medical",
+  "provincia": "Santiago",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "BP Medical está creciendo y busca Ejecutivos de Negocios en Santiago. Ofrece salario base, comisiones, asignación de combustible, mantenimiento de vehículo y viáticos.",
+  "requisitos": "Lic. en Mercadeo, Ing. Biomédica o carreras afines relacionadas a equipos médicos | Experiencia en ventas, preferiblemente en el sector salud o equipos médicos | Venta consultiva, negociación y cierre | Inglés | Vehículo propio y licencia de conducir al día | Buena planificación y organización | Manejo de herramientas tecnológicas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@bpmedical.net",
+  "imagen": "https://enlace-rd.vercel.app/flyers/bp-medical-ejecutivos-de-negocios.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Supervisor del Área de Mantenimiento y Conserjería",
+  "empresa": "Verinside",
+  "provincia": "Santo Domingo",
+  "area": "Mantenimiento",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Verinside busca Supervisor del Área de Mantenimiento y Conserjería para torres, condominios y plazas comerciales. Ofrece salario competitivo, estabilidad laboral y buen ambiente de trabajo. Ubicación por confirmar (Santo Domingo).",
+  "requisitos": "Estudiante universitario (mínimo 1 año cursado) | 1 año de experiencia en mantenimiento o conserjería | Conocimientos básicos en plomería, electricidad y jardinería | Líder, responsable y proactivo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rh@verinside.com (asunto: Supervisor Mantenimiento) · WhatsApp 829-993-0208",
+  "imagen": "https://enlace-rd.vercel.app/flyers/verinside-supervisor-mantenimiento-conserjeria.jpg",
+  "redes": "si"
+ }
+]
