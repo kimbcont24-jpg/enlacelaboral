@@ -1,0 +1,32 @@
+[
+  {
+    "titulo": "Conductor de Vehículo Pesado",
+    "empresa": "Elena Pallets",
+    "provincia": "San Cristóbal",
+    "area": "Logística",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "3+ años",
+    "descripcion": "Elena Pallets busca conductor de vehículo pesado para incorporarse a su equipo. Horario: Lunes a Viernes 8:00 AM – 5:00 PM, Sábados 8:00 AM – 12:00 PM.",
+    "requisitos": "Licencia Categoría 03 vigente | Bachiller | 4+ años de experiencia en carga pesada | Conocimiento de rutas y normas INTRANT",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "rrhh@elenapallets.com",
+    "imagen": "public/flyers/elena-pallets-conductor-vehiculo-pesado.jpg",
+    "redes": "si"
+  },
+  {
+    "titulo": "Coordinador/a de Capacitación y Desarrollo",
+    "empresa": "Zemí Miches - Curio Collection by Hilton",
+    "provincia": "El Seibo",
+    "area": "Recursos Humanos",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Zemí Miches All-Inclusive Resort (Curio Collection by Hilton) busca coordinador/a de Capacitación y Desarrollo para liderar programas de formación de talento, identificar necesidades de crecimiento profesional, coordinar inducciones y planes de carrera, y promover una cultura de aprendizaje continuo alineada a los objetivos del negocio. Ubicación: Carretera Playa Esmeralda Km 7, Miches, El Seibo.",
+    "requisitos": "Licenciatura en Psicología, Administración de Empresas, Educación o carreras afines | Conocimientos en Diseño Instruccional y Gestión del Aprendizaje | Dominio de herramientas de capacitación, evaluación y desarrollo de competencias | Planificación y organización | Liderazgo y trabajo en equipo | Orientación a resultados",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "zemimiches_reclutamiento@hilton.com · o en https://jobs.hilton.com/latam/es",
+    "imagen": "public/flyers/zemi-miches-coordinador-capacitacion.jpg",
+    "redes": "si"
+  }
+]
