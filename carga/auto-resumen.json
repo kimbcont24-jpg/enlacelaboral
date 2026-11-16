@@ -1,8 +1,8 @@
 {
-  "fecha": "2026-11-16T12:54:01.219Z",
+  "fecha": "2026-11-16T13:58:23.950Z",
   "total": 739,
-  "revisadas": 132,
-  "sin_contacto": 132,
+  "revisadas": 131,
+  "sin_contacto": 131,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "nst": 0,
@@ -11,7 +11,7 @@
     "marriott": 55,
     "citi": 2,
     "medtronic": 3,
-    "baxter": 3,
+    "baxter": 2,
     "eaton": 56
   }
 }
