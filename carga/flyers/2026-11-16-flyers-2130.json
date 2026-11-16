@@ -1,0 +1,48 @@
+[
+ {
+  "titulo": "Promotora de Ventas",
+  "empresa": "Calpo",
+  "provincia": "Santiago",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Por turnos",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Calpo (Elegancia Dominicana) busca una Promotora de Ventas para su sucursal en PriceSmart Santiago. Pago por turno y comisiones por ventas. Enviar foto y la zona donde reside.",
+  "requisitos": "Enviar foto y zona de residencia | Orientación a ventas y servicio al cliente",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 809-879-1241",
+  "imagen": "https://enlace-rd.vercel.app/flyers/calpo-promotora-de-ventas.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ayudante de Centro Canino",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Centro canino busca ayudante para integrarse al equipo en todas las áreas del centro. No necesita experiencia, se enseña. Horario lunes a sábado de 8:00 a. m. a 3:00 p. m. Zona: Santo Domingo Oeste y zonas aledañas (Los Ríos, entre otras).",
+  "requisitos": "Amante de los animales | Ganas de involucrarse en todas las áreas del centro | Responsabilidad y buena disposición | Sin problemas con el horario | Trabajo en equipo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 829-870-2448",
+  "imagen": "https://enlace-rd.vercel.app/flyers/confidencial-ayudante-centro-canino.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Vendedor de Mostrador",
+  "empresa": "Rico Hot Dog",
+  "provincia": "Distrito Nacional",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Rico Hot Dog busca Vendedor de Mostrador para dos vacantes con horario fijo: de 3:00 p. m. a 11:00 p. m. y de 11:00 p. m. a 7:00 a. m. Ingresos de RD$24,000 al mes. Avenida República de Colombia, Plaza Vértice I, cerca del Bravo.",
+  "requisitos": "Vivir en Los Girasoles, Los Ríos, Jardines del Norte o zonas cercanas a la Av. República de Colombia | Disponibilidad para horario fijo (tarde o nocturno)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 829-762-9800",
+  "imagen": "https://enlace-rd.vercel.app/flyers/rico-hot-dog-vendedor-de-mostrador.jpg",
+  "redes": "si",
+  "salario": "RD$24,000"
+ }
+]
