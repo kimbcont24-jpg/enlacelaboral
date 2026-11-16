@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Analista de Costos",
+  "empresa": "Molpack",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Molpack busca Analista de Costos para controlar, analizar y optimizar los costos de producción: variaciones del costo de ventas, valoración de inventarios, órdenes de producción, reportes de rentabilidad por producto y cierres contables mensuales. Deseable que resida en Santo Domingo Norte, Villa Mella, La Victoria, Sabana Perdida o zonas aledañas.",
+  "requisitos": "Licenciatura en Contabilidad, Administración, Economía o afines | Mínimo 3 años en posiciones similares, preferiblemente industriales | Contabilidad y análisis de costos | Excel avanzado | Deseable SAP (CO, FI y MM)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "yulissa.montero@molpack.net · Asunto: Analista de Costos",
+  "imagen": "https://enlace-rd.vercel.app/flyers/molpack-analista-de-costos.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Subgerente de Gestión Humana",
+  "empresa": "BP Medical",
+  "provincia": "Distrito Nacional",
+  "area": "Recursos Humanos",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "BP Medical, empresa de venta de equipos médicos de alta tecnología, busca Subgerente de Gestión Humana en Santo Domingo, Distrito Nacional. Ofrece salario base y beneficios de ley.",
+  "requisitos": "Licenciatura en Administración, Psicología Industrial o afines | 3-5 años en Gestión Humana | Experiencia en subsistemas de gestión humana, indicadores, desarrollo de talento y relaciones laborales | Conocimiento del Código de Trabajo, Seguridad Social y SST | Liderazgo y planificación",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@bpmedical.net",
+  "imagen": "https://enlace-rd.vercel.app/flyers/bp-medical-subgerente-gestion-humana.jpg",
+  "redes": "si"
+ }
+]
