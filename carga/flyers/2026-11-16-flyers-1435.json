@@ -1,0 +1,17 @@
+[
+ {
+  "titulo": "Ingeniero Residente",
+  "empresa": "Grupo Saillant",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Grupo Saillant busca un ingeniero residente para proyectos de obras civiles, saneamiento de cañadas, movimiento de tierra y sistemas de agua potable y drenaje. Ubicación por confirmar (el flyer no la indica). Enviar CV al correo de reclutamiento de la empresa.",
+  "requisitos": "Ingeniero Civil, Hidráulica, Ambiental o carreras afines | Conocimiento en hidráulica, hidrología, mecánica de fluidos y diseño de sistemas de agua potable y drenaje | Conocimientos en obras civiles, saneamiento de cañadas y movimiento de tierra | Dominio avanzado de software de diseño y modelado (AutoCAD, Civil 3D) | Experiencia previa de 3 a 5 años en puestos similares",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@gruposaillant.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/grupo-saillant-ingeniero-residente.jpg",
+  "redes": "si"
+ }
+]
