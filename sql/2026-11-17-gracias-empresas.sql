@@ -16,7 +16,7 @@ revoke all on public.gracias_empresas from anon, authenticated;
 
 create or replace function public.gracias_pendientes(p_clave text)
 returns table (vacante_id uuid, titulo text, empresa text, provincia text, modalidad text, tipo text,
-               salario_min int, salario_max int, aplicar text, redes boolean,
+               salario_min int, salario_max int, aplicar text, redes boolean, publicada timestamptz,
                correo text, correo_id text, contacto text, origen text)
 language plpgsql security definer set search_path = public, privado as $$
 begin
@@ -63,7 +63,7 @@ begin
     select distinct on (c.id) c.* from cand c order by c.id, (c.origen = 'panel') desc, (c.origen = 'formulario') desc
   )
   select v.id, v.titulo, coalesce(nullif(v.m_empresa, ''), 'su empresa'), v.provincia, v.modalidad, v.tipo,
-         v.salario_min, v.salario_max, v.m_aplicar, v.m_redes,
+         nullif(v.salario_min, 0), nullif(v.salario_max, 0), v.m_aplicar, v.m_redes, v.created_at,
          lower(trim(uno.correo)), uno.correo_id, nullif(trim(uno.contacto), ''), uno.origen
   from uno join v on v.id = uno.id
   where (uno.correo is not null or uno.correo_id is not null)

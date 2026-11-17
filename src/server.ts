@@ -182,7 +182,7 @@ async function telegram(): Promise<Response> {
   return json({ ok: errores.length === 0, pendientes: filas.length, enviadas, errores });
 }
 
-type PendienteGracias = { vacante_id: string; titulo: string; empresa: string; provincia: string | null; modalidad: string | null; tipo: string | null; salario_min: number | null; salario_max: number | null; aplicar: string | null; redes: boolean; correo: string | null; correo_id: string | null; contacto: string | null; origen: string };
+type PendienteGracias = { vacante_id: string; titulo: string; empresa: string; provincia: string | null; modalidad: string | null; tipo: string | null; salario_min: number | null; salario_max: number | null; aplicar: string | null; redes: boolean; publicada: string | null; correo: string | null; correo_id: string | null; contacto: string | null; origen: string };
 
 /**
  * /api/gracias-empresas → correo «Su vacante ya está publicada» (17 nov 2026).
@@ -216,7 +216,7 @@ async function graciasEmpresas(request: Request, url: URL): Promise<Response> {
     if (grupos.get(llave)!.length < 6) grupos.get(llave)!.push(f);
   }
   const salida = [...grupos.values()].slice(0, 15).map((g) => {
-    const vac: VacanteGracias[] = g.map((f) => ({ id: f.vacante_id, titulo: f.titulo, empresa: f.empresa, provincia: f.provincia, modalidad: f.modalidad, tipo: f.tipo, salario_min: f.salario_min, salario_max: f.salario_max, aplicar: f.aplicar, redes: f.redes }));
+    const vac: VacanteGracias[] = g.map((f) => ({ id: f.vacante_id, titulo: f.titulo, empresa: f.empresa, provincia: f.provincia, modalidad: f.modalidad, tipo: f.tipo, salario_min: f.salario_min, salario_max: f.salario_max, aplicar: f.aplicar, redes: f.redes, publicada: f.publicada }));
     const datos = { contacto: g[0]!.contacto, empresa: g[0]!.empresa, vacantes: vac };
     return { correo: g[0]!.correo, correo_id: g[0]!.correo_id, origen: g[0]!.origen, empresa: g[0]!.empresa, ids: g.map((f) => f.vacante_id), asunto: asuntoGracias(datos), html: correoGracias(datos) };
   });
