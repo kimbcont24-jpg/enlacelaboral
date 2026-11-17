@@ -175,7 +175,7 @@ export function correoGracias(d: DatosGracias): string {
 </td></tr>
 
 <!-- Animación -->
-<tr><td align="center"><a href="${utm(enlace, "animacion")}" style="text-decoration:none;"><img src="${SITIO}/email/publicada.gif" width="600" alt="¡Publicada! Su vacante ya está en línea en Enlace Laboral RD" style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a></td></tr>
+<tr><td align="center"><a href="${utm(enlace, "animacion")}" style="text-decoration:none;"><img src="${SITIO}/email/publicada.gif?v=3" width="600" alt="¡Publicada! Su vacante ya está en línea en Enlace Laboral RD" style="display:block;width:100%;max-width:600px;height:auto;border:0;"></a></td></tr>
 
 <!-- Titular -->
 <tr><td style="padding:6px 40px 30px 40px;${F}" align="center">
