@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Analista de Tráfico y Aduanas",
+  "empresa": "Zona Franca Las Américas",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Zona Franca Las Américas busca un(a) Analista de Tráfico y Aduanas para planificar, coordinar y dar seguimiento a las operaciones logísticas del almacén, asegurando la ejecución administrativa y operativa de los procesos de importación y exportación, el cumplimiento de tiempos, costos y normativas, y la trazabilidad de la información logística. Ubicación por confirmar (Santo Domingo).",
+  "requisitos": "Licenciatura en Negocios Internacionales, Logística, Comercio Internacional o afines | Experiencia mínima de 2 años en operaciones logísticas | Manejo de documentación y sistemas logísticos y aduanales (VUCE, BL, AWB, facturas comerciales, packing list, DUAs) | Experiencia en plataformas aduanales y portuarias (SIGA, DPH, HIT, DP World) | Dominio de la normativa aduanera y logística (DGA, DGII, zonas francas, puertos y aeropuertos) | Excel intermedio y sistemas ERP/WMS/TMS | Planificación operativa, comunicación efectiva y trabajo en equipo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "c.tejada@zfla.com (asunto: nombre de la posición)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/zona-franca-las-americas-analista-trafico-aduanas.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ingeniero(a) de Soporte y Comunicaciones",
+  "empresa": "Zona Franca Las Américas",
+  "provincia": "Santo Domingo",
+  "area": "Tecnología",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Zona Franca Las Américas busca un(a) Ingeniero(a) de Soporte y Comunicaciones para administrar, operar y asegurar la infraestructura tecnológica (redes de datos, telecomunicaciones, hardware, ciberseguridad y seguridad perimetral), garantizando alta disponibilidad y protección de la información, y brindar soporte técnico especializado a usuarios y plataformas.",
+  "requisitos": "Ingeniería en Sistemas o carreras afines | Mínimo 3 años de experiencia dando soporte a operaciones críticas (almacenes, centros de distribución, transportación, oficinas operativas) | Manejo de plataformas de Service Desk o Ticketing | Gestión de firewalls, VPN y seguridad perimetral (Fortinet NSE3, Security+, entre otros) | Excel intermedio, Power BI y Microsoft Office 365 | Inglés intermedio | Planificación operativa, comunicación efectiva y trabajo en equipo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "c.tejada@zfla.com (asunto: nombre de la posición)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/zona-franca-las-americas-ing-soporte-comunicaciones.jpg",
+  "redes": "si"
+ }
+]
