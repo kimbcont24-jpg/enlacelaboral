@@ -1,0 +1,31 @@
+[
+  {
+    "titulo": "Asistente Médico (interés en Endocrinología)",
+    "empresa": "Dr. Endocrino (confidencial)",
+    "provincia": "Santo Domingo",
+    "area": "Salud",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Se busca Asistente Médico con interés en Endocrinología. Posición ideal para médicos graduados que se preparan para ingresar a residencia médica. Se ofrece adquirir experiencia clínica, participar en investigaciones y fortalecer el currículum profesional. Ubicación por confirmar.",
+    "requisitos": "Médico graduado | En preparación para ingresar a residencia médica | Interés en Endocrinología",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "Agonzalez@drendocrino.com · administracion@drendocrino.com",
+    "imagen": "https://enlace-rd.vercel.app/flyers/dr-endocrino-asistente-medico.jpg",
+    "redes": "si"
+  },
+  {
+    "titulo": "Médico Familiar",
+    "empresa": "Centro Médico Herrera Piña Gervacio",
+    "provincia": "Santo Domingo",
+    "area": "Salud",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "El Centro Médico Herrera Piña Gervacio busca un médico familiar para formar parte de su equipo de profesionales. Ubicación por confirmar.",
+    "requisitos": "Médico familiar",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "Tel. 849-569-4424",
+    "redes": "si"
+  }
+]
