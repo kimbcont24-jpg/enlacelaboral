@@ -1,0 +1,32 @@
+[
+  {
+    "titulo": "Cajero/a",
+    "empresa": "Movet Fitness & Club",
+    "provincia": "La Romana",
+    "area": "Servicio al Cliente",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Movet Fitness & Club, en La Romana, busca Cajero/a para su equipo.",
+    "requisitos": "Responsable | Organizado/a | Amable y con buena actitud de servicio",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "Tel. (829) 923-0462",
+    "imagen": "https://enlace-rd.vercel.app/flyers/movet-fitness-cajera-entrenador.jpg",
+    "redes": "si"
+  },
+  {
+    "titulo": "Entrenador/a",
+    "empresa": "Movet Fitness & Club",
+    "provincia": "La Romana",
+    "area": "Otros",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Movet Fitness & Club, en La Romana, busca Entrenador/a para su equipo.",
+    "requisitos": "Responsable | Organizado/a | Amable y con buena actitud de servicio",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "Tel. (829) 923-0462",
+    "imagen": "https://enlace-rd.vercel.app/flyers/movet-fitness-cajera-entrenador.jpg",
+    "redes": "si"
+  }
+]
