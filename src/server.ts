@@ -7,6 +7,7 @@ import { landingsArea, landingsColeccion, landingsProvincia, slug } from "./lib/
 import { imagenArticulo, imagenPortadaIG, imagenVacante, imagenVacanteIG } from "./lib/og";
 import { categoria, minutosLectura } from "./lib/blog";
 import { empresaDe, leerMeta, SITIO, type VacanteRow } from "./lib/vacantes";
+import { asuntoGracias, correoGracias, EJEMPLO_GRACIAS, type VacanteGracias } from "./lib/correo-gracias";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -181,6 +182,47 @@ async function telegram(): Promise<Response> {
   return json({ ok: errores.length === 0, pendientes: filas.length, enviadas, errores });
 }
 
+type PendienteGracias = { vacante_id: string; titulo: string; empresa: string; provincia: string | null; modalidad: string | null; tipo: string | null; salario_min: number | null; salario_max: number | null; aplicar: string | null; redes: boolean; correo: string | null; correo_id: string | null; contacto: string | null; origen: string };
+
+/**
+ * /api/gracias-empresas → correo «Su vacante ya está publicada» (17 nov 2026).
+ * GET ?clave=…  → grupos listos para enviar (uno por empresa/correo, con asunto y HTML). La clave la valida la base.
+ * POST {clave, ids, correo} → marca esas vacantes como agradecidas (no se repite nunca).
+ * GET /api/gracias-empresas/ejemplo → vista previa con datos inventados (sin datos reales).
+ */
+async function graciasEmpresas(request: Request, url: URL): Promise<Response> {
+  const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
+  if (url.pathname.endsWith("/ejemplo")) return new Response(correoGracias(EJEMPLO_GRACIAS), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
+  const ip = (request.headers.get("x-forwarded-for") ?? "local").split(",")[0]!.trim();
+  if (!pasaLimite(`gracias:${ip}`, 30, 3600e3)) return json({ error: "limite" }, 429);
+  const h = { apikey: SB_KEY, authorization: `Bearer ${SB_KEY}`, "content-type": "application/json" };
+  if (request.method === "POST") {
+    let b: { clave?: string; ids?: string[]; correo?: string };
+    try { b = (await request.json()) as typeof b; } catch { return json({ error: "datos" }, 400); }
+    const ids = (b.ids ?? []).filter((x) => /^[0-9a-f-]{36}$/i.test(String(x))).slice(0, 30);
+    if (!b.clave || !ids.length) return json({ error: "datos" }, 400);
+    const r = await fetch(`${SB_URL}/rest/v1/rpc/gracias_marcar`, { method: "POST", headers: h, body: JSON.stringify({ p_clave: String(b.clave), p_ids: ids, p_correo: String(b.correo ?? "").slice(0, 200) }) });
+    return json({ ok: r.ok, marcadas: r.ok ? await r.json() : 0 }, r.ok ? 200 : 403);
+  }
+  const clave = url.searchParams.get("clave") ?? "";
+  if (clave.length < 20) return json({ error: "clave" }, 403);
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/gracias_pendientes`, { method: "POST", headers: h, body: JSON.stringify({ p_clave: clave }) });
+  if (!r.ok) return json({ error: "clave o base" }, 403);
+  const filas = (await r.json()) as PendienteGracias[];
+  const grupos = new Map<string, PendienteGracias[]>();
+  for (const f of filas) {
+    const llave = (f.correo ?? `id:${f.correo_id}`).toLowerCase();
+    if (!grupos.has(llave)) grupos.set(llave, []);
+    if (grupos.get(llave)!.length < 6) grupos.get(llave)!.push(f);
+  }
+  const salida = [...grupos.values()].slice(0, 15).map((g) => {
+    const vac: VacanteGracias[] = g.map((f) => ({ id: f.vacante_id, titulo: f.titulo, empresa: f.empresa, provincia: f.provincia, modalidad: f.modalidad, tipo: f.tipo, salario_min: f.salario_min, salario_max: f.salario_max, aplicar: f.aplicar, redes: f.redes }));
+    const datos = { contacto: g[0]!.contacto, empresa: g[0]!.empresa, vacantes: vac };
+    return { correo: g[0]!.correo, correo_id: g[0]!.correo_id, origen: g[0]!.origen, empresa: g[0]!.empresa, ids: g.map((f) => f.vacante_id), asunto: asuntoGracias(datos), html: correoGracias(datos) };
+  });
+  return json({ total: salida.length, grupos: salida });
+}
+
 const limites = new Map<string, number[]>();
 const pasaLimite = (clave: string, max: number, ventanaMs: number) => {
   const ahora = Date.now();
@@ -276,6 +318,7 @@ export default {
       return new Response(null, { status: 301, headers: { location: `${SITIO}${url.pathname}${url.search}`, "cache-control": "public, max-age=86400" } });
     }
     if (url.pathname === "/api/telegram") return telegram();
+    if (url.pathname === "/api/gracias-empresas" || url.pathname === "/api/gracias-empresas/ejemplo") return graciasEmpresas(request, url);
     if (url.pathname === "/api/aplicar" && request.method === "POST") return aplicar(request);
     if (url.pathname === "/api/crm-empresas" && request.method === "POST") return crmEmpresas(request);
     if (url.pathname === "/sitemap.xml") return sitemap();
