@@ -1,3 +1,34 @@
 [
-  {"titulo":"Supervisor de Control de Calidad (Turno B)","empresa":"Grob Pharma","provincia":"Santo Domingo","area":"Producción","modalidad":"Presencial","tipo":"Tiempo completo","experiencia":"1-3 años","descripcion":"Grob Pharma busca profesionales comprometidos para coordinar y supervisar la ejecución efectiva de los procesos de Control de Calidad y control de procesos, asegurando el cumplimiento de las Buenas Prácticas de Manufactura (BPM) y la Farmacopea (USP). Turno B. Ubicación por confirmar.","requisitos":"Grado universitario en Licenciatura en Farmacia o Ingeniería Química | Dos (2) años de experiencia en posiciones similares, manejando y supervisando procesos de control de calidad | Conocimientos sobre supervisión y manejo de personal | Manejo de sistema SAP y aplicaciones de oficina | Conocimientos de normas ISO y Buenas Prácticas de Manufactura","fuente":"Flyer de la empresa","aplicar":"Reclutamiento@grobpharma.com.do · indicar en el asunto el título de la vacante","imagen":"https://enlace-rd.vercel.app/flyers/grob-pharma-supervisor-control-calidad-turno-b.jpg","redes":"si"}
+  {
+    "titulo": "Auxiliar de Despacho y Facturación",
+    "empresa": "Portatilshop",
+    "provincia": "Santo Domingo",
+    "area": "Logística",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Portatilshop busca Auxiliar de Despacho y Facturación. Funciones: apoyo en elaboración y revisión de facturas; emisión de comprobantes fiscales (Consumo, Crédito Fiscal, Gubernamental y Régimen Especial); verificación de cantidades y precios de los pedidos; empaque y preparación de productos para despacho; organización de facturas y documentos de entrega; registro de entradas y salidas de productos; apoyo en cuadre de caja y verificación de pagos; preparación de documentos y coordinación de rutas de envío. Horario: lunes a viernes 8:30 a. m.–5:30 p. m., domingo 9:00 a. m.–12:00 m., sábado libre. Ofrece RD$21,500 mensuales, beneficios de ley y descuento del 5% al 10% en productos de la empresa. Ubicación por confirmar.",
+    "requisitos": "Conocimiento básico de comprobantes fiscales (NCF) | Manejo básico de Excel y computación | Conocimientos de logística y distribución | Persona organizada, responsable y detallista",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "empleo.portatilshop@gmail.com",
+    "imagen": "https://enlace-rd.vercel.app/flyers/portatilshop-auxiliar-despacho-facturacion.jpg",
+    "redes": "si",
+    "salario": "RD$21,500 mensuales"
+  },
+  {
+    "titulo": "Supervisor de Almacén",
+    "empresa": "Portatilshop",
+    "provincia": "Santo Domingo",
+    "area": "Logística",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Portatilshop busca Supervisor de Almacén. Funciones: supervisar la recepción y registro de mercancías; controlar entradas y salidas de productos en WareSoft; realizar inventarios periódicos y verificar existencias; crear y asignar códigos de productos en el sistema; organizar y mantener el almacén en óptimas condiciones; verificar calidad y estado de los productos recibidos; supervisar la identificación y etiquetado de mercancías; elaborar reportes de productos faltantes, agotados y de baja rotación; identificar y reportar diferencias en el inventario. Horario: lunes a viernes 8:30 a. m.–5:30 p. m., domingo 9:00 a. m.–12:00 m., sábado libre. Ofrece RD$27,000 mensuales, beneficios de ley y 5% de descuento en productos de la empresa. Ubicación por confirmar.",
+    "requisitos": "Gestión y control de inventarios | Manejo de sistemas de almacén (WareSoft u otros) | Excel intermedio | Técnicas de organización y almacenamiento | Conocimientos de KPI e indicadores de gestión",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "empleo.portatilshop@gmail.com",
+    "imagen": "https://enlace-rd.vercel.app/flyers/portatilshop-supervisor-de-almacen.jpg",
+    "redes": "si",
+    "salario": "RD$27,000 mensuales"
+  }
 ]
