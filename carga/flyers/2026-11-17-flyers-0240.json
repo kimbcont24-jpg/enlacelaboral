@@ -1,0 +1,32 @@
+[
+ {
+  "empresa": "UNAPEC (Universidad APEC)",
+  "provincia": "Distrito Nacional",
+  "area": "Educación",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Gestor Académico de Administración",
+  "descripcion": "Brindar apoyo académico, administrativo y operativo a los programas del área, contribuyendo al seguimiento estudiantil y a la ejecución eficiente de los procesos académicos. Disponibilidad de horario de 2:00 p. m. a 10:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Licenciatura en Administración, Mercadeo, Negocios o áreas afines | Mínimo 2 años de experiencia en procesos administrativos y de gestión | Manejo de MS Office y plataformas académicas | Inglés preferible | Disponibilidad de horario de 2:00 p. m. a 10:00 p. m.",
+  "aplicar": "vacantes@adm.unapec.edu.do · Asunto: Gestor Académico de Administración",
+  "imagen": "https://enlace-rd.vercel.app/flyers/unapec-gestor-academico-administracion.jpg"
+ },
+ {
+  "empresa": "UNAPEC (Universidad APEC)",
+  "provincia": "Distrito Nacional",
+  "area": "Educación",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Coordinador Académico de Mercadeo",
+  "descripcion": "Coordinar y supervisar los procesos académicos de la carrera, asegurando la correcta implementación del plan de estudios y el seguimiento estudiantil. Disponibilidad de 2:00 p. m. a 10:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Maestría en Mercadeo, Dirección Comercial, Marketing Digital o áreas afines | Mínimo 2 años de experiencia en docencia universitaria | Manejo de MS Office y plataformas académicas | Inglés preferible | Disponibilidad de 2:00 p. m. a 10:00 p. m.",
+  "aplicar": "vacantes@adm.unapec.edu.do · Asunto: Coordinador Académico de Mercadeo",
+  "imagen": "https://enlace-rd.vercel.app/flyers/unapec-coordinador-academico-mercadeo.jpg"
+ }
+]
