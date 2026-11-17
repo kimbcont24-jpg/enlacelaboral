@@ -1,3 +1,18 @@
 [
-  {"titulo":"Estudiante de Tecnología de Alimentos","empresa":"Torginol (Grupo Corripio)","provincia":"Santo Domingo","area":"Producción","modalidad":"Presencial","tipo":"Pasantía","experiencia":"Sin experiencia","descripcion":"¿Estudias Tecnología de Alimentos y quieres adquirir experiencia en una planta industrial? Se busca una persona con entusiasmo, iniciativa y deseos de aprender, interesada en desarrollar sus conocimientos y crecer profesionalmente en un entorno industrial. Ofrece oportunidad de adquirir experiencia práctica, aprendizaje de procesos industriales y desarrollo de habilidades. Ubicación: Santo Domingo.","requisitos":"Estudiante de Tecnología de Alimentos | Interés en los procesos de producción industrial | Disposición para aprender y asumir nuevos retos | Responsabilidad, proactividad y atención al detalle | Capacidad para trabajar en equipo","fuente":"Publicación de la empresa","aplicar":"adquisiciones.torginol@corripio.com.do · Asunto: Estudiante de Tecnología de Alimentos","redes":"si"}
+  {
+    "titulo": "Analista de Calidad",
+    "empresa": "Empresa (confidencial)",
+    "provincia": "San Cristóbal",
+    "area": "Operaciones",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Velar porque los productos y procesos cumplan con los estándares de calidad, inocuidad y normativas vigentes: monitorear el proceso, verificar especificaciones y analizar las desviaciones para proponer mejoras. Ubicación: Haina, San Cristóbal. Salario publicado en el flyer: RD$45,000.",
+    "requisitos": "Conocimiento de sistemas de gestión de calidad (ISO 9001) y Buenas Prácticas de Manufactura (BPM) | Conocimiento de herramientas de análisis de calidad y control estadístico de procesos | Conocimiento de inspección, muestreo y control de producto en proceso y terminado | Manejo de Microsoft Office, especialmente Excel | Disponibilidad para turnos rotativos | Análisis y solución de problemas, atención al detalle, comunicación efectiva y trabajo en equipo",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "talentosrd2026@gmail.com (indicar en el asunto: Analista de Calidad)",
+    "imagen": "https://enlace-rd.vercel.app/flyers/confidencial-analista-de-calidad.jpg",
+    "redes": "si",
+    "salario": "RD$45,000"
+  }
 ]
