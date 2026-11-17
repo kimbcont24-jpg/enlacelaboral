@@ -19,6 +19,7 @@ returns table (vacante_id uuid, titulo text, empresa text, provincia text, modal
                salario_min int, salario_max int, aplicar text, redes boolean, publicada timestamptz,
                correo text, correo_id text, contacto text, origen text)
 language plpgsql security definer set search_path = public, privado as $$
+#variable_conflict use_column
 begin
   if p_clave is null or not exists (select 1 from privado.claves c where c.nombre = 'gracias' and c.valor = p_clave) then
     raise exception 'clave';

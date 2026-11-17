@@ -40,9 +40,12 @@ const utm = (u: string, c: string) => `${u}${u.includes("?") ? "&" : "?"}utm_sou
 const rd = (n: number) => "RD$" + n.toLocaleString("es-DO");
 const numero = (id: string) => "EL-" + id.replace(/-/g, "").slice(0, 6).toUpperCase();
 
-export function primerNombre(contacto: string | null): string | null {
-  const n = (contacto ?? "").trim().split(/\s+/)[0] ?? "";
-  if (!n || n.length < 2 || /@|\d|rrhh|recursos|gesti[oó]n|talento|empresa|reclutamiento|equipo|depto|departamento/i.test(n)) return null;
+export function primerNombre(contacto: string | null, empresa = ""): string | null {
+  const c = (contacto ?? "").trim();
+  if (/\b(s\.?r\.?l|s\.?a\.?s?|srl|eirl|inc|corp|group|grupo|service|services|provide|center|centro|consultor\w*|empresa|rrhh|recursos|gesti[oó]n|talento|reclutamiento|equipo|depto|departamento)\b/i.test(c)) return null;
+  const n = c.split(/\s+/)[0] ?? "";
+  if (!n || n.length < 2 || /@|\d/.test(n)) return null;
+  if (empresa && empresa.toLowerCase().includes(n.toLowerCase())) return null;
   return n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
 }
 
@@ -151,7 +154,7 @@ function siganos(): string {
 export function correoGracias(d: DatosGracias): string {
   const v = d.vacantes;
   const una = v.length === 1;
-  const nombre = primerNombre(d.contacto);
+  const nombre = primerNombre(d.contacto, d.empresa);
   const p = v[0]!;
   const enlace = `${SITIO}/vacantes/${p.id}`;
   const textoWa = una ? `Estamos contratando: ${p.titulo} en ${p.empresa}. Aplica gratis aquí: ${enlace}` : `${p.empresa} está contratando. Mira nuestras vacantes y aplica gratis: ${enlace}`;
