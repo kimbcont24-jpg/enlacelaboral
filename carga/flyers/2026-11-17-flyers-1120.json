@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Encargado(a) de Capacitación",
+  "empresa": "Constructora Rizek",
+  "provincia": "Santo Domingo",
+  "area": "Recursos Humanos",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Constructora Rizek busca fortalecer su equipo de Gestión Humana con un(a) encargado(a) de capacitación. Ubicación por confirmar.",
+  "requisitos": "Enviar CV al correo indicado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "y.ramirez@constructorarizek.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/constructora-rizek-gestion-humana.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista de Gestión Humana",
+  "empresa": "Constructora Rizek",
+  "provincia": "Santo Domingo",
+  "area": "Recursos Humanos",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Constructora Rizek busca un(a) analista para su equipo de Gestión Humana. Ubicación por confirmar.",
+  "requisitos": "Enviar CV al correo indicado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "y.ramirez@constructorarizek.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/constructora-rizek-gestion-humana.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Auxiliar de Gestión Humana",
+  "empresa": "Constructora Rizek",
+  "provincia": "Santo Domingo",
+  "area": "Recursos Humanos",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Constructora Rizek busca un(a) auxiliar para su equipo de Gestión Humana. Ubicación por confirmar.",
+  "requisitos": "Enviar CV al correo indicado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "y.ramirez@constructorarizek.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/constructora-rizek-gestion-humana.jpg",
+  "redes": "si"
+ }
+]
