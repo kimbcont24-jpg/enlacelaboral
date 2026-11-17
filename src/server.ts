@@ -208,8 +208,9 @@ async function graciasEmpresas(request: Request, url: URL): Promise<Response> {
   if (clave.length < 20) return json({ error: "clave" }, 403);
   const r = await fetch(`${SB_URL}/rest/v1/rpc/gracias_pendientes`, { method: "POST", headers: h, body: JSON.stringify({ p_clave: clave }) });
   if (!r.ok) return json({ error: "clave o base" }, 403);
-  // Regla de Kim (11 nov): no se agradece a consultoras ni gestión humana (excepto Neuro STEM Talent).
-  const filas = ((await r.json()) as PendienteGracias[]).filter((f) => /neuro\s*stem/i.test(f.empresa) || !/consultor|gesti[oó]n humana|recursos humanos|reclutamiento|headhunt|staffing/i.test(f.empresa));
+  // 17 nov 2026 (Kim): «mándale a todos el agradecimiento». Toda vacante publicada recibe su correo
+  // (las consultoras ya no llegan a publicarse por la regla de la base, así que no se filtra aquí).
+  const filas = (await r.json()) as PendienteGracias[];
   const grupos = new Map<string, PendienteGracias[]>();
   for (const f of filas) {
     const llave = (f.correo ?? `id:${f.correo_id}`).toLowerCase();
