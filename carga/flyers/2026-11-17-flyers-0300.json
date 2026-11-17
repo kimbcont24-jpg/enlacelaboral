@@ -1,0 +1,32 @@
+[
+ {
+  "empresa": "Mecaproject",
+  "provincia": "Santo Domingo",
+  "tipo": "Tiempo completo",
+  "modalidad": "Presencial",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "projectmecatronica@gmail.com",
+  "redes": "si",
+  "titulo": "Asistente Administrativa Contable",
+  "area": "Contabilidad y Finanzas",
+  "experiencia": "3+ años",
+  "descripcion": "Mecaproject (proyectos mecatrónicos) busca Asistente Administrativa Contable en Santo Domingo. Ubicación por confirmar.",
+  "requisitos": "Licenciatura en Administración de Empresas o Contabilidad | Mínimo 3 años de experiencia en puestos de gestión contable y administrativa | Conocimientos de contabilidad y manejo de Excel | Conocimiento en preparación y presentación de reportes contables ante la DGII | Habilidades interpersonales, comunicación efectiva y capacidad para trabajar en equipo | Persona organizada, responsable, proactiva y orientada a resultados",
+  "imagen": "https://enlace-rd.vercel.app/flyers/mecaproject-asistente-administrativa-contable.jpg"
+ },
+ {
+  "empresa": "Mecaproject",
+  "provincia": "Santo Domingo",
+  "tipo": "Tiempo completo",
+  "modalidad": "Presencial",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "projectmecatronica@gmail.com",
+  "redes": "si",
+  "titulo": "Auxiliar de Compras y Almacén",
+  "area": "Logística",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Mecaproject (proyectos mecatrónicos) busca Auxiliar de Compras y Almacén en Santo Domingo. Ubicación por confirmar. Deseable: saber conducir vehículos de transmisión mecánica y tener nociones de mecánica o electricidad.",
+  "requisitos": "Manejo de Excel | Conocimiento o experiencia en almacén y compras | Licencia de conducir vigente | Persona ordenada, diligente, responsable y honesta | Orientada al logro y a resultados",
+  "imagen": "https://enlace-rd.vercel.app/flyers/mecaproject-auxiliar-compras-almacen.jpg"
+ }
+]
