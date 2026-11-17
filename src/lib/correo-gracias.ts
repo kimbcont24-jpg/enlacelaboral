@@ -133,6 +133,53 @@ function vitrina(v: VacanteGracias, i: number): string {
 </td></tr>`;
 }
 
+
+/** Redes oficiales de Enlace Laboral RD (verificadas en el sitio y en el proyecto, 17 nov 2026). */
+export const REDES = [
+  { red: "Instagram", detalle: "@enlacelaboralrd", url: "https://www.instagram.com/enlacelaboralrd", color: "#E1306C", accion: "Seguir" },
+  { red: "Canal de WhatsApp", detalle: "Vacantes al momento", url: "https://whatsapp.com/channel/0029Vb7GW0UKLaHf3idEm62D", color: "#25D366", accion: "Unirme" },
+  { red: "Canal de Telegram", detalle: "t.me/enlacelaboral", url: "https://t.me/enlacelaboral", color: "#229ED9", accion: "Unirme" },
+  { red: "LinkedIn", detalle: "Enlace Laboral RD", url: "https://www.linkedin.com/company/enlacelaboralrd", color: "#0A66C2", accion: "Seguir" },
+  { red: "Facebook", detalle: "Enlace Laboral RD", url: "https://www.facebook.com/109048674048597", color: "#1877F2", accion: "Seguir" },
+] as const;
+
+function siganos(): string {
+  const tarjeta = (r: (typeof REDES)[number]) => `
+      <td width="50%" valign="top" style="padding:5px;">
+        <a href="${r.url}" style="display:block;text-decoration:none;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0c2a52;border:1px solid #1d3a63;border-left:5px solid ${r.color};border-radius:14px;"><tr>
+          <td style="padding:12px;${F}">
+            <p style="margin:0;font-size:14px;line-height:18px;font-weight:800;color:#ffffff;">${r.red}</p>
+            <p style="margin:2px 0 8px 0;font-size:12px;line-height:16px;color:#9fb6d9;word-break:break-word;">${r.detalle}</p>
+            <span style="display:inline-block;padding:5px 11px;border-radius:999px;background:${r.color};font-size:12px;font-weight:800;color:#ffffff;">${r.accion} →</span>
+          </td>
+        </tr></table>
+        </a>
+      </td>`;
+  const filas: string[] = [];
+  for (let i = 0; i < REDES.length; i += 2) {
+    const a = REDES[i]!, b = REDES[i + 1];
+    filas.push(`<tr>${tarjeta(a)}${b ? tarjeta(b) : `<td width="50%" valign="top" style="padding:5px;">
+        <a href="${utm(SITIO, "siganos")}" style="display:block;text-decoration:none;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${ORO};border-radius:14px;"><tr><td style="padding:12px;${F}">
+          <p style="margin:0;font-size:14px;line-height:18px;font-weight:800;color:${NOCHE};word-break:break-word;">Nuestra web</p>
+          <p style="margin:2px 0 8px 0;font-size:12px;line-height:16px;color:${NOCHE};">enlacelaboralrd.com</p>
+          <span style="display:inline-block;padding:5px 11px;border-radius:999px;background:${NOCHE};font-size:12px;font-weight:800;color:#ffffff;">Ver vacantes →</span>
+        </td></tr></table></a>
+      </td>`}</tr>`);
+  }
+  return `
+<!-- Síganos -->
+<tr><td style="background:${NOCHE};padding:6px 25px 26px 25px;${F}">
+  <p style="margin:0 0 4px 0;font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:${VERDE};" align="center">Síganos y no se pierda nada</p>
+  <p style="margin:0 0 14px 0;font-size:14px;line-height:21px;color:#c9d8ee;" align="center">Allí compartimos las vacantes de empresas como la suya y consejos para contratar mejor.</p>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+    ${filas.join("\n    ")}
+  </table>
+</td></tr>
+`;
+}
+
 export function correoGracias(d: DatosGracias): string {
   const v = d.vacantes;
   const una = v.length === 1;
@@ -216,6 +263,7 @@ ${rastreador()}
   ${boton(utm(`${SITIO}/empresas`, "otra_vacante"), "Publicar otra vacante gratis →", ORO, NOCHE)}
 </td></tr>
 
+${siganos()}
 <!-- Firma -->
 <tr><td style="background:${NOCHE};padding:0 30px 28px 30px;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #1d3a63;"><tr>
@@ -224,7 +272,7 @@ ${rastreador()}
       <p style="margin:0;font-size:14px;color:#c9d8ee;">Con gratitud,</p>
       <p style="margin:2px 0 0 0;font-size:15px;font-weight:800;color:#ffffff;">Equipo de Empleo · Enlace Laboral RD</p>
       <p style="margin:2px 0 0 0;font-size:13px;color:${CELESTE};font-style:italic;">Conectamos talento con oportunidades reales</p>
-      <p style="margin:8px 0 0 0;font-size:13px;color:#9fb6d9;"><a href="${utm(SITIO, "firma")}" style="color:#ffffff;text-decoration:none;font-weight:700;">enlacelaboralrd.com</a> · <a href="mailto:info@enlacelaboralrd.com" style="color:#9fb6d9;text-decoration:none;">info@enlacelaboralrd.com</a> · <a href="https://www.instagram.com/enlacelaboralrd" style="color:#9fb6d9;text-decoration:none;">@enlacelaboralrd</a></p>
+      <p style="margin:8px 0 0 0;font-size:13px;color:#9fb6d9;"><a href="${utm(SITIO, "firma")}" style="color:#ffffff;text-decoration:none;font-weight:700;">enlacelaboralrd.com</a> · <a href="mailto:info@enlacelaboralrd.com" style="color:#9fb6d9;text-decoration:none;">info@enlacelaboralrd.com</a> · <a href="https://www.instagram.com/enlacelaboralrd" style="color:#9fb6d9;text-decoration:none;">Instagram</a> · <a href="https://whatsapp.com/channel/0029Vb7GW0UKLaHf3idEm62D" style="color:#9fb6d9;text-decoration:none;">WhatsApp</a> · <a href="https://t.me/enlacelaboral" style="color:#9fb6d9;text-decoration:none;">Telegram</a> · <a href="https://www.linkedin.com/company/enlacelaboralrd" style="color:#9fb6d9;text-decoration:none;">LinkedIn</a></p>
     </td>
   </tr></table>
 </td></tr>
