@@ -1,0 +1,47 @@
+[
+ {
+  "empresa": "Teselta",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "peoplerd@teselta.com",
+  "redes": "si",
+  "titulo": "Auxiliar de Almacén",
+  "area": "Logística",
+  "experiencia": "1-3 años",
+  "descripcion": "Teselta abre vacante de Auxiliar de Almacén («Únete a la Brigada»). Ubicación por confirmar.",
+  "requisitos": "Estudiante de Mercadeo, Ingeniería Industrial, Mecánica o áreas afines | Más de 1 año de experiencia en posiciones similares | Conocimientos en equipos pesados (preferiblemente) | Dominio básico del idioma inglés | Dominio de Microsoft Office: Word, Excel, Outlook, PowerPoint | Conocimientos en equipo de montacargas | Conocimientos de SAP Business One",
+  "imagen": "https://enlace-rd.vercel.app/flyers/teselta-auxiliar-de-almacen.jpg"
+ },
+ {
+  "empresa": "Teselta",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "peoplerd@teselta.com",
+  "redes": "si",
+  "titulo": "Vendedor de Counter",
+  "area": "Ventas",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Teselta abre vacante de Vendedor de Counter («Únete a la Brigada»). Ubicación por confirmar.",
+  "requisitos": "Licenciado y/o estudiante de carreras como Mercadeo, Administración de Empresas o carreras afines | 0-6 meses de experiencia en el área de ventas | Experiencia en el sector construcción, equipos pesados | Manejo de SAP y SharePoint | Dominio de Microsoft Office: Word, Excel, Outlook, PowerPoint",
+  "imagen": "https://enlace-rd.vercel.app/flyers/teselta-vendedor-de-counter.jpg"
+ },
+ {
+  "empresa": "Teselta",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "peoplerd@teselta.com",
+  "redes": "si",
+  "titulo": "Asesor de Ventas",
+  "area": "Ventas",
+  "experiencia": "1-3 años",
+  "descripcion": "Teselta abre vacante de Asesor de Ventas («Únete a la Brigada»). Ubicación por confirmar.",
+  "requisitos": "Licenciado y/o estudiante de carreras como Mercadeo, Administración de Empresas o áreas afines | 1 año o más de experiencia en el área de ventas y servicio al cliente | Experiencia en el sector construcción, repuestos y equipos pesados | Manejo de SAP y SharePoint | Dominio de Microsoft Office: Word, Excel, Outlook, PowerPoint",
+  "imagen": "https://enlace-rd.vercel.app/flyers/teselta-asesor-de-ventas.jpg"
+ }
+]
