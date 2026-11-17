@@ -163,7 +163,7 @@ export function correoGracias(d: DatosGracias): string {
   const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(enlace)}`;
   const conSalario = v.every((x) => x.salario_min);
   const preheader = una ? `${p.titulo} ya está en línea y recibiendo candidatos. Aquí tiene su comprobante.` : `Sus ${v.length} vacantes ya están en línea. Aquí tiene sus comprobantes.`;
-  const titular = `${nombre ? `${esc(nombre)}, su` : "Su"} ${una ? "vacante ya está" : "vacantes ya están"}<br>trabajando para usted.`;
+  const titular = `${nombre ? `${esc(nombre)}, ${una ? "su vacante ya está" : "sus vacantes ya están"}` : una ? "Su vacante ya está" : "Sus vacantes ya están"}<br>trabajando para usted.`;
 
   return `<!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light"><title>${esc(asuntoGracias(d))}</title></head>

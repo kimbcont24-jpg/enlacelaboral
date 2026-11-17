@@ -208,19 +208,22 @@ async function graciasEmpresas(request: Request, url: URL): Promise<Response> {
   if (clave.length < 20) return json({ error: "clave" }, 403);
   const r = await fetch(`${SB_URL}/rest/v1/rpc/gracias_pendientes`, { method: "POST", headers: h, body: JSON.stringify({ p_clave: clave }) });
   if (!r.ok) return json({ error: "clave o base" }, 403);
-  const filas = (await r.json()) as PendienteGracias[];
+  // Regla de Kim (11 nov): no se agradece a consultoras ni gestión humana (excepto Neuro STEM Talent).
+  const filas = ((await r.json()) as PendienteGracias[]).filter((f) => /neuro\s*stem/i.test(f.empresa) || !/consultor|gesti[oó]n humana|recursos humanos|reclutamiento|headhunt|staffing/i.test(f.empresa));
   const grupos = new Map<string, PendienteGracias[]>();
   for (const f of filas) {
     const llave = (f.correo ?? `id:${f.correo_id}`).toLowerCase();
     if (!grupos.has(llave)) grupos.set(llave, []);
     if (grupos.get(llave)!.length < 6) grupos.get(llave)!.push(f);
   }
-  const salida = [...grupos.values()].slice(0, 15).map((g) => {
+  // ?n= cuántos grupos con HTML devolver (por defecto 1: la tarea envía de uno en uno y así la respuesta nunca se corta).
+  const n = Math.min(Math.max(Number(url.searchParams.get("n") ?? 1) || 1, 1), 15);
+  const salida = [...grupos.values()].slice(0, n).map((g) => {
     const vac: VacanteGracias[] = g.map((f) => ({ id: f.vacante_id, titulo: f.titulo, empresa: f.empresa, provincia: f.provincia, modalidad: f.modalidad, tipo: f.tipo, salario_min: f.salario_min, salario_max: f.salario_max, aplicar: f.aplicar, redes: f.redes, publicada: f.publicada }));
     const datos = { contacto: g[0]!.contacto, empresa: g[0]!.empresa, vacantes: vac };
     return { correo: g[0]!.correo, correo_id: g[0]!.correo_id, origen: g[0]!.origen, empresa: g[0]!.empresa, ids: g.map((f) => f.vacante_id), asunto: asuntoGracias(datos), html: correoGracias(datos) };
   });
-  return json({ total: salida.length, grupos: salida });
+  return json({ pendientes: grupos.size, total: salida.length, grupos: salida });
 }
 
 const limites = new Map<string, number[]>();
