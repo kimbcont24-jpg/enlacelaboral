@@ -1,0 +1,32 @@
+[
+ {
+  "empresa": "UNAPEC (Universidad APEC)",
+  "provincia": "Distrito Nacional",
+  "area": "Educación",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Gestor Académico de Contabilidad, Finanzas y Economía",
+  "experiencia": "1-3 años",
+  "descripcion": "Brindar apoyo académico, administrativo y operativo a los programas del área, acompañando el seguimiento estudiantil y la ejecución de procesos académicos. Disponibilidad de horario de 2:00 p. m. a 10:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Licenciatura en Contabilidad, Finanzas o Economía | Mínimo 2 años de experiencia en procesos administrativos y de gestión | Manejo de MS Office y plataformas académicas | Inglés preferible | Disponibilidad de horario de 2:00 p. m. a 10:00 p. m.",
+  "aplicar": "vacantes@adm.unapec.edu.do · Asunto: Gestor Académico de Contabilidad, Finanzas y Economía",
+  "imagen": "https://enlace-rd.vercel.app/flyers/unapec-gestor-academico-contabilidad.jpg"
+ },
+ {
+  "empresa": "UNAPEC (Universidad APEC)",
+  "provincia": "Distrito Nacional",
+  "area": "Educación",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Coordinador Académico de Negocios Internacionales",
+  "experiencia": "1-3 años",
+  "descripcion": "Coordinar y supervisar los procesos académicos de la carrera, asegurando la implementación del plan de estudios y el adecuado seguimiento estudiantil. Disponibilidad de 2:00 p. m. a 10:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Maestría en Negocios Internacionales, Comercio Exterior, Administración, Economía o áreas afines | Mínimo 2 años de experiencia en docencia universitaria | Manejo de MS Office y plataformas académicas | Inglés preferible | Disponibilidad de 2:00 p. m. a 10:00 p. m.",
+  "aplicar": "vacantes@adm.unapec.edu.do · Asunto: Coordinador Académico de Negocios Internacionales",
+  "imagen": "https://enlace-rd.vercel.app/flyers/unapec-coordinador-academico-negocios-internacionales.jpg"
+ }
+]
