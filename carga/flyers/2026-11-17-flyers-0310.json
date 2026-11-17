@@ -1,3 +1,34 @@
 [
-  {"titulo":"Auxiliar de Contabilidad","empresa":"Electrodom","provincia":"Distrito Nacional","area":"Contabilidad y Finanzas","modalidad":"Presencial","tipo":"Tiempo completo","experiencia":"Sin experiencia","descripcion":"Electrodom busca Auxiliar de Contabilidad para verificar los cuadres y reportes financieros, y realizar conciliaciones bancarias y seguimiento de cuentas corrientes. Ubicación: Distrito Nacional, Santo Domingo.","requisitos":"Estudiante de término de la carrera de Contabilidad (indispensable) | Conocimientos en conciliaciones y procesos contables generales | Manejo de MS Excel y herramientas de oficina | Proactividad, organización y atención al detalle","fuente":"Flyer de la empresa","aplicar":"coordinacion@electrodom.com.do · Referencia: VACANTE AUX. CONTABILIDAD","imagen":"https://enlace-rd.vercel.app/flyers/electrodom-auxiliar-de-contabilidad.jpg","redes":"si"}
+  {
+    "titulo": "Ejecutivo de Ventas Digitales",
+    "empresa": "Portatilshop",
+    "provincia": "Santo Domingo",
+    "area": "Ventas",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Portatilshop busca Ejecutivo de Ventas Digitales. Funciones: atención a clientes por Instagram, Facebook, TikTok, WhatsApp y página web; captación y seguimiento de clientes potenciales; asesoría sobre productos, precios y promociones; gestión de cotizaciones, financiamientos y pedidos; seguimiento de ventas y confirmación de pagos; atención de consultas y reclamaciones. Horario: lunes a viernes 8:30 a. m.–5:30 p. m., domingo 9:00 a. m.–12:00 m., sábado libre. Ofrece RD$21,500 mensuales, beneficios de ley, 5% de descuento en productos de la empresa e incentivos por ventas. Ubicación por confirmar.",
+    "requisitos": "Técnicas de ventas | Manejo de redes sociales | Conocimiento de productos tecnológicos",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "empleo.portatilshop@gmail.com",
+    "imagen": "https://enlace-rd.vercel.app/flyers/portatilshop-ejecutivo-ventas-digitales.jpg",
+    "redes": "si",
+    "salario": "RD$21,500 mensuales"
+  },
+  {
+    "titulo": "Auxiliar de Almacén",
+    "empresa": "Portatilshop",
+    "provincia": "Santo Domingo",
+    "area": "Logística",
+    "modalidad": "Presencial",
+    "tipo": "Tiempo completo",
+    "experiencia": "Sin experiencia",
+    "descripcion": "Portatilshop busca Auxiliar de Almacén. Funciones: recepción, organización y almacenamiento de mercancías; localización y preparación de productos solicitados por los departamentos; registro de entradas en el sistema; verificación y reporte de productos dañados o faltantes; actualización de etiquetas y precios; apoyo en la preparación y despacho de pedidos; mantenimiento del orden y limpieza del almacén. Horario: lunes a viernes 8:30 a. m.–5:30 p. m., sábado 9:00 a. m.–2:00 p. m. Ofrece RD$21,000 mensuales, beneficios de ley y 5% de descuento en productos de la empresa. Ubicación por confirmar.",
+    "requisitos": "Conocimientos básicos de manipulación de mercancías | Conocimientos básicos de computación (preferible) | Responsabilidad, organización y disposición para trabajar en equipo",
+    "fuente": "Flyer de la empresa",
+    "aplicar": "empleo.portatilshop@gmail.com",
+    "imagen": "https://enlace-rd.vercel.app/flyers/portatilshop-auxiliar-de-almacen.jpg",
+    "redes": "si",
+    "salario": "RD$21,000 mensuales"
+  }
 ]
