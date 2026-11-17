@@ -17,6 +17,7 @@ import { DesdeFotos } from "@/components/admin/DesdeFotos";
 import { Control } from "@/components/admin/Control";
 import { Empresas } from "@/components/admin/Empresas";
 import { CrmEmpresas } from "@/components/admin/CrmEmpresas";
+import { Aliadas } from "@/components/admin/Aliadas";
 import { Inicio } from "@/components/admin/Inicio";
 import { Reportes } from "@/components/admin/Reportes";
 import { Usuarios } from "@/components/admin/Usuarios";
@@ -109,6 +110,7 @@ function Admin() {
 
   const grupos: { id: string; label: string; aviso?: number; tabs: { id: Tab; label: string }[] }[] = [
     { id: "inicio", label: "Inicio", tabs: [{ id: "inicio", label: "Resumen" }] },
+    { id: "aliadas", label: "⭐ Aliadas", tabs: [{ id: "aliadas", label: "Empresas aliadas" }] },
     {
       id: "vacantes", label: "Vacantes", aviso: pendientes + reportesNuevos,
       tabs: [
@@ -174,6 +176,7 @@ function Admin() {
               {tab === "reportes" && <Reportes onCambio={() => void contar()} />}
               {tab === "empresas" && <Empresas />}
               {tab === "crm" && <CrmEmpresas />}
+              {tab === "aliadas" && <Aliadas />}
               {tab === "opiniones" && <Opiniones onCambio={() => void contar()} />}
               {tab === "control" && <Control />}
               {tab === "actividad" && <Actividad />}
