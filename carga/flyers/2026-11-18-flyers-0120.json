@@ -1,0 +1,62 @@
+[
+ {
+  "titulo": "Técnico Senior – Facilidades (Turno B)",
+  "empresa": "HAYCO",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "HAYCO busca un técnico senior para el área de facilidades en el turno B. Ubicación por confirmar.",
+  "requisitos": "Técnico o ingeniería en Mecatrónica, Electromecánica, Automatización, Electricidad Industrial, Electrónica o afines | Dominio del idioma inglés | Habilidad con informática y Microsoft Office, en especial Excel y PowerPoint | Más de 3 años de experiencia profesional | Conocimientos en Seguridad Industrial y 5S",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "vacantes@hayco.com · Asunto: nombre de la vacante",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hayco-tecnico-senior-facilidades.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Operador Técnico – Mantenimiento (Turnos ABC)",
+  "empresa": "HAYCO",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "HAYCO busca un operador técnico de mantenimiento para turnos rotativos A, B y C. Ubicación por confirmar.",
+  "requisitos": "Bachiller aprobado | 2 años de experiencia en manufactura | Técnico en Mecatrónica, Electrónica, Electricidad o Mecánica Industrial | Experiencia en equipos multifuncionales",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "vacantes@hayco.com · Asunto: nombre de la vacante",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hayco-tecnicos-mantenimiento.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Técnico – Mantenimiento (Turnos ABC)",
+  "empresa": "HAYCO",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "HAYCO busca un técnico de mantenimiento para turnos rotativos A, B y C. Ubicación por confirmar.",
+  "requisitos": "Técnico/Vocacional en Mecánica Industrial, Mecatrónica, Electricidad Industrial, Electrónica o afines | 2 a 4 años de experiencia en áreas de mantenimiento",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "vacantes@hayco.com · Asunto: nombre de la vacante",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hayco-tecnicos-mantenimiento.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Técnico Senior – Mantenimiento (Turnos ABC)",
+  "empresa": "HAYCO",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "HAYCO busca un técnico senior de mantenimiento para turnos rotativos A, B y C. Ubicación por confirmar.",
+  "requisitos": "Técnico/Vocacional en Mecánica Industrial, Mecatrónica, Electricidad Industrial, Electrónica o afines | 4 a 6 años de experiencia en áreas de mantenimiento",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "vacantes@hayco.com · Asunto: nombre de la vacante",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hayco-tecnicos-mantenimiento.jpg",
+  "redes": "si"
+ }
+]
