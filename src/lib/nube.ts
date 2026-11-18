@@ -15,6 +15,21 @@ const EV_GUARDADAS = "enlace-guardados-cambio";
 const EV_POSTS = "enlace-postulaciones-cambio";
 export const EV_NUBE = "enlace-nube-estado";
 
+/** Envío propio con el diseño de Enlace (Resend), servido por el backend de Lovable con la llave de servicio. */
+const URL_CORREO = "https://enlace-rd.lovable.app/api/public/enviar-codigo";
+let ultimoConCodigo = false;
+/** ¿El último correo de acceso que enviamos trae código de números? */
+export const correoTraeCodigo = () => ultimoConCodigo;
+export async function enviarCorreoEnlace(email: string, tipo: "acceso" | "recuperar", volver: string): Promise<"ok" | "espera" | "limite" | "correo" | "no_disponible"> {
+  try {
+    const r = await fetch(URL_CORREO, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email, tipo, volver }) });
+    const d = (await r.json().catch(() => ({}))) as { ok?: boolean; motivo?: string; codigo?: boolean };
+    if (r.ok && d.ok) { ultimoConCodigo = !!d.codigo; return "ok"; }
+    if (d.motivo === "espera" || d.motivo === "limite" || d.motivo === "correo") return d.motivo;
+    return "no_disponible";
+  } catch { return "no_disponible"; }
+}
+
 type Post = { id: string; fecha?: string; cambio?: string; [k: string]: unknown };
 type Fila = { cv: Partial<CV>; plantilla: string | null; guardadas: string[]; postulaciones: Post[]; versiones: Partial<Versiones> | null; updated_at: string };
 
@@ -128,12 +143,20 @@ export function useNube() {
   }, [leer]);
 
   const enviarCodigo = async (correo: string, volverA = "/guardadas") => {
+    // Primero, el correo con diseño de Enlace (código grande + botón). Si no está disponible, el de siempre.
+    const r = await enviarCorreoEnlace(correo.trim(), "acceso", `${window.location.origin}${volverA}`);
+    if (r === "ok") return null;
+    if (r === "espera") return "Espera un minuto antes de pedir otro código.";
+    if (r === "limite") return "Pediste varios códigos seguidos. Intenta de nuevo en un rato.";
+    if (r === "correo") return "No pudimos enviar el correo. Revisa que esté bien escrito.";
+    ultimoConCodigo = false;
     const { error } = await supabase.auth.signInWithOtp({ email: correo.trim(), options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}${volverA}` } });
     return error ? (/rate|seconds|limit/i.test(error.message) ? "Espera un minuto antes de pedir otro código." : "No pudimos enviar el correo. Revisa que esté bien escrito.") : null;
   };
   const verificar = async (correo: string, codigo: string) => {
     const t = codigo.replace(/\D/g, "");
     let r = await supabase.auth.verifyOtp({ email: correo.trim(), token: t, type: "email" });
+    if (r.error) r = await supabase.auth.verifyOtp({ email: correo.trim(), token: t, type: "magiclink" });
     if (r.error) r = await supabase.auth.verifyOtp({ email: correo.trim(), token: t, type: "signup" });
     return r.error ? "Ese código no es válido o ya venció. Pide uno nuevo." : null;
   };

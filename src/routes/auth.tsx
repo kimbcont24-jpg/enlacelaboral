@@ -6,6 +6,7 @@ import { AccesoEscena } from "@/components/site/AccesoEscena";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
+import { enviarCorreoEnlace } from "@/lib/nube";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (s: Record<string, unknown>): { modo?: "registro" | "equipo" | "nueva"; correo?: string; empresa?: string } => ({
@@ -99,8 +100,12 @@ function Auth() {
     setCargando(true);
     try {
       if (modo === "olvido") {
-        const { error: err } = await supabase.auth.resetPasswordForEmail(correo, { redirectTo: `${window.location.origin}/auth?modo=nueva` });
-        if (err) throw err;
+        const r = await enviarCorreoEnlace(correo, "recuperar", `${window.location.origin}/auth?modo=nueva`);
+        if (r === "espera" || r === "limite") throw new Error("rate limit");
+        if (r !== "ok") {
+          const { error: err } = await supabase.auth.resetPasswordForEmail(correo, { redirectTo: `${window.location.origin}/auth?modo=nueva` });
+          if (err) throw err;
+        }
         setAviso(`Si ${correo} tiene cuenta, te llegará un enlace para crear una contraseña nueva. Revisa también «Spam».`);
       } else if (modo === "nueva") {
         const { data, error: err } = await supabase.auth.updateUser({ password: clave });
