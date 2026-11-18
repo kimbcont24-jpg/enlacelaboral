@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Auxiliar de Servicio al Cliente",
+  "empresa": "Alutech Carpintería de Aluminio",
+  "provincia": "Santo Domingo",
+  "area": "Servicio al Cliente",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Alutech Carpintería de Aluminio busca un auxiliar de servicio al cliente para atención y asistencia al cliente, gestión de cobros y cuentas pendientes, coordinación de rutas del equipo de instalación y seguimiento a los trabajos programados. Horario: lunes a viernes de 8:00 a. m. a 5:00 p. m. y sábados de 8:00 a. m. a 12:00 m. Residir en Santo Domingo Oeste.",
+  "requisitos": "Experiencia en servicio al cliente y coordinación logística (preferiblemente) | Buena comunicación verbal y escrita | Manejo de Excel y herramientas informáticas | Orientación a resultados y trabajo en equipo | Residir en Santo Domingo Oeste",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "alutechrd818@gmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/alutech-auxiliar-servicio-al-cliente.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista Sr. de Contabilidad",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Se busca analista sénior de contabilidad con dominio del ciclo contable completo, inventario, nómina, cierres, estados financieros, conciliaciones, impuestos, cuentas por pagar y cobrar, costos y presupuestos. Ofrece beneficios de ley. Ubicación por confirmar.",
+  "requisitos": "Licenciatura en Contabilidad | Mínimo 2 años de experiencia profesional | Dominio del ciclo contable completo | Manejo de sistemas contables y Excel | Experiencia en inventario y nómina | Experiencia en cierres, estados financieros, conciliaciones, impuestos, cuentas por pagar y cobrar, costos y presupuestos",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "chickenrooming.contabilidad@gmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/confidencial-analista-sr-contabilidad.jpg",
+  "redes": "si"
+ }
+]
