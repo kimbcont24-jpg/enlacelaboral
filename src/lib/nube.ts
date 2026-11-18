@@ -127,8 +127,8 @@ export function useNube() {
     return () => window.removeEventListener(EV_NUBE, leer);
   }, [leer]);
 
-  const enviarCodigo = async (correo: string) => {
-    const { error } = await supabase.auth.signInWithOtp({ email: correo.trim(), options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/guardadas` } });
+  const enviarCodigo = async (correo: string, volverA = "/guardadas") => {
+    const { error } = await supabase.auth.signInWithOtp({ email: correo.trim(), options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}${volverA}` } });
     return error ? (/rate|seconds|limit/i.test(error.message) ? "Espera un minuto antes de pedir otro código." : "No pudimos enviar el correo. Revisa que esté bien escrito.") : null;
   };
   const verificar = async (correo: string, codigo: string) => {

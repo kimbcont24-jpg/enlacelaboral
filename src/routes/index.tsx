@@ -83,7 +83,7 @@ function Home() {
             <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary text-white"><UserRound className="size-5" aria-hidden="true" /></span>
             <div>
               <p className="font-bold">¿Buscas empleo?</p>
-              <p className="mt-1 text-sm text-muted-foreground">Busca, mira el salario y los requisitos, y aplica gratis. ¿Sin CV? <Link to="/cv" className="font-semibold text-primary underline">Créalo gratis en 5 minutos</Link>.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Busca, mira el salario y los requisitos, y aplica gratis. ¿Sin CV? <Link to="/cv" className="font-semibold text-primary underline">Créalo gratis en 5 minutos</Link>. <Link to="/cuenta" className="font-semibold text-primary underline">Crea tu cuenta</Link> y recibe vacantes para ti.</p>
             </div>
           </div>
           <div className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-soft)]">

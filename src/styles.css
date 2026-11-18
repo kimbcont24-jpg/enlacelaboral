@@ -385,3 +385,39 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
   0%, 100% { top: 0.3rem; }
   50% { top: calc(100% - 0.45rem); }
 }
+
+/* ───── Acceso (registro de empresas y candidatos) · catálogo de efectos de Kim ───── */
+@keyframes fx-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes fx-pop { 0% { opacity: 0; transform: scale(.82) translateY(14px); } 70% { opacity: 1; transform: scale(1.03); } 100% { opacity: 1; transform: none; } }
+@keyframes fx-float { 0%,100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+@keyframes fx-drift { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-6%,8%) scale(1.12); } 66% { transform: translate(5%,-4%) scale(.95); } }
+@keyframes fx-shine { from { transform: translateX(-120%) skewX(-20deg); } to { transform: translateX(260%) skewX(-20deg); } }
+@keyframes fx-paso { from { opacity: 0; transform: translateX(26px); } to { opacity: 1; transform: none; } }
+@keyframes fx-sobre { 0% { transform: scale(.4) rotate(-12deg); opacity: 0; } 60% { transform: scale(1.08) rotate(3deg); opacity: 1; } 100% { transform: none; opacity: 1; } }
+@keyframes fx-check { from { stroke-dashoffset: 30; } to { stroke-dashoffset: 0; } }
+@keyframes fx-onda { from { transform: scale(.6); opacity: .55; } to { transform: scale(2.2); opacity: 0; } }
+.fx-up { animation: fx-up .9s cubic-bezier(.2,.7,.2,1) both; }
+.fx-pop { animation: fx-pop .7s cubic-bezier(.2,.8,.3,1.2) both, fx-float 6s ease-in-out infinite; }
+.fx-blob { animation: fx-drift 18s ease-in-out infinite; }
+.fx-paso { animation: fx-paso .55s cubic-bezier(.2,.7,.2,1) both; }
+.fx-sobre { animation: fx-sobre .8s cubic-bezier(.2,.8,.3,1.2) both; }
+.fx-check { stroke-dasharray: 30; animation: fx-check .5s .55s ease-out both; }
+.fx-onda { animation: fx-onda 2.4s ease-out infinite; }
+.fx-depth-front, .fx-depth-back { transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.fx-depth-front { transform: translate3d(calc(var(--mx, 0) * 18px), calc(var(--my, 0) * 14px), 0); }
+.fx-depth-back { transform: translate3d(calc(var(--mx, 0) * -8px), calc(var(--my, 0) * -6px), 0); }
+.fx-btn { position: relative; overflow: hidden; transition: transform .25s ease, box-shadow .25s ease, filter .2s; }
+.fx-btn::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 40%; pointer-events: none; background: linear-gradient(90deg, transparent, rgb(255 255 255 / .55), transparent); transform: translateX(-120%) skewX(-20deg); }
+.fx-btn:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 14px 30px -12px rgb(10 47 92 / .6); }
+.fx-btn:not(:disabled):hover::after { animation: fx-shine .8s ease; }
+/* Campo con etiqueta que sube */
+.campo-flota { position: relative; }
+.campo-flota > input { height: 3.5rem; width: 100%; border-radius: .9rem; border: 1.5px solid var(--border); background: var(--background); padding: 1.35rem 1rem .4rem; font-size: 1rem; outline: none; transition: border-color .2s, box-shadow .2s; }
+.campo-flota > input:focus { border-color: #1d6ff2; box-shadow: 0 0 0 4px rgb(29 111 242 / .14); }
+.campo-flota > label { position: absolute; left: 1rem; top: 1.05rem; font-size: 1rem; color: var(--muted-foreground); pointer-events: none; transition: all .18s ease; }
+.campo-flota > input:focus + label, .campo-flota > input:not(:placeholder-shown) + label { top: .45rem; font-size: .72rem; font-weight: 700; letter-spacing: .02em; color: #1557c4; }
+.campo-flota[data-ok="true"] > input { border-color: #0f7a43; }
+@media (prefers-reduced-motion: reduce) {
+  .fx-up, .fx-pop, .fx-blob, .fx-paso, .fx-sobre, .fx-check, .fx-onda, .fx-btn:hover::after { animation: none !important; }
+  .fx-depth-front, .fx-depth-back, .fx-btn:hover { transform: none !important; }
+}

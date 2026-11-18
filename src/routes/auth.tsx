@@ -1,11 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Consentimiento } from "@/components/site/Consentimiento";
 import { useEffect, useState } from "react";
-import { BadgeCheck, Loader2, Mail, MailCheck, Rocket, ShieldCheck, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Eye, EyeOff, Loader2, MailCheck } from "lucide-react";
+import { AccesoEscena } from "@/components/site/AccesoEscena";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { Header } from "@/components/site/Header";
-import { Footer } from "@/components/site/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/auth")({
@@ -51,6 +50,8 @@ function Auth() {
   const [email, setEmail] = useState(search.correo ?? "");
   const [clave, setClave] = useState("");
   const [clave2, setClave2] = useState("");
+  const [paso, setPaso] = useState<1 | 2>(1);
+  const [verClave, setVerClave] = useState(false);
 
   const ir = async (uid: string) => {
     // Si una empresa la invitó a su equipo con este correo, queda unida al entrar.
@@ -60,7 +61,7 @@ function Auth() {
     await navigate({ to: roles && roles.length ? "/admin" : "/panel" });
   };
 
-  const cambiar = (m: Modo) => { setModo(m); setError(null); setAviso(null); setReenviar(false); };
+  const cambiar = (m: Modo) => { setModo(m); setError(null); setAviso(null); setReenviar(false); setPaso(1); };
 
   useEffect(() => {
     // Al volver del enlace «olvidé mi contraseña» hay sesión, pero primero debe poner la clave nueva.
@@ -88,9 +89,10 @@ function Auth() {
     const correo = email.trim().toLowerCase();
     if (modo === "registro") {
       const r = soloDigitos(rnc);
-      if (empresa.trim().length < 2) { setError("Escribe el nombre de la empresa."); return; }
-      if (r.length !== 9 && r.length !== 11) { setError("El RNC debe tener 9 dígitos (empresa) o 11 (cédula)."); return; }
-      if (nombre.trim().length < 3) { setError("Escribe tu nombre."); return; }
+      if (empresa.trim().length < 2) { setError("Escribe el nombre de la empresa."); setPaso(1); return; }
+      if (r.length !== 9 && r.length !== 11) { setError("El RNC debe tener 9 dígitos (empresa) o 11 (cédula)."); setPaso(1); return; }
+      if (nombre.trim().length < 3) { setError("Escribe tu nombre."); setPaso(1); return; }
+      if (paso === 1) { setPaso(2); return; }
     }
     if ((modo === "registro" || modo === "equipo" || modo === "nueva") && clave.length < 6) { setError("La contraseña debe tener al menos 6 caracteres."); return; }
     if (modo === "nueva" && clave !== clave2) { setError("Las dos contraseñas no son iguales."); return; }
@@ -137,95 +139,115 @@ function Auth() {
     }
   };
 
-  const input = "mt-1 w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-primary";
+  const r = soloDigitos(rnc);
+  const rncTxt = r.length === 9 ? "RNC de empresa" : r.length === 11 ? "Cédula (persona física)" : "";
+  const fuerza = clave.length === 0 ? 0 : clave.length < 6 ? 1 : (/[A-Z]/.test(clave) ? 1 : 0) + (/\d/.test(clave) ? 1 : 0) + (/[^A-Za-z0-9]/.test(clave) ? 1 : 0) + (clave.length >= 10 ? 1 : 0) >= 2 ? 3 : 2;
+  const titulo = modo === "registro" ? (paso === 1 ? "Crea la cuenta de tu empresa" : "Último paso: tu acceso") : modo === "equipo" ? `Únete al equipo${search.empresa ? ` de ${search.empresa}` : ""}` : modo === "olvido" ? "Recupera tu contraseña" : modo === "nueva" ? "Crea tu contraseña nueva" : "Qué bueno verte de nuevo";
+  const sub = modo === "registro" ? (paso === 1 ? "Un minuto. Publicar es gratis para siempre." : "Con este correo y contraseña entras a tu panel.") : modo === "equipo" ? "Crea tu contraseña con el correo donde te invitaron." : modo === "olvido" ? "Te enviamos un enlace para crear una nueva." : modo === "nueva" ? "Escríbela dos veces." : "Entra a tu panel de empresa.";
+
+
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="mx-auto grid max-w-6xl gap-10 px-6 py-14 lg:grid-cols-2">
-        <div className="order-2 lg:order-1">
-          {modo === "registro" || modo === "equipo" ? (
-            <>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Para empresas</p>
-              <h1 className="mt-3 text-balance text-4xl font-extrabold tracking-tight">Publica gratis y recibe candidatos en tu panel</h1>
-              <p className="mt-3 text-muted-foreground">Sin contratos ni tarjeta. Los candidatos aplican sin crear cuenta y te llegan con su CV, listos para contactar por WhatsApp.</p>
-              <ol className="mt-8 space-y-5">
-                {[
-                  [Rocket, "Crea tu cuenta", "Un minuto: empresa, RNC o cédula, tu nombre y tu correo."],
-                  [Mail, "Confirma tu correo", "Te llega un enlace. Al abrirlo entras directo a tu panel."],
-                  [BadgeCheck, "Publica tu vacante", "Escríbela o sube el flyer y llenamos el formulario por ti."],
-                  [ShieldCheck, "Verificamos tu RNC", "En menos de 24 horas. Tu vacante sale con sello de empresa verificada."],
-                ].map(([I, t, d], i) => {
-                  const Icono = I as typeof Rocket;
-                  return (
-                    <li key={String(t)} className="flex gap-4">
-                      <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-[#1d6ff2]/10 text-[#1557c4]"><Icono className="size-5" />{i < 3 && <span aria-hidden="true" className="absolute left-1/2 top-11 h-4 w-px -translate-x-1/2 bg-border" />}</span>
-                      <span><span className="block font-bold">{String(t)}</span><span className="text-sm text-muted-foreground">{String(d)}</span></span>
-                    </li>
-                  );
-                })}
-              </ol>
-              <p className="mt-8 flex items-center gap-2 text-sm text-muted-foreground"><Users className="size-4 text-primary" /> Pedimos el RNC para que los candidatos apliquen sin miedo a estafas.</p>
-            </>
-          ) : (
-            <>
-              <h1 className="text-balance text-4xl font-extrabold tracking-tight">Acceso a Enlace Laboral</h1>
-              <p className="mt-3 text-muted-foreground">Esta entrada es para empresas que publican vacantes. ¿Tu empresa aún no tiene cuenta? <button type="button" onClick={() => cambiar("registro")} className="font-semibold text-primary">Créala gratis</button>.</p>
-            </>
-          )}
-          <p className="mt-6 text-sm text-muted-foreground">¿Buscas empleo? No necesitas cuenta. <Link to="/vacantes" className="font-semibold text-primary">Mira las vacantes</Link> o <Link to="/guardadas" className="font-semibold text-primary">recibe vacantes para ti</Link>.</p>
+    <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+      <div className="order-2 lg:order-1 lg:sticky lg:top-0 lg:h-screen"><AccesoEscena para="empresa" /></div>
+
+      <main className="order-1 flex min-h-[100svh] flex-col px-5 py-8 sm:px-10 lg:order-2 lg:min-h-screen lg:px-16">
+        <div className="flex items-center justify-between text-sm">
+          <Link to="/" className="inline-flex items-center gap-1.5 font-semibold text-muted-foreground hover:text-foreground lg:invisible"><ArrowLeft className="size-4" /> Inicio</Link>
+          <span className="text-muted-foreground">¿Buscas empleo? <Link to="/cuenta" className="font-bold text-primary hover:underline">Entra aquí</Link></span>
         </div>
-        {enviadoA ? (
-          <div className="order-1 self-start rounded-3xl border border-border bg-surface p-7 text-center lg:order-2">
-            <span className="mx-auto grid size-16 place-items-center rounded-full bg-[#1d6ff2]/10 text-[#1557c4]"><MailCheck className="size-8" /></span>
-            <h2 className="mt-4 font-display text-2xl font-extrabold">Revisa tu correo</h2>
-            <p className="mt-2 text-muted-foreground">Te enviamos un enlace a <b className="text-foreground">{enviadoA}</b>. Ábrelo para confirmar tu cuenta y entrarás directo a tu panel.</p>
-            <div className="mt-5 grid gap-2 sm:grid-cols-2">
-              <a href="https://mail.google.com/mail/u/0/#search/enlace" target="_blank" rel="noopener" className="rounded-xl border border-border py-3 text-sm font-bold hover:bg-secondary">Abrir Gmail</a>
-              <a href="https://outlook.live.com/mail/0/" target="_blank" rel="noopener" className="rounded-xl border border-border py-3 text-sm font-bold hover:bg-secondary">Abrir Outlook</a>
+
+        <div className="mx-auto my-auto w-full max-w-md py-10">
+          {enviadoA ? (
+            <div key="enviado" className="fx-paso text-center">
+              <span className="fx-sobre relative mx-auto grid size-24 place-items-center rounded-[1.75rem] bg-gradient-to-br from-[#1d6ff2] to-[#0a2f5c] text-white shadow-[0_24px_50px_-18px_rgb(29_111_242/0.7)]">
+                <MailCheck className="size-11" />
+                <span className="absolute -right-2 -top-2 grid size-9 place-items-center rounded-full bg-[#0f7a43] ring-4 ring-background"><svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path className="fx-check" d="M5 12.5l4.5 4.5L19 7.5" /></svg></span>
+              </span>
+              <h2 className="mt-7 font-display text-3xl font-extrabold tracking-tight">Revisa tu correo</h2>
+              <p className="mt-3 text-muted-foreground">Enviamos un enlace a <b className="text-foreground">{enviadoA}</b>. Ábrelo y entrarás directo al panel de <b className="text-foreground">{empresa || "tu empresa"}</b>.</p>
+              <div className="mt-7 grid gap-2.5 sm:grid-cols-2">
+                <a href="https://mail.google.com/mail/u/0/#search/enlace" target="_blank" rel="noopener" className="fx-btn rounded-xl border border-border bg-surface py-3.5 text-sm font-bold">Abrir Gmail</a>
+                <a href="https://outlook.live.com/mail/0/" target="_blank" rel="noopener" className="fx-btn rounded-xl border border-border bg-surface py-3.5 text-sm font-bold">Abrir Outlook</a>
+              </div>
+              <p className="mt-6 text-sm text-muted-foreground">¿No llega en 5 minutos? Mira en «Spam» o «Promociones».</p>
+              {error && (<p role="alert" className="mt-3 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>)}
+              {aviso && (<p role="status" className="mt-3 rounded-xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-300">{aviso}</p>)}
+              <button type="button" disabled={cargando} onClick={() => void reenviarCorreo()} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline disabled:opacity-60">{cargando && <Loader2 className="size-4 animate-spin" />} Reenviar el correo</button>
+              <p className="mt-2 text-xs text-muted-foreground">¿Escribiste mal el correo? <button type="button" onClick={() => { setEnviadoA(null); setReenviar(false); setAviso(null); setError(null); }} className="font-semibold text-primary hover:underline">Corrígelo</button></p>
             </div>
-            <p className="mt-5 text-sm text-muted-foreground">¿No llega en 5 minutos? Mira en «Spam» o «Promociones».</p>
-            {error && (<p role="alert" className="mt-3 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>)}
-            {aviso && (<p role="status" className="mt-3 rounded-xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-300">{aviso}</p>)}
-            <button type="button" disabled={cargando} onClick={() => void reenviarCorreo()} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline disabled:opacity-60">{cargando && <Loader2 className="size-4 animate-spin" />} Reenviar el correo</button>
-            <p className="mt-2 text-xs text-muted-foreground">¿Escribiste mal el correo? <button type="button" onClick={() => { setEnviadoA(null); setReenviar(false); setAviso(null); setError(null); }} className="font-semibold text-primary hover:underline">Corrígelo</button></p>
-          </div>
-        ) : (
-        <form onSubmit={enviar} className="order-1 space-y-3 self-start rounded-3xl border border-border bg-surface p-7 lg:order-2">
-          {modo === "equipo" ? (
-            <div className="rounded-2xl bg-secondary p-4 text-sm"><p className="font-extrabold">Te invitaron al equipo{search.empresa ? ` de ${search.empresa}` : ""}</p><p className="mt-1 text-muted-foreground">Crea tu contraseña con el correo donde te invitaron y entrarás al panel de la empresa. ¿Ya tienes cuenta? <button type="button" onClick={() => cambiar("login")} className="font-bold text-primary">Inicia sesión</button>.</p></div>
-          ) : modo === "olvido" || modo === "nueva" ? (
-            <div className="rounded-2xl bg-secondary p-4 text-sm"><p className="font-extrabold">{modo === "olvido" ? "Recupera tu contraseña" : "Crea tu contraseña nueva"}</p><p className="mt-1 text-muted-foreground">{modo === "olvido" ? "Escribe el correo de tu cuenta y te enviamos un enlace." : "Escríbela dos veces. Después entrarás a tu panel."}</p></div>
           ) : (
-          <div className="flex rounded-full border border-border p-1 text-sm font-semibold">
-            {(["login", "registro"] as const).map((m) => (<button key={m} type="button" onClick={() => cambiar(m)} className={modo === m ? "flex-1 rounded-full bg-primary py-2 text-primary-foreground" : "flex-1 rounded-full py-2 text-muted-foreground"}>{m === "registro" ? "Crear cuenta" : "Iniciar sesión"}</button>))}
-          </div>
+            <form onSubmit={enviar} noValidate className="space-y-4">
+              {(modo === "login" || modo === "registro") && (
+                <div className="relative grid grid-cols-2 rounded-2xl bg-secondary p-1 text-sm font-bold" role="tablist">
+                  <span aria-hidden="true" className={`absolute inset-y-1 w-[calc(50%-0.25rem)] rounded-xl bg-surface shadow-sm transition-transform duration-300 ${modo === "registro" ? "translate-x-[calc(100%+0.5rem)]" : "translate-x-1"}`} style={{ left: 0 }} />
+                  {(["login", "registro"] as const).map((m) => <button key={m} type="button" role="tab" aria-selected={modo === m} onClick={() => cambiar(m)} className={`relative z-10 py-2.5 transition-colors ${modo === m ? "text-foreground" : "text-muted-foreground"}`}>{m === "registro" ? "Crear cuenta" : "Iniciar sesión"}</button>)}
+                </div>
+              )}
+
+              <div key={`${modo}-${paso}`} className="fx-paso space-y-4">
+                <div className="pt-2">
+                  {modo === "registro" && (
+                    <div className="mb-4 flex items-center gap-3 text-xs font-bold text-muted-foreground">
+                      {[1, 2].map((k) => <span key={k} className="flex flex-1 items-center gap-2"><span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] transition-colors ${paso >= k ? "bg-[#1d6ff2] text-white" : "bg-secondary"}`}>{paso > k ? <Check className="size-3.5" /> : k}</span><span className={paso === k ? "text-foreground" : ""}>{k === 1 ? "Tu empresa" : "Tu acceso"}</span>{k === 1 && <span className="h-0.5 flex-1 overflow-hidden rounded-full bg-secondary"><span className={`block h-full bg-[#1d6ff2] transition-transform duration-500 origin-left ${paso > 1 ? "scale-x-100" : "scale-x-0"}`} /></span>}</span>)}
+                    </div>
+                  )}
+                  <h2 className="font-display text-[1.9rem] font-extrabold leading-tight tracking-tight">{titulo}</h2>
+                  <p className="mt-1.5 text-muted-foreground">{sub}</p>
+                </div>
+
+                {modo === "registro" && paso === 1 && (
+                  <>
+                    <Campo id="empresa" label="Nombre de la empresa" required autoFocus value={empresa} onChange={(e) => setEmpresa(e.target.value)} autoComplete="organization" />
+                    <div>
+                      <Campo id="rnc" label="RNC o cédula" required inputMode="numeric" value={rnc} onChange={(e) => setRnc(soloDigitos(e.target.value).slice(0, 11))} aria-invalid={rncTxt ? false : undefined} />
+                      <p className={`mt-1.5 flex items-center gap-1.5 text-xs font-semibold ${rncTxt ? "text-[#0f7a43]" : "text-muted-foreground"}`}>{rncTxt ? <><Check className="size-3.5" /> {rncTxt}</> : r.length ? `${r.length} dígitos · el RNC tiene 9 y la cédula 11` : "Lo usamos para darte el sello de empresa verificada."}</p>
+                    </div>
+                    <Campo id="nombre" label="Tu nombre" required value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" />
+                  </>
+                )}
+                {modo === "equipo" && <Campo id="nombre" label="Tu nombre" required value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" />}
+
+                {(modo !== "registro" || paso === 2) && modo !== "nueva" && <Campo id="correo" label={modo === "registro" ? "Correo de trabajo" : "Correo"} type="email" required autoFocus={modo === "registro"} autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />}
+                {(modo !== "registro" || paso === 2) && modo !== "olvido" && (
+                  <div>
+                    <div className="relative">
+                      <Campo id="clave" label={modo === "nueva" ? "Contraseña nueva" : "Contraseña"} type={verClave ? "text" : "password"} required minLength={6} autoComplete={modo === "login" ? "current-password" : "new-password"} value={clave} onChange={(e) => setClave(e.target.value)} />
+                      <button type="button" onClick={() => setVerClave((v) => !v)} aria-label={verClave ? "Ocultar contraseña" : "Mostrar contraseña"} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-muted-foreground hover:bg-secondary">{verClave ? <EyeOff className="size-5" /> : <Eye className="size-5" />}</button>
+                    </div>
+                    {modo !== "login" && clave.length > 0 && (
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className="flex flex-1 gap-1">{[1, 2, 3].map((k) => <span key={k} className={`h-1.5 flex-1 rounded-full transition-colors ${fuerza >= k ? (fuerza === 1 ? "bg-destructive" : fuerza === 2 ? "bg-[#f5a700]" : "bg-[#0f7a43]") : "bg-secondary"}`} />)}</span>
+                        <span className="text-xs font-semibold text-muted-foreground">{fuerza === 1 ? "Muy corta" : fuerza === 2 ? "Aceptable" : "Segura"}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {modo === "nueva" && <Campo id="clave2" label="Repite la contraseña" type={verClave ? "text" : "password"} required minLength={6} autoComplete="new-password" value={clave2} onChange={(e) => setClave2(e.target.value)} />}
+                {modo === "login" && <button type="button" onClick={() => cambiar("olvido")} className="text-sm font-semibold text-primary hover:underline">¿Olvidaste tu contraseña?</button>}
+                {modo === "registro" && paso === 2 && <Consentimiento para="empresa" />}
+              </div>
+
+              {error && (<p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>)}
+              {aviso && (<p role="status" className="rounded-xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-300">{aviso}</p>)}
+              {reenviar && email.trim() && (<button type="button" disabled={cargando} onClick={() => void reenviarCorreo()} className="w-full rounded-xl border border-border py-2.5 text-sm font-semibold hover:bg-secondary disabled:opacity-60">Reenviar el correo de confirmación</button>)}
+
+              <div className="flex gap-2 pt-1">
+                {modo === "registro" && paso === 2 && <button type="button" onClick={() => { setPaso(1); setError(null); }} aria-label="Volver al paso 1" className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-border hover:bg-secondary"><ArrowLeft className="size-5" /></button>}
+                <button type="submit" disabled={cargando} className="fx-btn flex h-14 flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#1d6ff2] to-[#1557c4] text-[1.05rem] font-bold text-white disabled:opacity-70">
+                  {cargando ? <Loader2 className="size-5 animate-spin" /> : null}
+                  {modo === "registro" ? (paso === 1 ? <>Seguir <ArrowRight className="size-5" /></> : "Crear mi cuenta gratis") : modo === "equipo" ? "Entrar al equipo" : modo === "olvido" ? "Enviar enlace" : modo === "nueva" ? "Guardar contraseña" : <>Entrar a mi panel <ArrowRight className="size-5" /></>}
+                </button>
+              </div>
+              {(modo === "olvido" || modo === "nueva") && <button type="button" onClick={() => cambiar("login")} className="w-full text-sm font-semibold text-muted-foreground hover:underline">Volver a iniciar sesión</button>}
+            </form>
           )}
-          {modo === "equipo" && <input required className={input} value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre" />}
-          {modo === "registro" && (
-            <>
-              <input required className={input} value={empresa} onChange={(e) => setEmpresa(e.target.value)} placeholder="Nombre de la empresa" />
-              <input required inputMode="numeric" className={input} value={rnc} onChange={(e) => setRnc(soloDigitos(e.target.value).slice(0, 11))} placeholder="RNC o cédula (solo números)" />
-              <input required className={input} value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Tu nombre" />
-            </>
-          )}
-          {modo !== "nueva" && <input required type="email" autoComplete="email" className={input} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Correo" />}
-          {modo !== "olvido" && <input required type="password" minLength={6} autoComplete={modo === "login" ? "current-password" : "new-password"} className={input} value={clave} onChange={(e) => setClave(e.target.value)} placeholder={modo === "nueva" ? "Contraseña nueva (mínimo 6)" : "Contraseña (mínimo 6)"} />}
-          {modo === "nueva" && <input required type="password" minLength={6} autoComplete="new-password" className={input} value={clave2} onChange={(e) => setClave2(e.target.value)} placeholder="Repite la contraseña" />}
-          {modo === "login" && <button type="button" onClick={() => cambiar("olvido")} className="text-sm font-semibold text-primary hover:underline">¿Olvidaste tu contraseña?</button>}
-          {modo === "registro" && <Consentimiento para="empresa" />}
-          {error && (<p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>)}
-          {aviso && (<p role="status" className="rounded-xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-300">{aviso}</p>)}
-          {reenviar && email.trim() && (<button type="button" disabled={cargando} onClick={() => void reenviarCorreo()} className="w-full rounded-xl border border-border py-2.5 text-sm font-semibold hover:bg-secondary disabled:opacity-60">Reenviar el correo de confirmación</button>)}
-          <button type="submit" disabled={cargando} className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-bold text-primary-foreground disabled:opacity-70">
-            {cargando && <Loader2 className="size-4 animate-spin" />}
-            {modo === "registro" ? "Crear cuenta" : modo === "equipo" ? "Entrar al equipo" : modo === "olvido" ? "Enviar enlace" : modo === "nueva" ? "Guardar contraseña" : "Entrar"}
-          </button>
-          {(modo === "olvido" || modo === "nueva") && <button type="button" onClick={() => cambiar("login")} className="w-full text-sm font-semibold text-muted-foreground hover:underline">Volver a iniciar sesión</button>}
-        </form>
-        )}
+        </div>
       </main>
-      <Footer />
     </div>
   );
+}
+
+function Campo({ id, label, ...p }: { id: string; label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  return <div className="campo-flota" data-ok={p["aria-invalid"] === false ? "true" : undefined}><input id={id} placeholder=" " {...p} /><label htmlFor={id}>{label}</label></div>;
 }
