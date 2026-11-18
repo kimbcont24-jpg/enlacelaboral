@@ -1,6 +1,6 @@
 import { PromoInsignias } from "@/components/insignias/Promo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Bookmark, CalendarClock, CalendarPlus, Copy, FileText, Loader2, MessageCircle, Sparkles, StickyNote, Trash2 } from "lucide-react";
+import { Bookmark, CalendarClock, CalendarPlus, Copy, Loader2, MessageCircle, Sparkles, StickyNote, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -9,6 +9,7 @@ import { Header } from "@/components/site/Header";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { GuardarNube } from "@/components/site/GuardarNube";
 import { EnlaceTalento } from "@/components/site/EnlaceTalento";
+import { Brujula, LogroBrujula } from "@/components/site/Brujula";
 import { diasRestantes } from "@/lib/claridad";
 import { EVENTO_CV_REMOTO, leerCV, progresoCV, type CV } from "@/lib/cv";
 import { useNube } from "@/lib/nube";
@@ -106,7 +107,7 @@ function MiBusqueda() {
 
         <div className="mt-6">
           {cargando && tab !== "postulaciones" ? <div className="flex justify-center p-10"><Loader2 className="size-5 animate-spin text-primary" /></div>
-            : tab === "parati" ? <ParaTi cv={cv} recomendadas={recomendadas} />
+            : tab === "parati" ? <ParaTi cv={cv} recomendadas={recomendadas} onCV={setCv} />
             : tab === "postulaciones" ? <Aplicaciones posts={posts} nombre={cv?.nombre ?? ""} />
             : <Guardadas lista={guardadas} perdidas={ids.length - guardadas.length} />}
         </div>
@@ -126,30 +127,26 @@ function Anillo({ pct }: { pct: number }) {
   );
 }
 
-function ParaTi({ cv, recomendadas }: { cv: CV | null; recomendadas: ReturnType<typeof recomendar> }) {
-  if (!cv || (!cv.puesto.trim() && !cv.habilidades.trim())) {
-    return (
-      <div className="grid items-center gap-6 rounded-3xl border border-border bg-surface p-6 sm:p-8 md:grid-cols-[1fr_auto]">
-        <div>
-          <h2 className="font-display text-xl font-extrabold">Te mostramos vacantes hechas para ti</h2>
-          <p className="mt-2 max-w-xl text-muted-foreground">Escribe en tu CV el puesto que buscas y tus habilidades. Con eso buscamos entre todas las vacantes las que más se parecen a lo que sabes hacer y te las ponemos aquí.</p>
-        </div>
-        <Link to="/cv" className="btn-aplicar inline-flex h-12 items-center gap-2 rounded-xl px-6"><FileText className="size-4" /> Llenar mi CV</Link>
-      </div>
-    );
+function ParaTi({ cv, recomendadas, onCV }: { cv: CV | null; recomendadas: ReturnType<typeof recomendar>; onCV: (cv: CV) => void }) {
+  const [logro, setLogro] = useState(false);
+  const [editando, setEditando] = useState(false);
+  if (editando || !cv || (!cv.puesto.trim() && !cv.habilidades.trim())) {
+    // Sin puesto ni habilidades no hay a quién recomendar: 3 toques en vez de un CV entero.
+    return <Brujula onListo={(nuevo) => { onCV(nuevo); setEditando(false); setLogro(true); window.scrollTo({ top: 0, behavior: "smooth" }); }} />;
   }
   if (!recomendadas.length) {
     return (
       <div className="rounded-3xl border border-dashed border-border p-8 text-center">
         <p className="font-bold">Hoy no encontramos vacantes que se parezcan a tu CV</p>
         <p className="mt-1 text-sm text-muted-foreground">Prueba agregando más habilidades o puestos anteriores en tu CV. Mientras tanto, mira todas las vacantes.</p>
-        <div className="mt-5 flex justify-center gap-2"><Link to="/cv" className="rounded-xl border border-border px-5 py-3 text-sm font-bold">Editar CV</Link><Link to="/vacantes" className="btn-aplicar rounded-xl px-5 py-3 text-sm">Ver vacantes</Link></div>
+        <div className="mt-5 flex flex-wrap justify-center gap-2"><button type="button" onClick={() => setEditando(true)} className="rounded-xl border border-border px-5 py-3 text-sm font-bold">Cambiar mi búsqueda</button><Link to="/vacantes" className="btn-aplicar rounded-xl px-5 py-3 text-sm">Ver vacantes</Link></div>
       </div>
     );
   }
   return (
     <>
-      <p className="mb-4 text-sm text-muted-foreground">Según lo que pusiste en tu CV{cv.puesto.trim() ? ` (${cv.puesto.trim()})` : ""}. Las más parecidas primero.</p>
+      {logro && <LogroBrujula n={recomendadas.length} onCerrar={() => setLogro(false)} />}
+      <p className="mb-4 text-sm text-muted-foreground">Según lo que buscas{cv.puesto.trim() ? ` (${cv.puesto.trim()}${cv.ciudad.trim() ? `, ${cv.ciudad.trim()}` : ""})` : ""}. Las más parecidas primero. <button type="button" onClick={() => setEditando(true)} className="font-semibold text-[#1557c4] hover:underline">Cambiar mi búsqueda</button></p>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {recomendadas.map(({ job, porque }) => (
           <div key={job.id} className="flex min-w-0 flex-col">

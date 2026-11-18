@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { PAGOS_ACTIVOS } from "@/lib/pagos";
-import { AlertCircle, CalendarClock, ChevronRight, Clock3, Crown, Eye, Plus } from "lucide-react";
+import { AlertCircle, CalendarClock, ChevronRight, Clock3, Crown, Eye } from "lucide-react";
 
 import { usePanel } from "@/components/panel/contexto";
 import { PulsoEmpresa } from "@/components/panel/MarcaPanel";
+import { PrimerosPasos } from "@/components/panel/PrimerosPasos";
 import { Coincide, Persona, Vacio } from "@/components/panel/comun";
 import { coincidencia, diasPlan, ETAPAS, estadoVacante, planActivo, horaCorta, horasRespuesta, partirMensaje, pendientesDe, textoHoras, type Pendiente } from "@/lib/panel";
 
@@ -57,20 +58,9 @@ export function Inicio() {
 
   if (!vacantes.length) {
     return (
-      <div>
-        <p className="text-sm font-semibold text-muted-foreground">{saludo()}</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight">Empecemos: publica tu primera vacante</h1>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {[["Publica gratis", "Llena un formulario corto. Te decimos qué le falta para que se entienda bien."], ["Recibe candidatos aquí", "La gente aplica en Enlace Laboral sin crear cuenta y te llega a este panel con su CV."], ["Elige y avísales", "Mueve a cada persona por etapas y escríbele por WhatsApp con un mensaje ya listo."]].map(([t, d], i) => (
-            <div key={t} className="rounded-2xl border border-border bg-surface p-5">
-              <span className="grid size-8 place-items-center rounded-full bg-[#1d6ff2] text-sm font-bold text-white">{i + 1}</span>
-              <p className="mt-3 font-bold">{t}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{d}</p>
-            </div>
-          ))}
-        </div>
-        <button type="button" onClick={() => p.ir("publicar")} className="btn-aplicar mt-6 inline-flex h-12 items-center gap-2 rounded-xl px-6"><Plus className="size-4" /> Publicar mi primera vacante</button>
-        <div className="mt-6"><PulsoEmpresa /></div>
+      <div className="space-y-6">
+        <PrimerosPasos />
+        <PulsoEmpresa />
       </div>
     );
   }
@@ -82,6 +72,7 @@ export function Inicio() {
         <h1 className="mt-1 text-balance font-display text-2xl font-extrabold tracking-tight sm:text-[1.75rem]">{resumen ? `Hoy tienes ${resumen}.` : "Todo al día. Buen trabajo."}</h1>
       </div>
 
+      <PrimerosPasos compacto />
       <PulsoEmpresa />
 
       {/* El proceso completo de un vistazo */}

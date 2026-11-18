@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Consentimiento } from "@/components/site/Consentimiento";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { BadgeCheck, Loader2, Mail, MailCheck, Rocket, ShieldCheck, Users } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Header } from "@/components/site/Header";
@@ -44,6 +44,7 @@ function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [reenviar, setReenviar] = useState(false);
+  const [enviadoA, setEnviadoA] = useState<string | null>(null);
   const [empresa, setEmpresa] = useState(search.modo === "registro" ? (search.empresa ?? "") : "");
   const [rnc, setRnc] = useState("");
   const [nombre, setNombre] = useState("");
@@ -122,7 +123,7 @@ function Auth() {
           await ir(data.user.id);
           return;
         }
-        setAviso(`¡Listo! Te enviamos un correo a ${correo}. Abre el enlace para confirmar tu cuenta y entrarás directo a tu panel. Si no llega en 5 minutos, revisa «Spam» o «Promociones».`);
+        setEnviadoA(correo);
         setReenviar(true);
       } else {
         const { data, error: err } = await supabase.auth.signInWithPassword({ email: correo, password: clave });
@@ -143,10 +144,53 @@ function Auth() {
       <Header />
       <main className="mx-auto grid max-w-6xl gap-10 px-6 py-14 lg:grid-cols-2">
         <div>
-          <h1 className="text-balance text-4xl font-extrabold tracking-tight">Acceso a Enlace Laboral</h1>
-          <p className="mt-3 text-muted-foreground">Esta entrada es para empresas que publican vacantes.</p>
-          <p className="mt-6 text-sm text-muted-foreground">¿Buscas empleo? No necesitas cuenta. <Link to="/vacantes" className="font-semibold text-primary">Mira las vacantes</Link>.</p>
+          {modo === "registro" || modo === "equipo" ? (
+            <>
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Para empresas</p>
+              <h1 className="mt-3 text-balance text-4xl font-extrabold tracking-tight">Publica gratis y recibe candidatos en tu panel</h1>
+              <p className="mt-3 text-muted-foreground">Sin contratos ni tarjeta. Los candidatos aplican sin crear cuenta y te llegan con su CV, listos para contactar por WhatsApp.</p>
+              <ol className="mt-8 space-y-5">
+                {[
+                  [Rocket, "Crea tu cuenta", "Un minuto: empresa, RNC o cédula, tu nombre y tu correo."],
+                  [Mail, "Confirma tu correo", "Te llega un enlace. Al abrirlo entras directo a tu panel."],
+                  [BadgeCheck, "Publica tu vacante", "Escríbela o sube el flyer y llenamos el formulario por ti."],
+                  [ShieldCheck, "Verificamos tu RNC", "En menos de 24 horas. Tu vacante sale con sello de empresa verificada."],
+                ].map(([I, t, d], i) => {
+                  const Icono = I as typeof Rocket;
+                  return (
+                    <li key={String(t)} className="flex gap-4">
+                      <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-[#1d6ff2]/10 text-[#1557c4]"><Icono className="size-5" />{i < 3 && <span aria-hidden="true" className="absolute left-1/2 top-11 h-4 w-px -translate-x-1/2 bg-border" />}</span>
+                      <span><span className="block font-bold">{String(t)}</span><span className="text-sm text-muted-foreground">{String(d)}</span></span>
+                    </li>
+                  );
+                })}
+              </ol>
+              <p className="mt-8 flex items-center gap-2 text-sm text-muted-foreground"><Users className="size-4 text-primary" /> Pedimos el RNC para que los candidatos apliquen sin miedo a estafas.</p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-balance text-4xl font-extrabold tracking-tight">Acceso a Enlace Laboral</h1>
+              <p className="mt-3 text-muted-foreground">Esta entrada es para empresas que publican vacantes. ¿Tu empresa aún no tiene cuenta? <button type="button" onClick={() => cambiar("registro")} className="font-semibold text-primary">Créala gratis</button>.</p>
+            </>
+          )}
+          <p className="mt-6 text-sm text-muted-foreground">¿Buscas empleo? No necesitas cuenta. <Link to="/vacantes" className="font-semibold text-primary">Mira las vacantes</Link> o <Link to="/guardadas" className="font-semibold text-primary">recibe vacantes para ti</Link>.</p>
         </div>
+        {enviadoA ? (
+          <div className="self-start rounded-3xl border border-border bg-surface p-7 text-center">
+            <span className="mx-auto grid size-16 place-items-center rounded-full bg-[#1d6ff2]/10 text-[#1557c4]"><MailCheck className="size-8" /></span>
+            <h2 className="mt-4 font-display text-2xl font-extrabold">Revisa tu correo</h2>
+            <p className="mt-2 text-muted-foreground">Te enviamos un enlace a <b className="text-foreground">{enviadoA}</b>. Ábrelo para confirmar tu cuenta y entrarás directo a tu panel.</p>
+            <div className="mt-5 grid gap-2 sm:grid-cols-2">
+              <a href="https://mail.google.com/mail/u/0/#search/enlace" target="_blank" rel="noopener" className="rounded-xl border border-border py-3 text-sm font-bold hover:bg-secondary">Abrir Gmail</a>
+              <a href="https://outlook.live.com/mail/0/" target="_blank" rel="noopener" className="rounded-xl border border-border py-3 text-sm font-bold hover:bg-secondary">Abrir Outlook</a>
+            </div>
+            <p className="mt-5 text-sm text-muted-foreground">¿No llega en 5 minutos? Mira en «Spam» o «Promociones».</p>
+            {error && (<p role="alert" className="mt-3 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>)}
+            {aviso && (<p role="status" className="mt-3 rounded-xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-300">{aviso}</p>)}
+            <button type="button" disabled={cargando} onClick={() => void reenviarCorreo()} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline disabled:opacity-60">{cargando && <Loader2 className="size-4 animate-spin" />} Reenviar el correo</button>
+            <p className="mt-2 text-xs text-muted-foreground">¿Escribiste mal el correo? <button type="button" onClick={() => { setEnviadoA(null); setReenviar(false); setAviso(null); setError(null); }} className="font-semibold text-primary hover:underline">Corrígelo</button></p>
+          </div>
+        ) : (
         <form onSubmit={enviar} className="space-y-3 self-start rounded-3xl border border-border bg-surface p-7">
           {modo === "equipo" ? (
             <div className="rounded-2xl bg-secondary p-4 text-sm"><p className="font-extrabold">Te invitaron al equipo{search.empresa ? ` de ${search.empresa}` : ""}</p><p className="mt-1 text-muted-foreground">Crea tu contraseña con el correo donde te invitaron y entrarás al panel de la empresa. ¿Ya tienes cuenta? <button type="button" onClick={() => cambiar("login")} className="font-bold text-primary">Inicia sesión</button>.</p></div>
@@ -179,6 +223,7 @@ function Auth() {
           </button>
           {(modo === "olvido" || modo === "nueva") && <button type="button" onClick={() => cambiar("login")} className="w-full text-sm font-semibold text-muted-foreground hover:underline">Volver a iniciar sesión</button>}
         </form>
+        )}
       </main>
       <Footer />
     </div>
