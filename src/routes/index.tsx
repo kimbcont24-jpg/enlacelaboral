@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowRight, Building2, Loader2, Quote, UserRound } from "lucide-react";
+import { ArrowRight, Building2, Loader2, Quote, Sparkles, UserRound } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -17,6 +17,8 @@ import { RegaliaBanda } from "@/components/site/RegaliaBanda";
 import { filtrarJobs, filtrosVacios, type Filtros } from "@/components/site/Filtros";
 import { useContenido } from "@/lib/contenido";
 import { useVacantes } from "@/lib/vacantes";
+import { PulsoHoy } from "@/components/site/PulsoHoy";
+import { useAfinidades } from "@/lib/afinidad";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,7 +43,12 @@ function Home() {
   const [provincia, setProvincia] = useState(TODAS);
   const [filtros, setFiltros] = useState<Filtros>(filtrosVacios);
   const resultados = useMemo(() => filtrarJobs(jobs, filtros), [jobs, filtros]);
-  const recientes = resultados.slice(0, 6);
+  const { perfil, mapa: afin } = useAfinidades(jobs);
+  // Quien ya dijo qué busca ve primero lo suyo; los demás, lo más reciente.
+  const mias = useMemo(() => [...afin.values()].sort((a, b) => b.puntos - a.puntos || b.job.creado.localeCompare(a.job.creado)).map((r) => r.job), [afin]);
+  const personal = mias.length >= 3;
+  const recientes = personal ? mias.slice(0, 6) : resultados.slice(0, 6);
+  const nombre = perfil?.nombre.trim().split(/\s+/)[0] ?? "";
 
   const buscar = () =>
     navigate({
@@ -68,6 +75,8 @@ function Home() {
       <Header />
       <Hero puesto={puesto} provincia={provincia} onPuesto={setPuesto} onProvincia={setProvincia} onBuscar={() => void buscar()} total={jobs.length} provincias={provinciasConVacantes.length} jobs={resultados} />
 
+      <PulsoHoy jobs={jobs} className="pt-8" />
+
       <section className="border-b border-border bg-surface px-4 py-6 sm:px-6">
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">
           <div className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-soft)]">
@@ -90,11 +99,12 @@ function Home() {
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="eyebrow">Vacantes</p>
-            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Empleos recientes</h2>
-            <p className="mt-1 text-muted-foreground">Las últimas vacantes publicadas en Enlace Laboral.</p>
+            <p className="eyebrow">{personal ? "✦ Para ti" : "Vacantes"}</p>
+            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">{personal ? `${nombre ? `${nombre}, estas` : "Estas"} encajan contigo` : "Empleos recientes"}</h2>
+            <p className="mt-1 text-muted-foreground">{personal ? `${mias.length} vacantes se parecen a lo que buscas${perfil?.puesto.trim() ? ` (${perfil.puesto.trim()})` : ""}. Las más parecidas primero.` : "Las últimas vacantes publicadas en Enlace Laboral."}</p>
+            {!personal && !cargando && <Link to="/guardadas" search={{ ver: "parati" }} className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline"><Sparkles className="size-4" /> Dinos qué buscas y te mostramos las tuyas</Link>}
           </div>
-          <Link to="/vacantes" className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-bold text-primary hover:bg-primary hover:text-white">Ver todos los empleos <ArrowRight className="size-4" aria-hidden="true" /></Link>
+          <Link to="/vacantes" className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-bold text-primary hover:bg-primary hover:text-white">{personal ? `Ver mis ${mias.length}` : "Ver todos los empleos"} <ArrowRight className="size-4" aria-hidden="true" /></Link>
         </div>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cargando && (<div className="col-span-full flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Cargando vacantes…</div>)}
