@@ -60,16 +60,16 @@ function Cuenta() {
   const largo = Math.max(6, digitos.length);
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
       <div className="order-2 lg:order-1 lg:sticky lg:top-0 lg:h-screen"><AccesoEscena para="candidato" /></div>
 
-      <main className="order-1 flex min-h-[100svh] flex-col px-5 py-8 sm:px-10 lg:order-2 lg:min-h-screen lg:px-16">
+      <main className="order-1 flex flex-col px-5 py-6 sm:px-10 lg:order-2 lg:min-h-screen lg:px-16">
         <div className="flex items-center justify-between text-sm">
           <Link to="/" className="inline-flex items-center gap-1.5 font-semibold text-muted-foreground hover:text-foreground lg:invisible"><ArrowLeft className="size-4" /> Inicio</Link>
           <span className="text-muted-foreground">¿Eres empresa? <Link to="/auth" search={{ modo: "registro" }} className="font-bold text-primary hover:underline">Entra aquí</Link></span>
         </div>
 
-        <div className="mx-auto my-auto w-full max-w-md py-10">
+        <div className="mx-auto my-auto w-full max-w-md py-6 lg:py-10">
           {paso === "correo" && (
             <form key="correo" onSubmit={(e) => void pedir(e)} noValidate className="fx-paso space-y-5">
               <div>

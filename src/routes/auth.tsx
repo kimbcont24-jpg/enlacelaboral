@@ -148,16 +148,16 @@ function Auth() {
 
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+    <div className="flex min-h-screen flex-col bg-background text-foreground lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
       <div className="order-2 lg:order-1 lg:sticky lg:top-0 lg:h-screen"><AccesoEscena para="empresa" /></div>
 
-      <main className="order-1 flex min-h-[100svh] flex-col px-5 py-8 sm:px-10 lg:order-2 lg:min-h-screen lg:px-16">
+      <main className="order-1 flex flex-col px-5 py-6 sm:px-10 lg:order-2 lg:min-h-screen lg:px-16">
         <div className="flex items-center justify-between text-sm">
           <Link to="/" className="inline-flex items-center gap-1.5 font-semibold text-muted-foreground hover:text-foreground lg:invisible"><ArrowLeft className="size-4" /> Inicio</Link>
           <span className="text-muted-foreground">¿Buscas empleo? <Link to="/cuenta" className="font-bold text-primary hover:underline">Entra aquí</Link></span>
         </div>
 
-        <div className="mx-auto my-auto w-full max-w-md py-10">
+        <div className="mx-auto my-auto w-full max-w-md py-6 lg:py-10">
           {enviadoA ? (
             <div key="enviado" className="fx-paso text-center">
               <span className="fx-sobre relative mx-auto grid size-24 place-items-center rounded-[1.75rem] bg-gradient-to-br from-[#1d6ff2] to-[#0a2f5c] text-white shadow-[0_24px_50px_-18px_rgb(29_111_242/0.7)]">
