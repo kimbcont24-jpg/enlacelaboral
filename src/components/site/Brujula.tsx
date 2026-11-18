@@ -12,6 +12,8 @@ import { useVacantes } from "@/lib/vacantes";
  */
 
 const sinAcentos = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+// Requisitos que no son habilidades (datos de contacto, edad, sexo, residencia…).
+const NO_HABILIDAD = /enviar|\bcv\b|curr[ií]cul|correo|whatsapp|interesad|edad|años|@|\d|residir|vivir|sexo|masculino|femenino|llamar|contactar|requisito/i;
 const HABILIDADES_BASE = ["Atención al cliente", "Ventas", "Excel", "Microsoft Office", "Manejo de caja", "Trabajo en equipo", "Inglés", "Licencia de conducir", "Servicio al cliente", "Redes sociales", "Contabilidad", "Almacén e inventario"];
 
 /** Títulos cortos más frecuentes entre las vacantes publicadas (ej. «Representante de servicio»). */
@@ -48,7 +50,7 @@ export function Brujula({ onListo, className = "" }: { onListo: (cv: CV) => void
     const cuenta = new Map<string, number>();
     if (ws.length) for (const j of jobs) {
       if (!ws.some((w) => sinAcentos(j.titulo).includes(w))) continue;
-      for (const r of j.requisitos) { const t = r.replace(/[.;:]$/, "").trim(); if (t.length >= 3 && t.split(/\s+/).length <= 4) cuenta.set(t, (cuenta.get(t) ?? 0) + 1); }
+      for (const r of j.requisitos) { const t = r.replace(/[.;:]$/, "").trim(); if (t.length >= 3 && t.split(/\s+/).length <= 4 && !NO_HABILIDAD.test(t)) cuenta.set(t, (cuenta.get(t) ?? 0) + 1); }
     }
     const propias = [...cuenta.entries()].sort((a, b) => b[1] - a[1]).map(([t]) => t).slice(0, 8);
     return [...new Set([...propias, ...HABILIDADES_BASE])].slice(0, 14);
@@ -67,9 +69,9 @@ export function Brujula({ onListo, className = "" }: { onListo: (cv: CV) => void
   const puede = paso === 0 ? puesto.trim().length >= 3 : paso === 1 ? !!lugar : habs.length > 0;
 
   return (
-    <section aria-label="Brújula de empleo" className={`overflow-hidden rounded-3xl border border-border bg-surface ${className}`}>
+    <section aria-label="Vacantes para ti en 3 toques" className={`overflow-hidden rounded-3xl border border-border bg-surface ${className}`}>
       <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a2f5c] px-5 py-4 text-white sm:px-7">
-        <p className="flex items-center gap-2 font-extrabold"><Compass className="size-5 text-[#8fc0ff]" /> Tu brújula de empleo <span className="font-normal text-white/60">· 30 segundos</span></p>
+        <p className="flex items-center gap-2 font-extrabold"><Compass className="size-5 text-[#8fc0ff]" /> Vacantes para ti en 3 toques <span className="font-normal text-white/60">· 30 segundos</span></p>
         <p aria-live="polite" className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm">
           <Sparkles className="size-4 text-[#ffd84d]" />
           {coinciden > 0 ? <><b className="tabular-nums">{coinciden}</b> {coinciden === 1 ? "vacante coincide" : "vacantes coinciden"}</> : "Elige y verás cuántas te coinciden"}
@@ -115,7 +117,7 @@ export function Brujula({ onListo, className = "" }: { onListo: (cv: CV) => void
         <div className="mt-7 flex items-center justify-between gap-3">
           {paso > 0 ? <button type="button" onClick={() => setPaso((p) => p - 1)} className="inline-flex h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold text-muted-foreground hover:text-foreground"><ArrowLeft className="size-4" /> Atrás</button> : <span />}
           {paso < 2
-            ? <button type="button" disabled={!puede} onClick={() => setPaso((p) => p + 1)} className="btn-aplicar inline-flex h-12 items-center gap-2 rounded-xl px-6 disabled:opacity-50">Seguir <ArrowRight className="size-4" /></button>
+            ? <button type="button" disabled={!puede} onClick={() => setPaso((p) => p + 1)} className="btn-aplicar inline-flex h-12 items-center gap-2 rounded-xl px-6 disabled:opacity-50">Seguir{coinciden > 0 ? ` · ${coinciden} coinciden` : ""} <ArrowRight className="size-4" /></button>
             : <button type="button" disabled={!puede} onClick={terminar} className="btn-aplicar inline-flex h-12 items-center gap-2 rounded-xl px-6 disabled:opacity-50"><Sparkles className="size-4" /> {coinciden ? `Ver mis ${coinciden} vacantes` : "Guardar y ver vacantes"}</button>}
         </div>
         <p className="mt-4 text-xs text-muted-foreground">Se guarda en tu CV y puedes cambiarlo cuando quieras. Nadie lo ve hasta que tú apliques.</p>
