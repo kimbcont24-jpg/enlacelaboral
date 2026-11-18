@@ -10,12 +10,14 @@ import { diasRestantes, esClara, esNueva, venceTexto } from "@/lib/claridad";
 import { viaAplicar } from "@/lib/mensajes";
 import { usePostulaciones } from "@/lib/postulaciones";
 import type { Vacante } from "@/lib/vacantes";
+import { ParaTiChip, useAfinidad } from "@/lib/afinidad";
 import { registrarVista } from "@/lib/vistas";
 import { nombreEmpresa, presentar } from "@/lib/presentar";
 
 /** Fila compacta del listado en computadora: al tocarla se ve la vacante al lado. */
 export function FilaVacante({ job, activa, onElegir }: { job: Vacante; activa: boolean; onElegir: () => void }) {
   const { yaAplico } = usePostulaciones();
+  const afin = useAfinidad(job);
   return (
     <button type="button" onClick={() => { registrarVista(job.id, job.estado); onElegir(); }} aria-pressed={activa} className={`group relative w-full rounded-2xl border bg-surface p-4 text-left transition-[border-color,box-shadow] ${activa ? "border-[#1d6ff2] shadow-[0_0_0_3px_rgb(29_111_242/0.15)]" : "border-border hover:border-[#1d6ff2]/50"}`}>
       {job.destacada && <span aria-hidden="true" className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-[#ffd84d]" />}
@@ -27,6 +29,7 @@ export function FilaVacante({ job, activa, onElegir }: { job: Vacante; activa: b
             {esNueva(job) && <span className="rounded-full bg-cta px-2 py-0.5 text-[10px] font-bold text-cta-foreground">Nueva</span>}
             {esClara(job) && <span className="inline-flex items-center gap-1 rounded-full bg-[#0a7a4b] px-2 py-0.5 text-[10px] font-extrabold text-white"><BadgeCheck className="size-3" aria-hidden="true" /> Clara 6/6</span>}
             {yaAplico(job.id) && <span className="rounded-full bg-success/15 px-2 py-0.5 text-[10px] font-bold text-success">Ya aplicaste</span>}
+            <ParaTiChip r={afin} />
           </span>
           <span className={`mt-0.5 block text-[15px] font-extrabold leading-snug ${activa ? "text-[#1557c4]" : "group-hover:text-[#1557c4]"}`}>{job.titulo}</span>
           <span className="block truncate text-sm text-muted-foreground">{nombreEmpresa(job.empresa)}</span>
@@ -48,6 +51,7 @@ export function VistaPrevia({ job }: { job: Vacante }) {
   const via = viaAplicar(job);
   const pronto = diasRestantes(job) <= 5;
   const p = presentar(job);
+  const afin = useAfinidad(job);
   const H = ({ I, t }: { I: typeof Target; t: string }) => <h3 className="flex items-center gap-2 text-[1.05rem] font-extrabold"><span className="grid size-7 place-items-center rounded-lg bg-[#e6efff] text-[#1557c4]"><I className="size-4" aria-hidden="true" /></span>{t}</h3>;
   return (
     <article key={job.id} className="vista-entra flex max-h-[calc(100vh-7rem)] flex-col overflow-hidden rounded-[1.75rem] border border-border bg-surface shadow-[var(--shadow-soft)]" aria-label={`Vacante: ${job.titulo}`}>
@@ -58,6 +62,7 @@ export function VistaPrevia({ job }: { job: Vacante }) {
             <p className="truncate font-bold text-white">{nombreEmpresa(job.empresa)}</p>
             <p className="text-sm text-white/70">Publicada {job.publicado}</p>
           </div>
+          {afin && <span title="Según lo que buscas" className="hidden shrink-0 rounded-full bg-white/12 px-3 py-1 text-xs font-bold text-white xl:inline">✦ Coincide con: {afin.porque.slice(0, 2).join(", ")}</span>}
         </div>
         <h2 className="mt-4 text-balance text-[1.6rem] font-extrabold leading-[1.12] tracking-[-0.02em]">{job.titulo}</h2>
         {job.salarioMin > 0 && <p className="mt-3 font-display text-[1.5rem] font-bold leading-none tracking-tight text-[#7ff0b8]">{job.salario} <span className="font-sans text-sm font-semibold text-white/70">al mes</span></p>}

@@ -10,6 +10,7 @@ import { useGuardados } from "@/lib/guardados";
 import { viaAplicar } from "@/lib/mensajes";
 import { usePostulaciones } from "@/lib/postulaciones";
 import type { Vacante } from "@/lib/vacantes";
+import { ParaTiChip, useAfinidad } from "@/lib/afinidad";
 import { lema, nombreEmpresa } from "@/lib/presentar";
 
 export function ClaridadPill({ job, className = "" }: { job: Vacante; className?: string }) {
@@ -53,6 +54,7 @@ export function BotonGuardar({ id, grande = false }: { id: string; grande?: bool
 export function JobCard({ job }: { job: Vacante }) {
   const aplicar = useApply();
   const nueva = esNueva(job);
+  const afin = useAfinidad(job);
   const pronto = diasRestantes(job) <= 5;
   const conSueldo = job.salarioMin > 0;
   const via = viaAplicar(job);
@@ -76,6 +78,7 @@ export function JobCard({ job }: { job: Vacante }) {
           {job.destacada && <span className="rounded-full bg-[#ffd84d] px-2.5 py-0.5 text-[11px] font-extrabold text-[#3d2f00]">Destacada</span>}
           {nueva && <span className="rounded-full bg-cta px-2.5 py-0.5 text-[11px] font-bold text-cta-foreground">Nueva</span>}
           {yaAplico(job.id) && <span className="rounded-full bg-success/15 px-2.5 py-0.5 text-[11px] font-bold text-success">Ya aplicaste</span>}
+          <ParaTiChip r={afin} className="text-[11px]" />
         </div>
       )}
 
