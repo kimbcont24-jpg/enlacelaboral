@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
-import { Activity, Building2, Sparkles, Wallet } from "lucide-react";
+import { Activity, Building2, GraduationCap, Sparkles } from "lucide-react";
 
 import type { Vacante } from "@/lib/vacantes";
 
@@ -20,16 +20,17 @@ export function PulsoHoy({ jobs, className = "" }: { jobs: Vacante[]; className?
     const nuevasHoy = jobs.filter((j) => diaRD(new Date(j.creado)) === hoy).length;
     const nuevasAyer = jobs.filter((j) => diaRD(new Date(j.creado)) === ayer).length;
     const conSalario = jobs.filter((j) => j.salarioMin > 0);
+    const sinExperiencia = jobs.filter((j) => j.experiencia === "Sin experiencia").length;
     const salarios = conSalario.map((j) => j.salarioMin).sort((a, b) => a - b);
     const mediana = salarios.length ? salarios[Math.floor(salarios.length / 2)]! : 0;
     const empresas = new Set(jobs.map((j) => j.empresa.trim().toLowerCase()).filter(Boolean)).size;
-    return { nuevas: nuevasHoy || nuevasAyer, deHoy: nuevasHoy > 0, pct: Math.round((conSalario.length / jobs.length) * 100), mediana, empresas, total: jobs.length };
+    return { nuevas: nuevasHoy || nuevasAyer, deHoy: nuevasHoy > 0, sinExperiencia, mediana, empresas, total: jobs.length };
   }, [jobs]);
   if (!c) return null;
 
   const cifras = [
-    { I: Sparkles, n: c.nuevas.toLocaleString("es-DO"), t: c.deHoy ? "vacantes nuevas hoy" : "vacantes nuevas ayer", d: `${c.total.toLocaleString("es-DO")} abiertas en total` },
-    { I: Wallet, n: `${c.pct}%`, t: "muestran el salario", d: "Para que sepas antes de aplicar" },
+    { I: Sparkles, n: c.nuevas.toLocaleString("es-DO"), t: c.deHoy ? "vacantes nuevas hoy" : "vacantes nuevas ayer", d: c.total >= 1000 ? "Más de 1,000 abiertas" : `${c.total.toLocaleString("es-DO")} abiertas en total` },
+    { I: GraduationCap, n: c.sinExperiencia.toLocaleString("es-DO"), t: "no piden experiencia", d: "Ideales para tu primer empleo", to: "Sin experiencia" },
     { I: Building2, n: c.empresas.toLocaleString("es-DO"), t: "empresas contratando", d: "De todo el país" },
     { I: Activity, n: c.mediana ? rd(c.mediana) : "—", t: "salario más común", d: "Mensual, entre las que lo publican" },
   ];
@@ -42,15 +43,20 @@ export function PulsoHoy({ jobs, className = "" }: { jobs: Vacante[]; className?
           <Link to="/salarios" className="text-sm font-bold text-primary hover:underline">Ver el radar salarial</Link>
         </div>
         <div className="mt-3 grid grid-cols-2 overflow-hidden rounded-2xl border border-border bg-surface lg:grid-cols-4">
-          {cifras.map(({ I, n, t, d }, i) => (
-            <div key={t} className={`p-4 sm:p-5 ${i % 2 === 0 ? "border-r border-border" : ""} ${i < 2 ? "border-b border-border lg:border-b-0" : ""} ${i === 1 ? "lg:border-r" : ""}`}>
+          {cifras.map(({ I, n, t, d, to }, i) => (
+            <Cifra key={t} to={to} className={`p-4 sm:p-5 ${i % 2 === 0 ? "border-r border-border" : ""} ${i < 2 ? "border-b border-border lg:border-b-0" : ""} ${i === 1 ? "lg:border-r" : ""}`}>
               <p className="flex items-center gap-2"><I className="size-4 text-primary" aria-hidden="true" /><span className="font-display text-2xl font-extrabold tabular-nums sm:text-3xl">{n}</span></p>
               <p className="mt-1 text-sm font-bold">{t}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{d}</p>
-            </div>
+            </Cifra>
           ))}
         </div>
       </div>
     </section>
   );
+}
+
+function Cifra({ to, className, children }: { to?: string; className: string; children: React.ReactNode }) {
+  if (!to) return <div className={className}>{children}</div>;
+  return <Link to="/vacantes" search={{ experiencia: to }} className={`${className} transition-colors hover:bg-secondary/60`}>{children}</Link>;
 }
