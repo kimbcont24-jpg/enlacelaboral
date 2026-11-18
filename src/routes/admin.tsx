@@ -24,7 +24,7 @@ import { Usuarios } from "@/components/admin/Usuarios";
 import { Opiniones, contarOpinionesPendientes } from "@/components/admin/Opiniones";
 import type { TabId } from "@/components/admin/comun";
 import { textosEditables, textosPorDefecto, type ClaveTexto } from "@/lib/contenido";
-import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
+import { areas, modalidades, opcionesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, extraer, type Borrador } from "@/lib/extraer";
 import { senalesRiesgo } from "@/lib/antiestafa";
 import { revisarVacante } from "@/lib/inclusion";
@@ -268,7 +268,7 @@ function desdeBorradorRow(r: BorradorRow): Borrador {
         provincia: enLista(d["provincia"], provincias.slice(1), base.provincia),
         modalidad: enLista(d["modalidad"], modalidades, base.modalidad),
         tipo: enLista(d["tipo"], tiposEmpleo, base.tipo),
-        experiencia: enLista(d["experiencia"], nivelesExperiencia, base.experiencia),
+        experiencia: enLista(d["experiencia"], opcionesExperiencia, base.experiencia),
         area: enLista(d["area"], areas, base.area),
         salarioMin: str(d["salarioMin"]).replace(/\D/g, ""),
         salarioMax: str(d["salarioMax"]).replace(/\D/g, ""),
@@ -444,7 +444,7 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
           <label className="block"><span className={etiqueta}>Ubicación</span><select value={b.provincia} onChange={set("provincia")} className={campo}>{provincias.slice(1).map((p) => <option key={p}>{p}</option>)}</select></label>
           <label className="block"><span className={etiqueta}>Modalidad</span><select value={b.modalidad} onChange={set("modalidad")} className={campo}>{modalidades.map((m) => <option key={m}>{m}</option>)}</select></label>
           <label className="block"><span className={etiqueta}>Tipo de empleo</span><select value={b.tipo} onChange={set("tipo")} className={campo}>{tiposEmpleo.map((t) => <option key={t}>{t}</option>)}</select></label>
-          <label className="block"><span className={etiqueta}>Experiencia</span><select value={b.experiencia} onChange={set("experiencia")} className={campo}>{nivelesExperiencia.map((n) => <option key={n}>{n}</option>)}</select></label>
+          <label className="block"><span className={etiqueta}>Experiencia</span><select value={b.experiencia} onChange={set("experiencia")} className={campo}>{opcionesExperiencia.map((n) => <option key={n}>{n}</option>)}</select></label>
           <label className="block"><span className={etiqueta}>Salario desde (RD$)</span><input inputMode="numeric" value={b.salarioMin} onChange={(e) => setB((x) => ({ ...x, salarioMin: e.target.value.replace(/\D/g, "") }))} className={campo} placeholder="Vacío si no lo dicen" /></label>
           <label className="block"><span className={etiqueta}>Salario hasta (RD$)</span><input inputMode="numeric" value={b.salarioMax} onChange={(e) => setB((x) => ({ ...x, salarioMax: e.target.value.replace(/\D/g, "") }))} className={campo} placeholder="Opcional" /></label>
           <label className="block sm:col-span-2"><span className={etiqueta}>Requisitos (uno por línea)</span><textarea value={b.requisitos} onChange={set("requisitos")} rows={5} className={campo} placeholder="Vacío si la vacante no los menciona" /></label>

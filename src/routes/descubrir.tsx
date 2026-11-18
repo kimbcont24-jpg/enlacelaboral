@@ -254,7 +254,7 @@ function Tarjeta({ job, lectura, onAplicar }: { job: Vacante; lectura: Lectura; 
       <div className="mt-4 flex flex-wrap gap-1.5 text-xs font-semibold text-muted-foreground">
         <span className="rounded-full bg-secondary px-2.5 py-1">{job.modalidad}</span>
         <span className="rounded-full bg-secondary px-2.5 py-1">{job.tipo}</span>
-        <span className="rounded-full bg-secondary px-2.5 py-1">{job.experiencia}</span>
+        {job.experiencia !== "No indica" && <span className="rounded-full bg-secondary px-2.5 py-1">{job.experiencia}</span>}
         <span className="rounded-full bg-secondary px-2.5 py-1">{via.texto}</span>
       </div>
 

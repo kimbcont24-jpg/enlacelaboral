@@ -24,7 +24,7 @@ export const borradorVacio: Borrador = {
   provincia: "Distrito Nacional",
   modalidad: "Presencial",
   tipo: "Tiempo completo",
-  experiencia: "Sin experiencia",
+  experiencia: "No indica",
   area: "Administración",
   salarioMin: "",
   salarioMax: "",
@@ -240,7 +240,7 @@ function leerExperiencia(t: string): { v: string; seguro: boolean } {
     if (n >= 1 && n <= 20) return { v: n >= 3 ? "3+ años" : "1-3 años", seguro: true };
   }
   if (/experiencia (?:previa|comprobada|m[ií]nima|en|demostrable|laboral)|con experiencia|experiencia (?:en|como)/i.test(t)) return { v: "1-3 años", seguro: false };
-  return { v: "Sin experiencia", seguro: false };
+  return { v: "No indica", seguro: false };
 }
 
 type Capturas = { t: string; lineas: string[] };

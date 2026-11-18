@@ -144,7 +144,7 @@ function Detalle() {
     { I: MapPin, t: job.provincia },
     { I: Monitor, t: job.modalidad === "Remoto" ? "Desde casa" : job.modalidad },
     { I: Briefcase, t: job.tipo },
-    { I: GraduationCap, t: job.experiencia === "Sin experiencia" ? "Sin experiencia" : `Experiencia: ${job.experiencia}` },
+    ...(job.experiencia && job.experiencia !== "No indica" ? [{ I: GraduationCap, t: job.experiencia === "Sin experiencia" ? "Sin experiencia" : `Experiencia: ${job.experiencia}` }] : []),
   ];
 
   return (

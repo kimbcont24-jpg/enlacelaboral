@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { campo, rotulo } from "@/components/admin/comun";
 import { supabase } from "@/integrations/supabase/client";
-import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
+import { areas, modalidades, opcionesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import type { Borrador } from "@/lib/extraer";
 import { AVISO_CORREO, analizarTexto, crearLector, esRepetida, leerFoto, prepararFoto, type Lector } from "@/lib/ocr";
 import { avisarPublicada, filaDesde, miEmpresa } from "@/lib/publicar";
@@ -34,7 +34,7 @@ type Item = {
 
 const FUENTES = ["Flyer de la empresa", "Instagram", "WhatsApp", "LinkedIn", "Facebook", "Otra"];
 
-const vacioB = (fuente: string, redes: boolean): Borrador => ({ titulo: "", empresa: "", provincia: "Distrito Nacional", modalidad: "Presencial", tipo: "Tiempo completo", experiencia: "Sin experiencia", area: "Administración", salarioMin: "", salarioMax: "", descripcion: "", requisitos: "", aplicar: "", fuente, fuenteUrl: "", redes });
+const vacioB = (fuente: string, redes: boolean): Borrador => ({ titulo: "", empresa: "", provincia: "Distrito Nacional", modalidad: "Presencial", tipo: "Tiempo completo", experiencia: "No indica", area: "Administración", salarioMin: "", salarioMax: "", descripcion: "", requisitos: "", aplicar: "", fuente, fuenteUrl: "", redes });
 
 const completa = (it: Item) => it.estado === "listo" && !!it.b.titulo.trim() && !!it.b.aplicar.trim() && !it.avisos.some((a) => a.startsWith(AVISO_CORREO)) && it.riesgo.filter((r) => !r.startsWith("No trae forma")).length === 0;
 
@@ -274,7 +274,7 @@ function Tarjeta({ it, repetida, onCampo, onPublicar, onQuitar, onReleer, onSepa
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 <label className="block"><span className={rotulo}>Tipo</span><select className={campo} value={it.b.tipo} onChange={(e) => onCampo("tipo", e.target.value)}>{tiposEmpleo.map((t) => (<option key={t}>{t}</option>))}</select></label>
                 <label className="block"><span className={rotulo}>Modalidad</span><select className={campo} value={it.b.modalidad} onChange={(e) => onCampo("modalidad", e.target.value)}>{modalidades.map((t) => (<option key={t}>{t}</option>))}</select></label>
-                <label className="block"><span className={rotulo}>Experiencia</span><select className={campo} value={it.b.experiencia} onChange={(e) => onCampo("experiencia", e.target.value)}>{nivelesExperiencia.map((t) => (<option key={t}>{t}</option>))}</select></label>
+                <label className="block"><span className={rotulo}>Experiencia</span><select className={campo} value={it.b.experiencia} onChange={(e) => onCampo("experiencia", e.target.value)}>{opcionesExperiencia.map((t) => (<option key={t}>{t}</option>))}</select></label>
                 <label className="block"><span className={rotulo}>Área</span><select className={campo} value={it.b.area} onChange={(e) => onCampo("area", e.target.value)}>{areas.map((t) => (<option key={t}>{t}</option>))}</select></label>
                 <label className="block sm:col-span-2"><span className={rotulo}>Requisitos (uno por línea)</span><textarea className={campo} rows={4} value={it.b.requisitos} onChange={(e) => onCampo("requisitos", e.target.value)} /></label>
                 <label className="block sm:col-span-2"><span className={rotulo}>Funciones, beneficios y horario</span><textarea className={campo} rows={4} value={it.b.descripcion} onChange={(e) => onCampo("descripcion", e.target.value)} /></label>

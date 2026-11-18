@@ -11,15 +11,15 @@ const limpiar = (s) => (s ?? "").replace(/<br\s*\/?>|<\/(?:td|tr|div|p|li|h\d|ta
 const uno = (s) => s.replace(/\s+/g, " ").trim();
 const tituloBonito = (t) => { t = t.trim().replace(/^[¡!]+|[¡!]+$/g, ""); if (t === t.toUpperCase()) t = t.toLowerCase().replace(/(^|\s|\()(\p{L})/gu, (m, a, b) => a + b.toUpperCase()); return t.slice(0, 120); };
 const malo = /\bedad\b|años de edad|\bsexo\b|femenin|masculin|\bhombre|\bmujer|buena presencia|foto actual/i;
-const nivel = (e) => (/3\+|más de 3|3 a |4 |5 /.test(e) ? "3+ años" : /1-3|1 a 3|2 a /.test(e) ? "1-3 años" : "Sin experiencia");
+const nivel = (e) => (/3\+|más de 3|3 a |4 |5 /.test(e) ? "3+ años" : /1-3|1 a 3|2 a /.test(e) ? "1-3 años" : /sin experiencia|no requiere|primer empleo|pasant/i.test(e) ? "Sin experiencia" : "No indica");
 
 function experienciaDe(texto) {
   const s = texto.toLowerCase();
   const m = s.match(/(\d+)\s*(?:ó|o)?\s*(?:más\s+)?(?:a\s*\d+\s*)?años?\s+de\s+experiencia/) || s.match(/experiencia\s+(?:mínima\s+)?(?:de\s+)?(\d+)\s*(?:a\s*\d+\s*)?años?/) || s.match(/(\d+)\s*ó\s*más\s*años/) || s.match(/(\d+)\+?\s*years/);
   if (m) { const n = Number(m[1]); return n >= 3 ? "3+ años" : "1-3 años"; }
-  if (/sin experiencia|no requiere experiencia|no experience/.test(s)) return "Sin experiencia";
+  if (/sin experiencia|no requiere experiencia|no experience|primer empleo|pasant|reci[eé]n graduad/.test(s)) return "Sin experiencia";
   if (/experiencia|experience/.test(s)) return "1-3 años";
-  return "Sin experiencia";
+  return "No indica"; // no suponer: si no lo dice, no lo sabemos
 }
 
 const PROV = [["distrito nacional", "Distrito Nacional"], ["santo domingo", "Santo Domingo"], ["boca chica", "Santo Domingo"], ["san isidro", "Santo Domingo"], ["punta cana", "La Altagracia (Punta Cana)"], ["bávaro", "La Altagracia (Punta Cana)"], ["bavaro", "La Altagracia (Punta Cana)"], ["higüey", "La Altagracia (Punta Cana)"], ["la altagracia", "La Altagracia (Punta Cana)"], ["azua", "Azua"], ["san pedro", "San Pedro de Macorís"], ["bonao", "Monseñor Nouel (Bonao)"], ["monseñor nouel", "Monseñor Nouel (Bonao)"], ["la romana", "La Romana"], ["puerto plata", "Puerto Plata"], ["haina", "San Cristóbal"], ["san cristóbal", "San Cristóbal"], ["san cristobal", "San Cristóbal"], ["santiago", "Santiago"], ["la vega", "La Vega"], ["moca", "Espaillat (Moca)"], ["baní", "Peravia (Baní)"], ["bani", "Peravia (Baní)"], ["cotuí", "Sánchez Ramírez (Cotuí)"], ["samaná", "Samaná"], ["nagua", "María Trinidad Sánchez (Nagua)"], ["salcedo", "Hermanas Mirabal (Salcedo)"], ["mao", "Valverde (Mao)"], ["monte cristi", "Monte Cristi"], ["montecristi", "Monte Cristi"], ["dajabón", "Dajabón"], ["barahona", "Barahona"], ["san juan", "San Juan"], ["neiba", "Baoruco (Neiba)"], ["jimaní", "Independencia (Jimaní)"], ["pedernales", "Pedernales"], ["ocoa", "San José de Ocoa"], ["monte plata", "Monte Plata"], ["hato mayor", "Hato Mayor"], ["el seibo", "El Seibo"], ["san francisco", "Duarte (San Francisco)"], ["remoto", "Remoto desde RD"]];

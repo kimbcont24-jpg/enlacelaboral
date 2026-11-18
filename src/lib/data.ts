@@ -42,6 +42,8 @@ export const modalidades = ["Presencial", "Híbrido", "Remoto", "Campo"] as cons
 export const tiposEmpleo = ["Tiempo completo", "Medio tiempo", "Pasantía", "Por proyecto"] as const;
 
 export const nivelesExperiencia = ["Sin experiencia", "1-3 años", "3+ años"] as const;
+/** Para formularios: «No indica» cuando la vacante no dice nada (nunca suponer «Sin experiencia»). */
+export const opcionesExperiencia = [...nivelesExperiencia, "No indica"] as const;
 
 export const rangosSalario = [
   { label: "Desde RD$20,000", min: 20000 },

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { claridad } from "@/lib/claridad";
-import { areas, modalidades, nivelesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
+import { areas, modalidades, opcionesExperiencia, provincias, tiposEmpleo } from "@/lib/data";
 import { borradorVacio, type Borrador } from "@/lib/extraer";
 import type { EmpresaPerfil } from "@/lib/panel";
 import { filaDesde } from "@/lib/publicar";
@@ -66,7 +66,7 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
     provincia: en(provincias, x.provincia) && x.provincia !== "Toda República Dominicana" ? x.provincia : prev.provincia,
     modalidad: en(modalidades, x.modalidad) ? x.modalidad : prev.modalidad,
     tipo: en(tiposEmpleo, x.tipo) ? x.tipo : prev.tipo,
-    experiencia: en(nivelesExperiencia, x.experiencia) ? x.experiencia : prev.experiencia,
+    experiencia: en(opcionesExperiencia, x.experiencia) ? x.experiencia : prev.experiencia,
     salarioMin: x.salarioMin || prev.salarioMin,
     salarioMax: x.salarioMax || prev.salarioMax,
     descripcion: x.descripcion || prev.descripcion,
@@ -161,7 +161,7 @@ export function PublicarEmpresa({ empresa, uid, base, duplicar = false, onListo 
           <Sel id="p-prov" label="Dónde" value={b.provincia} onChange={(v) => pon("provincia", v)} opciones={provincias.filter((p) => p !== "Toda República Dominicana")} extra={duda("provincia")} />
           <Sel id="p-mod" label="Modalidad" value={b.modalidad} onChange={(v) => pon("modalidad", v)} opciones={modalidades} extra={duda("modalidad")} />
           <Sel id="p-tipo" label="Jornada" value={b.tipo} onChange={(v) => pon("tipo", v)} opciones={tiposEmpleo} extra={duda("tipo")} />
-          <Sel id="p-exp" label="Experiencia" value={b.experiencia} onChange={(v) => pon("experiencia", v)} opciones={nivelesExperiencia} extra={duda("experiencia")} />
+          <Sel id="p-exp" label="Experiencia" value={b.experiencia} onChange={(v) => pon("experiencia", v)} opciones={opcionesExperiencia} extra={duda("experiencia")} />
         </div>
         <fieldset>
           <legend className={etiqueta}>Salario mensual (RD$)</legend>

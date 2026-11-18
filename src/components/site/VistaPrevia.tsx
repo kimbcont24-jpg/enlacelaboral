@@ -67,7 +67,7 @@ export function VistaPrevia({ job }: { job: Vacante }) {
         <h2 className="mt-4 text-balance text-[1.6rem] font-extrabold leading-[1.12] tracking-[-0.02em]">{job.titulo}</h2>
         {job.salarioMin > 0 && <p className="mt-3 font-display text-[1.5rem] font-bold leading-none tracking-tight text-[#7ff0b8]">{job.salario} <span className="font-sans text-sm font-semibold text-white/70">al mes</span></p>}
         <div className="mt-4 flex flex-wrap gap-1.5 text-sm">
-          {[{ I: MapPin, t: job.provincia }, { I: Monitor, t: job.modalidad === "Remoto" ? "Desde casa" : job.modalidad }, { I: Briefcase, t: job.tipo }, { I: GraduationCap, t: job.experiencia }].map(({ I, t }) => <span key={t} className="vidrio inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold text-white"><I className="size-4 text-[#8ec1ff]" />{t}</span>)}
+          {[{ I: MapPin, t: job.provincia }, { I: Monitor, t: job.modalidad === "Remoto" ? "Desde casa" : job.modalidad }, { I: Briefcase, t: job.tipo }, ...(job.experiencia && job.experiencia !== "No indica" ? [{ I: GraduationCap, t: job.experiencia }] : [])].map(({ I, t }) => <span key={t} className="vidrio inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold text-white"><I className="size-4 text-[#8ec1ff]" />{t}</span>)}
         </div>
       </header>
       <div className="shrink-0 border-b border-border p-5">
