@@ -37,8 +37,10 @@ export function Header() {
     // Solo las empresas ven "Mi panel"; un candidato con cuenta sigue viendo el sitio normal.
     const revisar = async (uid: string | undefined) => {
       if (!uid) return setConSesion(false);
-      const { data: dueno } = await supabase.rpc("mi_dueno"); const count = dueno ? 1 : 0;
-      setConSesion(!!count);
+      const { data: ses } = await supabase.auth.getSession();
+      const tipo = (ses.session?.user.user_metadata as { tipo?: string } | undefined)?.tipo;
+      const { data: dueno } = await supabase.rpc("mi_dueno");
+      setConSesion(!!dueno || tipo === "empresa" || tipo === "equipo");
     };
     void supabase.auth.getSession().then(({ data }) => revisar(data.session?.user.id));
     const { data } = supabase.auth.onAuthStateChange((_e, s) => { void revisar(s?.user.id); });

@@ -133,8 +133,12 @@ function Panel() {
       const { data: e } = await supabase.from("empresas").select(CAMPOS_EMPRESA).eq("owner_id", dueno).limit(1).maybeSingle();
       if (!e) {
         // Candidatos con cuenta (guardaron su CV) no tienen panel de empresa: van a su búsqueda.
-        const { count } = await supabase.from("candidatos").select("user_id", { count: "exact", head: true }).eq("user_id", id);
-        if (count) { await navigate({ to: "/guardadas" }); return; }
+        // Quien se registró como empresa o equipo se queda aquí y termina sus datos (aunque tenga fila de candidato).
+        const tipo = (data.session?.user.user_metadata as { tipo?: string } | undefined)?.tipo;
+        if (tipo !== "empresa" && tipo !== "equipo") {
+          const { count } = await supabase.from("candidatos").select("user_id", { count: "exact", head: true }).eq("user_id", id);
+          if (count) { await navigate({ to: "/guardadas" }); return; }
+        }
       }
       setEmpresa(e ? ({ ...(e as unknown as EmpresaPerfil), plantillas: ((e as unknown as Record<string, unknown>)["plantillas"] ?? {}) as EmpresaPerfil["plantillas"] }) : null);
       await cargarTodo(dueno);
@@ -371,9 +375,13 @@ function CrearEmpresa({ uid, onListo, onSalir }: { uid: string; onListo: (e: Emp
   const [guardando, setGuardando] = useState(false);
   const crear = async (n: string, r: string, c: string, correo: string | null) => {
     setGuardando(true);
-    const { data, error } = await supabase.from("empresas").insert({ owner_id: uid, nombre: n.trim(), rnc: r, verificada: false, contacto_nombre: c.trim() || null, contacto_email: correo }).select(CAMPOS_EMPRESA).single();
+    let { data, error } = await supabase.from("empresas").insert({ owner_id: uid, nombre: n.trim(), rnc: r, verificada: false, contacto_nombre: c.trim() || null, contacto_email: correo }).select(CAMPOS_EMPRESA).single();
+    if (error && /duplicate|unique/i.test(error.message)) {
+      // Ya se había creado (doble clic o se creó sola al entrar): se usa la que existe.
+      ({ data, error } = await supabase.from("empresas").select(CAMPOS_EMPRESA).eq("owner_id", uid).single());
+    }
     setGuardando(false);
-    if (error) return void toast.error("No se pudo guardar. Intenta otra vez.");
+    if (error || !data) return void toast.error(/rnc_formato/.test(error?.message ?? "") ? "Revisa el RNC: 9 dígitos (o 11 si es cédula)." : "No se pudo guardar. Intenta otra vez.");
     onListo({ ...(data as unknown as EmpresaPerfil), plantillas: {} });
   };
   // Si al crear la cuenta ya escribió empresa y RNC (y luego confirmó el correo), se crea sola.

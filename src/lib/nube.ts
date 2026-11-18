@@ -40,6 +40,11 @@ function local() {
 async function subir() {
   if (!usuario || aplicando) return;
   const l = local();
+  // Sin nada que guardar no se crea la fila (evita cuentas «candidato» vacías).
+  if (!tieneCV(l.cv) && !l.guardadas.length && !l.postulaciones.length) {
+    const { count } = await supabase.from("candidatos").select("user_id", { count: "exact", head: true }).eq("user_id", usuario);
+    if (!count) return;
+  }
   await supabase.from("candidatos").upsert({ user_id: usuario, cv: (l.cv ?? {}) as unknown as Record<string, unknown>, plantilla: l.plantilla, guardadas: l.guardadas.slice(0, 200), postulaciones: l.postulaciones.slice(0, 300), versiones: (l.versiones ?? {}) as unknown as Record<string, unknown>, updated_at: new Date().toISOString() });
 }
 const subirLuego = () => { window.clearTimeout(temporizador); temporizador = window.setTimeout(() => void subir(), 1500); };
@@ -93,8 +98,12 @@ export function iniciarNube() {
     esEmpresa = false;
     if (uid) {
       // Las empresas usan su panel; la copia del candidato es solo para quien no tiene empresa.
-      const { data: dueno } = await supabase.rpc("mi_dueno"); const count = dueno ? 1 : 0;
-      if (count) { usuario = null; esEmpresa = true; window.dispatchEvent(new Event(EV_NUBE)); return; }
+      // Ojo: quien se registró como empresa (o fue invitado a un equipo) aún puede no tener la empresa creada
+      // (p. ej. recién confirmó el correo). Nunca se le crea perfil de candidato: eso lo mandaba a /guardadas.
+      const { data: ses } = await supabase.auth.getSession();
+      const tipo = (ses.session?.user.user_metadata as { tipo?: string } | undefined)?.tipo;
+      const { data: dueno } = await supabase.rpc("mi_dueno");
+      if (dueno || tipo === "empresa" || tipo === "equipo") { usuario = null; esEmpresa = true; window.dispatchEvent(new Event(EV_NUBE)); return; }
       await mezclar(uid);
     }
     window.dispatchEvent(new Event(EV_NUBE));
