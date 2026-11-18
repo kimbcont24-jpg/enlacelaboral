@@ -74,7 +74,7 @@ function Cuenta() {
             <form key="correo" onSubmit={(e) => void pedir(e)} noValidate className="fx-paso space-y-5">
               <div>
                 <h2 className="font-display text-[2rem] font-extrabold leading-tight tracking-tight">Crea tu cuenta en 20 segundos</h2>
-                <p className="mt-2 text-muted-foreground">Solo tu correo. Te enviamos un código y listo: sin contraseñas que recordar. Si ya tienes cuenta, es igual.</p>
+                <p className="mt-2 text-muted-foreground">Solo tu correo. Te enviamos un enlace para entrar: sin contraseñas que recordar. Si ya tienes cuenta, es igual.</p>
               </div>
               <div className="relative">
                 <Mail className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
@@ -82,7 +82,7 @@ function Cuenta() {
               </div>
               <Consentimiento para="cuenta" />
               {error && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
-              <button type="submit" disabled={cargando} className="fx-btn flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#1d6ff2] to-[#1557c4] text-[1.05rem] font-bold text-white disabled:opacity-70">{cargando ? <Loader2 className="size-5 animate-spin" /> : null} Enviarme el código <ArrowRight className="size-5" /></button>
+              <button type="submit" disabled={cargando} className="fx-btn flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#1d6ff2] to-[#1557c4] text-[1.05rem] font-bold text-white disabled:opacity-70">{cargando ? <Loader2 className="size-5 animate-spin" /> : null} Enviarme el enlace <ArrowRight className="size-5" /></button>
               <ul className="grid gap-2 border-t border-border pt-5 text-sm text-muted-foreground">
                 {["Tu CV guardado en todos tus teléfonos", "Vacantes que encajan contigo, marcadas con ✦", "Las empresas te invitan; tú decides si aplicas"].map((t) => <li key={t} className="flex items-center gap-2"><span className="grid size-5 place-items-center rounded-full bg-[#0f7a43]/12 text-[#0f7a43]"><Check className="size-3.5" /></span>{t}</li>)}
               </ul>
@@ -95,25 +95,32 @@ function Cuenta() {
               <span className="fx-sobre grid size-16 place-items-center rounded-2xl bg-gradient-to-br from-[#1d6ff2] to-[#0a2f5c] text-white shadow-[0_20px_40px_-16px_rgb(29_111_242/0.7)]"><MailCheck className="size-8" /></span>
               <div>
                 <h2 className="font-display text-[2rem] font-extrabold leading-tight tracking-tight">Revisa tu correo</h2>
-                <p className="mt-2 text-muted-foreground">Enviamos un código a <b className="text-foreground">{correo.trim()}</b>. Escríbelo aquí, o toca el enlace del correo.</p>
+                <p className="mt-2 text-muted-foreground">Enviamos un correo de <b className="text-foreground">Enlace Laboral RD</b> a <b className="text-foreground">{correo.trim()}</b>. Ábrelo y toca el botón para entrar: llegarás directo a tus vacantes.</p>
+              </div>
+              <div className="grid gap-2.5 sm:grid-cols-2">
+                <a href="https://mail.google.com/mail/u/0/#search/from%3Alovable-app.email" target="_blank" rel="noopener" className="fx-btn flex h-14 items-center justify-center rounded-2xl bg-gradient-to-r from-[#1d6ff2] to-[#1557c4] font-bold text-white">Abrir Gmail</a>
+                <a href="https://outlook.live.com/mail/0/" target="_blank" rel="noopener" className="fx-btn flex h-14 items-center justify-center rounded-2xl border border-border bg-surface font-bold">Abrir Outlook</a>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-muted-foreground">¿Tu correo trae un código de números? Escríbelo aquí:</p>
               </div>
               {/* Un solo campo (pegar funciona) que se ve como casillas */}
               <label className="relative block cursor-text" onClick={() => codigoRef.current?.focus()}>
-                <span className="sr-only">Código del correo</span>
+                <span className="sr-only">Código del correo (si viene)</span>
                 <input ref={codigoRef} value={digitos} onChange={(e) => { const v = e.target.value.replace(/\D/g, "").slice(0, 8); setCodigo(v); setError(null); if (v.length === 6 && !intento.current) { intento.current = true; void confirmar(v); } }} inputMode="numeric" autoComplete="one-time-code" maxLength={8} className="absolute inset-0 opacity-0" />
                 <span className="flex justify-between gap-2" aria-hidden="true">
                   {Array.from({ length: largo }, (_, k) => (
-                    <span key={k} className={`grid h-16 flex-1 place-items-center rounded-2xl border-[1.5px] font-display text-2xl font-extrabold transition-all ${digitos[k] ? "border-[#1d6ff2] bg-[#1d6ff2]/[0.06] scale-100" : k === digitos.length ? "border-[#1d6ff2] shadow-[0_0_0_4px_rgb(29_111_242/0.14)]" : "border-border"}`}>{digitos[k] ?? ""}</span>
+                    <span key={k} className={`grid h-12 flex-1 place-items-center rounded-xl border-[1.5px] font-display text-xl font-extrabold transition-all ${digitos[k] ? "border-[#1d6ff2] bg-[#1d6ff2]/[0.06] scale-100" : k === digitos.length ? "border-[#1d6ff2] shadow-[0_0_0_4px_rgb(29_111_242/0.14)]" : "border-border"}`}>{digitos[k] ?? ""}</span>
                   ))}
                 </span>
               </label>
               {error && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>}
-              <button type="button" disabled={cargando || digitos.length < 6} onClick={() => void confirmar()} className="fx-btn flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#1d6ff2] to-[#1557c4] text-[1.05rem] font-bold text-white disabled:opacity-50">{cargando ? <Loader2 className="size-5 animate-spin" /> : null} Entrar</button>
+              {digitos.length >= 6 && <button type="button" disabled={cargando} onClick={() => void confirmar()} className="fx-btn flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-[#1d6ff2] font-bold text-[#1557c4] disabled:opacity-50">{cargando ? <Loader2 className="size-5 animate-spin" /> : null} Entrar con el código</button>}
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <button type="button" onClick={() => { setPaso("correo"); setCodigo(""); setError(null); }} className="font-semibold text-muted-foreground hover:text-foreground">Cambiar correo</button>
-                <button type="button" disabled={espera > 0 || cargando} onClick={() => void pedir()} className="font-bold text-primary hover:underline disabled:text-muted-foreground disabled:no-underline">{espera > 0 ? `Reenviar en ${espera} s` : "Reenviar código"}</button>
+                <button type="button" disabled={espera > 0 || cargando} onClick={() => void pedir()} className="font-bold text-primary hover:underline disabled:text-muted-foreground disabled:no-underline">{espera > 0 ? `Reenviar en ${espera} s` : "Reenviar el correo"}</button>
               </div>
-              <p className="text-xs text-muted-foreground">¿No llega? Mira en «Spam» o «Promociones».</p>
+              <p className="text-xs text-muted-foreground">¿No llega? Mira en «Spam» o «Promociones». El correo dice «Sign in to your account»; puedes dejar esta página abierta.</p>
             </div>
           )}
 
