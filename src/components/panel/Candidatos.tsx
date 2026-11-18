@@ -1,6 +1,7 @@
 import { cumple, textoRespuesta } from "@/lib/preguntas";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarClock, Columns3, Download, List, MessageCircle, Search, X } from "lucide-react";
+import { CalendarClock, Columns3, Download, List, MessageCircle, Search, X, Zap } from "lucide-react";
+import { RevisionRapida } from "@/components/panel/RevisionRapida";
 import { toast } from "sonner";
 
 import { usePanel } from "@/components/panel/contexto";
@@ -21,6 +22,7 @@ export function Candidatos() {
   const [sel, setSel] = useState<string[]>([]);
   const [arrastrando, setArrastrando] = useState<string | null>(null);
   const [sobre, setSobre] = useState<Etapa | null>(null);
+  const [rapida, setRapida] = useState(false);
   useEffect(() => { try { localStorage.setItem("panel-vista", vista); } catch { /* sin almacenamiento */ } }, [vista]);
 
   const { vacante: vacanteSel, etapa: etapaSel } = p.filtro;
@@ -44,6 +46,7 @@ export function Candidatos() {
     return xs;
   };
   const lista = ordenar(base.filter((c) => !etapaSel || c.etapa === etapaSel));
+  const nuevosSel = p.candidatos.filter((c) => c.etapa === "nuevo" && (!vacanteSel || c.vacante_id === vacanteSel)).length;
 
   const exportar = (cs: Candidato[]) => descargarCsv(`candidatos-${new Date().toISOString().slice(0, 10)}.csv`, [
     ["Nombre", "Contacto", "Vacante", "Etapa", "Valoración", "Aplicó", "Entrevista", "Nota", "Respuestas", "Mensaje y CV"],
@@ -77,8 +80,10 @@ export function Candidatos() {
 
   return (
     <>
+      {rapida && <RevisionRapida vacante={vacanteSel || undefined} onCerrar={() => setRapida(false)} />}
       <Titulo titulo="Candidatos" sub={`${p.candidatos.length} en total · ${p.candidatos.filter((c) => c.etapa === "nuevo").length} sin revisar`}>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          {nuevosSel > 0 && <button type="button" onClick={() => setRapida(true)} className="btn-aplicar inline-flex h-10 items-center gap-1.5 rounded-xl px-4 text-sm"><Zap className="size-4" /> Revisar {nuevosSel} {nuevosSel === 1 ? "nuevo" : "nuevos"}</button>}
           <div className="inline-flex rounded-xl border border-border bg-surface p-1" role="group" aria-label="Vista">
             <button type="button" aria-pressed={vista === "tablero"} onClick={() => setVista("tablero")} className={`inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold ${vista === "tablero" ? "bg-[#0a2f5c] text-white" : "text-muted-foreground"}`}><Columns3 className="size-4" /> Tablero</button>
             <button type="button" aria-pressed={vista === "lista"} onClick={() => setVista("lista")} className={`inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold ${vista === "lista" ? "bg-[#0a2f5c] text-white" : "text-muted-foreground"}`}><List className="size-4" /> Lista</button>

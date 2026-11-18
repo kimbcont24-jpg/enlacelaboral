@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { RevisionRapida } from "@/components/panel/RevisionRapida";
 import { PAGOS_ACTIVOS } from "@/lib/pagos";
-import { AlertCircle, CalendarClock, ChevronRight, Clock3, Crown, Eye } from "lucide-react";
+import { AlertCircle, CalendarClock, ChevronRight, Clock3, Crown, Eye, Zap } from "lucide-react";
 
 import { usePanel } from "@/components/panel/contexto";
 import { PulsoEmpresa } from "@/components/panel/MarcaPanel";
@@ -19,6 +20,7 @@ export function Inicio() {
   const proximas = candidatos.filter((c) => c.etapa === "entrevista" && c.entrevista_at && new Date(c.entrevista_at).getTime() > hoy.getTime() - 3600e3).sort((a, b) => a.entrevista_at!.localeCompare(b.entrevista_at!)).slice(0, 4);
   const h = horasRespuesta(candidatos);
   const nuevos = candidatos.filter((c) => c.etapa === "nuevo");
+  const [rapida, setRapida] = useState(false);
 
   // Aplicaciones de los últimos 14 días.
   const dias = useMemo(() => Array.from({ length: 14 }, (_, i) => {
@@ -70,6 +72,8 @@ export function Inicio() {
       <div>
         <p className="text-sm font-semibold text-muted-foreground">{saludo()} · {hoy.toLocaleDateString("es-DO", { weekday: "long", day: "numeric", month: "long" })}</p>
         <h1 className="mt-1 text-balance font-display text-2xl font-extrabold tracking-tight sm:text-[1.75rem]">{resumen ? `Hoy tienes ${resumen}.` : "Todo al día. Buen trabajo."}</h1>
+        {nuevos.length > 0 && <button type="button" onClick={() => setRapida(true)} className="btn-aplicar mt-3 inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm"><Zap className="size-4" /> Revisar {nuevos.length === 1 ? "al nuevo" : `a los ${nuevos.length} nuevos`} en modo rápido</button>}
+        {rapida && <RevisionRapida onCerrar={() => setRapida(false)} />}
       </div>
 
       <PrimerosPasos compacto />
