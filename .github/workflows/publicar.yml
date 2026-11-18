@@ -1,0 +1,39 @@
+name: Publicar sitio
+# Vercel ya no publica con cada cambio (vercel.json → git.deploymentEnabled: false),
+# porque los robots suben ~90 cambios al día y el plan gratis permite 100 publicaciones.
+# Este flujo publica SOLO cuando cambia algo del sitio (código, imágenes, configuración)
+# y espera 10 minutos: si llega otro cambio en ese tiempo, se cancela y cuenta uno solo.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "carga/**"
+      - "scripts/**"
+      - "sql/**"
+      - ".github/**"
+      - "README.md"
+      - "*.png"
+  schedule:
+    - cron: "17 9 * * *"   # 5:17 a. m. RD: una publicación diaria de respaldo
+  workflow_dispatch:
+    inputs:
+      ya:
+        description: "Publicar sin esperar 10 minutos"
+        type: boolean
+        default: true
+concurrency:
+  group: publicar-sitio
+  cancel-in-progress: true
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Esperar más cambios (junta las ráfagas en una sola publicación)
+        if: github.event_name == 'push'
+        run: sleep 600
+      - name: Pedir a Vercel que publique main
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          test -n "$HOOK" || { echo "Falta el secreto VERCEL_DEPLOY_HOOK"; exit 1; }
+          curl -fsS -X POST "$HOOK" | head -c 300; echo
