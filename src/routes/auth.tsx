@@ -14,7 +14,7 @@ export const Route = createFileRoute("/auth")({
     ...(typeof s["correo"] === "string" ? { correo: s["correo"].slice(0, 160) } : {}),
     ...(typeof s["empresa"] === "string" ? { empresa: s["empresa"].slice(0, 120) } : {}),
   }),
-  head: () => ({ meta: [{ title: "Iniciar sesión | Enlace Laboral" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Empresas: entrar o crear cuenta | Enlace Laboral" }, { name: "robots", content: "noindex" }] }),
   component: Auth,
 });
 
@@ -143,7 +143,7 @@ function Auth() {
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       <main className="mx-auto grid max-w-6xl gap-10 px-6 py-14 lg:grid-cols-2">
-        <div>
+        <div className="order-2 lg:order-1">
           {modo === "registro" || modo === "equipo" ? (
             <>
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Para empresas</p>
@@ -176,7 +176,7 @@ function Auth() {
           <p className="mt-6 text-sm text-muted-foreground">¿Buscas empleo? No necesitas cuenta. <Link to="/vacantes" className="font-semibold text-primary">Mira las vacantes</Link> o <Link to="/guardadas" className="font-semibold text-primary">recibe vacantes para ti</Link>.</p>
         </div>
         {enviadoA ? (
-          <div className="self-start rounded-3xl border border-border bg-surface p-7 text-center">
+          <div className="order-1 self-start rounded-3xl border border-border bg-surface p-7 text-center lg:order-2">
             <span className="mx-auto grid size-16 place-items-center rounded-full bg-[#1d6ff2]/10 text-[#1557c4]"><MailCheck className="size-8" /></span>
             <h2 className="mt-4 font-display text-2xl font-extrabold">Revisa tu correo</h2>
             <p className="mt-2 text-muted-foreground">Te enviamos un enlace a <b className="text-foreground">{enviadoA}</b>. Ábrelo para confirmar tu cuenta y entrarás directo a tu panel.</p>
@@ -191,7 +191,7 @@ function Auth() {
             <p className="mt-2 text-xs text-muted-foreground">¿Escribiste mal el correo? <button type="button" onClick={() => { setEnviadoA(null); setReenviar(false); setAviso(null); setError(null); }} className="font-semibold text-primary hover:underline">Corrígelo</button></p>
           </div>
         ) : (
-        <form onSubmit={enviar} className="space-y-3 self-start rounded-3xl border border-border bg-surface p-7">
+        <form onSubmit={enviar} className="order-1 space-y-3 self-start rounded-3xl border border-border bg-surface p-7 lg:order-2">
           {modo === "equipo" ? (
             <div className="rounded-2xl bg-secondary p-4 text-sm"><p className="font-extrabold">Te invitaron al equipo{search.empresa ? ` de ${search.empresa}` : ""}</p><p className="mt-1 text-muted-foreground">Crea tu contraseña con el correo donde te invitaron y entrarás al panel de la empresa. ¿Ya tienes cuenta? <button type="button" onClick={() => cambiar("login")} className="font-bold text-primary">Inicia sesión</button>.</p></div>
           ) : modo === "olvido" || modo === "nueva" ? (
