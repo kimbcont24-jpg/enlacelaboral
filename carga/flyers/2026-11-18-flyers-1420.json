@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Asistente de Facturación y Cobros",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "San Cristóbal",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Empresa ubicada en el kilómetro 13 de Haina busca un asistente que elabore y envíe facturas, estados de cuenta y requerimientos de clientes, para asegurar los cobros y generar la documentación necesaria para el retiro de mercancías. Horario: lunes a viernes 8:00 a. m.–5:00 p. m. y sábados 8:00 a. m.–12:00 m. Ofrece salario competitivo y beneficios adicionales. Zonas: Herrera, Independencia, Haina y San Cristóbal.",
+  "requisitos": "Estudiante de término de Contabilidad, Administración o afines | Experiencia en gestión de facturación y cobros | Atención al cliente presencial y por correo | Habilidades de redacción | MS Office y Excel avanzado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "recursoscontabilidad4356@gmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/confidencial-asistente-facturacion-cobros-haina.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista de Contabilidad",
+  "empresa": "Albagas",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Albagas busca un analista de contabilidad con experiencia en cuentas por cobrar y por pagar, conciliaciones y ciclo contable completo, con manejo de formularios de la DGII. Residente en Santo Domingo Oeste o Norte, disponibilidad inmediata. Horario: lunes a viernes 8:00 a. m.–5:00 p. m. y sábados 8:00 a. m.–12:00 m.",
+  "requisitos": "Licenciatura en Contabilidad (avanzado, estudiante de término o graduado) | 1 a 2 años de experiencia en posiciones similares | Normativa fiscal dominicana y formularios DGII (IT1, 606, 607, 608, 609) | Excel (tablas dinámicas, fórmulas, análisis de datos) | Manejo de sistemas contables | Persona dinámica, organizada y proactiva",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@albagas.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/albagas-analista-de-contabilidad.jpg",
+  "redes": "si"
+ }
+]
