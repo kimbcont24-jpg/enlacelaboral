@@ -101,9 +101,7 @@ export function correoAplicacion(
 
   // Asunto: si la empresa pidió uno, se respeta (suelen filtrar por él).
   const base = opciones.asuntoPedido ? sinPunto(opciones.asuntoPedido) : `CV para vacante de ${puesto}`;
-  const asunto = opciones.asuntoPedido
-    ? (nombre ? `${base} – ${nombreCorto(nombre)}` : base)
-    : `${base} – Postulación${nombre ? ` de ${nombreCorto(nombre)}` : ""}`;
+  const asunto = nombre ? `${base} – ${nombreCorto(nombre)}` : base;
 
   const p: string[] = [];
   p.push(`${saludoHora()}${empresa ? `, equipo de ${empresa}` : ""}:`);
