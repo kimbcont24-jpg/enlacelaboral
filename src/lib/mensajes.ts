@@ -56,63 +56,110 @@ const recortar = (t: string, max: number) => {
   return punto > max * 0.5 ? corte.slice(0, punto + 1) : `${corte.replace(/\s+\S*$/, "")}…`;
 };
 
+/** Arregla nombres pegados («MaríaNathalyCrecencio» → «María Nathaly Crecencio») y espacios. */
+const arreglarNombre = (t: string) => limpio(t.replace(/[\[\]]/g, "").replace(/([a-záéíóúñü])([A-ZÁÉÍÓÚÑÜ])/g, "$1 $2"));
+/** Nombre corto para el asunto: con 4 palabras (dos nombres y dos apellidos) toma nombre + primer apellido. */
+const nombreCorto = (n: string) => {
+  const w = n.split(" ").filter(Boolean);
+  return w.length >= 4 ? `${w[0]} ${w[2]}` : n;
+};
+/** Número estable a partir de un texto: la misma persona y vacante siempre reciben la misma versión. */
+const semilla = (t: string) => [...t].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+const elegir = <T,>(xs: T[], n: number) => xs[n % xs.length];
+/** Saludo según la hora de República Dominicana. */
+function saludoHora(): string {
+  let h = 9;
+  try { h = Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone: "America/Santo_Domingo" }).format(new Date())); } catch { /* sin Intl */ }
+  return h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches";
+}
+/** Pasa a minúscula la primera letra solo si es una palabra común (no «Excel», «Word», «SAP»…). */
+const PROPIOS = /^(excel|word|office|outlook|powerpoint|power|sap|canva|photoshop|illustrator|autocad|quickbooks|google|windows|linux|python|java|salesforce|odoo|inglés|ingles|francés|frances|español)$/i;
+const minusculaComun = (t: string) => {
+  const w = t.split(" ")[0];
+  return /^[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+$/.test(w) && !PROPIOS.test(w) ? primeraMinuscula(t) : t;
+};
+const esTelefono = (t: string) => /^[+\d][\d\s().-]{6,}$/.test(t.trim());
+const esCorreo = (t: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t.trim());
+
 /**
- * Correo formal de postulación, listo para enviar. Usa solo lo que la persona escribió en su CV;
- * si no tiene CV, deja marcados entre corchetes los datos que debe completar.
+ * Correo de postulación, corto y en voz de la persona (no de plantilla).
+ * Psicología del reclutador: lo lee en segundos, así que va al grano, con un dato concreto
+ * (puesto y empresa reales, un logro) en vez de adjetivos («responsable», «proactivo»).
+ * Usa solo lo que la persona escribió en su CV; si no tiene CV, deja una línea entre corchetes
+ * para que escriba su experiencia con sus propias palabras.
+ * Tiene varias versiones para que una empresa no reciba diez correos idénticos desde Enlace.
  */
 export function correoAplicacion(
   job: Pick<Vacante, "titulo" | "empresa"> & { id?: string },
   cv: CV | null,
-  opciones: { asuntoPedido?: string; nombre?: string } = {},
+  opciones: { asuntoPedido?: string; nombre?: string; contacto?: string } = {},
 ): { asunto: string; cuerpo: string } {
-  const nombre = limpio(cv?.nombre || opciones.nombre || "");
+  const nombre = arreglarNombre(cv?.nombre || opciones.nombre || "");
   const empresa = sinEmpresa(job.empresa) ? "" : limpio(job.empresa);
   const puesto = sinPunto(job.titulo);
+  const n = semilla(`${job.id ?? puesto}|${nombre}`);
 
-  const base = opciones.asuntoPedido ? sinPunto(opciones.asuntoPedido) : `Postulación: ${puesto}`;
-  const asunto = nombre ? `${base} – ${nombre}` : base;
+  // Asunto: si la empresa pidió uno, se respeta (suelen filtrar por él).
+  const base = opciones.asuntoPedido ? sinPunto(opciones.asuntoPedido) : `CV para vacante de ${puesto}`;
+  const asunto = opciones.asuntoPedido
+    ? (nombre ? `${base} – ${nombreCorto(nombre)}` : base)
+    : `${base} – Postulación${nombre ? ` de ${nombreCorto(nombre)}` : ""}`;
 
   const p: string[] = [];
-  p.push(empresa ? `Estimado equipo de Gestión Humana de ${empresa}:` : "Estimado equipo de Gestión Humana:");
-  p.push(`Reciban un cordial saludo. Me dirijo a ustedes para presentar mi candidatura a la posición de ${puesto}${empresa ? ` en ${empresa}` : ""}, publicada en Enlace Laboral.`);
+  p.push(`${saludoHora()}${empresa ? `, equipo de ${empresa}` : ""}:`);
 
-  // Perfil: resumen propio o, si no hay, el puesto que la persona busca.
-  const intro: string[] = [];
-  if (cv?.resumen.trim()) intro.push(recortar(cv.resumen, 420));
-  else if (cv?.puesto.trim()) intro.push(`Me desempeño como ${primeraMinuscula(sinPunto(cv.puesto))} y me interesa aportar mi experiencia y compromiso a su equipo.`);
-  if (intro.length) p.push(intro.join(" "));
-  const perfil: string[] = [];
+  // 1) Para qué escribe. Una o dos oraciones, sin «me dirijo a ustedes».
+  p.push(elegir([
+    `Vi en Enlace Laboral que están buscando ${puesto} y me gustaría que me tomaran en cuenta. Les envío mi CV adjunto.`,
+    `Les escribo por la vacante de ${puesto} que publicaron en Enlace Laboral. Me interesa mucho y les comparto mi CV adjunto.`,
+    `Me enteré por Enlace Laboral de que tienen abierta la posición de ${puesto} y quiero postularme. Adjunto mi CV.`,
+  ], n));
 
+  // 2) Quién es, con hechos. Experiencia real > resumen > puesto que busca > línea para completar.
+  const hechos: string[] = [];
   const exp = cv?.experiencia.find((x) => x.puesto.trim());
   if (exp) {
     const logro = lineasLogrosSimple(exp.logros)[0];
     const actual = !exp.hasta.trim() || /actual|presente/i.test(exp.hasta);
-    perfil.push(`${actual ? "Actualmente me desempeño" : "En mi experiencia más reciente me desempeñé"} como ${sinPunto(exp.puesto)}${exp.empresa.trim() ? ` en ${sinPunto(exp.empresa)}` : ""}${logro ? `, donde ${primeraMinuscula(sinPunto(logro))}` : ""}.`);
+    const donde = exp.empresa.trim() ? ` en ${sinPunto(exp.empresa)}` : "";
+    hechos.push(`${actual ? "Ahora mismo trabajo" : "Mi experiencia más reciente fue"} como ${primeraMinuscula(sinPunto(exp.puesto))}${donde}${logro ? `, donde ${primeraMinuscula(sinPunto(logro))}` : ""}.`);
+  } else if (cv?.resumen.trim()) {
+    hechos.push(recortar(cv.resumen, 260));
+  } else if (cv?.puesto.trim()) {
+    hechos.push(`Busco trabajo como ${primeraMinuscula(sinPunto(cv.puesto))} y este puesto va muy de la mano con lo que sé hacer.`);
   }
+  const habilidades = (cv?.habilidades ?? "").split(/\n|,|;/).map(sinPunto).filter(Boolean).slice(0, 3);
+  // Las habilidades van tal como la persona las escribió (respeta «Excel», «SAP», etc.).
+  if (habilidades.length) hechos.push(`${elegir(["Lo que más domino:", "Mis puntos fuertes:", "Me desenvuelvo bien en:"], n >> 2)} ${lista(habilidades.map(minusculaComun))}.`);
   const edu = cv?.educacion.find((x) => x.titulo.trim());
-  if (edu) perfil.push(`Mi formación: ${sinPunto(edu.titulo)}${edu.centro.trim() ? `, ${sinPunto(edu.centro)}` : ""}.`);
-  const habilidades = (cv?.habilidades ?? "").split(/\n|,|;/).map(sinPunto).filter(Boolean).slice(0, 4);
-  if (habilidades.length) perfil.push(`Entre mis principales fortalezas se encuentran ${lista(habilidades.map(primeraMinuscula))}.`);
-  if (cv?.idiomas.trim()) perfil.push(`Idiomas: ${sinPunto(cv.idiomas)}.`);
-  if (!perfil.length && !intro.length) perfil.push("Me considero una persona responsable, organizada y con buena disposición para aprender, trabajar en equipo y cumplir los objetivos del puesto.");
-  if (perfil.length) p.push(perfil.join(" "));
+  if (edu && hechos.length < 2) hechos.push(`Estudié ${primeraMinuscula(sinPunto(edu.titulo))}${edu.centro.trim() ? ` en ${sinPunto(edu.centro)}` : ""}.`);
+  if (cv?.idiomas.trim()) hechos.push(`Idiomas: ${sinPunto(cv.idiomas)}.`);
+  p.push(hechos.length
+    ? hechos.join(" ")
+    : "[Cambia esta línea por tu experiencia más relacionada con el puesto, con tus palabras. Ejemplo: «Trabajé dos años en una distribuidora recibiendo mercancía y llevando el inventario.»]");
 
-  const disponible = cv?.disponibilidad.trim() ? ` Disponibilidad: ${primeraMinuscula(sinPunto(cv.disponibilidad))}.` : "";
-  p.push(`Adjunto mi currículum para su consideración. Quedo a su disposición para ampliar cualquier información y para una entrevista en el horario que les resulte conveniente.${disponible}`);
-  p.push("Agradezco de antemano su tiempo y atención.");
+  // 3) Cierre práctico: disponibilidad + cómo localizarle.
+  const contacto = limpio(opciones.contacto ?? "");
+  const telefono = limpio(cv?.telefono || (esTelefono(contacto) ? contacto : ""));
+  const disp = cv?.disponibilidad.trim() ? ` Mi disponibilidad es ${primeraMinuscula(sinPunto(cv.disponibilidad))}.` : "";
+  const tel = telefono || "[tu número]";
+  p.push(elegir([
+    `Puedo ir a entrevista cuando me indiquen.${disp} Me pueden llamar o escribir al ${tel}, también tengo WhatsApp.`,
+    `Si mi perfil les interesa, con gusto paso a entrevista.${disp} Me localizan al ${tel} (llamada o WhatsApp).`,
+    `Tengo disponibilidad para entrevista en el horario que les convenga.${disp} Mi número es ${tel}, también por WhatsApp.`,
+  ], n >> 3));
+  p.push(elegir(["Gracias por tomarme en cuenta.", "Muchas gracias por su tiempo.", "Gracias de antemano por revisar mi CV."], n >> 5));
 
+  const correo = limpio(cv?.correo || (esCorreo(contacto) ? contacto : ""));
   const firma = [
-    "Atentamente,",
-    "",
+    "Saludos,",
     nombre || "[Tu nombre completo]",
-    cv?.puesto.trim() ? sinPunto(cv.puesto) : "",
-    cv?.telefono.trim() ? `Tel./WhatsApp: ${limpio(cv.telefono)}` : nombre ? "" : "Tel./WhatsApp: [tu número]",
-    cv?.correo.trim() ? `Correo: ${limpio(cv.correo)}` : "",
     cv?.ciudad.trim() ? limpio(cv.ciudad) : "",
-    cv?.linkedin.trim() ? `LinkedIn: ${limpio(cv.linkedin)}` : "",
-  ].filter((l, i) => l !== "" || i === 1);
+    correo,
+    cv?.linkedin.trim() ? limpio(cv.linkedin) : "",
+  ].filter(Boolean);
 
-  const pie = job.id ? ["", "—", `Vacante vista en Enlace Laboral: https://enlacelaboralrd.com/vacantes/${job.id}`] : [];
+  const pie = job.id ? ["", `Vacante: https://enlacelaboralrd.com/vacantes/${job.id}`] : [];
   return { asunto, cuerpo: [...p.flatMap((x) => [x, ""]), ...firma, ...pie].join("\n") };
 }
 
