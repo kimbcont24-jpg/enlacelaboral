@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Analista de Nóminas",
+  "empresa": "Probuffet",
+  "provincia": "Santo Domingo",
+  "area": "Recursos Humanos",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Probuffet SRL busca un profesional organizado y responsable para gestionar nóminas, legislación laboral y administración de personal. Ubicación: Km 17 de la Autopista Duarte. Horario: lunes a viernes 8:00 a. m. a 5:00 p. m. y sábados 8:00 a. m. a 12:00 p. m. Salario publicado en el flyer: RD$40,000 mensuales + incentivo de transporte RD$5,000, almuerzo incluido y beneficios de ley.",
+  "requisitos": "Licenciatura en Psicología Industrial, Administración de Empresas o afines | Mínimo 2 años de experiencia en posiciones similares | Conocimiento de legislación laboral dominicana | Dominio del proceso de nóminas y cálculo de prestaciones laborales | Manejo de TSS, SISALRIL e IDOPPRIL | Manejo de Microsoft Excel",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "recursoshumanos@probuffet.com · Tel. 849-816-7201",
+  "imagen": "https://enlace-rd.vercel.app/flyers/probuffet-analista-de-nominas.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista de Activos Fijos",
+  "empresa": "Capcana",
+  "provincia": "La Altagracia (Punta Cana)",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Capcana busca un analista responsable de gestionar y controlar los activos fijos de la empresa, asegurando su correcto registro contable y control físico: seguimiento de altas, bajas, traslados y depreciaciones, conciliaciones y apoyo a los procesos de inventario y auditoría. En el asunto del correo se debe colocar el nombre de la vacante.",
+  "requisitos": "Licenciatura en Contabilidad, Administración o áreas afines | Experiencia mínima de 1 año en activos fijos | Conocimientos de registro, control y conciliación de activos fijos | Excel intermedio/avanzado | Conocimiento de normas contables; NIIF deseable | Capacidad analítica, organización y atención al detalle",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "talentos@capcana.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/capcana-analista-activos-fijos.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Oficial de Seguridad",
+  "empresa": "Grupo Mallén",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Grupo Mallén busca un oficial de seguridad para garantizar la seguridad física de las instalaciones, colaboradores y visitantes mediante vigilancia activa, cumplimiento de protocolos y prevención de riesgos. Ubicación por confirmar. Postulación por el enlace de empleos de la empresa o por correo.",
+  "requisitos": "Bachiller aprobado (indispensable) | Experiencia previa como oficial de seguridad con conocimientos en control de acceso y rondas periódicas de inspección | Conocimiento básico de protocolos de seguridad | Responsable, discreto y con alto sentido de integridad",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "https://empleos.mallen.triple.com.do/?geco=1&job_id=1064&comp=1",
+  "imagen": "https://enlace-rd.vercel.app/flyers/mallen-oficial-de-seguridad.jpg",
+  "redes": "si"
+ }
+]
