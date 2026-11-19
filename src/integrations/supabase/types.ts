@@ -130,7 +130,8 @@ export type Database = {
       registrar_vista: { Args: { p_vacante: string }; Returns: undefined };
       vistas_mis_vacantes: { Args: { p_dias?: number }; Returns: { vacante_id: string; dia: string; n: number }[] };
       empresa_publica: { Args: { p_empresa?: string | null; p_vacante?: string | null }; Returns: { id: string; nombre: string; sector: string | null; provincia: string | null; descripcion: string | null; sitio_web: string | null; verificada: boolean; activas: number; pro: boolean; responde_pct: number | null; responde_horas: number | null; contratados: number }[] };
-      suscribir_alerta: { Args: { p_email: string; p_area?: string | null; p_provincia?: string | null }; Returns: string };
+      suscribir_alerta: { Args: { p_email: string; p_area?: string | null; p_provincia?: string | null; p_coleccion?: string | null }; Returns: string };
+      total_alertas_estado: { Args: Record<string, never>; Returns: number };
       crear_pedido: { Args: { p_paquete: string; p_nombre: string; p_contacto: string; p_correo: string | null; p_puesto: string | null; p_cv: string | null; p_notas: string | null }; Returns: { codigo: string; precio: number } };
       importar_vacantes_admin: { Args: { p_filas: unknown }; Returns: { creadas: number; actualizadas: number; cerradas: number; omitidas: { fila: number; motivo: string }[] } };
       renovar_vacante: { Args: { p_renov: string; p_cerrar?: boolean }; Returns: { accion: "renovada" | "cerrada" | "vencida"; titulo?: string } };

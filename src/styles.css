@@ -421,3 +421,26 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
   .fx-up, .fx-pop, .fx-blob, .fx-paso, .fx-sobre, .fx-check, .fx-onda, .fx-btn:hover::after { animation: none !important; }
   .fx-depth-front, .fx-depth-back, .fx-btn:hover { transform: none !important; }
 }
+
+/* Alerta del Estado (/empleos/sector-publico) · 19 nov 2026 */
+.estado-rejilla { background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 28px 28px; mask-image: radial-gradient(ellipse at 80% 40%, #000 0%, transparent 65%); }
+.estado-latido { animation: estado-latido 1.6s cubic-bezier(0, 0, .2, 1) infinite; }
+@keyframes estado-latido { 75%, 100% { transform: scale(2.4); opacity: 0; } }
+.estado-campana { transform-origin: 50% 10%; animation: estado-campana 3.2s ease-in-out infinite; }
+@keyframes estado-campana { 0%, 70%, 100% { transform: rotate(0); } 74% { transform: rotate(16deg); } 78% { transform: rotate(-14deg); } 82% { transform: rotate(10deg); } 86% { transform: rotate(-6deg); } 90% { transform: rotate(2deg); } }
+.estado-aviso { animation: estado-entra 6s ease-in-out infinite; }
+@keyframes estado-entra { 0% { transform: translateY(-14px) scale(.97); opacity: 0; } 8%, 88% { transform: none; opacity: 1; } 96%, 100% { transform: translateY(-6px); opacity: 0; } }
+.estado-aviso-2 { animation: estado-entra-2 6s ease-in-out infinite; }
+@keyframes estado-entra-2 { 0%, 10% { transform: translateY(-10px); opacity: 0; } 20%, 88% { transform: none; opacity: 1; } 96%, 100% { opacity: 0; } }
+.estado-paso { animation: estado-paso 2.7s ease-in-out infinite; }
+@keyframes estado-paso { 0%, 100% { background-color: rgb(255 255 255 / .06); } 30% { background-color: rgb(200 16 46 / .35); } }
+.estado-boton { position: relative; overflow: hidden; }
+.estado-boton::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / .35) 50%, transparent 70%); transform: translateX(-120%); animation: estado-brillo 4s ease-in-out infinite; }
+@keyframes estado-brillo { 0%, 60% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+.estado-listo { animation: estado-aparece .5s ease-out both; }
+@keyframes estado-aparece { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
+.estado-flotante { animation: estado-sube .35s ease-out both; }
+@keyframes estado-sube { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .estado-latido, .estado-campana, .estado-aviso, .estado-aviso-2, .estado-paso, .estado-boton::after, .estado-listo, .estado-flotante { animation: none !important; }
+}

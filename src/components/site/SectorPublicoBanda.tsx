@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ExternalLink, Landmark } from "lucide-react";
+import { ArrowRight, BellRing, ExternalLink, Landmark } from "lucide-react";
 
 import { CONCURSA_URL, esSectorPublico } from "@/lib/colecciones";
 import type { Vacante } from "@/lib/vacantes";
@@ -26,12 +26,15 @@ export function SectorPublicoBanda({ jobs }: { jobs: Vacante[] }) {
           <h3 className="mt-3 text-xl font-extrabold leading-tight sm:text-2xl">Empleos en el Estado dominicano</h3>
           <p className="mt-1.5 text-sm text-white/80 sm:text-base">Ministerios, ayuntamientos, hospitales y empresas públicas. Te explicamos cómo aplicar por Concursa, el portal oficial de concursos del MAP.</p>
           <p className="mt-3 text-sm font-semibold text-white/90">
-            {total > 0 ? <><b className="text-2xl font-extrabold text-white">{total}</b> {total === 1 ? "vacante abierta" : "vacantes abiertas"}{nuevas > 0 && <span className="ml-2 rounded-full bg-[#c8102e] px-2 py-0.5 text-xs font-bold">+{nuevas} esta semana</span>}</> : "Ahora mismo no hay plazas abiertas aquí: entra, mira cómo aplicar y activa tu alerta."}
+            {total > 0 ? <><b className="text-2xl font-extrabold text-white">{total}</b> {total === 1 ? "vacante abierta" : "vacantes abiertas"}{nuevas > 0 && <span className="ml-2 rounded-full bg-[#c8102e] px-2 py-0.5 text-xs font-bold">+{nuevas} esta semana</span>}</> : "Ahora mismo no hay plazas abiertas: activa tu alerta y te escribimos el mismo día que salga una."}
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2.5">
           <Link to="/empleos/$slug" params={{ slug: "sector-publico" }} className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 font-bold text-[#0a2f5c] shadow transition-transform hover:-translate-y-0.5">
             Ver empleos del Estado <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
+          <Link to="/empleos/$slug" params={{ slug: "sector-publico" }} hash="alerta-estado" className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#c8102e] px-5 font-bold text-white shadow transition-transform hover:-translate-y-0.5">
+            <BellRing className="estado-campana size-4" aria-hidden="true" /> Avísame de nuevas plazas
           </Link>
           <a href={CONCURSA_URL} target="_blank" rel="noopener" className="inline-flex h-11 items-center gap-2 rounded-xl bg-white/10 px-5 font-bold text-white ring-1 ring-white/30 transition-colors hover:bg-white/20">
             Ir a Concursa <ExternalLink className="size-4" aria-hidden="true" />

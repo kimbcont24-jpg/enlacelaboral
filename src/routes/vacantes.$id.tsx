@@ -16,6 +16,7 @@ import { BotonGuardar, ClaridadPill } from "@/components/site/JobCard";
 import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { senalesEmpresa, useEmpresaPublica } from "@/lib/empresa-publica";
 import { AlertaForm } from "@/components/site/AlertaForm";
+import { esSectorPublico } from "@/lib/colecciones";
 import { CompartirBoton } from "@/components/site/CompartirBoton";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
@@ -314,7 +315,15 @@ function Detalle() {
               <div className="mt-5 grid gap-3 sm:grid-cols-2">{similares.map((j) => <VacanteTarjeta key={j.id} job={j} />)}</div>
             </section>
           )}
-          <section><AlertaForm areaInicial={job.area} provinciaInicial={job.provincia} /></section>
+          {esSectorPublico(job) ? (
+            <section className="relative overflow-hidden rounded-3xl bg-[#061a35] p-6 text-white sm:p-7">
+              <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-[#c8102e]" />
+              <p className="text-xs font-bold uppercase tracking-wider text-white/70">Plazas del Estado</p>
+              <h2 className="mt-1 text-xl font-extrabold sm:text-2xl">Que la próxima plaza no te agarre tarde</h2>
+              <p className="mt-1.5 text-white/80">Concursa no manda avisos. Activa tu alerta y te escribimos el mismo día que salga una plaza pública.</p>
+              <Link to="/empleos/$slug" params={{ slug: "sector-publico" }} hash="alerta-estado" className="mt-4 inline-flex h-11 items-center rounded-xl bg-[#c8102e] px-5 font-bold text-white">Activar alerta del Estado</Link>
+            </section>
+          ) : <section><AlertaForm areaInicial={job.area} provinciaInicial={job.provincia} /></section>}
         </article>
       </div>
 

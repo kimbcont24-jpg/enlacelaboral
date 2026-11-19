@@ -227,6 +227,33 @@ async function graciasEmpresas(request: Request, url: URL): Promise<Response> {
   return json({ pendientes: grupos.size, total: salida.length, grupos: salida });
 }
 
+/**
+ * /api/alertas-envio → alertas de empleo por correo (19 nov 2026). Las envía la tarea programada desde info@ (Zoho).
+ * GET ?clave=…&n=1 → grupos listos (uno por persona, con asunto y HTML). Primero quienes siguen el sector público.
+ * POST {clave, ids} → marca esas alertas como enviadas (la próxima vez solo llegan vacantes más nuevas).
+ */
+async function alertasEnvio(request: Request, url: URL): Promise<Response> {
+  const json = (o: unknown, status = 200) => new Response(JSON.stringify(o), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
+  const ip = (request.headers.get("x-forwarded-for") ?? "local").split(",")[0]!.trim();
+  if (!pasaLimite(`alertas:${ip}`, 200, 3600e3)) return json({ error: "limite" }, 429);
+  const h = { apikey: SB_KEY, authorization: `Bearer ${SB_KEY}`, "content-type": "application/json" };
+  if (request.method === "POST") {
+    let b: { clave?: string; ids?: string[] };
+    try { b = (await request.json()) as typeof b; } catch { return json({ error: "datos" }, 400); }
+    const ids = (b.ids ?? []).filter((x) => /^[0-9a-f-]{36}$/i.test(String(x))).slice(0, 10);
+    if (!b.clave || !ids.length) return json({ error: "datos" }, 400);
+    const r = await fetch(`${SB_URL}/rest/v1/rpc/alertas_envio_marcar`, { method: "POST", headers: h, body: JSON.stringify({ p_clave: String(b.clave), p_ids: ids }) });
+    return json({ ok: r.ok, marcadas: r.ok ? await r.json() : 0 }, r.ok ? 200 : 403);
+  }
+  const clave = url.searchParams.get("clave") ?? "";
+  if (clave.length < 20) return json({ error: "clave" }, 403);
+  const n = Math.min(Math.max(Number(url.searchParams.get("n") ?? 1) || 1, 1), 15);
+  const r = await fetch(`${SB_URL}/rest/v1/rpc/alertas_envio`, { method: "POST", headers: h, body: JSON.stringify({ p_clave: clave, p_max: n }) });
+  if (!r.ok) return json({ error: "clave o base" }, 403);
+  const filas = (await r.json()) as { email: string; alerta_ids: string[]; asunto: string; html: string; total: number }[];
+  return json({ total: filas.length, grupos: filas.map((f) => ({ correo: f.email, ids: f.alerta_ids, asunto: f.asunto, html: f.html, vacantes: f.total })) });
+}
+
 const limites = new Map<string, number[]>();
 const pasaLimite = (clave: string, max: number, ventanaMs: number) => {
   const ahora = Date.now();
@@ -323,6 +350,7 @@ export default {
     }
     if (url.pathname === "/api/telegram") return telegram();
     if (url.pathname === "/api/gracias-empresas" || url.pathname === "/api/gracias-empresas/ejemplo") return graciasEmpresas(request, url);
+    if (url.pathname === "/api/alertas-envio") return alertasEnvio(request, url);
     if (url.pathname === "/api/aplicar" && request.method === "POST") return aplicar(request);
     if (url.pathname === "/api/crm-empresas" && request.method === "POST") return crmEmpresas(request);
     if (url.pathname === "/sitemap.xml") return sitemap();

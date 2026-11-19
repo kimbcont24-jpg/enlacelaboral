@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 
+import { AlertaEstado, AlertaEstadoFlotante } from "@/components/site/AlertaEstado";
 import { AlertaForm } from "@/components/site/AlertaForm";
 import { CanalWhatsApp } from "@/components/site/CanalWhatsApp";
 import { Footer } from "@/components/site/Footer";
@@ -46,7 +47,7 @@ function Empleos() {
         {landing.tipo === "empresa" && (
           <Link to="/empresa/$id" params={{ id: landing.slug }} className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-bold text-[#1557c4] hover:border-[#1d6ff2]">Ver perfil de {landing.nombre}: opiniones y calificaciones →</Link>
         )}
-        {landing.slug === "sector-publico" && <ComoAplicarEstado />}
+        {landing.slug === "sector-publico" && <><AlertaEstado jobs={lista} /><ComoAplicarEstado /><AlertaEstadoFlotante /></>}
 
         <div className="mt-8 grid gap-10 lg:grid-cols-12">
           <section className="min-w-0 lg:col-span-8" aria-label="Vacantes">
@@ -58,10 +59,10 @@ function Empleos() {
             ) : (
               <div className="rounded-2xl border border-dashed border-border p-10 text-center">
                 <p className="font-bold">Ahora mismo no hay vacantes aquí</p>
-                <p className="mt-2 text-sm text-muted-foreground">Crea una alerta y te escribimos cuando salga una. Mientras, mira <Link to="/vacantes" className="font-semibold text-primary underline">todas las vacantes</Link>.</p>
+                <p className="mt-2 text-sm text-muted-foreground">{landing.slug === "sector-publico" ? <><a href="#alerta-estado" className="font-semibold text-primary underline">Activa la alerta del Estado</a> y te escribimos el mismo día que salga una plaza.</> : "Crea una alerta y te escribimos cuando salga una."} Mientras, mira <Link to="/vacantes" className="font-semibold text-primary underline">todas las vacantes</Link>.</p>
               </div>
             )}
-            <div className="mt-8"><AlertaForm areaInicial={area} provinciaInicial={provincia} /></div>
+            {landing.slug !== "sector-publico" && <div className="mt-8"><AlertaForm areaInicial={area} provinciaInicial={provincia} /></div>}
           </section>
 
           <aside className="space-y-6 lg:col-span-4">
