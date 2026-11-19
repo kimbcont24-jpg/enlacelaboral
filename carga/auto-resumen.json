@@ -1,6 +1,6 @@
 {
-  "fecha": "2026-11-19T17:40:32.132Z",
-  "total": 965,
+  "fecha": "2026-11-19T17:54:07.160Z",
+  "total": 966,
   "revisadas": 134,
   "sin_contacto": 134,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
@@ -8,7 +8,7 @@
     "nst": 0,
     "map": 3,
     "alorica": 11,
-    "marriott": 50,
+    "marriott": 54,
     "citi": 2,
     "medtronic": 3,
     "baxter": 1,
