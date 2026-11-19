@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Auxiliar de Contabilidad",
+  "empresa": "Kniferd (confidencial)",
+  "provincia": "Distrito Nacional",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se busca Auxiliar de Contabilidad en Santo Domingo, Distrito Nacional, para apoyar el proceso contable: facturación, registro de ingresos y gastos, verificación de facturas, cierres mensuales y archivo de documentos. Horario: lunes a viernes 9:00 AM-6:00 PM y sábado 9:00 AM-1:00 PM. Salario a discutir en la entrevista; beneficios de ley.",
+  "requisitos": "Estudiante o graduado de Contabilidad, Administración o afines | Experiencia de 6 meses a 1 año en contabilidad, facturación o áreas administrativas (preferible) | Manejo de Excel y sistemas de inventario/facturación | Buena comunicación y atención al detalle | Organizado(a), puntual y responsable",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rrhh@kniferd.com · WhatsApp 849-460-4227",
+  "imagen": "https://enlace-rd.vercel.app/flyers/kniferd-auxiliar-contabilidad.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Chofer Categoría 3",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Distrito Nacional",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se busca Chofer Categoría 3 en el Distrito Nacional. Horario de lunes a sábado, de 8:30 a. m. a 6:00 p. m. Salario publicado en el flyer: base RD$20,000 + RD$300 de dieta diaria + incentivo por acarreo a partir de RD$2,000.",
+  "requisitos": "Licencia de conducir categoría 3 | Disponibilidad de lunes a sábado de 8:30 a. m. a 6:00 p. m.",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Tel. 849-258-5620",
+  "imagen": "https://enlace-rd.vercel.app/flyers/confidencial-chofer-categoria-3-dn.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Asistente Administrativa de Compras y Logística",
+  "empresa": "Peravia Motors",
+  "provincia": "Santo Domingo",
+  "area": "Administración",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Peravia Motors busca Asistente Administrativa de Compras y Logística. Ubicación por confirmar.",
+  "requisitos": "Estudios en Administración o carreras afines | Experiencia en procesos de compras y logística (deseable) | Organización, atención al detalle y capacidad de seguimiento | Manejo de Office (Excel, Outlook, etc.)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "susana.diaz@peraviamotors.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/peravia-motors-asistente-compras-logistica.jpg",
+  "redes": "si"
+ }
+]
