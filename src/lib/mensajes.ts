@@ -64,8 +64,8 @@ const nombreCorto = (n: string) => {
   return w.length >= 4 ? `${w[0]} ${w[2]}` : n;
 };
 /** Número estable a partir de un texto: la misma persona y vacante siempre reciben la misma versión. */
-const semilla = (t: string) => [...t].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
-const elegir = <T,>(xs: T[], n: number) => xs[n % xs.length];
+const semilla = (t: string) => [...t].reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0, 2166136261);
+const elegir = <T,>(xs: T[], n: number) => xs[Math.abs(Math.floor(n)) % xs.length];
 /** Saludo según la hora de República Dominicana. */
 function saludoHora(): string {
   let h = 9;
@@ -103,16 +103,38 @@ export function correoAplicacion(
   const base = opciones.asuntoPedido ? sinPunto(opciones.asuntoPedido) : `CV para vacante de ${puesto}`;
   const asunto = nombre ? `${base} – ${nombreCorto(nombre)}` : base;
 
-  // Formato decidido por Kim (19 nov 2026): corto, directo, sin adornos.
+  // Formato de Kim (19 nov 2026): corto y directo. Varias versiones que se alternan
+  // según la vacante y la persona, para que no siempre se envíe el mismo correo.
   const contacto = limpio(opciones.contacto ?? "");
   const telefono = limpio(cv?.telefono || (esTelefono(contacto) ? contacto : ""));
+  const cuerpos = [
+    `Por medio de la presente, envío mi CV para aplicar al puesto de ${puesto} que he visto en EnlaceLaboralRD. Espero que puedan revisar mi perfil; quedo pendiente a su respuesta.`,
+    `Les escribo para postularme a la vacante de ${puesto} publicada en EnlaceLaboralRD. Adjunto mi CV para que puedan evaluar mi perfil.`,
+    `Vi en EnlaceLaboralRD la vacante de ${puesto} y me interesa formar parte de su equipo. Les comparto mi CV adjunto y quedo a la espera de su respuesta.`,
+    `Me gustaría aplicar a la posición de ${puesto} que encontré en EnlaceLaboralRD. Les envío mi CV para su consideración.`,
+    `Por este medio les hago llegar mi CV para la vacante de ${puesto}, la cual vi publicada en EnlaceLaboralRD. Me encantaría tener la oportunidad de una entrevista.`,
+    `Adjunto mi CV para aplicar a la vacante de ${puesto} que publicaron en EnlaceLaboralRD. Quedo disponible para una entrevista cuando lo consideren.`,
+    `Me interesa la vacante de ${puesto} que vi en EnlaceLaboralRD, por lo que les envío mi CV. Espero tener noticias suyas pronto.`,
+  ];
+  const cierres = [
+    "Gracias de antemano por revisar mi CV.",
+    "Muchas gracias por su tiempo.",
+    "Agradezco la oportunidad.",
+    "Gracias por tomarme en cuenta.",
+    "Quedo pendiente a su respuesta. Gracias.",
+  ];
+  const despedidas = ["Saludos,", "Saludos cordiales,", "Atentamente,", "Un saludo,"];
+  const cuerpoTexto = elegir(cuerpos, n);
+  let cierre = elegir(cierres, n / 7);
+  // Evita repetir «quedo pendiente/a la espera» si el párrafo ya lo dice.
+  if (/pendiente|espera|noticias/.test(cuerpoTexto) && /pendiente/.test(cierre)) cierre = cierres[0];
   const cuerpo = [
     `${saludoHora()}${empresa ? `, equipo de ${empresa}` : ""}:`,
     "",
-    `Por medio de la presente, envío mi CV para aplicar al puesto de ${puesto} que he visto en EnlaceLaboralRD. Espero que puedan revisar mi perfil; quedo pendiente a su respuesta.`,
+    cuerpoTexto,
     "",
-    "Gracias de antemano por revisar mi CV.",
-    "Saludos,",
+    cierre,
+    elegir(despedidas, n / 35),
     nombre || "[Tu nombre completo]",
     telefono ? `Tel./WhatsApp: ${telefono}` : "",
   ].filter((l, i, xs) => l !== "" || (i > 0 && xs[i - 1] !== "")).join("\n").trimEnd();
