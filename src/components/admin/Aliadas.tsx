@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Kpi, campo, haceDesde } from "@/components/admin/comun";
 import { supabase } from "@/integrations/supabase/client";
+import { todasLasFilas } from "@/lib/paginar";
 import { slug as slugDe } from "@/lib/empleos";
 import { empresaDe, leerMeta } from "@/lib/vacantes";
 
@@ -48,8 +49,8 @@ export function Aliadas() {
 
   const cargar = useCallback(async () => {
     const tags = [...SOLA, ...ENVIO].map((f) => lit(`m:fuente:${f}`));
-    const [{ data: v }, { data: e }, { data: b }, { data: s }] = await Promise.all([
-      supabase.from("vacantes").select("id,titulo,provincia,estado,created_at,destacada,etiquetas").overlaps("etiquetas", tags).order("created_at", { ascending: false }).limit(2000),
+    const [v, { data: e }, { data: b }, { data: s }] = await Promise.all([
+      todasLasFilas((a, z) => supabase.from("vacantes").select("id,titulo,provincia,estado,created_at,destacada,etiquetas", { count: "exact" }).overlaps("etiquetas", tags).order("created_at", { ascending: false }).order("id").range(a, z)).catch(() => []),
       supabase.from("empresas").select("nombre,contacto_nombre,contacto_email,contacto_telefono").limit(500),
       supabase.from("borradores").select("empresa,contacto_email,contacto_telefono").eq("estado", "pendiente").eq("origen", "empresa").limit(200),
       supabase.from("contenido_sitio").select("valor").eq("clave", CLAVE).maybeSingle(),

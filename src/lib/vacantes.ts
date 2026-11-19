@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { todasLasFilas } from "@/lib/paginar";
 import { salarioDelTexto } from "@/lib/radar-salarial";
 
 /** Centro de contenido (generador de piezas para Instagram). Se abre con la vacante ya cargada. */
@@ -132,9 +133,12 @@ export function rowToVacante(r: VacanteRow): Vacante {
 }
 
 export async function fetchPublicadas(): Promise<Vacante[]> {
-  const { data, error } = await supabase.from("vacantes").select(SELECT).eq("estado", "publicada").gte("created_at", new Date(Date.now() - 30 * 864e5).toISOString()).order("destacada", { ascending: false }).order("created_at", { ascending: false }).limit(1000);
-  if (error) throw error;
-  return ((data ?? []) as unknown as VacanteRow[]).map(rowToVacante);
+  const desde = new Date(Date.now() - 30 * 864e5).toISOString();
+  // Antes: .limit(1000) → Supabase nunca devuelve más de 1000 filas y todos los contadores se quedaban en 1000.
+  const filas = await todasLasFilas((a, b) =>
+    supabase.from("vacantes").select(SELECT, { count: "exact" }).eq("estado", "publicada").gte("created_at", desde).order("destacada", { ascending: false }).order("created_at", { ascending: false }).order("id").range(a, b),
+  );
+  return (filas as unknown as VacanteRow[]).map(rowToVacante);
 }
 
 export async function fetchVacante(id: string): Promise<Vacante | null> {

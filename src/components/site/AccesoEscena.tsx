@@ -50,7 +50,7 @@ export function AccesoEscena({ para }: { para: "empresa" | "candidato" }) {
         </p>
         {cifra > 0 && (
           <p className="fx-up mt-7 flex items-baseline gap-2 [animation-delay:.4s]">
-            <span className="font-display text-4xl font-extrabold tabular-nums">{n.toLocaleString("es-DO")}{!empresa && cifra >= 1000 ? "+" : ""}</span>
+            <span className="font-display text-4xl font-extrabold tabular-nums">{n.toLocaleString("es-DO")}</span>
             <span className="text-sm text-white/70">{empresa ? "empresas con vacantes abiertas en Enlace" : "vacantes abiertas en todo el país"}</span>
           </p>
         )}

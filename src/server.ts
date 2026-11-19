@@ -58,8 +58,14 @@ async function sitemap(): Promise<Response> {
   const desde = new Date(Date.now() - 30 * 864e5).toISOString();
   let filas: { id: string; created_at: string; etiquetas: string[] | null }[] = [];
   try {
-    const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,created_at,etiquetas&estado=eq.publicada&created_at=gte.${encodeURIComponent(desde)}&order=created_at.desc&limit=1000`, { headers: { apikey: SB_KEY } });
-    if (r.ok) filas = (await r.json()) as typeof filas;
+    // Supabase entrega máximo 1000 filas por pedido: se piden por lotes hasta tenerlas todas.
+    for (let d = 0; d < 50_000; d += 1000) {
+      const r = await fetch(`${SB_URL}/rest/v1/vacantes?select=id,created_at,etiquetas&estado=eq.publicada&created_at=gte.${encodeURIComponent(desde)}&order=created_at.desc,id.asc&offset=${d}&limit=1000`, { headers: { apikey: SB_KEY } });
+      if (!r.ok) break;
+      const lote = (await r.json()) as typeof filas;
+      filas.push(...lote);
+      if (lote.length < 1000) break;
+    }
   } catch {
     filas = [];
   }

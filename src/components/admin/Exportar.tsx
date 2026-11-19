@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tarjeta } from "@/components/admin/comun";
 import { supabase } from "@/integrations/supabase/client";
+import { todasLasFilas } from "@/lib/paginar";
 import { aCsv, bajarCsv } from "@/lib/exportar";
 import { SELECT, rowToVacante, type VacanteRow } from "@/lib/vacantes";
 
@@ -18,18 +19,16 @@ const ORIGENES: Origen[] = [
     id: "vacantes", titulo: "Vacantes", ayuda: "Todas, con salario, fuente y estado.",
     cols: [{ clave: "titulo", titulo: "Puesto" }, { clave: "empresa", titulo: "Empresa" }, { clave: "provincia", titulo: "Provincia" }, { clave: "area", titulo: "Área" }, { clave: "modalidad", titulo: "Modalidad" }, { clave: "tipo", titulo: "Tipo" }, { clave: "salarioMin", titulo: "Salario desde" }, { clave: "salarioMax", titulo: "Salario hasta" }, { clave: "estado", titulo: "Estado" }, { clave: "fuente", titulo: "Fuente" }, { clave: "redes", titulo: "Autoriza redes" }, { clave: "creado", titulo: "Publicada" }, { clave: "enlace", titulo: "Enlace" }],
     leer: async () => {
-      const { data, error } = await supabase.from("vacantes").select(SELECT).order("created_at", { ascending: false }).limit(5000);
-      if (error) throw error;
-      return ((data ?? []) as unknown as VacanteRow[]).map(rowToVacante).map((v) => ({ ...v, redes: v.redes ? "sí" : "no", creado: dt(v.creado), enlace: `${window.location.origin}/vacantes/${v.id}` }));
+      const data = await todasLasFilas((a, b) => supabase.from("vacantes").select(SELECT, { count: "exact" }).order("created_at", { ascending: false }).order("id").range(a, b));
+      return (data as unknown as VacanteRow[]).map(rowToVacante).map((v) => ({ ...v, redes: v.redes ? "sí" : "no", creado: dt(v.creado), enlace: `${window.location.origin}/vacantes/${v.id}` }));
     },
   },
   {
     id: "aplicaciones", titulo: "Aplicaciones", ayuda: "Quién aplicó y a qué vacante.",
     cols: [{ clave: "fecha", titulo: "Fecha" }, { clave: "nombre", titulo: "Nombre" }, { clave: "contacto", titulo: "Contacto" }, { clave: "vacante", titulo: "Vacante" }, { clave: "mensaje", titulo: "Mensaje" }],
     leer: async () => {
-      const { data, error } = await supabase.from("aplicaciones").select("nombre,contacto,mensaje,created_at,vacantes(titulo)").order("created_at", { ascending: false }).limit(5000);
-      if (error) throw error;
-      return ((data ?? []) as unknown as { nombre: string; contacto: string; mensaje: string | null; created_at: string; vacantes: { titulo: string } | null }[]).map((a) => ({ fecha: dt(a.created_at), nombre: a.nombre, contacto: a.contacto, vacante: a.vacantes?.titulo ?? "", mensaje: a.mensaje }));
+      const data = await todasLasFilas((a, b) => supabase.from("aplicaciones").select("nombre,contacto,mensaje,created_at,vacantes(titulo)", { count: "exact" }).order("created_at", { ascending: false }).order("id").range(a, b));
+      return (data as unknown as { nombre: string; contacto: string; mensaje: string | null; created_at: string; vacantes: { titulo: string } | null }[]).map((a) => ({ fecha: dt(a.created_at), nombre: a.nombre, contacto: a.contacto, vacante: a.vacantes?.titulo ?? "", mensaje: a.mensaje }));
     },
   },
   {

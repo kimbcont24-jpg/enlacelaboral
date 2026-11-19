@@ -29,6 +29,7 @@ import { borrarReclamo, leerReclamo, MENSAJE_RECLAMO } from "@/lib/motivar-empre
 import { cargarVistas, type Vistas } from "@/lib/vistas";
 import { Titulo } from "@/components/panel/comun";
 import { supabase } from "@/integrations/supabase/client";
+import { todasLasFilas } from "@/lib/paginar";
 import { diasRestantes } from "@/lib/claridad";
 import { CAMPOS_CANDIDATO, CAMPOS_EMPRESA, enlaceContacto, etapaDe, mensajePara, planActivo, type Candidato, type EmpresaPerfil, type Etapa, type Evento } from "@/lib/panel";
 import { rowToVacante, SELECT, type Vacante, type VacanteRow } from "@/lib/vacantes";
@@ -94,8 +95,9 @@ function Panel() {
     if (!vids.length) { setCandidatos([]); return; }
     const filas: Candidato[] = [];
     for (let i = 0; i < vids.length; i += 150) {
-      const { data } = await supabase.from("aplicaciones").select(CAMPOS_CANDIDATO).in("vacante_id", vids.slice(i, i + 150)).order("created_at", { ascending: false }).limit(3000);
-      filas.push(...((data ?? []) as unknown as Record<string, unknown>[]).map(aCandidato));
+      const grupo = vids.slice(i, i + 150);
+      const data = await todasLasFilas((a, b) => supabase.from("aplicaciones").select(CAMPOS_CANDIDATO).in("vacante_id", grupo).order("created_at", { ascending: false }).order("id").range(a, b)).catch(() => []);
+      filas.push(...(data as unknown as Record<string, unknown>[]).map(aCandidato));
     }
     filas.sort((a, b) => b.created_at.localeCompare(a.created_at));
     const llegaron = filas.filter((c) => !ids.current.has(c.id));
@@ -105,13 +107,13 @@ function Panel() {
   }, [avisarNuevos]);
 
   const cargarTodo = useCallback(async (id: string) => {
-    const [{ data }, { data: sol }, vs30] = await Promise.all([
-      supabase.from("vacantes").select(SELECT).eq("owner_id", id).order("created_at", { ascending: false }).limit(1000),
+    const [data, { data: sol }, vs30] = await Promise.all([
+      todasLasFilas((a, b) => supabase.from("vacantes").select(SELECT).eq("owner_id", id).order("created_at", { ascending: false }).order("id").range(a, b)).catch(() => []),
       supabase.from("solicitudes_empresa").select("tipo,vacante_id,estado").eq("owner_id", id).order("created_at", { ascending: false }).limit(100),
       cargarVistas(),
     ]);
     setVistas(vs30);
-    const vs = ((data ?? []) as unknown as VacanteRow[]).map(rowToVacante);
+    const vs = (data as unknown as VacanteRow[]).map(rowToVacante);
     misVacantes.current = new Set(vs.map((v) => v.id));
     setVacantes(vs);
     setSolicitudes((sol ?? []) as unknown as Solicitud[]);

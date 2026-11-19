@@ -29,7 +29,7 @@ export function PulsoHoy({ jobs, className = "" }: { jobs: Vacante[]; className?
   if (!c) return null;
 
   const cifras = [
-    { I: Sparkles, n: c.nuevas.toLocaleString("es-DO"), t: c.deHoy ? "vacantes nuevas hoy" : "vacantes nuevas ayer", d: c.total >= 1000 ? "Más de 1,000 abiertas" : `${c.total.toLocaleString("es-DO")} abiertas en total` },
+    { I: Sparkles, n: c.nuevas.toLocaleString("es-DO"), t: c.deHoy ? "vacantes nuevas hoy" : "vacantes nuevas ayer", d: `${c.total.toLocaleString("es-DO")} abiertas en total` },
     { I: CalendarDays, n: c.semana.toLocaleString("es-DO"), t: "nuevas en 7 días", d: "Vuelve seguido: llegan todos los días" },
     { I: Building2, n: c.empresas.toLocaleString("es-DO"), t: "empresas contratando", d: "De todo el país" },
     { I: Activity, n: c.mediana ? rd(c.mediana) : "—", t: "salario más común", d: "Mensual, entre las que lo publican" },
