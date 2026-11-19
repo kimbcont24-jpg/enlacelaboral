@@ -91,8 +91,8 @@ export function ContactoDirecto({ job, compacto = false, alUsar }: { job: Vacant
           </div>
           <p className="mt-2 text-center text-xs text-muted-foreground">
             {conCv
-              ? <>Te dejamos un correo corto, escrito como lo escribirías tú, con los datos de tu CV. Léelo y cámbiale lo que quieras. <strong className="text-foreground">Adjunta tu CV en PDF</strong> antes de enviar.</>
-              : <>Te dejamos un correo corto y personal; cambia la línea entre corchetes por tu experiencia. <Link to="/cv" className="font-semibold text-primary underline-offset-2 hover:underline">Haz tu CV gratis</Link> y saldrá con tus datos y tu experiencia. Adjunta tu CV en PDF antes de enviar.</>}
+              ? <>Te dejamos un correo corto y listo para enviar. Léelo y cámbiale lo que quieras. <strong className="text-foreground">Adjunta tu CV en PDF</strong> antes de enviar.</>
+              : <>Te dejamos un correo corto y listo para enviar. <Link to="/cv" className="font-semibold text-primary underline-offset-2 hover:underline">Haz tu CV gratis</Link> y saldrá con tus datos y tu experiencia. Adjunta tu CV en PDF antes de enviar.</>}
           </p>
           <details className="group mt-2 rounded-xl bg-surface/70 px-3 py-2 text-left">
             <summary className="cursor-pointer list-none text-center text-xs font-semibold text-primary [&::-webkit-details-marker]:hidden">Ver el correo que vas a enviar</summary>
