@@ -186,11 +186,18 @@ function conLimite<T>(p: PromiseLike<T>, ms: number): Promise<T> {
   });
 }
 
+// Si la base ya falló hace poco en este navegador, no se vuelve a esperar por ella durante 10 minutos.
+const CAIDA = "el_base_caida";
+const baseCaida = () => { try { return Date.now() - Number(sessionStorage.getItem(CAIDA) ?? 0) < 10 * 60_000; } catch { return false; } };
+const marcarCaida = () => { try { sessionStorage.setItem(CAIDA, String(Date.now())); } catch { /* sin almacenamiento */ } };
+
 export async function fetchPublicadas(): Promise<Vacante[]> {
-  try {
-    const desdeBase = await conLimite(fetchPublicadasBase(), 8000);
-    if (desdeBase.length > 0) return desdeBase;
-  } catch { /* la base no respondió: seguimos con el respaldo */ }
+  if (!baseCaida()) {
+    try {
+      const desdeBase = await conLimite(fetchPublicadasBase(), 4000);
+      if (desdeBase.length > 0) return desdeBase;
+    } catch { marcarCaida(); /* la base no respondió: seguimos con el respaldo */ }
+  }
   return fetchRespaldo();
 }
 
