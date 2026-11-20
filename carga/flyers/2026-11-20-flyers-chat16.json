@@ -1,0 +1,32 @@
+[
+ {
+  "empresa": "Son Farmass",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@sonfarmass.com",
+  "redes": "si",
+  "titulo": "Mensajero",
+  "area": "Logística y Transporte",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Son Farmass busca una persona responsable, organizada y comprometida para formar parte de su equipo como mensajero. Residir en Santo Domingo Este. Ofrece salario fijo, combustible, pago de horas extras y beneficios de ley. Horario: 8:00 a. m. a 5:00 p. m.",
+  "requisitos": "Bachiller | Licencia de conducir categoría 02 (vehículos de motor mecánicos) | Responsabilidad, puntualidad y honestidad | Disponibilidad de horario | Residir en Santo Domingo Este",
+  "imagen": "https://enlace-rd.vercel.app/flyers/son-farmass-mensajero.jpg"
+ },
+ {
+  "empresa": "Son Farmass",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@sonfarmass.com",
+  "redes": "si",
+  "titulo": "Dependiente de Farmacia",
+  "area": "Salud",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Son Farmass busca dependiente de farmacia. Residir en Santo Domingo Este, zona Los Frailes / Autopista San Isidro. Ofrece salario fijo, incentivo por ventas, pago de horas extras y beneficios de ley. Horarios: 7:30 a. m. a 3:00 p. m. o tarde-noche 3:00 p. m. a 10:00 p. m. (sucursales II y IV); 7:30 a. m. a 2:30 p. m. o tarde-noche 2:30 p. m. a 9:30 p. m. (sucursal I).",
+  "requisitos": "Bachiller | Experiencia como dependiente de farmacia | Disponibilidad de horario | Residir en Santo Domingo Este, zona Los Frailes / Autopista San Isidro",
+  "imagen": "https://enlace-rd.vercel.app/flyers/son-farmass-dependiente-de-farmacia.jpg"
+ }
+]
