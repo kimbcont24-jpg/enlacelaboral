@@ -1,0 +1,33 @@
+[
+ {
+  "titulo": "Chofer",
+  "empresa": "Skyplast",
+  "provincia": "Santo Domingo",
+  "area": "Logística y Transporte",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Skyplast busca un chofer responsable, comprometido y con vocación de servicio. Preferiblemente residir en Santo Domingo Este o zonas cercanas. Disponibilidad inmediata.",
+  "requisitos": "Bachiller (preferiblemente) | Licencia de conducir categoría 3 vigente | Experiencia mínima de 2 años como chofer | Conocimiento de rutas y direcciones | Experiencia en transporte y entrega de mercancías | Responsabilidad, puntualidad y buen trato | Disponibilidad inmediata",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumanaskyplast@gmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/skyplast-chofer.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ejecutivo de Ventas (Motorizados)",
+  "empresa": "Trade Team Marketing",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Trade Team Marketing busca ejecutivos de ventas con motor propio. Ofrecen salario de RD$32,000, salario variable de RD$20,000, combustible RD$6,000, uso del motor RD$2,000 y dieta RD$2,000.",
+  "requisitos": "Experiencia en ventas | Habilidad en negocios | Disponibilidad para trasladarse | Residir en Santo Domingo | Posesión del motor | Papeles al día",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "stacyholguin@tradeteamrd.com · Tel. 849-506-2830",
+  "imagen": "https://enlace-rd.vercel.app/flyers/trade-team-marketing-ejecutivo-de-ventas.jpg",
+  "salario_min": "32000",
+  "redes": "si"
+ }
+]
