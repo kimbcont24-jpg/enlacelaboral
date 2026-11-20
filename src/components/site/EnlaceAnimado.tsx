@@ -26,14 +26,22 @@ export function EnlaceAnimado({ children, ondas = false, className, video, credi
     v.setAttribute("webkit-playsinline", "");
     const quieto = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const chico = window.matchMedia?.("(max-width: 900px)").matches;
+    // Con datos limitados o conexión lenta (2G/3G) no se baja el video (1.5–2.2 MB): queda el fondo azul animado.
+    const red = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    if (red?.saveData || /(^|-)(2g|3g)$/.test(red?.effectiveType ?? "")) return;
     const fuente = chico ? video.replace(/-1280\.mp4$/, "-960.mp4") : video;
     const reproducir = () => { if (!quieto) void v.play().catch(() => undefined); };
-    if (v.getAttribute("src") !== fuente) { v.src = fuente; v.load(); }
+    // El video se pide después de que la página terminó de cargar, para no competir con el contenido.
+    let pedido = false;
+    const pedir = () => { if (pedido) return; pedido = true; if (v.getAttribute("src") !== fuente) { v.src = fuente; v.load(); } };
+    const ric = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+    const despues = () => (ric ? ric(pedir, { timeout: 2500 }) : window.setTimeout(pedir, 1200));
+    if (document.readyState === "complete") despues(); else window.addEventListener("load", despues, { once: true });
     v.addEventListener("canplay", reproducir);
     if (typeof IntersectionObserver === "undefined") { reproducir(); return () => v.removeEventListener("canplay", reproducir); }
     const o = new IntersectionObserver(([en]) => { if (!en) return; if (en.isIntersecting) reproducir(); else v.pause(); }, { rootMargin: "200px 0px" });
     o.observe(v);
-    return () => { o.disconnect(); v.removeEventListener("canplay", reproducir); };
+    return () => { o.disconnect(); v.removeEventListener("canplay", reproducir); window.removeEventListener("load", despues); };
   }, [video]);
 
   useEffect(() => {
@@ -62,7 +70,7 @@ export function EnlaceAnimado({ children, ondas = false, className, video, credi
   return (
     <section ref={ref} aria-label="Enlace Laboral: conectamos talento con oportunidades" className={cn("enl-anim relative isolate overflow-hidden text-white", className)} style={{ "--p": 0 } as React.CSSProperties}>
       {/* Fondo: colores de Enlace mezclados (azul profundo, azul eléctrico, verde y un toque rosado) */}
-      {video && <video ref={refVideo} aria-hidden="true" muted autoPlay loop playsInline preload="auto" className="absolute inset-0 -z-30 size-full object-cover object-[50%_65%]" />}
+      {video && <video ref={refVideo} aria-hidden="true" muted autoPlay loop playsInline preload="none" className="absolute inset-0 -z-30 size-full object-cover object-[50%_65%]" />}
       <div aria-hidden="true" className={cn("enl-fondo absolute inset-0 -z-20", video && "opacity-[0.5] mix-blend-multiply")} />
       {video && <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[linear-gradient(180deg,rgb(10_47_92/0.45)_0%,rgb(10_47_92/0.15)_45%,rgb(10_47_92/0.5)_100%)]" />}
       <div aria-hidden="true" className="enl-mancha absolute -left-24 top-1/4 -z-10 size-[28rem] rounded-full bg-[#7ee2a8]/35 blur-3xl" />

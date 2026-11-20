@@ -132,7 +132,69 @@ export function rowToVacante(r: VacanteRow): Vacante {
   };
 }
 
+// ── Respaldo ─────────────────────────────────────────────────────────────────────────────────────
+// Si la base de datos no responde (por ejemplo, sin créditos en Lovable Cloud), el sitio muestra las
+// vacantes que el robot recolector guarda cada día en GitHub (carga/auto-latest.json). Así nunca queda vacío.
+const RESPALDO = "https://raw.githubusercontent.com/kimbcont24-jpg/enlacelaboral/main/carga/";
+type FilaRespaldo = {
+  titulo: string; empresa?: string; provincia?: string; area?: string; modalidad?: string; tipo?: string; experiencia?: string;
+  descripcion?: string; requisitos?: string; fuente?: string; fuente_url?: string; aplicar?: string; redes?: string; imagen?: string;
+  salario_min?: number | string; salario_max?: number | string;
+};
+
+/** Id estable para cada vacante de respaldo (no tienen id de la base): «r-» + huella del título y la empresa. */
+function idRespaldo(f: FilaRespaldo): string {
+  const txt = `${f.titulo}|${f.empresa ?? ""}|${f.provincia ?? ""}`;
+  let h1 = 5381, h2 = 52711;
+  for (let i = 0; i < txt.length; i++) { const c = txt.charCodeAt(i); h1 = (h1 * 33) ^ c; h2 = (h2 * 31) ^ c; }
+  return `r-${(h1 >>> 0).toString(16)}${(h2 >>> 0).toString(16)}`;
+}
+
+let respaldoCache: Promise<Vacante[]> | null = null;
+export function fetchRespaldo(): Promise<Vacante[]> {
+  respaldoCache ??= (async () => {
+    const [filas, resumen] = await Promise.all([
+      fetch(`${RESPALDO}auto-latest.json`).then((r) => (r.ok ? (r.json() as Promise<FilaRespaldo[]>) : [])),
+      fetch(`${RESPALDO}auto-resumen.json`).then((r) => (r.ok ? (r.json() as Promise<{ fecha?: string }>) : ({} as { fecha?: string }))).catch(() => ({} as { fecha?: string })),
+    ]);
+    const creado = resumen.fecha ?? new Date().toISOString();
+    const vistos = new Set<string>();
+    const lista: Vacante[] = [];
+    for (const f of filas) {
+      if (!f?.titulo) continue;
+      const id = idRespaldo(f);
+      if (vistos.has(id)) continue;
+      vistos.add(id);
+      const etiquetas = [`m:empresa:${f.empresa ?? ""}`, `m:fuente:${f.fuente ?? ""}`, `m:fuente_url:${f.fuente_url ?? ""}`, `m:aplicar:${f.aplicar ?? ""}`, `m:redes:${f.redes ?? ""}`, `m:imagen:${f.imagen ?? ""}`].filter((t) => !t.endsWith(":"));
+      lista.push(rowToVacante({
+        id, titulo: f.titulo, area: f.area ?? "Otros", provincia: f.provincia ?? "República Dominicana", modalidad: f.modalidad ?? "Presencial",
+        tipo: f.tipo ?? "Tiempo completo", experiencia: f.experiencia ?? "No indica", salario_min: Number(f.salario_min) || 0,
+        salario_max: Number(f.salario_max) || null, descripcion: f.descripcion ?? "", requisitos: (f.requisitos ?? "").split("|").map((x) => x.trim()).filter(Boolean),
+        etiquetas, estado: "publicada", created_at: creado, destacada: false, preguntas: null,
+      } as unknown as VacanteRow));
+    }
+    return lista;
+  })().catch((e) => { respaldoCache = null; throw e; });
+  return respaldoCache;
+}
+
+/** Corta una espera larga: si la base no contesta en `ms`, se rinde y se usa el respaldo. */
+function conLimite<T>(p: PromiseLike<T>, ms: number): Promise<T> {
+  return new Promise((ok, mal) => {
+    const t = setTimeout(() => mal(new Error("La base de datos tardó demasiado")), ms);
+    Promise.resolve(p).then((v) => { clearTimeout(t); ok(v); }, (e) => { clearTimeout(t); mal(e); });
+  });
+}
+
 export async function fetchPublicadas(): Promise<Vacante[]> {
+  try {
+    const desdeBase = await conLimite(fetchPublicadasBase(), 8000);
+    if (desdeBase.length > 0) return desdeBase;
+  } catch { /* la base no respondió: seguimos con el respaldo */ }
+  return fetchRespaldo();
+}
+
+async function fetchPublicadasBase(): Promise<Vacante[]> {
   const desde = new Date(Date.now() - 30 * 864e5).toISOString();
   // Antes: .limit(1000) → Supabase nunca devuelve más de 1000 filas y todos los contadores se quedaban en 1000.
   const filas = await todasLasFilas((a, b) =>
@@ -142,14 +204,17 @@ export async function fetchPublicadas(): Promise<Vacante[]> {
 }
 
 export async function fetchVacante(id: string): Promise<Vacante | null> {
+  if (/^r-[0-9a-f]+$/i.test(id)) return (await fetchRespaldo().catch(() => [])).find((j) => j.id === id) ?? null;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
-  const { data } = await supabase.from("vacantes").select(SELECT).eq("id", id).maybeSingle();
-  return data ? rowToVacante(data as unknown as VacanteRow) : null;
+  try {
+    const { data } = await conLimite(supabase.from("vacantes").select(SELECT).eq("id", id).maybeSingle(), 6000);
+    return data ? rowToVacante(data as unknown as VacanteRow) : null;
+  } catch { return null; }
 }
 
 export function useVacantes() {
   const q = useQuery({ queryKey: ["vacantes"], queryFn: fetchPublicadas, staleTime: 30_000 });
-  return { jobs: q.data ?? [], cargando: q.isLoading, error: q.isError };
+  return { jobs: q.data ?? [], cargando: q.isLoading, error: q.isError, reintentar: () => void q.refetch() };
 }
 
 export function enlaceAplicar(a: string): { href: string; label: string } | null {

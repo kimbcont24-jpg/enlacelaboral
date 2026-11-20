@@ -29,7 +29,7 @@ const TODAS = "Toda República Dominicana";
 function Vacantes() {
   const search = Route.useSearch();
   const navigate = useNavigate();
-  const { jobs, cargando } = useVacantes();
+  const { jobs, cargando, error, reintentar } = useVacantes();
   const [puesto, setPuesto] = useState(search.q ?? "");
   const [provinciaBuscador, setProvinciaBuscador] = useState(search.provincia ?? TODAS);
   const [filtros, setFiltros] = useState<Filtros>({ ...filtrosVacios, area: search.area ?? "", provincia: search.provincia ?? "", modalidad: search.modalidad ?? "", tipo: search.tipo ?? "", experiencia: search.experiencia ?? "", salarioMin: search.salarioMin ?? "", incl: search.incl ?? "", fecha: "", conSalario: "" });
@@ -100,6 +100,13 @@ function Vacantes() {
             <option value="claridad">Más completas primero</option>
           </select>
         </div>
+        {error && !cargando && jobs.length === 0 && (
+          <div className="mt-6 rounded-2xl border border-dashed border-border p-8 text-center">
+            <p className="font-bold">No pudimos traer las vacantes en este momento</p>
+            <p className="mt-2 text-sm text-muted-foreground">Es algo de nuestro lado, no de tu conexión. Intenta de nuevo en unos minutos.</p>
+            <button type="button" onClick={reintentar} className="btn-aplicar mt-5 rounded-xl px-5 py-3 text-sm">Intentar de nuevo</button>
+          </div>
+        )}
         {cargando && (<div className="mt-6 flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Cargando vacantes…</div>)}
         {!cargando && resultados.length > 0 && (
           <div className="mt-6 lg:grid lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start lg:gap-6 xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
@@ -114,7 +121,7 @@ function Vacantes() {
           {!cargando && resultados.length > visibles && (
             <button type="button" onClick={() => setVisibles((v) => v + 30)} className="mx-auto flex h-12 items-center justify-center rounded-xl border border-border bg-surface px-6 text-sm font-bold text-primary hover:border-primary lg:mx-0 lg:w-[26rem] xl:w-[28rem]">Ver {Math.min(30, resultados.length - visibles)} más ({resultados.length - visibles} sin mostrar)</button>
           )}
-          {!cargando && resultados.length === 0 && (
+          {!cargando && !error && resultados.length === 0 && (
             <div className="rounded-2xl border border-dashed border-border p-8 text-center sm:p-12">
               <p className="font-bold">No encontramos vacantes{query ? ` de «${query}»` : ""} con esos filtros</p>
               <p className="mt-2 text-sm text-muted-foreground">Prueba con otra palabra (por ejemplo «ventas» en vez de «vendedor de tienda»), otra ubicación, o crea una alerta abajo y te avisamos cuando salga.</p>
