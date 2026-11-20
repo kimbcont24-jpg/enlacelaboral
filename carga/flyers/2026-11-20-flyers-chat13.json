@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Analista de Reclutamiento y Selección",
+  "empresa": "Henríquez Soluciones Logísticas",
+  "provincia": "Santo Domingo",
+  "area": "Recursos Humanos",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Henríquez Soluciones Logísticas busca un/a Analista de Reclutamiento y Selección para su equipo interno. Ubicación por confirmar.",
+  "requisitos": "Mínimo de 2 años de experiencia en reclutamiento, selección y reclutamiento masivo | Estudiante de Psicología Industrial, Administración o carreras afines | Manejo de Office (Excel, PowerPoint, Word y Outlook)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@henriquez.com.do (indicar en el asunto el nombre de la vacante)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/henriquez-analista-reclutamiento-seleccion-2.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Personal de Limpieza (Temporal)",
+  "empresa": "Tokmakjian International",
+  "provincia": "Santo Domingo",
+  "area": "Servicios Generales y Limpieza",
+  "modalidad": "Presencial",
+  "tipo": "Temporal",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Tokmakjian International, Inc. República Dominicana solicita personal de limpieza temporal para cobertura de vacaciones. Ubicación por confirmar.",
+  "requisitos": "Personal de limpieza | Disponibilidad para cobertura temporal de vacaciones",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rgonzalez@tokmakjian.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/tokmakjian-personal-de-limpieza-temporal.jpg",
+  "redes": "si"
+ }
+]
