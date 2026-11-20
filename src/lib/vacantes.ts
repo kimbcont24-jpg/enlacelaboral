@@ -150,9 +150,37 @@ function idRespaldo(f: FilaRespaldo): string {
   return `r-${(h1 >>> 0).toString(16)}${(h2 >>> 0).toString(16)}`;
 }
 
+// Respaldo principal: la copia completa de las vacantes que se sincroniza cada noche a la base del CRM
+// (Supabase propio de Kim, proyecto «enlace-laboral»). Misma forma e ids que la base del sitio.
+// La función `respaldo_vacantes_sitio()` solo devuelve datos públicos de vacantes publicadas (sin correos).
+const CRM_URL = "https://rdsjrvryaoufnsxjnnow.supabase.co/rest/v1/rpc/respaldo_vacantes_sitio";
+const CRM_LLAVE = "sb_publishable_nEbr1Ao31lHSJTCtoiQa8Q_bd-xl4qv";
+
+async function respaldoCrm(): Promise<Vacante[]> {
+  const lote = 1000;
+  const pedir = async (desde: number) => {
+    const r = await fetch(`${CRM_URL}?limit=${lote}&offset=${desde}`, { method: "POST", headers: { apikey: CRM_LLAVE, "Content-Type": "application/json" }, body: "{}" });
+    if (!r.ok) throw new Error(`Respaldo CRM: ${r.status}`);
+    return (await r.json()) as VacanteRow[];
+  };
+  const filas: VacanteRow[] = [];
+  for (let desde = 0; desde < 10_000; desde += lote) {
+    const parte = await pedir(desde);
+    filas.push(...parte);
+    if (parte.length < lote) break;
+  }
+  if (filas.length === 0) throw new Error("Respaldo CRM vacío");
+  return filas.map((f) => rowToVacante({ ...f, salario_min: 0, salario_max: null, destacada: false, preguntas: null }));
+}
+
 let respaldoCache: Promise<Vacante[]> | null = null;
 export function fetchRespaldo(): Promise<Vacante[]> {
-  respaldoCache ??= (async () => {
+  respaldoCache ??= conLimite(respaldoCrm(), 10_000).catch(() => respaldoGithub()).catch((e) => { respaldoCache = null; throw e; });
+  return respaldoCache;
+}
+
+function respaldoGithub(): Promise<Vacante[]> {
+  return (async () => {
     const [filas, resumen] = await Promise.all([
       fetch(`${RESPALDO}auto-latest.json`).then((r) => (r.ok ? (r.json() as Promise<FilaRespaldo[]>) : [])),
       fetch(`${RESPALDO}auto-resumen.json`).then((r) => (r.ok ? (r.json() as Promise<{ fecha?: string }>) : ({} as { fecha?: string }))).catch(() => ({} as { fecha?: string })),
@@ -174,8 +202,7 @@ export function fetchRespaldo(): Promise<Vacante[]> {
       } as unknown as VacanteRow));
     }
     return lista;
-  })().catch((e) => { respaldoCache = null; throw e; });
-  return respaldoCache;
+  })();
 }
 
 /** Corta una espera larga: si la base no contesta en `ms`, se rinde y se usa el respaldo. */
@@ -214,9 +241,12 @@ export async function fetchVacante(id: string): Promise<Vacante | null> {
   if (/^r-[0-9a-f]+$/i.test(id)) return (await fetchRespaldo().catch(() => [])).find((j) => j.id === id) ?? null;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
   try {
-    const { data } = await conLimite(supabase.from("vacantes").select(SELECT).eq("id", id).maybeSingle(), 6000);
+    const { data, error } = await conLimite(supabase.from("vacantes").select(SELECT).eq("id", id).maybeSingle(), 4000);
+    if (error) throw error;
     return data ? rowToVacante(data as unknown as VacanteRow) : null;
-  } catch { return null; }
+  } catch {
+    return (await fetchRespaldo().catch(() => [])).find((j) => j.id === id) ?? null;
+  }
 }
 
 export function useVacantes() {
