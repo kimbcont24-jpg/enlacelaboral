@@ -1,0 +1,17 @@
+[
+ {
+  "titulo": "Programador",
+  "empresa": "FG (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Tecnología",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se busca programador con manejo de C#, programación orientada a objetos, .NET Framework y .NET Core (opcional), SQL Server, diseño de reportes (DevExpress, Crystal Report o SSRS), desarrollo web (CSS, ASP.NET, MVC, JavaScript), Windows Forms y Azure DevOps. Debe sentirse cómodo moviéndose entre múltiples proyectos y tecnologías concurrentes. Vivir en Santo Domingo.",
+  "requisitos": "Licenciatura/Ingeniería informática, desarrollo de software o TI | Manejo de programación C# | Fundamentos sólidos en programación orientada a objetos (OOP) | Fundamentos sólidos en .NET Framework y .NET Core (opcional) | Conocimientos básicos de SQL Server | Diseño de reportes (DevExpress, Crystal Report o SSRS) | Inglés avanzado (hablado y escrito) | Preferible conocimiento de ADO.NET | Desarrollo web (CSS, ASP.NET, MVC, JavaScript) | Desarrollo con Windows Forms | Manejo de Azure DevOps | Vivir en Santo Domingo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gabreu@fg.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/fg-programador.jpg",
+  "redes": "si"
+ }
+]
