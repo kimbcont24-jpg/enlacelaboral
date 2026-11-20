@@ -1,0 +1,18 @@
+[
+ {
+  "titulo": "Analista de Nómina",
+  "empresa": "Luis Betances",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Administrar y ejecutar las prácticas de compensación, garantizando equidad interna y contribuyendo a la satisfacción, motivación y retención del personal. Ofrecen salario mensual de RD$45,000, seguro médico complementario, seguro de vida y asignación de combustible. Horario: lunes a viernes, 8:00 am a 5:00 pm.",
+  "requisitos": "Licenciatura en contabilidad o estudiante de término | 2–3 años de experiencia en posiciones similares | Manejo avanzado de Excel | Gestión de la Tesorería de la Seguridad Social (TSS) | Dominio de formularios de reporte del Ministerio de Trabajo, cálculos de prestaciones laborales y horas extras | Autodirigida y con sentido de discreción",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "sumate@luisbetances.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/luis-betances-analista-de-nomina.jpg",
+  "salario_min": "45000",
+  "redes": "si"
+ }
+]
