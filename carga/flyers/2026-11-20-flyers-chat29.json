@@ -1,0 +1,62 @@
+[
+ {
+  "empresa": "Smarket",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Asistente Administrativo",
+  "area": "Administración",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Smarket busca asistente administrativo organizado y proactivo, con gusto por el trabajo en equipo. Residencia: Pantoja, Alcarrizos o zonas aledañas.",
+  "requisitos": "Conocimiento en procesos contables | Registro y control de facturas | Manejo de paquete de Office (Word y Excel) | Organización y archivo de documentos | Atención al detalle y responsabilidad | Elaboración de reportes administrativos | Manejo de cuentas por pagar y por cobrar | Trabajo en equipo y buenas relaciones interpersonales | Residir en Pantoja, Alcarrizos o zonas aledañas",
+  "aplicar": "gestionhumana@smarket.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smarket-asistente-administrativo.jpg"
+ },
+ {
+  "empresa": "Smarket",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Auxiliar de Supermercado",
+  "area": "Ventas",
+  "experiencia": "1-3 años",
+  "descripcion": "Smarket busca auxiliar de supermercado para las zonas de Pantoja, Los Alcarrizos, Los Girasoles y zonas aledañas. Ofrece estabilidad laboral, crecimiento profesional y ambiente de trabajo positivo.",
+  "requisitos": "Experiencia requerida: 1 año | Residir en Pantoja, Los Alcarrizos, Los Girasoles o zonas aledañas",
+  "aplicar": "Tel. 809-878-0744",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smarket-auxiliar-de-supermercado.jpg"
+ },
+ {
+  "empresa": "Smarket",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Delivery",
+  "area": "Logística y Transporte",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Smarket busca delivery. Residir cerca de Pantoja, Alcarrizos, Km 18, etc.",
+  "requisitos": "Alto grado de servicio al cliente | Trabajo en equipo | Alto grado de discreción | Compromiso y seriedad | Documentos al día | Alto conocimiento de la zona | Residir cerca de Pantoja, Alcarrizos, Km 18, etc.",
+  "aplicar": "gestionhumana@smarket.do · Tel. 809-878-0744",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smarket-delivery.jpg"
+ },
+ {
+  "empresa": "Smarket",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Encargado de Tienda",
+  "area": "Ventas",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Smarket busca encargado de tienda. Ofrece salario competitivo, beneficios de ley e incentivos. Residir en Pantoja o zonas aledañas.",
+  "requisitos": "Graduado de mercadeo, administración o áreas afines | Experiencia en administración de tienda, ventas y supervisión | Manejo del paquete de oficina | Orientado a resultados | Gestor de indicadores y manejo de inventario | Residir en Pantoja o zonas aledañas",
+  "aplicar": "gestionhumana@smarket.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smarket-encargado-de-tienda.jpg"
+ }
+]
