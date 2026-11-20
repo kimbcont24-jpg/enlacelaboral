@@ -1,0 +1,47 @@
+[
+ {
+  "empresa": "Equimax",
+  "modalidad": "Presencial",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "talento@equimax.com.do (colocar el nombre de la vacante en el asunto)",
+  "redes": "si",
+  "titulo": "Ejecutivo/a de Ventas Montacargas",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Equimax busca ejecutivo/a de ventas de montacargas para generar y desarrollar oportunidades de negocios, mediante la adquisición de nuevos clientes y la gestión de relaciones comerciales existentes, para lograr el crecimiento y rentabilidad de la empresa. Marcas a trabajar: Bobcat y Clark. Zonas: Santo Domingo, Zona Este y Zona Norte. Enviar CV y portafolio.",
+  "requisitos": "Ingeniería Industrial, Mecánica, Mercadeo o carreras afines | 2 años de experiencia en el área de ventas de montacargas | Conocimientos en procesos de ventas, prospección de clientes e indicadores de gestión | Marcas a trabajar: Bobcat y Clark",
+  "imagen": "https://enlace-rd.vercel.app/flyers/equimax-ejecutivo-ventas-montacargas.jpg"
+ },
+ {
+  "empresa": "Equimax",
+  "modalidad": "Presencial",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "talento@equimax.com.do (colocar el nombre de la vacante en el asunto)",
+  "redes": "si",
+  "titulo": "Ingeniero/a de Procesos (temporal 6 meses)",
+  "provincia": "Santo Domingo",
+  "area": "Ingeniería y Construcción",
+  "tipo": "Temporal",
+  "experiencia": "1-3 años",
+  "descripcion": "Equimax busca ingeniero/a de procesos, posición temporal de 6 meses, para diseñar, modelar y estandarizar los procesos de la organización, identificando oportunidades de mejora que impulsen la eficiencia operativa, la calidad del servicio y la satisfacción del cliente. Ubicación: Santo Domingo Oeste. Enviar CV y portafolio.",
+  "requisitos": "Graduado/a de Ingeniería Industrial, Ingeniería en Sistemas, Administración de Negocios o carreras afines | Mínimo 2 años de experiencia en modelado y documentación de procesos, preferiblemente con notación BPMN | Manejo de herramientas de mapeo de procesos, suites BPM y arquitectura de procesos | Conocimientos de Lean, normas ISO 9000 y control documental | Manejo intermedio de Microsoft Office 365 e inglés | Deseable conocimiento de herramientas de simulación de procesos",
+  "imagen": "https://enlace-rd.vercel.app/flyers/equimax-ingeniero-de-procesos.jpg"
+ },
+ {
+  "empresa": "Equimax",
+  "modalidad": "Presencial",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "talento@equimax.com.do (colocar el nombre de la vacante en el asunto)",
+  "redes": "si",
+  "titulo": "Ejecutivo/a de Ventas Agrícola",
+  "provincia": "Santiago",
+  "area": "Ventas",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Equimax busca ejecutivo/a de ventas agrícola para generar y desarrollar oportunidades de negocios, mediante la adquisición de nuevos clientes y la gestión de relaciones comerciales existentes, para lograr el crecimiento y rentabilidad de la empresa. Marcas a trabajar: Massey Ferguson y Kubota. Zona Norte. Enviar CV y portafolio.",
+  "requisitos": "Formación en Ingeniería Agronómica | Mínimo 2 años de experiencia en ventas | Experiencia en ventas de equipos deseable | Marcas a trabajar: Massey Ferguson y Kubota",
+  "imagen": "https://enlace-rd.vercel.app/flyers/equimax-ejecutivo-ventas-agricola.jpg"
+ }
+]
