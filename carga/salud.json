@@ -1,18 +1,16 @@
 {
-  "fecha": "2026-11-20T01:44:28.628Z",
-  "publicadas": 1919,
-  "nuevas_24h": 135,
-  "nuevas_72h": 258,
-  "problemas": [
-    "Fuente «baxter» del robot falló: error: Error: 403 https://jobs.baxter.com/en/location/provincia-de-san-cristobal-dominican-republic-jobs/152-33592/35087"
-  ],
+  "fecha": "2026-11-21T16:55:18.308Z",
+  "publicadas": 1961,
+  "nuevas_24h": 40,
+  "nuevas_72h": 204,
+  "problemas": [],
   "ok": [
     "https://enlacelaboralrd.com/ → 200",
     "https://enlacelaboralrd.com/vacantes → 200",
     "https://enlacelaboralrd.com/sitemap.xml → 200",
     "https://enlacelaboralrd.com/empleos/sector-publico → 200",
-    "1919 vacantes publicadas",
-    "135 vacantes nuevas en 24 h",
-    "Robot corrió hace 0 h"
+    "1961 vacantes publicadas",
+    "40 vacantes nuevas en 24 h",
+    "Robot corrió hace 5 h"
   ]
 }
