@@ -8,8 +8,7 @@ import { VacanteTarjeta } from "@/components/site/VacanteTarjeta";
 import { RecibeVacantes } from "@/components/site/RecibeVacantes";
 import { ExploraEmpleos } from "@/components/site/ExploraEmpleos";
 import { Hero } from "@/components/site/Hero";
-import { JornadasProximas } from "@/components/site/JornadasProximas";
-import { FeriasFaro } from "@/components/site/FeriasFaro";
+import { FeriasConectadas } from "@/components/site/FeriasConectadas";
 import { consejosPortada } from "@/lib/guias";
 import { EmpleoParaTodosBanda } from "@/components/site/EmpleoParaTodosBanda";
 import { EnlaceAnimado } from "@/components/site/EnlaceAnimado";
@@ -115,10 +114,7 @@ function Home() {
 
       <RegaliaBanda />
       <EmpleoParaTodosBanda />
-      <section className="px-4 pb-10 pt-2 sm:px-6" aria-label="Ferias de empleo">
-        <FeriasFaro className="mx-auto" />
-      </section>
-      <JornadasProximas />
+      <FeriasConectadas />
       <RecibeVacantes />
 
       <ExploraEmpleos jobs={jobs} provincias={provinciasConVacantes} />
