@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Promotor (ventas de electrodomésticos)",
+  "empresa": "Radiocentro",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Campo",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Radiocentro busca Promotor con experiencia en ventas de electrodomésticos y vehículo propio. Horario: lunes a viernes de 10:00 a. m. a 7:00 p. m. y sábados de 9:00 a. m. a 12:00 p. m. Salario publicado en el flyer: RD$32,000 mensuales más asignación de combustible de RD$9,000 mensuales. Ubicación por confirmar.",
+  "requisitos": "Bachiller (secundaria completada) | Experiencia como promotor o vendedor de electrodomésticos | Vehículo propio (carro) | Excelente servicio al cliente y habilidades de comunicación | Disponibilidad para trabajar en campo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@radiocentro.com.do (Asunto: Promotor)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/radiocentro-promotor.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Supervisor de Seguridad",
+  "empresa": "Grupo Eulen",
+  "provincia": "Distrito Nacional",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Grupo Eulen busca Supervisor de Seguridad para el Distrito Nacional, Santo Domingo Oeste y zonas aledañas.",
+  "requisitos": "Ver detalles con la empresa por teléfono o WhatsApp",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Tel./WhatsApp 809-390-7379 · 829-755-5471 · 829-521-6630 · 829-521-2519",
+  "imagen": "https://enlace-rd.vercel.app/flyers/eulen-supervisor-seguridad-dn.jpg",
+  "redes": "si"
+ }
+]
