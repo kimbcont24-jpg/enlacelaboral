@@ -61,6 +61,7 @@ export function Footer() {
             <li><Link to="/herramientas/brujula" className="block py-1.5 hover:text-white md:inline md:py-0">Brújula del primer empleo</Link></li>
             <li><Link to="/insignias" className="block py-1.5 hover:text-white md:inline md:py-0">Insignias de habilidades</Link></li>
             <li><Link to="/herramientas/verificar-oferta" className="block py-1.5 hover:text-white md:inline md:py-0">Verificador de estafas</Link></li>
+            <li><Link to="/herramientas/generador-flyers" className="block py-1.5 hover:text-white md:inline md:py-0">Generador de flyers de vacantes</Link></li>
           </ul>
         </nav>
       </div>

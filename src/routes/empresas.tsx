@@ -122,6 +122,7 @@ function Empresas() {
               <p className="eyebrow">Política de publicación</p>
               <h2 id="t-sin-discriminacion" className="mt-1 font-display text-2xl font-extrabold tracking-tight">Vacantes sin límite de edad ni filtros que excluyen</h2>
               <p className="mt-3 text-muted-foreground">En Enlace Laboral no se publican avisos que pidan edad, sexo, foto, estado civil, religión o «buena presencia». Pide lo que el puesto necesita de verdad: experiencia, conocimientos, horario. Nuestro sistema revisa cada aviso antes de enviarlo.</p>
+              <Link to="/herramientas/generador-flyers" className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-xl border border-primary px-4 text-sm font-bold text-primary hover:bg-primary hover:text-primary-foreground">Crea gratis el flyer de tu vacante, con lenguaje inclusivo →</Link>
             </div>
             <ul className="grid gap-2 text-sm lg:w-[26rem]">
               <li className="flex gap-2.5 rounded-2xl bg-background p-3.5"><ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" aria-hidden="true" /><span><strong>Código de Trabajo, Principio VII.</strong> Prohíbe cualquier discriminación, exclusión o preferencia por sexo, edad, raza, color, origen, opinión política, militancia sindical o creencia religiosa.</span></li>

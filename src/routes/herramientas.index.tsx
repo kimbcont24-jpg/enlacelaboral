@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BadgeCheck, Calculator, Compass, Gift, Radar, Scale, ShieldCheck, Trophy } from "lucide-react";
+import { ArrowRight, BadgeCheck, Calculator, Compass, Gift, Megaphone, Radar, Scale, ShieldCheck, Trophy } from "lucide-react";
 
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -24,6 +24,7 @@ const items = [
   { to: "/herramientas/comparar-ofertas", icono: Trophy, titulo: "¿Qué oferta de trabajo te conviene más?", texto: "Compara dos ofertas (o tu trabajo actual contra una nueva): salario neto, pasaje, horas en el tapón, beneficios y cómo te sentirías ahí.", etiqueta: "Comparador de ofertas" },
   { to: "/herramientas/brujula", icono: Compass, titulo: "¿Para qué trabajo eres bueno?", texto: "Brújula del primer empleo: 12 preguntas sobre lo que te gusta y haces bien. Te dice qué áreas van contigo y te muestra vacantes sin experiencia.", etiqueta: "Nuevo · Primer empleo" },
   { to: "/herramientas/verificar-oferta", icono: ShieldCheck, titulo: "¿Esta oferta es real o es estafa?", texto: "Pega la vacante que te llegó por WhatsApp o redes y mira sus señales de alerta en segundos. No guardamos nada.", etiqueta: "Nuevo · Verificador de ofertas" },
+  { to: "/herramientas/generador-flyers", icono: Megaphone, titulo: "Crea el flyer de tu vacante", texto: "Para reclutadores y empresas: 12 diseños, tu logo y tus colores, revisión de lenguaje inclusivo y descarga para redes, WhatsApp o para imprimir.", etiqueta: "Nuevo · Para empresas" },
 ] as const;
 
 function Herramientas() {
@@ -41,7 +42,7 @@ function Herramientas() {
             <p className="mt-4 font-mono text-[11px] uppercase tracking-widest text-primary">{i.etiqueta}</p>
             <h2 className="mt-1 text-2xl font-extrabold">{i.titulo}</h2>
             <p className="mt-2 text-muted-foreground">{i.texto}</p>
-            <span className="mt-5 inline-flex items-center gap-2 font-bold text-primary">{i.to === "/salarios" ? "Explorar" : i.to === "/insignias" ? "Ganar mi insignia" : "Calcular"} <ArrowRight className="size-4 transition group-hover:translate-x-1" /></span>
+            <span className="mt-5 inline-flex items-center gap-2 font-bold text-primary">{i.to === "/salarios" ? "Explorar" : i.to === "/insignias" ? "Ganar mi insignia" : i.to === "/herramientas/generador-flyers" ? "Crear mi flyer" : i.to === "/herramientas/verificar-oferta" ? "Verificar" : "Calcular"} <ArrowRight className="size-4 transition group-hover:translate-x-1" /></span>
           </Link>
         ))}
         <p className="text-sm text-muted-foreground md:col-span-2">Son cálculos orientativos. Para un reclamo, confirma con el Ministerio de Trabajo.</p>
