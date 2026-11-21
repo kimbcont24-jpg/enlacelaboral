@@ -10,15 +10,16 @@ import { useTotalVacantes } from "@/lib/vacantes";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
-// Orden del menú principal (pedido de Kim, 21 nov 2026): Empleos · Empresas · Mi CV · Alianzas · Ferias de empleo.
-const PRINCIPALES: string[] = ["/vacantes", "/empresas", "/cv", "/alianzas", "/jornadas"];
+// Orden del menú principal (pedido de Kim, 21 nov 2026): Empleos · Publica tu vacante · Mi CV · Empresas · Alianzas · Ferias de empleo.
+// «Empresas» es el directorio de empresas contratando; «Publica tu vacante» es la página para reclutadores (/empresas).
+const PRINCIPALES: string[] = ["/vacantes", "/empresas", "/cv", "/empresas-contratando", "/alianzas", "/jornadas"];
 const nav = [
   { to: "/vacantes", label: "Empleos" },
-  { to: "/empresas", label: "Empresas" },
+  { to: "/empresas", label: "Publica tu vacante" },
   { to: "/cv", label: "Mi CV" },
+  { to: "/empresas-contratando", label: "Empresas" },
   { to: "/alianzas", label: "Alianzas" },
-  { to: "/jornadas", label: "Ferias de empleo" },
-  { to: "/empresas-contratando", label: "Empresas contratando" },
+  { to: "/jornadas", label: "Ferias de empleo", corto: "Ferias" },
   { to: "/salarios", label: "Salarios" },
   { to: "/empleo-para-todos", label: "Empleo para todos" },
   { to: "/descubrir", label: "Descubrir" },
@@ -94,29 +95,30 @@ export function Header() {
     <AvisoGlobal />
     <nav className={cn("sticky top-0 z-50 flex flex-wrap items-center justify-between gap-x-3 border-b px-4 transition-all duration-500 sm:px-6", scrolled || menu ? "border-border/80 bg-surface/90 py-3 shadow-[var(--shadow-soft)] backdrop-blur-md" : "border-transparent bg-surface py-4")}>
       <Logo cabecera />
-      <div className="hidden items-center gap-1 whitespace-nowrap text-[15px] font-semibold lg:flex">
+      <div className="hidden items-center gap-0.5 whitespace-nowrap text-[14px] font-semibold lg:flex 2xl:gap-1 2xl:text-[15px]">
         {nav.filter((item) => PRINCIPALES.includes(item.to)).map((item) => (
           item.to === "/vacantes" ? (
             // «Empleos» es la puerta principal del sitio: destaca sin competir con «Publicar vacante».
-            <Link key={item.to} to={item.to} className="mr-1 inline-flex items-center gap-1.5 rounded-full bg-[#1d6ff2]/10 px-3.5 py-2 font-bold text-[#1557c4] ring-1 ring-[#1d6ff2]/30 transition-all hover:bg-[#1d6ff2]/15 hover:ring-[#1d6ff2]/50 xl:px-4" activeProps={{ className: "!bg-[#1d6ff2] !text-white !ring-[#1d6ff2]" }}>
+            <Link key={item.to} to={item.to} className="mr-1 inline-flex items-center gap-1.5 rounded-full bg-[#1d6ff2]/10 px-3 py-2 font-bold text-[#1557c4] ring-1 ring-[#1d6ff2]/30 transition-all hover:bg-[#1d6ff2]/15 hover:ring-[#1d6ff2]/50 xl:px-4" activeProps={{ className: "!bg-[#1d6ff2] !text-white !ring-[#1d6ff2]" }}>
               <Search className="size-4" aria-hidden="true" /> {item.label}
               {total !== null && total > 0 && <span className="ml-0.5 rounded-full bg-[#1d6ff2] px-2 py-0.5 text-[11px] font-bold tabular-nums leading-none text-white in-data-[status=active]:bg-white in-data-[status=active]:text-[#1557c4]">{total.toLocaleString("es-DO")}</span>}
             </Link>
           ) : (
-          <Link key={item.to} to={item.to} className="rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary xl:px-3.5" activeProps={{ className: "bg-secondary text-primary" }}>{item.label}</Link>
+          // En pantallas medianas (1024–1279 px) «Publica tu vacante» se esconde porque el botón azul de la derecha lleva al mismo lugar.
+          <Link key={item.to} to={item.to} className={cn("rounded-full px-2.5 py-2 transition-colors hover:bg-secondary hover:text-primary 2xl:px-3", item.to === "/empresas" && "hidden xl:inline-block")} activeProps={{ className: "bg-secondary text-primary" }}>{"corto" in item && item.corto ? <><span className="xl:hidden">{item.corto}</span><span className="hidden xl:inline">{item.label}</span></> : item.label}</Link>
           )
         ))}
         <details className="group relative">
-          <summary className="flex cursor-pointer list-none items-center gap-1 rounded-full px-3 py-2 transition-colors hover:bg-secondary hover:text-primary [&::-webkit-details-marker]:hidden">Más <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
+          <summary className="flex cursor-pointer list-none items-center gap-1 rounded-full px-2.5 py-2 transition-colors hover:bg-secondary hover:text-primary [&::-webkit-details-marker]:hidden">Más <ChevronDown className="size-4 transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
           <div className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-2xl border border-border bg-surface py-1.5 shadow-xl">
             {nav.filter((item) => !PRINCIPALES.includes(item.to)).map((item) => <Link key={item.to} to={item.to} onClick={(e) => (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open")} className="block px-4 py-2.5 hover:bg-secondary hover:text-primary" activeProps={{ className: "text-primary" }}>{item.label}</Link>)}
           </div>
         </details>
         <Link to="/guardadas" aria-label="Mi búsqueda: guardadas y aplicaciones" title="Mi búsqueda" className="relative ml-1 grid size-10 place-items-center rounded-full transition-colors hover:bg-secondary hover:text-primary" activeProps={{ className: "bg-secondary text-primary" }}><Bookmark className="size-[18px]" aria-hidden="true" />{ids.length > 0 && <span className="absolute -right-0.5 -top-0.5 rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">{ids.length}</span>}</Link>
         {cuenta ? (
-          <Link to={cuenta.to} className="ml-2 rounded-full bg-foreground px-5 py-2.5 text-background hover:bg-primary">{cuenta.t}</Link>
+          <Link to={cuenta.to} className="ml-1 rounded-full bg-foreground px-4 py-2.5 2xl:ml-2 2xl:px-5 text-background hover:bg-primary">{cuenta.t}</Link>
         ) : (
-          <Link to="/empresas" className="btn-aplicar ml-2 rounded-full px-5 py-2.5">Publicar vacante</Link>
+          <Link to="/empresas" className="btn-aplicar ml-1 rounded-full px-4 py-2.5 2xl:ml-2 2xl:px-5">Publicar vacante</Link>
         )}
       </div>
       <div className="flex items-center gap-2 lg:hidden">
