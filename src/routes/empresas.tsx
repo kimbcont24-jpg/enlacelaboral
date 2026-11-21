@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { COMPROMISOS, revisarDiscriminacion } from "@/lib/inclusion";
 import { AvisoExclusion } from "@/components/site/AvisoExclusion";
-import { Bell, CalendarCheck, CalendarClock, Check, Columns3, Crown, FileText, Link2, MessageCircle, Megaphone, RefreshCw, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Bell, Building2, CalendarCheck, CalendarClock, Check, ClipboardList, Columns3, Copy, Crown, FileText, Link2, Mail, MessageCircle, Megaphone, ShieldCheck, Sparkles, Upload } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -12,9 +12,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useControles } from "@/lib/controles";
 import { provincias } from "@/lib/data";
 import { PAGOS_ACTIVOS } from "@/lib/pagos";
+import { CORREO_INFO } from "@/lib/vacantes";
 
 export const Route = createFileRoute("/empresas")({
-  head: () => ({ meta: [{ title: "Publica vacantes gratis y elige candidatos | Enlace Laboral" }, { name: "description", content: "Publica tus vacantes gratis en República Dominicana. Recibe candidatos en tu panel, agenda entrevistas y escríbeles por WhatsApp con un toque." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/empresas" }] }),
+  head: () => ({ meta: [{ title: "Publica tu vacante gratis en 2 minutos | Enlace Laboral" }, { name: "description", content: "Publica tu vacante gratis en República Dominicana: sube el flyer, llena un formulario corto o envíala por correo. Sin crear cuenta. Con cuenta, manejas a tus candidatos en tu panel." }], links: [{ rel: "canonical", href: "https://enlacelaboralrd.com/empresas" }] }),
   component: Empresas,
 });
 
@@ -35,6 +36,23 @@ const PRECIOS = [
   { n: "Reclutamiento asistido", p: "RD$5,900", u: "por puesto cubierto", d: "Hacemos el proceso por ti y te presentamos a los mejores tres.", b: ["Filtro de candidatos por una reclutadora", "Entrevistas por competencias", "Pagas solo si contratas"], cta: "Pedirlo desde mi panel" },
 ];
 
+const ASUNTO_CORREO = "Vacante para publicar";
+const CUERPO_CORREO = ["Puesto:", "Empresa:", "Ubicación (provincia o remoto):", "Funciones:", "Requisitos:", "Horario:", "Salario (opcional, pero atrae más candidatos):", "Cómo deben aplicar (correo o WhatsApp):", "", "Persona de contacto y teléfono:"].join("\n");
+const MAILTO_VACANTE = `mailto:${CORREO_INFO}?subject=${encodeURIComponent(ASUNTO_CORREO)}&body=${encodeURIComponent(CUERPO_CORREO)}`;
+
+const copiarCorreo = () => {
+  void navigator.clipboard?.writeText(CORREO_INFO).then(() => toast.success("Correo copiado"), () => toast.error("No se pudo copiar. Escríbelo a mano: " + CORREO_INFO));
+};
+
+/** Lleva al formulario y abre el selector de imagen (el toque del usuario lo permite). */
+const subirFlyer = () => {
+  document.getElementById("publicar")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.getElementById("flyer-entrada")?.click();
+};
+
+const opcion = "group flex min-h-[4.5rem] w-full items-center gap-3 rounded-2xl border border-white/15 bg-white/[.07] p-3.5 text-left transition hover:border-white/40 hover:bg-white/[.13] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
+const opcionIcono = "grid size-10 shrink-0 place-items-center rounded-xl bg-white/12 text-[#8ec1ff]";
+
 function Empresas() {
   const controles = useControles();
   const [enviado, setEnviado] = useState(false);
@@ -43,55 +61,141 @@ function Empresas() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <header className="hero-dark px-4 pb-16 pt-12 sm:px-6 md:pb-24 md:pt-16">
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-          <div>
-            <p className="entra inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white/90"><Sparkles className="size-4 text-[#ffd84d]" /> Publicar y elegir candidatos es gratis</p>
-            <h1 className="entra mt-5 text-balance font-display text-[2rem] font-extrabold leading-[1.1] tracking-[-0.03em] [animation-delay:60ms] md:text-[2.75rem]">Publica tu vacante y elige a tu gente desde un solo lugar</h1>
-            <p className="entra mt-5 max-w-xl text-lg text-white/85 [animation-delay:120ms]">Los candidatos aplican sin crear cuenta y te llegan a tu panel con su CV. Tú decides, agendas la entrevista y les escribes por WhatsApp.</p>
-            <div className="entra mt-8 flex flex-wrap gap-3 [animation-delay:180ms]">
-              <Link to="/auth" search={{ modo: "registro" }} className="btn-aplicar inline-flex h-13 items-center rounded-2xl px-7 py-3.5 text-base">Crear cuenta de empresa</Link>
-              <Link to="/auth" className="inline-flex items-center rounded-2xl border border-white/30 px-6 py-3.5 text-base font-bold text-white hover:bg-white/10">Ya tengo cuenta</Link>
-            </div>
-            <p className="mt-4 text-sm text-white/70">¿Sin tiempo para crear cuenta? <a href="#publicar" className="font-bold text-white underline underline-offset-4">Envíanos la vacante aquí</a>.</p>
+
+      {/* 1. Publicar: lo primero que se ve */}
+      <header className="hero-dark px-4 pb-14 pt-8 sm:px-6 md:pb-20 md:pt-12">
+        <div className="relative mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)] lg:gap-12">
+          <div className="lg:self-start">
+            <p className="entra inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white/90"><Sparkles className="size-4 text-[#ffd84d]" /> Gratis · sin crear cuenta · sin tarjeta</p>
+            <h1 className="entra mt-4 text-balance font-display text-[2rem] font-extrabold leading-[1.08] tracking-[-0.03em] [animation-delay:60ms] md:text-[2.75rem]">Publica tu vacante gratis en 2 minutos</h1>
+            <p className="entra mt-4 max-w-xl text-lg text-white/85 [animation-delay:120ms]">Sube el flyer o llena un formulario corto. La revisamos, la publicamos y te avisamos por correo.</p>
+
+            <h2 className="mt-7 text-sm font-extrabold uppercase tracking-[.1em] text-[#8ec1ff]">Elige cómo publicar</h2>
+            <ul className="mt-3 grid grid-cols-2 gap-2.5 lg:grid-cols-1">
+              <li>
+                <button type="button" onClick={subirFlyer} className={opcion}>
+                  <span className={opcionIcono}><Upload className="size-5" /></span>
+                  <span className="min-w-0"><span className="block font-extrabold leading-tight">Subir el flyer</span><span className="mt-0.5 hidden text-sm text-white/75 sm:block">Lo más rápido: lo leemos y llenamos el formulario por ti.</span></span>
+                </button>
+              </li>
+              <li>
+                <a href="#publicar" className={opcion}>
+                  <span className={opcionIcono}><ClipboardList className="size-5" /></span>
+                  <span className="min-w-0"><span className="block font-extrabold leading-tight">Llenar el formulario</span><span className="mt-0.5 hidden text-sm text-white/75 sm:block">Sin cuenta. Escribes los datos del puesto y listo.</span></span>
+                </a>
+              </li>
+              <li>
+                <a href={MAILTO_VACANTE} className={opcion}>
+                  <span className={opcionIcono}><Mail className="size-5" /></span>
+                  <span className="min-w-0"><span className="block font-extrabold leading-tight">Enviarla por correo</span><span className="mt-0.5 hidden break-all text-sm text-white/75 sm:block">{CORREO_INFO}</span></span>
+                </a>
+              </li>
+              <li>
+                <Link to="/auth" search={{ modo: "registro" }} className={opcion}>
+                  <span className={opcionIcono}><Building2 className="size-5" /></span>
+                  <span className="min-w-0"><span className="block font-extrabold leading-tight">Crear cuenta de empresa</span><span className="mt-0.5 hidden text-sm text-white/75 sm:block">Publicas tú mismo y manejas a tus candidatos en tu panel.</span></span>
+                </Link>
+              </li>
+            </ul>
+            <p className="mt-4 text-sm text-white/75">¿Ya tienes cuenta? <Link to="/auth" className="font-bold text-white underline underline-offset-4">Entra a tu panel</Link></p>
           </div>
-          <MuestraPanel />
+
+          <div id="publicar" className="scroll-mt-20">
+            {enviado ? (
+              <div className="rounded-3xl bg-surface p-7 text-foreground shadow-[0_40px_80px_-30px_rgba(0,0,0,.7)] sm:p-9">
+                <span className="grid size-12 place-items-center rounded-full bg-success/12 text-success"><Check className="size-6" /></span>
+                <h2 className="mt-4 font-display text-2xl font-extrabold tracking-tight">¡Recibimos tu vacante!</h2>
+                <p className="mt-2 text-muted-foreground">La revisamos y te avisamos al correo que indicaste cuando esté publicada.</p>
+                <div className="mt-6 rounded-2xl bg-background p-5">
+                  <p className="font-extrabold">Siguiente paso (opcional): crea tu cuenta gratis</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Con tu cuenta ves a tus candidatos en un panel, agendas entrevistas y les escribes por WhatsApp.</p>
+                  <Link to="/auth" search={{ modo: "registro" }} className="btn-aplicar mt-4 inline-flex min-h-12 items-center rounded-xl px-5 text-sm">Crear cuenta de empresa</Link>
+                </div>
+                <button onClick={() => setEnviado(false)} className="mt-5 min-h-11 rounded-xl border border-border px-4 text-sm font-bold hover:border-primary">Enviar otra vacante</button>
+              </div>
+            ) : !controles.activos.ctl_empresas ? (
+              <div className="rounded-3xl bg-surface p-8 text-center text-foreground">
+                <h2 className="text-xl font-bold">Recepción de vacantes en pausa</h2>
+                <p className="mt-2 text-sm text-muted-foreground">Por ahora el formulario no está recibiendo vacantes. Envíala por correo a <a href={MAILTO_VACANTE} className="font-bold text-primary underline">{CORREO_INFO}</a> o vuelve en unas horas.</p>
+              </div>
+            ) : (
+              <FormVacante plan={plan} onListo={() => { setEnviado(true); document.getElementById("publicar")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} />
+            )}
+          </div>
         </div>
       </header>
 
-      <section className="px-4 py-16 sm:px-6 md:py-24"><div className="mx-auto max-w-6xl">
+      {/* 2. Qué pasa después + la vía del correo, explicada */}
+      <section className="border-b border-border bg-surface px-4 py-12 sm:px-6 md:py-16">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,.8fr)]">
+          <div>
+            <h2 className="font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">Qué pasa después de enviarla</h2>
+            <ol className="mt-7 grid gap-6 sm:grid-cols-3">
+              {[["La recibimos", "Llega al equipo de Enlace Laboral con tus datos de contacto."], ["La revisamos", "Confirmamos que se entienda bien y que no excluya a nadie."], ["Sale publicada", "Te avisamos por correo con el enlace para compartirla."]].map(([t, d], i) => (
+                <li key={t} className="relative pl-12">
+                  <span className="absolute left-0 top-0 grid size-9 place-items-center rounded-full bg-[#0a2f5c] font-display font-extrabold text-white">{i + 1}</span>
+                  <h3 className="font-extrabold">{t}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{d}</p>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2.5 text-sm font-semibold">
+              {["Publicar es gratis, siempre", "Visible 30 días", "Los candidatos aplican directo contigo"].map((x) => <span key={x} className="flex items-center gap-2"><Check className="size-4 text-success" /> {x}</span>)}
+            </div>
+          </div>
+          <div className="rounded-3xl border border-border bg-background p-6">
+            <p className="flex items-center gap-2 font-extrabold"><Mail className="size-5 text-primary" /> ¿Prefieres el correo?</p>
+            <p className="mt-2 text-sm text-muted-foreground">Escribe los datos de la vacante en el mensaje (puesto, ubicación, requisitos y cómo aplicar) y envíalo a:</p>
+            <p className="mt-3 break-all rounded-xl bg-surface px-4 py-3 font-display text-lg font-extrabold text-[#0a2f5c]">{CORREO_INFO}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <a href={MAILTO_VACANTE} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground">Abrir mi correo <ArrowRight className="size-4" /></a>
+              <button type="button" onClick={copiarCorreo} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border px-4 text-sm font-bold hover:border-primary"><Copy className="size-4" /> Copiar correo</button>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">El botón abre el correo con los datos que necesitamos ya listados. Si lo que tienes es el flyer en imagen, súbelo en el formulario: ahí lo leemos al momento.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. El panel (para quien crea cuenta) */}
+      <section id="panel" className="hero-dark scroll-mt-20 px-4 py-16 sm:px-6 md:py-20">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+          <div>
+            <p className="text-sm font-extrabold uppercase tracking-[.1em] text-[#8ec1ff]">Con cuenta de empresa · también gratis</p>
+            <h2 className="mt-2 text-balance font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">¿Contratas seguido? Maneja a tus candidatos desde tu panel</h2>
+            <p className="mt-3 max-w-xl text-white/85">Los candidatos aplican sin crear cuenta y te llegan con su CV. Tú decides, agendas la entrevista y les escribes por WhatsApp.</p>
+            <ol className="mt-7 space-y-4">
+              {[["Crea tu cuenta", "Nombre de la empresa, RNC y correo."], ["Publica la vacante", "Un formulario corto que te dice qué le falta para que se entienda bien."], ["Recibe y elige", "Las aplicaciones llegan a tu panel. Agenda, decide y avisa a cada persona."]].map(([t, d], i) => (
+                <li key={t} className="relative pl-12">
+                  <span className="absolute left-0 top-0 grid size-9 place-items-center rounded-full bg-white font-display font-extrabold text-[#0a2f5c]">{i + 1}</span>
+                  <h3 className="font-extrabold">{t}</h3>
+                  <p className="text-sm text-white/75">{d}</p>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/auth" search={{ modo: "registro" }} className="btn-aplicar inline-flex min-h-12 items-center rounded-2xl px-6 text-base">Crear cuenta de empresa</Link>
+              <Link to="/auth" className="inline-flex min-h-12 items-center rounded-2xl border border-white/30 px-6 text-base font-bold text-white hover:bg-white/10">Ya tengo cuenta</Link>
+            </div>
+          </div>
+          <MuestraPanel />
+        </div>
+      </section>
+
+      <section className="px-4 py-16 sm:px-6 md:py-20"><div className="mx-auto max-w-6xl">
         <h2 className="max-w-2xl text-balance font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">Lo que hace tu panel, sin pagar nada</h2>
-        <div className="mt-10 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
           {FUNCIONES.map(({ I, t, d }) => (
             <div key={t}>
               <span className="grid size-11 place-items-center rounded-2xl bg-[#1d6ff2]/10 text-[#1557c4]"><I className="size-5" /></span>
               <h3 className="mt-4 text-lg font-extrabold">{t}</h3>
-              <p className="mt-1.5 text-muted-foreground">{d}</p>
+              <p className="mt-1.5 text-sm text-muted-foreground">{d}</p>
             </div>
           ))}
         </div>
       </div></section>
 
-      <section className="border-y border-border bg-surface px-4 py-16 sm:px-6 md:py-20">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">Así de simple</h2>
-          <ol className="mt-10 grid gap-8 md:grid-cols-3">
-            {[["Crea tu cuenta", "Nombre de la empresa, RNC y correo. Dos minutos."], ["Publica la vacante", "Un formulario corto que te dice qué le falta para que se entienda bien."], ["Recibe y elige", "Las aplicaciones llegan a tu panel. Agenda, decide y avisa a cada persona."]].map(([t, d], i) => (
-              <li key={t} className="relative pl-14">
-                <span className="absolute left-0 top-0 grid size-10 place-items-center rounded-full bg-[#0a2f5c] font-display text-lg font-extrabold text-white">{i + 1}</span>
-                <h3 className="text-lg font-extrabold">{t}</h3>
-                <p className="mt-1 text-muted-foreground">{d}</p>
-              </li>
-            ))}
-          </ol>
-          <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl bg-background p-5 text-sm font-semibold">
-            {["Publicar es gratis, siempre", "Vacantes visibles 30 días y se renuevan con un toque", "Revisamos cada vacante para cuidar a los candidatos"].map((x) => <span key={x} className="flex items-center gap-2"><Check className="size-4 text-success" /> {x}</span>)}
-          </div>
-        </div>
-      </section>
-
       {PAGOS_ACTIVOS && (
-      <section id="precios" aria-labelledby="t-precios" className="scroll-mt-20 px-4 py-16 sm:px-6 md:py-20">
+      <section id="precios" aria-labelledby="t-precios" className="scroll-mt-20 border-t border-border px-4 py-16 sm:px-6 md:py-20">
         <div className="mx-auto max-w-6xl">
           <h2 id="t-precios" className="max-w-2xl text-balance font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">Empieza gratis. Paga solo si quieres llegar más lejos.</h2>
           <p className="mt-3 max-w-2xl text-muted-foreground">Sin contrato, sin tarjeta y sin cobros automáticos. Primero lo activamos y después pagas por transferencia.</p>
@@ -115,7 +219,8 @@ function Empresas() {
       </section>
       )}
 
-      <section aria-labelledby="t-sin-discriminacion" className="px-4 pb-4 sm:px-6">
+      {/* 4. Reglas de publicación */}
+      <section aria-labelledby="t-sin-discriminacion" className="px-4 pb-16 sm:px-6">
         <div className="mx-auto max-w-6xl rounded-3xl border border-border bg-surface p-6 sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-xl">
@@ -134,27 +239,14 @@ function Empresas() {
         </div>
       </section>
 
-      <section id="publicar" className="scroll-mt-20 px-4 py-16 sm:px-6 md:py-20">
-        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
+      {/* 5. Cierre */}
+      <section className="px-4 pb-16 sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-5 rounded-3xl bg-[#0a2f5c] p-7 text-white sm:flex-row sm:items-center sm:p-9">
           <div>
-            <h2 className="font-display text-2xl font-extrabold tracking-tight md:text-[2rem]">¿Prefieres no crear cuenta?</h2>
-            <p className="mt-3 text-muted-foreground">Envíanos la vacante con este formulario y la publicamos nosotros. Puedes subir el flyer y lo llenamos por ti. Para ver y manejar a tus candidatos, crea tu cuenta gratis.</p>
-            <p className="mt-6 flex items-center gap-2 text-sm text-muted-foreground"><RefreshCw className="size-4" /> También por correo: kimbcont24+vacantes@gmail.com</p>
+            <h2 className="font-display text-2xl font-extrabold tracking-tight">¿Tienes una vacante abierta hoy?</h2>
+            <p className="mt-1 text-white/80">Publícala gratis ahora. ¿Dudas? Escríbenos a <a href={`mailto:${CORREO_INFO}`} className="font-bold text-white underline underline-offset-4">{CORREO_INFO}</a></p>
           </div>
-          {enviado ? (
-            <div className="rounded-3xl border border-primary/40 bg-primary/5 p-8">
-              <h3 className="text-xl font-bold">¡Recibimos tu vacante!</h3>
-              <p className="mt-2 text-sm text-muted-foreground">La revisamos y te avisamos al correo cuando esté publicada.</p>
-              <button onClick={() => setEnviado(false)} className="mt-6 rounded-xl border border-border px-4 py-2 text-sm font-bold">Enviar otra</button>
-            </div>
-          ) : !controles.activos.ctl_empresas ? (
-            <div className="rounded-3xl border border-border bg-surface p-8 text-center">
-              <h3 className="text-xl font-bold">Recepción de vacantes en pausa</h3>
-              <p className="mt-2 text-sm text-muted-foreground">Por ahora no estamos recibiendo vacantes nuevas. Vuelve en unas horas, o escríbenos por el canal de WhatsApp.</p>
-            </div>
-          ) : (
-            <FormVacante plan={plan} onListo={() => setEnviado(true)} />
-          )}
+          <a href="#publicar" className="btn-aplicar inline-flex min-h-12 shrink-0 items-center gap-2 rounded-2xl px-6 text-base">Publicar mi vacante <ArrowRight className="size-5" /></a>
         </div>
       </section>
       <Footer />
@@ -276,34 +368,51 @@ function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
     onListo();
   };
 
+  const paso = "flex items-center gap-2.5 font-display text-lg font-extrabold";
+  const num = "grid size-7 shrink-0 place-items-center rounded-full bg-[#0a2f5c] text-sm font-extrabold text-white";
   return (
-    <form onSubmit={(e) => void enviar(e)} className="space-y-4 rounded-3xl border border-border bg-surface p-6 shadow-[var(--shadow-soft)] sm:p-8">
+    <form onSubmit={(e) => void enviar(e)} className="space-y-4 rounded-3xl bg-surface p-5 text-foreground shadow-[0_40px_80px_-30px_rgba(0,0,0,.7)] sm:p-8">
+      <div>
+        <h2 className="font-display text-xl font-extrabold tracking-tight sm:text-2xl">Publica aquí, sin crear cuenta</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Tres pasos. Los campos sin «opcional» son necesarios.</p>
+      </div>
+
       <div className="rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 p-4">
-        <p className="font-bold">¿Ya tienes el flyer de la vacante?</p>
-        <p className="mt-1 text-sm text-muted-foreground">Súbelo y llenamos el formulario por ti. La imagen se lee en tu dispositivo y no se guarda.</p>
-        <input ref={entrada} type="file" accept="image/*" className="hidden" onChange={(e) => void leerFlyer(e.target.files?.[0])} />
-        <button type="button" disabled={leyendo !== null} onClick={() => entrada.current?.click()} className="mt-3 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-60">
+        <p className="flex items-center gap-2 font-bold"><Upload className="size-4 text-primary" /> ¿Ya tienes el flyer? Súbelo y llenamos todo por ti</p>
+        <p className="mt-1 text-sm text-muted-foreground">La imagen se lee en tu dispositivo y no se guarda. Después solo revisas.</p>
+        <input id="flyer-entrada" ref={entrada} type="file" accept="image/*" className="hidden" onChange={(e) => void leerFlyer(e.target.files?.[0])} />
+        <button type="button" disabled={leyendo !== null} onClick={() => entrada.current?.click()} className="mt-3 min-h-11 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground disabled:opacity-60">
           {leyendo !== null ? `Leyendo tu flyer… ${leyendo}%` : "Subir flyer o captura"}
         </button>
         {leido && leido.length > 0 && <p role="status" className="mt-3 text-sm font-semibold text-success">Llenamos {leido.join(", ")}. Revisa todo antes de enviar.</p>}
       </div>
-      <label className="block"><span className={rotulo}>Empresa</span><input required maxLength={200} value={f.empresa} onChange={set("empresa")} placeholder="Nombre de la empresa" className={caja} /></label>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block"><span className={rotulo}>Contacto</span><input required maxLength={200} value={f.contacto} onChange={set("contacto")} placeholder="Nombre y apellido" className={caja} /></label>
-        <label className="block"><span className={rotulo}>Teléfono (opcional)</span><input maxLength={40} inputMode="tel" value={f.telefono} onChange={set("telefono")} placeholder="809-000-0000" className={caja} /></label>
-      </div>
-      <label className="block"><span className={rotulo}>Correo</span><input required type="email" maxLength={200} value={f.correo} onChange={set("correo")} placeholder="rrhh@empresa.do" className={caja} /></label>
-      <label className="block"><span className={rotulo}>Título del puesto</span><input required maxLength={200} value={f.titulo} onChange={set("titulo")} placeholder="Ej. Cajero/a" className={caja} /></label>
+
+      <p className={`${paso} pt-1`}><span className={num}>1</span> La vacante</p>
+      <label className="block"><span className={rotulo}>Puesto</span><input required maxLength={200} value={f.titulo} onChange={set("titulo")} placeholder="Ej. Cajero/a" className={caja} /></label>
       <label className="block"><span className={rotulo}>Ubicación</span><select required value={f.provincia} onChange={set("provincia")} className={caja}>{provincias.slice(1).map((p) => (<option key={p}>{p}</option>))}</select></label>
-      <label className="block"><span className={rotulo}>Detalles</span><textarea required rows={5} maxLength={8000} value={f.detalle} onChange={set("detalle")} placeholder="Funciones, requisitos, horario, salario y beneficios. Si publicas el salario, tu vacante llama más la atención." className={caja} /></label>
+      <label className="block"><span className={rotulo}>Detalles del puesto</span><textarea required rows={5} maxLength={8000} value={f.detalle} onChange={set("detalle")} placeholder="Funciones, requisitos, horario, salario y cómo deben aplicar (correo o WhatsApp). Si publicas el salario, tu vacante llama más la atención." className={caja} /></label>
       <p className="-mt-2 text-xs text-muted-foreground">No pidas edad, sexo, foto ni CV con foto, estado civil o hijos: pide lo que necesita el trabajo.</p>
       <AvisoExclusion hallazgos={revisarDiscriminacion(`${f.titulo}\n${f.detalle}`)} />
-      <fieldset className="rounded-xl border border-border p-3"><legend className="px-1 text-sm font-bold">¿Tu vacante es para…? (opcional)</legend><p className="text-xs text-muted-foreground">Marca lo que aplique. Las personas podrán encontrar tu vacante con estos filtros.</p><div className="mt-2 grid gap-2">{COMPROMISOS.map((c) => { const on = f.compromisos.includes(c.id); return <label key={c.id} className="flex items-start gap-2 text-sm"><input type="checkbox" checked={on} onChange={() => setF((x) => ({ ...x, compromisos: on ? x.compromisos.filter((y) => y !== c.id) : [...x.compromisos, c.id] }))} className="mt-1 size-4" /><span><strong>{c.t}.</strong> <span className="text-muted-foreground">{c.d}</span></span></label>; })}</div></fieldset>
+
+      <p className={`${paso} pt-2`}><span className={num}>2</span> Tus datos <span className="text-sm font-semibold text-muted-foreground">(para avisarte)</span></p>
+      <label className="block"><span className={rotulo}>Empresa</span><input required maxLength={200} autoComplete="organization" value={f.empresa} onChange={set("empresa")} placeholder="Nombre de la empresa" className={caja} /></label>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="block"><span className={rotulo}>Tu nombre</span><input required maxLength={200} autoComplete="name" value={f.contacto} onChange={set("contacto")} placeholder="Nombre y apellido" className={caja} /></label>
+        <label className="block"><span className={rotulo}>Teléfono <span className="font-normal text-muted-foreground">(opcional)</span></span><input maxLength={40} inputMode="tel" autoComplete="tel" value={f.telefono} onChange={set("telefono")} placeholder="809-000-0000" className={caja} /></label>
+      </div>
+      <label className="block"><span className={rotulo}>Tu correo</span><input required type="email" maxLength={200} autoComplete="email" value={f.correo} onChange={set("correo")} placeholder="rrhh@empresa.do" className={caja} /></label>
+
+      <p className={`${paso} pt-2`}><span className={num}>3</span> Confirma y envía</p>
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" checked={f.redes} onChange={(e) => setF((x) => ({ ...x, redes: e.target.checked }))} className="mt-1 size-4" /><span>Autorizo que Enlace Laboral comparta esta vacante en sus redes (Telegram, Facebook, Instagram y WhatsApp). Es opcional y gratis.</span></label>
+      <details className="rounded-xl border border-border p-3">
+        <summary className="cursor-pointer text-sm font-bold">¿Tu vacante es inclusiva? Márcalo aquí <span className="font-normal text-muted-foreground">(opcional)</span>{f.compromisos.length > 0 && <span className="ml-2 rounded-full bg-success/12 px-2 py-0.5 text-xs font-bold text-success">{f.compromisos.length} marcado{f.compromisos.length > 1 ? "s" : ""}</span>}</summary>
+        <p className="mt-2 text-xs text-muted-foreground">Las personas podrán encontrar tu vacante con estos filtros.</p>
+        <div className="mt-2 grid gap-2">{COMPROMISOS.map((c) => { const on = f.compromisos.includes(c.id); return <label key={c.id} className="flex items-start gap-2 text-sm"><input type="checkbox" checked={on} onChange={() => setF((x) => ({ ...x, compromisos: on ? x.compromisos.filter((y) => y !== c.id) : [...x.compromisos, c.id] }))} className="mt-1 size-4" /><span><strong>{c.t}.</strong> <span className="text-muted-foreground">{c.d}</span></span></label>; })}</div>
+      </details>
       <Consentimiento para="empresa" />
       <input tabIndex={-1} autoComplete="off" aria-hidden="true" value={f.trampa} onChange={set("trampa")} className="hidden" name="sitio_web" />
-      <button type="submit" disabled={enviando} className="w-full rounded-xl bg-primary py-3.5 font-bold text-primary-foreground disabled:opacity-60">{enviando ? "Enviando…" : "Enviar vacante gratis"}</button>
-      <p className="text-center text-xs text-muted-foreground">Te contactamos al correo que indiques.</p>
+      <button type="submit" disabled={enviando} className="btn-aplicar min-h-13 w-full rounded-xl py-3.5 text-base disabled:opacity-60">{enviando ? "Enviando…" : "Publicar mi vacante gratis"}</button>
+      <p className="text-center text-xs text-muted-foreground">La revisamos y te avisamos al correo que indiques.</p>
     </form>
   );
 }
