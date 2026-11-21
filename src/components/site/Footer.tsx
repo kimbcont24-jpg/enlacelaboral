@@ -44,6 +44,7 @@ export function Footer() {
           <p className="text-sm font-bold text-white">Enlace Laboral</p>
           <ul className="mt-2 grid grid-cols-2 gap-x-6 gap-y-0.5 text-sm text-white/65 md:mt-3 md:block md:space-y-2">
             <li><Link to="/vacantes" className="block py-1.5 hover:text-white md:inline md:py-0">Todas las vacantes</Link></li>
+            <li><Link to="/empresas-contratando" className="block py-1.5 hover:text-white md:inline md:py-0">Empresas contratando</Link></li>
             <li><Link to="/vacantes" search={{ experiencia: "Sin experiencia" }} className="block py-1.5 hover:text-white md:inline md:py-0">Primer empleo</Link></li>
             <li><Link to="/vacantes" search={{ modalidad: "Remoto" }} className="block py-1.5 hover:text-white md:inline md:py-0">Trabajo desde casa</Link></li>
             <li><Link to="/guardadas" className="block py-1.5 hover:text-white md:inline md:py-0">Mi búsqueda</Link></li>

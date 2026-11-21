@@ -91,6 +91,7 @@ function Empleos() {
                 <ul className="mt-3 space-y-1.5 text-sm">
                   {empresas.map((e) => <li key={e.slug}><Link to="/empresa/$id" params={{ id: e.slug }} className="flex justify-between gap-2 hover:text-primary"><span className="truncate">{e.nombre}</span><span className="text-muted-foreground">{e.total}</span></Link></li>)}
                 </ul>
+                <Link to="/empresas-contratando" className="mt-3 inline-block text-sm font-bold text-primary hover:underline">Ver todas las empresas contratando →</Link>
               </nav>
             )}
           </aside>

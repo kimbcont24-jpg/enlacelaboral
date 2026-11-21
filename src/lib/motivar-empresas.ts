@@ -23,7 +23,7 @@ export const NOMBRE_SELLO = "Empresa que publica claro";
 // Con 85 o más, una empresa no llega sin publicar el sueldo: 5 de 6 datos dan 83. El sueldo es lo que separa.
 
 /** Consultoras y empresas de reclutamiento no entran al ranking (publican por otras empresas). */
-const CONSULTORA = /consult|\bv[ií]a\b|talento firme|recursos humanos|reclutamiento|gesti[oó]n humana|talento humano|headhunt|manpower|people group|verox|outsourcing|neuro stem/i;
+export const CONSULTORA = /consult|\bv[ií]a\b|talento firme|recursos humanos|reclutamiento|gesti[oó]n humana|talento humano|headhunt|manpower|people group|verox|outsourcing|neuro stem/i;
 
 /** Puntaje 0–100: promedio de la claridad de sus vacantes. */
 export function puntajeClaridad(vs: Vacante[]): number {

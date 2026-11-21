@@ -142,6 +142,7 @@ function Empresas() {
             <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2.5 text-sm font-semibold">
               {["Publicar es gratis, siempre", "Visible 30 días", "Los candidatos aplican directo contigo"].map((x) => <span key={x} className="flex items-center gap-2"><Check className="size-4 text-success" /> {x}</span>)}
             </div>
+            <Link to="/empresas-contratando" className="mt-6 inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-bold text-[#1557c4] hover:border-[#1d6ff2]">Mira las empresas que ya están contratando aquí <ArrowRight className="size-4" /></Link>
           </div>
           <div className="rounded-3xl border border-border bg-background p-6">
             <p className="flex items-center gap-2 font-extrabold"><Mail className="size-5 text-primary" /> ¿Prefieres el correo?</p>

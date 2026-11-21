@@ -18,6 +18,7 @@ const nav = [
   { to: "/cv", label: "Mi CV" },
   { to: "/alianzas", label: "Alianzas" },
   { to: "/jornadas", label: "Ferias de empleo" },
+  { to: "/empresas-contratando", label: "Empresas contratando" },
   { to: "/salarios", label: "Salarios" },
   { to: "/empleo-para-todos", label: "Empleo para todos" },
   { to: "/descubrir", label: "Descubrir" },
