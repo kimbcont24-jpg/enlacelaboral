@@ -75,7 +75,7 @@ function Home() {
       <Header />
       <Hero puesto={puesto} provincia={provincia} onPuesto={setPuesto} onProvincia={setProvincia} onBuscar={() => void buscar()} total={jobs.length} provincias={provinciasConVacantes.length} jobs={resultados} />
 
-      <PulsoHoy jobs={jobs} className="pt-8" />
+      <PulsoHoy jobs={jobs} className="pb-6" />
 
       <section className="border-b border-border bg-surface px-4 py-6 sm:px-6">
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">
