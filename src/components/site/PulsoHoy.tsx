@@ -74,57 +74,61 @@ export function PulsoHoy({ jobs, className = "" }: { jobs: Vacante[]; className?
 
   const max = Math.max(1, ...c.dias);
   const fecha = new Date().toLocaleDateString("es-DO", { day: "numeric", month: "short", timeZone: "America/Santo_Domingo" }).replace(".", "");
-  const num = "font-display text-[1.6rem] font-extrabold leading-none tracking-tight tabular-nums sm:text-[2rem]";
-  const celda = "relative flex flex-col justify-center px-4 py-3.5 sm:px-5 sm:py-4";
+  const num = "font-display text-xl font-extrabold leading-none tracking-tight tabular-nums sm:text-2xl lg:text-[2rem]";
+  const celda = "relative flex flex-col justify-center px-2 py-3 text-center lg:px-5 lg:py-4 lg:text-left";
+  const lab = "mt-1 text-[11px] font-bold leading-tight text-foreground sm:text-xs lg:mt-1.5 lg:text-[13px]";
+  const det = "mt-0.5 hidden text-[11px] text-muted-foreground lg:block";
 
   return (
     <section ref={ref} aria-label="Pulso del empleo hoy" className={`relative z-10 -mt-9 px-4 sm:-mt-10 sm:px-6 md:-mt-12 ${className}`}>
       <div className="mx-auto max-w-6xl">
         <div className="entra overflow-hidden rounded-2xl border border-white/70 bg-white shadow-[0_24px_48px_-20px_rgba(10,47,92,.45),0_2px_6px_rgba(10,47,92,.08)] lg:grid lg:grid-cols-[176px_repeat(4,minmax(0,1fr))]">
           {/* Sello EN VIVO */}
-          <div className="hero-dark flex items-center justify-between gap-3 px-4 py-2.5 lg:flex-col lg:items-start lg:justify-center lg:gap-1.5 lg:px-5 lg:py-4">
+          <div className="hero-dark flex items-center justify-between gap-3 px-4 py-2 lg:flex-col lg:items-start lg:justify-center lg:gap-1.5 lg:px-5 lg:py-4">
             <span className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-white/12 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-[.14em] text-white ring-1 ring-white/20">
               <span className="relative flex size-2"><span className="absolute inline-flex size-full animate-ping rounded-full bg-[#3ee08a] opacity-70" /><span className="relative inline-flex size-2 rounded-full bg-[#3ee08a]" /></span>
               En vivo
             </span>
             <p className="flex-1 whitespace-nowrap text-[13px] font-extrabold leading-tight text-white sm:text-sm lg:flex-none lg:whitespace-normal lg:text-base">El pulso del<br className="hidden lg:block" /> empleo hoy</p>
-            <p className="shrink-0 whitespace-nowrap text-[11px] font-semibold capitalize text-white/65">{fecha}</p>
+            <p className="hidden shrink-0 whitespace-nowrap text-[11px] font-semibold capitalize text-white/65 min-[370px]:block">{fecha}</p>
           </div>
 
-          <div className="grid grid-cols-2 divide-border lg:contents [&>*]:border-border">
+          <div className="grid grid-cols-3 lg:contents">
             {/* Nuevas hoy */}
-            <div className={`${celda} border-b border-r lg:border-b-0`}>
+            <div className={`${celda} border-r border-border`}>
               <p className={`${num} text-primary`}>{fmt(nNuevas)}</p>
-              <p className="mt-1.5 text-[13px] font-bold leading-tight">{c.deHoy ? "vacantes nuevas hoy" : "vacantes nuevas ayer"}</p>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">de {fmt(c.total)} abiertas</p>
+              <p className={lab}><span className="lg:hidden">{c.deHoy ? "nuevas hoy" : "nuevas ayer"}</span><span className="hidden lg:inline">{c.deHoy ? "vacantes nuevas hoy" : "vacantes nuevas ayer"}</span></p>
+              <p className={det}>de {fmt(c.total)} abiertas</p>
             </div>
 
-            {/* 7 días + mini gráfica */}
-            <div className={`${celda} border-b lg:border-b-0 lg:border-r`}>
-              <div className="flex items-end justify-between gap-2">
+            {/* 7 días + mini gráfica (solo en pantallas grandes) */}
+            <div className={`${celda} border-r border-border`}>
+              <div className="flex items-end justify-center gap-2 lg:justify-between">
                 <p className={`${num} text-primary`}>{fmt(nSemana)}</p>
-                <div className="flex h-8 shrink-0 items-end gap-[3px]" aria-hidden="true">
+                <div className="hidden h-8 shrink-0 items-end gap-[3px] lg:flex" aria-hidden="true">
                   {c.dias.map((d, i) => (
-                    <span key={i} className={`block w-[5px] rounded-sm lg:w-[6px] transition-[height] duration-700 ease-out ${i === 6 ? "bg-cta" : "bg-cta/30"}`} style={{ height: visto ? `${Math.max(12, (d / max) * 100)}%` : "12%", transitionDelay: `${i * 60}ms` }} />
+                    <span key={i} className={`block w-[6px] rounded-sm transition-[height] duration-700 ease-out ${i === 6 ? "bg-cta" : "bg-cta/30"}`} style={{ height: visto ? `${Math.max(12, (d / max) * 100)}%` : "12%", transitionDelay: `${i * 60}ms` }} />
                   ))}
                 </div>
               </div>
-              <p className="mt-1.5 text-[13px] font-bold leading-tight">nuevas en 7 días</p>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">Llegan todos los días</p>
+              <p className={lab}><span className="lg:hidden">en 7 días</span><span className="hidden lg:inline">nuevas en 7 días</span></p>
+              <p className={det}>Llegan todos los días</p>
             </div>
 
             {/* Empresas */}
-            <div className={`${celda} border-r lg:border-r`}>
+            <div className={`${celda} lg:border-r lg:border-border`}>
               <p className={`${num} text-primary`}>{fmt(nEmpresas)}</p>
-              <p className="mt-1.5 text-[13px] font-bold leading-tight">empresas contratando</p>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">en {c.provincias} provincias</p>
+              <p className={lab}><span className="lg:hidden">empresas</span><span className="hidden lg:inline">empresas contratando</span></p>
+              <p className={det}>en {c.provincias} provincias</p>
             </div>
 
-            {/* Salario → radar */}
-            <Link to="/salarios" className={`${celda} group bg-success/[.06] transition-colors hover:bg-success/[.12]`}>
-              <p className={`${num} text-success`}>{c.mediana ? rd(nSalario) : "—"}</p>
-              <p className="mt-1.5 flex items-center gap-1 text-[13px] font-bold leading-tight"><TrendingUp className="size-3.5 text-success" aria-hidden="true" /> salario más común</p>
-              <p className="mt-0.5 inline-flex items-center gap-0.5 text-[11px] font-bold text-success group-hover:underline">Ver radar salarial <ArrowUpRight className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" /></p>
+            {/* Salario → radar: franja completa en el celular, casilla en pantallas grandes */}
+            <Link to="/salarios" className="group col-span-3 flex items-center justify-between gap-3 border-t border-border bg-success/[.07] px-4 py-2.5 transition-colors hover:bg-success/[.13] lg:col-span-1 lg:flex-col lg:items-start lg:justify-center lg:gap-0 lg:border-t-0 lg:px-5 lg:py-4">
+              <div className="flex items-baseline gap-2 lg:block">
+                <p className="font-display text-lg font-extrabold leading-none tracking-tight tabular-nums text-success sm:text-xl lg:text-[2rem]">{c.mediana ? rd(nSalario) : "—"}</p>
+                <p className="flex items-center gap-1 whitespace-nowrap text-[11px] font-bold leading-tight min-[370px]:text-xs lg:mt-1.5 lg:text-[13px]"><TrendingUp className="hidden size-3.5 text-success lg:block" aria-hidden="true" /> salario más común</p>
+              </div>
+              <p className="inline-flex shrink-0 items-center gap-0.5 text-xs font-bold text-success group-hover:underline lg:mt-0.5 lg:text-[11px]"><span className="hidden min-[370px]:inline lg:hidden">Radar</span><span className="hidden lg:inline">Ver radar salarial</span> <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 lg:size-3" aria-hidden="true" /></p>
             </Link>
           </div>
         </div>
