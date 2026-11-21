@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Interruptor, Tarjeta, campo, haceDesde, rotulo } from "@/components/admin/comun";
 import { usePanel } from "@/components/admin/Inicio";
 import { CONTROLES, useControles, useGuardarControl, type ClaveControl } from "@/lib/controles";
+import { MAX_TARJETAS, elegirPortada, esAliada, portadaPorDefecto, useGuardarPortada, usePortada, type ConfigPortada, type Motivo } from "@/lib/portada";
+import { useVacantes } from "@/lib/vacantes";
 
 const N8N = "https://kimberlycontreras.app.n8n.cloud/workflow/";
 
@@ -89,6 +91,92 @@ function AvisoSitio() {
   );
 }
 
+function PortadaVacantes() {
+  const { config, aliadasAMano, cargando } = usePortada();
+  const guardarPortada = useGuardarPortada();
+  const { jobs } = useVacantes();
+  const [minimo, setMinimo] = useState(String(portadaPorDefecto.minimo));
+  const [buscar, setBuscar] = useState("");
+  const [guardando, setGuardando] = useState(false);
+  useEffect(() => { if (!cargando) setMinimo(String(config.minimo)); }, [cargando, config.minimo]);
+
+  const guardar = async (c: ConfigPortada, aviso: string) => {
+    setGuardando(true);
+    const ok = await guardarPortada(c);
+    setGuardando(false);
+    if (ok) toast.success(aviso); else toast.error("No se pudo guardar el cambio");
+  };
+
+  const porId = new Map(jobs.map((j) => [j.id, j]));
+  const ahora = elegirPortada(jobs, config, aliadasAMano);
+  const aliadasQueCalifican = jobs.filter((j) => esAliada(j, aliadasAMano) && j.salarioMin >= config.minimo).length;
+  const q = buscar.trim().toLowerCase();
+  const encontradas = q.length < 2 ? [] : jobs.filter((j) => !config.fijas.includes(j.id) && `${j.titulo} ${j.empresa}`.toLowerCase().includes(q)).slice(0, 8);
+  const llenas = config.fijas.length >= MAX_TARJETAS;
+  const etiqueta: Record<Motivo, string> = { fija: "Fijada por ti", aliada: "Aliada con buen salario", relleno: "Relleno automático" };
+
+  return (
+    <Tarjeta titulo="Vacantes al inicio de la página" ayuda="Las 3 tarjetas grandes al lado del buscador. Primero salen las que fijes aquí; después, si el automático está encendido, las de empresas aliadas con salario desde el mínimo.">
+      <div className="space-y-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold">Subir solas las aliadas que pagan bien <span className={`ml-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${config.auto ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"}`}>{config.auto ? "Encendido" : "Apagado"}</span></p>
+            <p className="mt-0.5 text-sm text-muted-foreground">Cuando una empresa aliada publica (o nos envía) una vacante con salario desde el mínimo, sube sola al inicio. Hoy califican <strong>{aliadasQueCalifican}</strong>.</p>
+          </div>
+          <Interruptor activo={config.auto} etiqueta="Subir aliadas al inicio" deshabilitado={guardando} onCambio={(v) => void guardar({ ...config, auto: v }, v ? "Automático encendido" : "Automático apagado: solo salen las fijadas y las de siempre")} />
+        </div>
+
+        <div className="flex flex-wrap items-end gap-2">
+          <label className="block w-48"><span className={rotulo}>Salario mínimo (RD$)</span><input className={campo} inputMode="numeric" value={minimo} onChange={(e) => setMinimo(e.target.value.replace(/\D/g, ""))} /></label>
+          <Button variant="outline" disabled={guardando || !Number(minimo) || Number(minimo) === config.minimo} onClick={() => void guardar({ ...config, minimo: Number(minimo) }, `Mínimo guardado: RD$${Number(minimo).toLocaleString("es-DO")}`)}><Save /> Guardar mínimo</Button>
+        </div>
+
+        <div>
+          <p className={rotulo}>Fijadas por ti ({config.fijas.length} de {MAX_TARJETAS})</p>
+          {config.fijas.length === 0 && <p className="mt-1 text-sm text-muted-foreground">No has fijado ninguna. Búscala abajo y tócala para ponerla al inicio.</p>}
+          <ul className="mt-2 space-y-2">
+            {config.fijas.map((id, i) => {
+              const j = porId.get(id);
+              return (
+                <li key={id} className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2 text-sm">
+                  <span className="min-w-0"><strong>{i + 1}.</strong> {j ? <>{j.titulo} · <span className="text-muted-foreground">{j.empresa}{j.salario ? ` · ${j.salario}` : ""}</span></> : <span className="text-muted-foreground">Ya no está publicada (no se muestra)</span>}</span>
+                  <span className="flex shrink-0 gap-1">
+                    {i > 0 && <Button size="sm" variant="ghost" disabled={guardando} onClick={() => { const f = [...config.fijas]; [f[i - 1], f[i]] = [f[i]!, f[i - 1]!]; void guardar({ ...config, fijas: f }, "Orden guardado"); }}>Subir</Button>}
+                    <Button size="sm" variant="outline" disabled={guardando} onClick={() => void guardar({ ...config, fijas: config.fijas.filter((x) => x !== id) }, "Quitada del inicio")}>Quitar</Button>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+          <label className="mt-3 block"><span className={rotulo}>Buscar vacante para fijar</span><input className={campo} value={buscar} disabled={llenas} onChange={(e) => setBuscar(e.target.value)} placeholder={llenas ? "Ya tienes 3 fijadas: quita una para poner otra" : "Puesto o empresa…"} /></label>
+          {encontradas.length > 0 && (
+            <ul className="mt-2 divide-y divide-border rounded-xl border border-border">
+              {encontradas.map((j) => (
+                <li key={j.id}>
+                  <button className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-muted" disabled={guardando} onClick={() => { setBuscar(""); void guardar({ ...config, fijas: [...config.fijas, j.id] }, "Fijada al inicio"); }}>
+                    <span className="min-w-0">{j.titulo} · <span className="text-muted-foreground">{j.empresa}{j.salario ? ` · ${j.salario}` : ""}</span></span>
+                    <span className="shrink-0 font-semibold text-primary">Fijar</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div>
+          <p className={rotulo}>Así se ve ahora</p>
+          <ol className="mt-2 space-y-1 text-sm">
+            {ahora.map(({ job, motivo }, i) => (
+              <li key={job.id}><strong>{i + 1}.</strong> {job.titulo} · <span className="text-muted-foreground">{job.empresa}{job.salario ? ` · ${job.salario}` : ""}</span> <span className={`ml-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${motivo === "relleno" ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"}`}>{etiqueta[motivo]}</span></li>
+            ))}
+          </ol>
+          <a href="/" target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">Ver el inicio <ExternalLink className="size-3" /></a>
+        </div>
+      </div>
+    </Tarjeta>
+  );
+}
+
 export function Control() {
   const panel = usePanel();
   const u = panel.data?.ultimas;
@@ -99,6 +187,8 @@ export function Control() {
           {CONTROLES.filter((c) => c.clave === "ctl_empresas" || c.clave === "ctl_pedidos").map((c) => (<FilaInterruptor key={c.clave} clave={c.clave} titulo={c.titulo} ayuda={c.ayuda} />))}
         </div>
       </Tarjeta>
+
+      <PortadaVacantes />
 
       <Tarjeta titulo="Automatizaciones" ayuda="Pausar una no la borra: sigue corriendo, pero el sitio no le entrega trabajo hasta que la vuelvas a encender.">
         <div className="space-y-5 divide-y divide-border">

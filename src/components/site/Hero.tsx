@@ -5,6 +5,7 @@ import { useApply } from "@/components/site/apply-context";
 import { EmpresaAvatar } from "@/components/site/EmpresaAvatar";
 import { SearchBar } from "@/components/site/SearchBar";
 import { esNueva } from "@/lib/claridad";
+import { elegirPortada, usePortada } from "@/lib/portada";
 import { textosPorDefecto, useContenido } from "@/lib/contenido";
 import { CANAL_WHATSAPP, type Vacante } from "@/lib/vacantes";
 import { BadgeCheck, Banknote, UserRoundCheck } from "lucide-react";
@@ -12,14 +13,6 @@ import { BadgeCheck, Banknote, UserRoundCheck } from "lucide-react";
 const populares = ["Recepcionista", "Cajero", "Call center", "Asistente administrativo", "Ventas", "Chofer"];
 
 type Props = { puesto: string; provincia: string; onPuesto: (v: string) => void; onProvincia: (v: string) => void; onBuscar: () => void; total: number; provincias: number; jobs?: Vacante[] };
-
-/** Vacantes reales para la portada: primero las destacadas y las que dicen el salario. */
-function elegirTarjetas(jobs: Vacante[]): Vacante[] {
-  const conSueldo = jobs.filter((j) => j.salarioMin > 0);
-  const orden = [...conSueldo.filter((j) => j.destacada), ...conSueldo.filter((j) => !j.destacada), ...jobs.filter((j) => j.salarioMin <= 0)];
-  const vistas = new Set<string>();
-  return orden.filter((j) => (vistas.has(j.empresa) ? false : (vistas.add(j.empresa), true))).slice(0, 3);
-}
 
 function TarjetaPortada({ job }: { job: Vacante }) {
   const aplicar = useApply();
@@ -47,7 +40,9 @@ function TarjetaPortada({ job }: { job: Vacante }) {
 }
 
 export function Hero({ puesto, provincia, onPuesto, onProvincia, onBuscar, total, provincias, jobs = [] }: Props) {
-  const tarjetas = elegirTarjetas(jobs);
+  const portada = usePortada();
+  // Primero las fijadas en Admin → Control, luego aliadas con buen salario, luego las de siempre.
+  const tarjetas = elegirPortada(jobs, portada.config, portada.aliadasAMano).map((x) => x.job);
   const t = useContenido();
   // Textos de versiones anteriores guardados en el panel: se reemplazan por los nuevos.
   const viejo = (v: string) => v.startsWith("Encuentra tu próximo empleo") || v.startsWith("Conectamos talento con oportunidades reales") || v.startsWith("Tu enlace con el empleo");
