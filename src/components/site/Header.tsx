@@ -10,22 +10,23 @@ import { useTotalVacantes } from "@/lib/vacantes";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
-const PRINCIPALES: string[] = ["/vacantes", "/alianzas", "/empresas", "/cv"];
+// Orden del menú principal (pedido de Kim, 21 nov 2026): Empleos · Empresas · Mi CV · Alianzas · Ferias de empleo.
+const PRINCIPALES: string[] = ["/vacantes", "/empresas", "/cv", "/alianzas", "/jornadas"];
 const nav = [
   { to: "/vacantes", label: "Empleos" },
-  { to: "/salarios", label: "Salarios" },
+  { to: "/empresas", label: "Empresas" },
+  { to: "/cv", label: "Mi CV" },
   { to: "/alianzas", label: "Alianzas" },
+  { to: "/jornadas", label: "Ferias de empleo" },
+  { to: "/salarios", label: "Salarios" },
   { to: "/empleo-para-todos", label: "Empleo para todos" },
   { to: "/descubrir", label: "Descubrir" },
   { to: "/explorar", label: "Mapa del empleo" },
-  { to: "/empresas", label: "Empresas" },
   { to: "/blog", label: "Blog" },
   { to: "/recursos", label: "Consejos" },
-  { to: "/cv", label: "Mi CV" },
   { to: "/insignias", label: "Insignias" },
   // { to: "/impulso", label: "Impulso" }, // oculto temporalmente — no cobrar por ahora
   { to: "/herramientas", label: "Herramientas" },
-  { to: "/jornadas", label: "Ferias de empleo" },
 ];
 
 export function Header() {
