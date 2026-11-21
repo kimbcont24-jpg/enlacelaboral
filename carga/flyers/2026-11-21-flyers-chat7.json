@@ -1,0 +1,62 @@
+[
+ {
+  "titulo": "Agente de Servicio y Desarrollo de Negocios",
+  "empresa": "Automía",
+  "provincia": "Distrito Nacional",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Automía busca Agente de Servicio y Desarrollo de Negocios en Santo Domingo, Distrito Nacional. Atención y seguimiento de leads por teléfono, WhatsApp, correo y canales digitales, asesoría sobre productos y servicios, coordinación de citas y registro de cada interacción en CRM para fortalecer la relación con el cliente y cumplir los objetivos comerciales.",
+  "requisitos": "Estudiante de término o Licenciatura en Mercadeo, Administración de Empresas, Comunicación, Negocios o afines | Experiencia mínima de 1 año en servicio al cliente, ventas, call center o gestión comercial | Experiencia en atención y seguimiento de clientes por canales digitales | Habilidad para captar prospectos y convertir leads en citas o visitas | Manejo de CRM y Office | Excelente comunicación oral y escrita | Experiencia en el sector automotriz será valorada",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@automia.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/automia-agente-servicio-desarrollo-negocios.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Asesor(a) de Servicios",
+  "empresa": "Automía",
+  "provincia": "Distrito Nacional",
+  "area": "Servicio al Cliente",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Automía busca Asesor(a) de Servicios en Santo Domingo, Distrito Nacional. Atención y asesoría integral a clientes durante el proceso de servicio posventa: recepción de vehículos, identificación de necesidades, cotizaciones y seguimiento de los trabajos de mantenimiento y reparación.",
+  "requisitos": "Estudiante de término o Licenciatura en Mercadeo, Administración de Empresas, Comunicación, Negocios o afines | Experiencia mínima de 1 año en servicio al cliente, ventas, call center o gestión comercial | Experiencia en atención y seguimiento de clientes por teléfono, WhatsApp, correo y canales digitales | Manejo de CRM y Office | Excelente comunicación oral y escrita | Experiencia en el sector automotriz será valorada",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@automia.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/automia-asesor-servicios.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Coordinador/a de Calidad de Talleres",
+  "empresa": "Automía",
+  "provincia": "Distrito Nacional",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Automía busca Coordinador/a de Calidad de Talleres en Santo Domingo, Distrito Nacional. Asegurar la calidad, efectividad y uniformidad de los servicios de mantenimiento y reparación de los talleres Automía y su red de talleres certificados: supervisión de Inspectores de Calidad, control de reparaciones, análisis de indicadores, auditorías, entrenamientos y planes de mejora continua.",
+  "requisitos": "Profesional o tecnólogo en Ingeniería Mecánica, Industrial, Mecánica Automotriz o afines | Experiencia mínima de 4 años en talleres automotrices y posventa | Experiencia en inspección, aseguramiento de calidad y supervisión técnica | Manejo de KPI, NPS, Excel y Odoo/ERP | Liderazgo, análisis y solución de problemas | Inglés técnico intermedio (deseable)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@automia.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/automia-coordinador-calidad-talleres.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Gerente de Ventas Sucursales",
+  "empresa": "Automía",
+  "provincia": "Distrito Nacional",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Automía busca Gerente de Ventas Sucursales en Santo Domingo, Distrito Nacional. Liderar la red de sucursales de Automía, asegurando el cumplimiento de objetivos comerciales, la rentabilidad y la experiencia del cliente; dirigir equipos, optimizar ventas e inventarios y gestionar oportunidades de accesorios, financiamiento y seguros.",
+  "requisitos": "Licenciatura en Administración de Empresas, Mercadeo, Ingeniería o afines | Maestría, MBA o Alta Gerencia Comercial (deseable) | Mínimo 5 años de experiencia en el sector automotriz o en posiciones gerenciales comerciales | Experiencia liderando equipos comerciales y sucursales | Resultados comprobables en presupuestos y rentabilidad | Manejo de KPIs, Office 365 y CRM/ERP (Odoo u otros)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@automia.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/automia-gerente-ventas-sucursales.jpg",
+  "redes": "si"
+ }
+]
