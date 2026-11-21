@@ -445,64 +445,7 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
   .estado-latido, .estado-campana, .estado-aviso, .estado-aviso-2, .estado-paso, .estado-boton::after, .estado-listo, .estado-flotante { animation: none !important; }
 }
 
-/* ───────── Directorio /empresas-contratando: un efecto por sección (catálogo de efectos de Kim) ───────── */
-@keyframes dir-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
-@keyframes dir-pop { 0% { opacity: 0; transform: scale(.6); } 70% { opacity: 1; transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
-@keyframes dir-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -9px; } }
-@keyframes dir-drift { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(-6%, 8%) scale(1.12); } 66% { transform: translate(5%, -4%) scale(.95); } }
-@keyframes dir-spin { to { transform: rotate(360deg); } }
-@keyframes dir-marquee { to { transform: translateX(-50%); } }
-@keyframes dir-flip { from { opacity: 0; transform: perspective(1000px) rotateX(-50deg) translateY(40px); } to { opacity: 1; transform: none; } }
-@keyframes dir-letra { 0% { opacity: 0; transform: scale(2.2) rotate(-8deg); filter: blur(10px); } 100% { opacity: 1; transform: none; filter: none; } }
-@keyframes dir-shine { from { transform: translateX(-120%) skewX(-20deg); } to { transform: translateX(260%) skewX(-20deg); } }
-@keyframes dir-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-
-.dir-up { animation: dir-up .9s cubic-bezier(.2,.7,.2,1) both; }
-.dir-pop { animation: dir-pop .7s cubic-bezier(.2,.8,.3,1.2) both, dir-float 6s ease-in-out infinite; }
-.dir-blob { animation: dir-drift 18s ease-in-out infinite; }
-.dir-orbit { animation: dir-spin 70s linear infinite; }
-.dir-marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.dir-marquee > ul { display: flex; width: max-content; animation: dir-marquee 60s linear infinite; }
-.dir-marquee:hover > ul, .dir-marquee:focus-within > ul { animation-play-state: paused; }
-.dir-flip { transform-origin: 50% 0; animation: dir-flip .8s cubic-bezier(.2,.75,.2,1) both; animation-delay: var(--d, 0ms); }
-.dir-letra { animation: dir-letra .7s cubic-bezier(.2,.8,.2,1) both; }
-.dir-bar { transform-origin: left; animation: dir-bar 1.2s cubic-bezier(.2,.7,.2,1) both; animation-delay: var(--d, 0ms); }
-
-/* Profundidad con el cursor en la portada */
-.dir-depth { transition: transform .6s cubic-bezier(.2,.7,.2,1); transform: translate3d(calc(var(--mx, 0) * 18px), calc(var(--my, 0) * 14px), 0); }
-
-/* Tarjeta que se inclina con brillo */
-.dir-tilt { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px)); transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .2s; }
-.dir-tilt:hover { --ty: -5px; transition-duration: .12s, .35s, .2s; }
-.dir-tilt::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; z-index: 0;
-  background: radial-gradient(380px circle at var(--gx, 50%) var(--gy, 0%), rgb(29 111 242 / .12), transparent 45%); transition: opacity .3s; }
-.dir-tilt:hover::before { opacity: 1; }
-
-/* Botón con brillo */
-.dir-btn { position: relative; overflow: hidden; }
-.dir-btn::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 40%; pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / .45), transparent); transform: translateX(-120%) skewX(-20deg); }
-.dir-btn:hover::after { animation: dir-shine .8s ease; }
-
-/* Aparecer al bajar: solo se esconde cuando el script ya puso .dir-anim */
-.dir-anim .dir-reveal { opacity: 0; transform: translateY(34px); transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0ms); }
-.dir-anim .dir-reveal.is-in { opacity: 1; transform: none; }
-
-/* Cortina que se levanta (mosaico de áreas) */
-.dir-anim .dir-wipe { position: relative; overflow: hidden; }
-.dir-anim .dir-wipe::after { content: ""; position: absolute; inset: 0; background: var(--c, #1d6ff2); transform-origin: 50% 0; transition: transform .8s cubic-bezier(.7,0,.2,1) calc(var(--d, 0ms) * 1.5); }
-.dir-anim .dir-wipe.is-in::after { transform: scaleY(0); }
-
-/* Podio: cartas que se reparten con el scroll (--p de 0 a 1) */
-@media (min-width: 1024px) { .dir-deal > * { transform: translateX(calc((1 - var(--p, 1)) * var(--k) * -100%)) rotate(calc((1 - var(--p, 1)) * var(--k) * 8deg)) translateY(calc((1 - var(--p, 1)) * 60px)); } }
-.dir-deal > * { opacity: clamp(0, calc(var(--p, 1) * 2), 1); }
-
-/* Cierre: zoom que se abre */
-.dir-zoom { transform: scale(calc(.82 + var(--p, 1) * .18)); border-radius: calc(110px - var(--p, 1) * 82px); }
-
-@media (prefers-reduced-motion: reduce) {
-  .dir-up, .dir-pop, .dir-blob, .dir-orbit, .dir-marquee > ul, .dir-flip, .dir-letra, .dir-bar, .dir-btn:hover::after { animation: none !important; }
-  .dir-depth, .dir-tilt, .dir-deal > *, .dir-zoom { transform: none !important; }
-  .dir-anim .dir-reveal { opacity: 1; transform: none; transition: none; }
-  .dir-anim .dir-wipe::after { display: none; }
-}
+/* ───────── Directorio /empresas-contratando: sencillo, solo una entrada suave ───────── */
+@keyframes dir-entra { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.dir-entra { animation: dir-entra .5s cubic-bezier(.2,.7,.2,1) both; animation-delay: var(--d, 0ms); }
+@media (prefers-reduced-motion: reduce) { .dir-entra { animation: none; } }
