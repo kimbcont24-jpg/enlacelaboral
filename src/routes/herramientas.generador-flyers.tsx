@@ -10,7 +10,7 @@ import { Header } from "@/components/site/Header";
 import { COMPROMISOS, type Compromiso } from "@/lib/inclusion";
 import {
   BENEFICIOS, CABECERAS, coloresDelLogo, contraste, cssFuentes, DATOS_EJEMPLO, destinoQR, DISENO_INICIAL, FORMATOS, FUENTES, GOOGLE_FONTS, JORNADAS, leerImagen,
-  MODALIDADES, paletaDe, PALETAS, PERIODOS, PLANTILLAS, slug, TEXTURAS, textoAlternativo, textoPublicacion, UBICACIONES,
+  imagenDeUrl, MODALIDADES, paletaDe, tomarDesdeVacante, PALETAS, PERIODOS, PLANTILLAS, slug, TEXTURAS, textoAlternativo, textoPublicacion, UBICACIONES,
   type Datos, type Diseno, type Mostrar, type PlantillaId,
 } from "@/lib/flyers";
 import { aplicarSugerencia, revisarFlyer, type Sugerencia } from "@/lib/lenguaje-inclusivo";
@@ -106,8 +106,20 @@ function Generador() {
   const lenguaje = sug.filter((s) => s.tipo === "lenguaje");
   const claridad = sug.filter((s) => s.tipo === "claridad");
 
-  // Cargar lo que la persona dejó a medias (solo en su navegador).
+  const [desde, setDesde] = useState("");
+  // Cargar lo que la persona dejó a medias (solo en su navegador), o la vacante que abrió desde su panel.
   useEffect(() => {
+    const v = tomarDesdeVacante();
+    if (v) {
+      setD({ ...VACIO, ...v.datos, requisitos: v.datos.requisitos?.length ? v.datos.requisitos : VACIO.requisitos });
+      setDesde(v.vacante);
+      setListo(true);
+      void (async () => {
+        const [logo, foto] = await Promise.all([v.logoUrl ? imagenDeUrl(v.logoUrl, 900) : null, v.fotoUrl ? imagenDeUrl(v.fotoUrl, 1600) : null]);
+        if (logo || foto) setD((x) => ({ ...x, logo: logo ?? x.logo, foto: foto ?? x.foto }));
+      })();
+      return;
+    }
     try {
       const g = JSON.parse(localStorage.getItem(CLAVE) ?? "null");
       if (g?.d && g?.dis) {
@@ -317,6 +329,12 @@ function Generador() {
         </aside>
 
         <div className="grid gap-6 lg:order-1">
+          {desde && (
+            <p className="flex items-start gap-2 rounded-2xl border border-[#b7e4c7] bg-[#e7f6ee] p-4 text-sm text-[#0f5c35]">
+              <Check className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+              <span>Cargamos los datos de tu vacante <b>«{desde}»</b>. El código QR lleva directo a ella en Enlace Laboral, así las aplicaciones te llegan al panel. Revisa los textos y elige el diseño.</span>
+            </p>
+          )}
           {listo && JSON.stringify(d) === JSON.stringify(DATOS_EJEMPLO) && (
             <p className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-primary/50 bg-primary/5 p-4 text-sm">
               <span>Estos datos son un <b>ejemplo</b>. Cámbialos por los de tu vacante o empieza en blanco.</span>
@@ -384,7 +402,7 @@ function Generador() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div><span className={rotulo}>Modalidad</span><div className="mt-2 flex flex-wrap gap-2">{MODALIDADES.map((m) => <button key={m} type="button" onClick={() => set("modalidad", d.modalidad === m ? "" : m)} className={chip(d.modalidad === m)} aria-pressed={d.modalidad === m}>{m}</button>)}</div></div>
-              <label className="block"><span className={rotulo}>Jornada</span><select className={campo} value={d.jornada} onChange={(e) => set("jornada", e.target.value)}><option value="">No indicar</option>{JORNADAS.map((j) => <option key={j}>{j}</option>)}</select></label>
+              <label className="block"><span className={rotulo}>Jornada</span><select className={campo} value={d.jornada} onChange={(e) => set("jornada", e.target.value)}><option value="">No indicar</option>{[...JORNADAS, ...(d.jornada && !JORNADAS.includes(d.jornada) ? [d.jornada] : [])].map((j) => <option key={j}>{j}</option>)}</select></label>
             </div>
             <div>
               <span className={rotulo}>Salario</span>

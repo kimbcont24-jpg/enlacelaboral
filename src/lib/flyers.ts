@@ -231,7 +231,11 @@ export function whatsappBonito(t: string): string {
   const n = t.replace(/\D/g, "").replace(/^1(?=8[024]9\d{7}$)/, "");
   return n.length === 10 ? `${n.slice(0, 3)}-${n.slice(3, 6)}-${n.slice(6)}` : t.trim();
 }
-export const enlaceBonito = (u: string) => u.trim().replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/$/, "");
+export const enlaceBonito = (u: string) => {
+  const t = u.trim().replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/[?#].*$/, "").replace(/\/$/, "");
+  // Un enlace a una vacante de Enlace Laboral se muestra corto: el código QR lleva directo a ella.
+  return /^enlacelaboralrd\.com\/vacantes\/[\w-]{8,}/i.test(t) ? "enlacelaboralrd.com" : t;
+};
 
 /** A dónde lleva el código QR: el enlace si hay; si no, el WhatsApp con un mensaje listo. */
 export function destinoQR(d: Datos): string {
@@ -405,3 +409,28 @@ export function textoAlternativo(d: Datos): string {
 }
 
 export const slug = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "vacante";
+
+// ---------- Desde el panel de empresa: «Crear flyer de esta vacante» ----------
+const CLAVE_DESDE = "enlace:flyer:desde";
+export type DesdeVacante = { datos: Partial<Datos>; logoUrl?: string; fotoUrl?: string; vacante: string };
+
+/** Guarda los datos de la vacante para que el generador los abra ya llenos (solo en esta pestaña). */
+export function prepararDesdeVacante(x: DesdeVacante) {
+  try { sessionStorage.setItem(CLAVE_DESDE, JSON.stringify(x)); } catch { /* sin almacenamiento */ }
+}
+export function tomarDesdeVacante(): DesdeVacante | null {
+  try {
+    const t = sessionStorage.getItem(CLAVE_DESDE);
+    if (!t) return null;
+    sessionStorage.removeItem(CLAVE_DESDE);
+    return JSON.parse(t) as DesdeVacante;
+  } catch { return null; }
+}
+/** Baja una imagen pública (logo o foto de la empresa) y la deja como data URL para el PNG. */
+export async function imagenDeUrl(url: string, max = 1400): Promise<string | null> {
+  try {
+    const blob = await (await fetch(url)).blob();
+    if (!blob.type.startsWith("image/")) return null;
+    return await leerImagen(new File([blob], "img", { type: blob.type }), max);
+  } catch { return null; }
+}

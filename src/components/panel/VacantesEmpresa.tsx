@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { PAGOS_ACTIVOS } from "@/lib/pagos";
-import { Link } from "@tanstack/react-router";
-import { Copy, ExternalLink, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, QrCode, Share2, Star, Users, XCircle } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Copy, ExternalLink, Megaphone, MoreHorizontal, Pause, Pencil, Play, Plus, RefreshCw, QrCode, Share2, Star, Users, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { imprimirCartel } from "@/lib/cartel";
+import { JORNADAS, MODALIDADES, prepararDesdeVacante } from "@/lib/flyers";
+import { compromisosDe } from "@/lib/inclusion";
+import { marcaDe } from "@/lib/motivar-empresas";
 
 import { usePanel } from "@/components/panel/contexto";
 import { btnLinea, Titulo, Vacio } from "@/components/panel/comun";
@@ -13,7 +16,7 @@ import { Barra } from "@/components/panel/Inicio";
 import { ClaridadPill } from "@/components/site/JobCard";
 import { diasRestantes } from "@/lib/claridad";
 import { ETAPAS, estadoVacante, MAX_DESTACADAS, planActivo } from "@/lib/panel";
-import { enlaceWhatsApp, type Vacante } from "@/lib/vacantes";
+import { enlaceWhatsApp, SITIO, type Vacante } from "@/lib/vacantes";
 
 type Filtro = "abiertas" | "revision" | "cerradas";
 
@@ -55,6 +58,32 @@ function Tarjeta({ v }: { v: Vacante }) {
   const pro = planActivo(p.empresa);
   const pedida = p.solicitudes.some((s) => s.tipo === "destacar" && s.vacante_id === v.id && (s.estado === "nueva" || s.estado === "contactada"));
   const [cambiando, setCambiando] = useState(false);
+  const navegar = useNavigate();
+
+  // Abre el generador de flyers con los datos de esta vacante y el QR apuntando a ella.
+  const crearFlyer = () => {
+    const marca = marcaDe(p.empresa.marca);
+    prepararDesdeVacante({
+      vacante: v.titulo,
+      logoUrl: marca.logo,
+      fotoUrl: marca.fotos?.[0],
+      datos: {
+        empresa: p.empresa.nombre,
+        puesto: v.titulo,
+        ubicacion: v.provincia,
+        modalidad: MODALIDADES.includes(v.modalidad) ? v.modalidad : "",
+        jornada: JORNADAS.includes(v.tipo) ? v.tipo : "",
+        salMin: v.salarioMin > 0 ? String(v.salarioMin) : "",
+        salMax: v.salarioMax && v.salarioMax > v.salarioMin ? String(v.salarioMax) : "",
+        periodo: "al mes",
+        requisitos: v.requisitos.map((r) => r.trim()).filter(Boolean).slice(0, 5),
+        beneficios: (marca.beneficios ?? []).slice(0, 4),
+        compromisos: compromisosDe(v.categorias).map((c) => c.id),
+        enlace: `${SITIO}/vacantes/${v.id}?utm_source=flyer`,
+      },
+    });
+    void navegar({ to: "/herramientas/generador-flyers" });
+  };
 
   // Con el plan, la empresa destaca o quita el destacado al momento (la base de datos limita a 4 a la vez).
   const destacar = async (si: boolean) => {
@@ -86,6 +115,7 @@ function Tarjeta({ v }: { v: Vacante }) {
                     { t: "Editar", I: Pencil, f: () => p.editarVacante(v) },
                     { t: "Duplicar como nueva", I: Copy, f: () => p.editarVacante(v, true) },
                     e.id === "activa" ? { t: "Cartel con QR para imprimir", I: QrCode, f: () => void imprimirCartel(v, p.empresa.nombre).then((ok) => { if (!ok) toast.error("Permite las ventanas emergentes para ver el cartel."); }) } : null,
+                    e.id === "activa" ? { t: "Crear flyer para redes", I: Megaphone, f: crearFlyer } : null,
                     e.id === "activa" ? { t: "Pausar", I: Pause, f: () => void p.accionVacante(v, "pausar") } : null,
                     e.id === "pausada" || e.id === "cerrada" ? { t: "Volver a publicar", I: Play, f: () => void p.accionVacante(v, "reactivar") } : null,
                     e.id !== "cerrada" ? { t: "Cerrar (ya la llené)", I: XCircle, f: () => void p.accionVacante(v, "cerrar") } : null,
