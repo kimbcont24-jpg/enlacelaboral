@@ -256,6 +256,15 @@ function CompartirEnCanal() {
 const str = (v: unknown) => (typeof v === "string" ? v.trim() : typeof v === "number" ? String(v) : "");
 const enLista = (v: unknown, lista: readonly string[], porDefecto: string) => { const x = str(v); return lista.includes(x) ? x : porDefecto; };
 
+/** Provincias que la empresa marcó en /empresas («Ubicación: A, B, C»). Al aprobar se publica una vacante por cada una. */
+function provinciasDe(r: Pick<BorradorRow, "texto" | "provincia">): string[] {
+  const linea = /^Ubicaci[oó]n:\s*(.+)$/im.exec(r.texto)?.[1] ?? "";
+  const validas = provincias.slice(1);
+  const lista = linea.split(",").map((x) => x.trim()).filter((x) => validas.includes(x));
+  const todas = [...new Set([r.provincia ?? "", ...lista].filter((x) => validas.includes(x)))];
+  return todas;
+}
+
 function desdeBorradorRow(r: BorradorRow): Borrador {
   const base = extraer(r.texto);
   const d = r.datos ?? {};
@@ -385,10 +394,13 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
         toast.success("Cambios guardados.");
       } else {
         const empresaId = await miEmpresa(uid);
-        const { data: nueva, error } = await supabase.from("vacantes").insert({ ...fila, empresa_id: empresaId, owner_id: uid, estado: "publicada" }).select(SELECT).single();
-        if (error) throw error;
-        toast.success("¡Vacante publicada! Ya aparece en tu página.");
-        if (nueva) avisarPublicada(rowToVacante(nueva as unknown as VacanteRow));
+        const lugares = desde ? [b.provincia, ...provinciasDe(desde).filter((p) => p !== b.provincia)] : [b.provincia];
+        for (const provincia of lugares) {
+          const { data: nueva, error } = await supabase.from("vacantes").insert({ ...fila, provincia, empresa_id: empresaId, owner_id: uid, estado: "publicada" }).select(SELECT).single();
+          if (error) throw error;
+          if (nueva) avisarPublicada(rowToVacante(nueva as unknown as VacanteRow));
+        }
+        toast.success(lugares.length > 1 ? `¡Publicada en ${lugares.length} provincias! Ya aparece en tu página.` : "¡Vacante publicada! Ya aparece en tu página.");
         if (desde) {
           await supabase.from("borradores").update({ estado: "publicado" }).eq("id", desde.id);
         }
@@ -414,6 +426,7 @@ function Publicar({ uid, editar, desde, alPublicarBorrador, alTerminar, cancelar
             <div className="mb-4 rounded-xl border border-primary/40 bg-primary/5 p-3 text-sm">
               <p className="font-bold text-primary">Revisando borrador {desde.origen === "empresa" ? "enviado por una empresa" : "llegado por correo"}</p>
               {(desde.contacto_nombre || desde.contacto_email || desde.contacto_telefono) && <p className="mt-1 text-muted-foreground">Contacto: {[desde.contacto_nombre, desde.contacto_email, desde.contacto_telefono].filter(Boolean).join(" · ")}</p>}
+              {provinciasDe(desde).length > 1 && <p className="mt-1 font-semibold">Se publicará una vacante en cada provincia: {[b.provincia, ...provinciasDe(desde).filter((p) => p !== b.provincia)].join(", ")}.</p>}
             </div>
           )}
           <h2 className="text-lg font-bold">1. Pega el texto o sube la imagen</h2>
@@ -497,11 +510,14 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
     if (!b.fuente.trim()) b.fuente = r.origen === "empresa" ? "Publicada por la empresa" : "Correo recibido";
     try {
       const empresaId = await miEmpresa(uid);
-      const { data: nueva, error } = await supabase.from("vacantes").insert({ ...filaDesde(b), empresa_id: empresaId, owner_id: uid, estado: "publicada" }).select(SELECT).single();
-      if (error) throw error;
+      const lugares = [b.provincia, ...provinciasDe(r).filter((p) => p !== b.provincia)];
+      for (const provincia of lugares) {
+        const { data: nueva, error } = await supabase.from("vacantes").insert({ ...filaDesde(b), provincia, empresa_id: empresaId, owner_id: uid, estado: "publicada" }).select(SELECT).single();
+        if (error) throw error;
+        if (nueva) avisarPublicada(rowToVacante(nueva as unknown as VacanteRow));
+      }
       await supabase.from("borradores").update({ estado: "publicado" }).eq("id", r.id);
-      if (!silencioso) toast.success(`Publicada: ${b.titulo}`);
-      if (nueva) avisarPublicada(rowToVacante(nueva as unknown as VacanteRow));
+      if (!silencioso) toast.success(lugares.length > 1 ? `Publicada en ${lugares.length} provincias: ${b.titulo}` : `Publicada: ${b.titulo}`);
       return true;
     } catch (err) {
       if (!silencioso) toast.error(`No se pudo publicar: ${err instanceof Error ? err.message : "error"}`);
@@ -554,7 +570,7 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
         return (
         <div key={r.id} className="rounded-2xl border border-border bg-surface p-4">
           <p className="font-bold">{r.titulo || str(r.datos?.["titulo"]) || "Vacante sin título"} <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">{r.origen === "empresa" ? "Empresa" : "Correo"}</span></p>
-          <p className="mt-0.5 text-xs text-muted-foreground">{[r.empresa || str(r.datos?.["empresa"]), r.provincia, new Date(r.created_at).toLocaleDateString("es-DO"), r.contacto_email].filter(Boolean).join(" · ")}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{[r.empresa || str(r.datos?.["empresa"]), provinciasDe(r).join(", ") || r.provincia, new Date(r.created_at).toLocaleDateString("es-DO"), r.contacto_email].filter(Boolean).join(" · ")}</p>
           <div className="mt-3 rounded-xl bg-secondary p-3 text-sm">
             <p className="text-xs font-semibold text-muted-foreground">Así se publicaría:</p>
             <p className="mt-1 font-bold">{v.titulo || "Sin puesto: revisa antes"}</p>

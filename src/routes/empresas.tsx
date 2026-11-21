@@ -295,13 +295,18 @@ function MuestraPanel() {
   );
 }
 
+const MAX_LUGARES = 10;
 const caja = "mt-1 w-full rounded-xl border border-border bg-surface px-4 py-3 outline-none focus:border-primary";
 const rotulo = "text-sm font-bold";
 
 function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
-  const [f, setF] = useState({ empresa: "", contacto: "", correo: "", telefono: "", titulo: "", provincia: provincias[1] ?? "Distrito Nacional", detalle: "", trampa: "", redes: false, compromisos: [] as string[] });
+  const [f, setF] = useState({ empresa: "", contacto: "", correo: "", telefono: "", titulo: "", lugares: [provincias[1] ?? "Distrito Nacional"], detalle: "", trampa: "", redes: false, compromisos: [] as string[] });
   const [enviando, setEnviando] = useState(false);
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF((x) => ({ ...x, [k]: e.target.value }));
+  /** Una vacante puede ser para varias provincias: al aprobarla se publica una por cada una. */
+  const agregarLugar = (p: string) => setF((x) => (!p || x.lugares.includes(p) || x.lugares.length >= MAX_LUGARES ? x : { ...x, lugares: [...x.lugares, p] }));
+  const quitarLugar = (p: string) => setF((x) => (x.lugares.length <= 1 ? x : { ...x, lugares: x.lugares.filter((l) => l !== p) }));
+  const cambiarPrincipal = (p: string) => setF((x) => ({ ...x, lugares: [p, ...x.lugares.slice(1).filter((l) => l !== p)] }));
   const [leyendo, setLeyendo] = useState<number | null>(null);
   const [leido, setLeido] = useState<string[] | null>(null);
   const entrada = useRef<HTMLInputElement>(null);
@@ -329,7 +334,7 @@ function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
         ...x,
         titulo: b.titulo || x.titulo,
         empresa: b.empresa || x.empresa,
-        provincia: provincias.slice(1).includes(b.provincia) ? b.provincia : x.provincia,
+        lugares: provincias.slice(1).includes(b.provincia) ? [b.provincia, ...x.lugares.slice(1).filter((l) => l !== b.provincia)] : x.lugares,
         correo: x.correo || correo,
         telefono: x.telefono || tel,
         detalle,
@@ -352,13 +357,13 @@ function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
     const malas = revisarDiscriminacion(`${f.titulo}\n${f.detalle}`);
     if (malas.length) return void toast.error(`Quita «${malas[0]!.frase}»: ${malas[0]!.motivo} En Enlace Laboral no se publican avisos que discriminan.`);
     setEnviando(true);
-    const texto = [`Puesto: ${f.titulo.trim()}`, `Empresa: ${f.empresa.trim()}`, `Ubicación: ${f.provincia}`, "", f.detalle.trim(), "", `Plan: ${plan}`, f.redes ? "Autoriza compartir en redes: sí" : "Autoriza compartir en redes: no", f.compromisos.length ? `Compromisos de inclusión: ${f.compromisos.join(", ")}` : ""].filter((l, i, a) => l !== "" || i < a.length - 1).join("\n");
+    const texto = [`Puesto: ${f.titulo.trim()}`, `Empresa: ${f.empresa.trim()}`, `Ubicación: ${f.lugares.join(", ")}`, "", f.detalle.trim(), "", `Plan: ${plan}`, f.redes ? "Autoriza compartir en redes: sí" : "Autoriza compartir en redes: no", f.compromisos.length ? `Compromisos de inclusión: ${f.compromisos.join(", ")}` : ""].filter((l, i, a) => l !== "" || i < a.length - 1).join("\n");
     const { error } = await supabase.from("borradores").insert({
       origen: "empresa",
       texto,
       titulo: f.titulo.trim(),
       empresa: f.empresa.trim(),
-      provincia: f.provincia,
+      provincia: f.lugares[0],
       contacto_nombre: f.contacto.trim(),
       contacto_email: f.correo.trim(),
       contacto_telefono: f.telefono.trim() || null,
@@ -390,7 +395,26 @@ function FormVacante({ plan, onListo }: { plan: string; onListo: () => void }) {
 
       <p className={`${paso} pt-1`}><span className={num}>1</span> La vacante</p>
       <label className="block"><span className={rotulo}>Puesto</span><input required maxLength={200} value={f.titulo} onChange={set("titulo")} placeholder="Ej. Cajero/a" className={caja} /></label>
-      <label className="block"><span className={rotulo}>Ubicación</span><select required value={f.provincia} onChange={set("provincia")} className={caja}>{provincias.slice(1).map((p) => (<option key={p}>{p}</option>))}</select></label>
+      <label className="block"><span className={rotulo}>Ubicación</span><select required value={f.lugares[0]} onChange={(e) => cambiarPrincipal(e.target.value)} className={caja}>{provincias.slice(1).map((p) => (<option key={p}>{p}</option>))}</select></label>
+      <div className="-mt-2">
+        {f.lugares.length > 1 && (
+          <ul aria-label="Otras provincias de esta vacante" className="mb-2 flex flex-wrap gap-2">
+            {f.lugares.slice(1).map((p) => (
+              <li key={p} className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 py-1 pl-3 pr-1 text-sm font-semibold text-primary">
+                {p}
+                <button type="button" onClick={() => quitarLugar(p)} aria-label={`Quitar ${p}`} className="grid size-6 place-items-center rounded-full text-base leading-none hover:bg-primary/15">×</button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {f.lugares.length < MAX_LUGARES && (
+          <select value="" onChange={(e) => agregarLugar(e.target.value)} aria-label="Agregar otra provincia" className="w-full rounded-xl border border-dashed border-border bg-surface px-4 py-2.5 text-sm font-semibold text-primary outline-none focus:border-primary">
+            <option value="">+ ¿También en otra provincia? Agrégala</option>
+            {provincias.slice(1).filter((p) => !f.lugares.includes(p)).map((p) => (<option key={p} value={p}>{p}</option>))}
+          </select>
+        )}
+        {f.lugares.length > 1 && <p className="mt-1.5 text-xs text-muted-foreground">Tu vacante saldrá en {f.lugares.length} provincias.</p>}
+      </div>
       <label className="block"><span className={rotulo}>Detalles del puesto</span><textarea required rows={5} maxLength={8000} value={f.detalle} onChange={set("detalle")} placeholder="Funciones, requisitos, horario, salario y cómo deben aplicar (correo o WhatsApp). Si publicas el salario, tu vacante llama más la atención." className={caja} /></label>
       <p className="-mt-2 text-xs text-muted-foreground">No pidas edad, sexo, foto ni CV con foto, estado civil o hijos: pide lo que necesita el trabajo.</p>
       <AvisoExclusion hallazgos={revisarDiscriminacion(`${f.titulo}\n${f.detalle}`)} />
