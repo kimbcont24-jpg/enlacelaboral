@@ -74,104 +74,45 @@ function resumen(g: Grupo) {
   };
 }
 
-/* ───────── Treemap (squarified) ───────── */
+/* ───────── Ranking ───────── */
 
-type Rect = { x: number; y: number; w: number; h: number };
-function squarify(valores: number[], caja: Rect): Rect[] {
-  const total = valores.reduce((a, b) => a + b, 0);
-  if (!total) return valores.map(() => ({ x: 0, y: 0, w: 0, h: 0 }));
-  const area = valores.map((v) => (v / total) * caja.w * caja.h);
-  const out: Rect[] = new Array(valores.length);
-  let { x, y, w, h } = caja;
-  let i = 0;
-  const peor = (fila: number[], lado: number) => {
-    const s = fila.reduce((a, b) => a + b, 0);
-    return Math.max(...fila.map((r) => Math.max((lado * lado * r) / (s * s), (s * s) / (lado * lado * r))));
-  };
-  while (i < area.length) {
-    const lado = Math.min(w, h);
-    const fila = [area[i]];
-    let j = i + 1;
-    while (j < area.length && peor([...fila, area[j]], lado) <= peor(fila, lado)) fila.push(area[j++]);
-    const s = fila.reduce((a, b) => a + b, 0);
-    if (w >= h) {
-      const ancho = s / h;
-      let yy = y;
-      fila.forEach((r, k) => { out[i + k] = { x, y: yy, w: ancho, h: r / ancho }; yy += r / ancho; });
-      x += ancho; w -= ancho;
-    } else {
-      const alto = s / w;
-      let xx = x;
-      fila.forEach((r, k) => { out[i + k] = { x: xx, y, w: r / alto, h: alto }; xx += r / alto; });
-      y += alto; h -= alto;
-    }
-    i = j;
-  }
-  return out;
-}
-
-/** Un solo tono (el azul de la marca) que se aclara según el tamaño: ordena sin llenar la pantalla de colores. */
-const tono = (rank: number, n: number) => {
-  const t = n <= 1 ? 0 : rank / (n - 1);
-  const l = 21 + t * 40; // de azul noche a azul medio
-  return `hsl(213 ${80 - t * 25}% ${l}%)`;
-};
-
-function Mosaico({ grupos, activo, onElegir, W, H, className }: { grupos: Grupo[]; activo: string; onElegir: (k: string) => void; W: number; H: number; className?: string }) {
+/** Ranking con barras: cada nombre se lee completo, en computadora y en celular. */
+function Ranking({ grupos, activo, onElegir }: { grupos: Grupo[]; activo: string; onElegir: (k: string) => void }) {
   const visibles = grupos.filter((g) => g.jobs.length > 0).sort((a, b) => b.jobs.length - a.jobs.length);
   const total = visibles.reduce((a, g) => a + g.jobs.length, 0);
-  const rects = squarify(visibles.map((g) => g.jobs.length), { x: 0, y: 0, w: W, h: H });
-  return (
-    <div className={cn("relative w-full overflow-hidden rounded-3xl bg-[#071f3d]", className)} style={{ aspectRatio: `${W} / ${H}` }}>
-      {visibles.map((g, i) => {
-        const r = rects[i];
-        const grande = r.w > W * 0.16 && r.h > H * 0.16;
-        const mini = r.w < W * 0.09 || r.h < H * 0.09;
-        const conNombre = !mini && r.w > W * 0.12 && r.h > H * 0.15;
-        const sel = g.key === activo;
-        return (
-          <button
-            key={g.key}
-            type="button"
-            onClick={() => onElegir(g.key)}
-            aria-pressed={sel}
-            aria-label={`${g.nombre}: ${g.jobs.length} vacantes`}
-            title={`${g.nombre}: ${g.jobs.length}`}
-            className="mosaico-tile group absolute p-[3px] text-left focus:outline-none"
-            style={{ left: `${(r.x / W) * 100}%`, top: `${(r.y / H) * 100}%`, width: `${(r.w / W) * 100}%`, height: `${(r.h / H) * 100}%`, animationDelay: `${i * 35}ms` }}
-          >
-            <span
-              className={cn("flex h-full w-full flex-col justify-between overflow-hidden rounded-[14px] text-white transition-all duration-300", sel ? "ring-2 ring-white ring-offset-0 brightness-110" : "group-hover:brightness-125 group-focus-visible:ring-2 group-focus-visible:ring-white")}
-              style={{ background: tono(i, visibles.length), padding: mini ? "6px 8px" : grande ? "18px 20px" : "10px 12px" }}
-            >
-              {conNombre ? <span className={cn("line-clamp-2 min-w-0 font-bold leading-tight [overflow-wrap:anywhere]", grande ? "text-lg sm:text-xl" : "text-[13px]")}>{g.nombre}</span> : <span className="sr-only">{g.nombre}</span>}
-              <span className="leading-none">
-                <span className={cn("font-extrabold tabular-nums tracking-tight", grande ? "text-4xl sm:text-5xl" : mini ? "text-sm" : "text-2xl")}>{g.jobs.length}</span>
-                {grande && <span className="ml-2 text-sm font-semibold text-white/70">{pct(g.jobs.length, total)}%</span>}
-              </span>
-            </span>
-          </button>
-        );
-      })}
-      {visibles.length === 0 && <p className="absolute inset-0 grid place-items-center text-sm text-white/70">Cargando vacantes…</p>}
-    </div>
-  );
-}
-
-/** En el celular el mosaico queda muy apretado: la misma información como ranking de barras. */
-function Barras({ grupos, activo, onElegir }: { grupos: Grupo[]; activo: string; onElegir: (k: string) => void }) {
-  const visibles = grupos.filter((g) => g.jobs.length > 0).sort((a, b) => b.jobs.length - a.jobs.length);
   const max = Math.max(1, ...visibles.map((g) => g.jobs.length));
+  const s = semana();
+  if (!visibles.length) return <p className="rounded-2xl bg-secondary/60 p-8 text-center text-sm text-muted-foreground">Cargando vacantes…</p>;
   return (
-    <ol className="space-y-1.5 sm:hidden">
+    <ol className="space-y-1.5">
       {visibles.map((g, i) => {
         const sel = g.key === activo;
+        const nuevas = g.jobs.filter((j) => new Date(j.creado).getTime() >= s).length;
+        const ancho = Math.max(3, (g.jobs.length / max) * 100);
         return (
           <li key={g.key} className="mosaico-tile" style={{ animationDelay: `${i * 30}ms` }}>
-            <button type="button" onClick={() => onElegir(g.key)} aria-pressed={sel} className={cn("relative flex w-full items-center justify-between gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-left text-sm transition-colors", sel ? "bg-[#0a2f5c] text-white" : "bg-secondary/70")}>
-              <span aria-hidden="true" className="absolute inset-y-0 left-0 rounded-xl" style={{ width: `${(g.jobs.length / max) * 100}%`, background: sel ? "rgba(255,255,255,.12)" : tono(i, visibles.length), opacity: sel ? 1 : 0.16 }} />
-              <span className="relative flex min-w-0 items-center gap-2.5"><span className={cn("w-5 text-xs font-bold tabular-nums", sel ? "text-white/60" : "text-muted-foreground")}>{i + 1}</span><span className="truncate font-semibold">{g.nombre}</span></span>
-              <span className="relative font-extrabold tabular-nums">{g.jobs.length}</span>
+            <button
+              type="button"
+              onClick={() => onElegir(g.key)}
+              aria-pressed={sel}
+              aria-label={`${g.nombre}: ${g.jobs.length} vacantes`}
+              className={cn(
+                "group grid w-full grid-cols-[1.75rem_1fr_auto] items-center gap-x-3 gap-y-1.5 rounded-2xl border px-3 py-3 text-left transition-all sm:grid-cols-[1.75rem_minmax(9rem,13rem)_1fr_5.5rem] sm:px-4",
+                sel ? "border-[#0a2f5c] bg-[#0a2f5c] text-white shadow-lg" : "border-transparent hover:border-border hover:bg-secondary/60",
+              )}
+            >
+              <span className={cn("text-sm font-extrabold tabular-nums", sel ? "text-[#7fb2ff]" : i < 3 ? "text-primary" : "text-muted-foreground")}>{i + 1}</span>
+              <span className="min-w-0">
+                <span className="block truncate font-bold leading-tight">{g.nombre}</span>
+                {nuevas > 0 && <span className={cn("block text-xs", sel ? "text-white/70" : "text-muted-foreground")}>+{nuevas} esta semana</span>}
+              </span>
+              <span aria-hidden="true" className={cn("col-span-2 col-start-2 row-start-2 h-2.5 overflow-hidden rounded-full sm:col-span-1 sm:col-start-3 sm:row-start-1", sel ? "bg-white/15" : "bg-secondary")}>
+                <span className={cn("block h-full rounded-full transition-[width] duration-700", sel ? "bg-white" : i < 3 ? "bg-primary" : "bg-primary/45 group-hover:bg-primary/70")} style={{ width: `${ancho}%` }} />
+              </span>
+              <span className="col-start-3 row-start-1 text-right leading-none sm:col-start-4">
+                <span className="block text-lg font-extrabold tabular-nums tracking-tight sm:text-xl">{g.jobs.length.toLocaleString("es-DO")}</span>
+                <span className={cn("text-xs font-semibold tabular-nums", sel ? "text-white/65" : "text-muted-foreground")}>{pct(g.jobs.length, total)}%</span>
+              </span>
             </button>
           </li>
         );
@@ -212,7 +153,7 @@ function Explorar() {
         <div className="relative mx-auto max-w-6xl">
           <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#7fb2ff]">Mapa del empleo</p>
           <h1 className="mt-2 max-w-3xl text-balance text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl">Así se mueve el empleo en República Dominicana</h1>
-          <p className="mt-3 max-w-2xl text-white/75 sm:text-lg">Todas las vacantes activas en Enlace, clasificadas en vivo. Toca un bloque y mira quién contrata, cuánto pagan y qué salió esta semana.</p>
+          <p className="mt-3 max-w-2xl text-white/75 sm:text-lg">Todas las vacantes activas en Enlace, clasificadas en vivo. Elige una fila y mira quién contrata, cuánto pagan y qué salió esta semana.</p>
           <dl className="mt-9 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-4">
             {[
               [totales.vacantes.toLocaleString("es-DO"), "vacantes activas"],
@@ -247,14 +188,14 @@ function Explorar() {
 
           <div className="mt-5 grid gap-5 lg:grid-cols-12">
             <div key={lente} className="min-w-0 lg:col-span-8">
-              <Mosaico grupos={grupos} activo={activo} onElegir={setElegido} W={1000} H={700} className="hidden sm:block" />
-              <Barras grupos={grupos} activo={activo} onElegir={setElegido} />
+              <p className="mb-3 text-sm text-muted-foreground">Toca una fila para ver quién contrata y lo más reciente.</p>
+              <Ranking grupos={grupos} activo={activo} onElegir={setElegido} />
             </div>
 
             {/* Detalle del bloque elegido */}
             <aside className="min-w-0 lg:col-span-4" aria-live="polite">
               {g && r && (
-                <div key={g.key} className="flex h-full flex-col rounded-3xl border border-border p-5 [animation:entra-arriba_.35s_ease-out]">
+                <div key={g.key} className="flex flex-col rounded-3xl border border-border p-5 lg:sticky lg:top-24 [animation:entra-arriba_.35s_ease-out]">
                   <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{lenteInfo.label}</p>
                   <h3 className="mt-1 text-2xl font-extrabold leading-tight tracking-tight">{g.nombre}</h3>
                   <p className="mt-1 text-sm text-muted-foreground"><b className="text-foreground">{g.jobs.length}</b> {g.jobs.length === 1 ? "vacante" : "vacantes"}{r.nuevas > 0 && <> · <b className="text-[#1d6ff2]">+{r.nuevas}</b> esta semana</>}</p>
