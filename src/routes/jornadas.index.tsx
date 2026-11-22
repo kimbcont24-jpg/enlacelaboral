@@ -175,12 +175,12 @@ function Ferias() {
           <section aria-labelledby="t-recientes" className="mt-16">
             <h2 id="t-recientes" className="font-display text-xl font-extrabold">Ferias recientes</h2>
             <p className="mt-1 text-sm text-muted-foreground">Ya pasaron, pero muchas empresas siguen recibiendo CV por correo o teléfono.</p>
-            <ul className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {recientes.slice(0, 9).map((j) => (
-                <li key={j.id}>
+                <li key={j.id} className="min-w-0">
                   <Link to="/jornadas/$id" params={{ id: j.id }} className="flex h-full gap-3 rounded-2xl border border-border bg-surface p-4 opacity-90 transition hover:opacity-100 hover:shadow-[var(--shadow-soft)]">
                     <FechaBloque iso={j.fecha} pasada />
-                    <span className="min-w-0">
+                    <span className="min-w-0 flex-1">
                       <span className="block font-bold leading-snug">{j.titulo}</span>
                       <span className="block text-sm text-muted-foreground">{organizadorDe(j)} · {j.provincia}</span>
                       {j.contacto && <span className="mt-1 block truncate text-xs font-semibold text-[#1d6ff2]">{j.contacto}</span>}

@@ -66,6 +66,8 @@
 @layer base {
   * { border-color: var(--color-border); }
   body { background-color: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); }
+  /* Celular: ninguna página puede correrse hacia los lados (clip no rompe los menús fijos/sticky). */
+  html, body { overflow-x: clip; }
 }
 
 @utility lift {
