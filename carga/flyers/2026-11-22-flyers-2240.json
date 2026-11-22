@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Vendedor",
+  "empresa": "Agrobasic (Provisiones y Embutidos Agrobasic)",
+  "provincia": "Santiago",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Agrobasic, empresa de provisiones y embutidos, busca un vendedor dinámico y orientado a resultados para su equipo comercial en Santiago de los Caballeros. Dirección: Carretera Don Pedro, Calle Proyecto 3. Se prioriza vivir en zonas cercanas (Pontezuela, El Embrujo, Tamboril).",
+  "requisitos": "Experiencia previa en ventas | Licencia de conducir categoría 3 (indispensable) | Excelente capacidad de comunicación y negociación | Sentido de urgencia, honestidad y puntualidad | Vivir cerca de Carretera Don Pedro (Pontezuela, El Embrujo, Tamboril o sectores cercanos)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rhumanos@agrobasicrd.com · Tel./WhatsApp (809) 543-6161",
+  "imagen": "https://enlace-rd.vercel.app/flyers/agrobasic-vendedor.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Personal de limpieza",
+  "empresa": "Las Palmas Cleaning",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Las Palmas Cleaning busca personal de limpieza para integrarse a su equipo. Ofrece prestaciones de ley, estabilidad laboral y oportunidad de crecimiento. Ubicación por confirmar.",
+  "requisitos": "Experiencia en limpieza | Responsabilidad | Honestidad | Puntualidad | Interés en el crecimiento y desarrollo de la empresa",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "laspalmascleaning2@gmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/las-palmas-cleaning-personal-limpieza.jpg",
+  "redes": "si"
+ }
+]
