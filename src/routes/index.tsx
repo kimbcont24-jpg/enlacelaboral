@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowRight, Building2, Loader2, Quote, Sparkles, UserRound } from "lucide-react";
+import { ArrowRight, BadgeCheck, Bell, Building2, Camera, FileText, Loader2, Quote, ShieldCheck, Sparkles, UserRound, Wallet } from "lucide-react";
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -76,22 +76,57 @@ function Home() {
 
       <PulsoHoy jobs={jobs} className="pb-6" />
 
-      <section className="border-b border-border bg-surface px-4 py-6 sm:px-6">
-        <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">
-          <div className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-soft)]">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary text-white"><UserRound className="size-5" aria-hidden="true" /></span>
-            <div>
-              <p className="font-bold">¿Buscas empleo?</p>
-              <p className="mt-1 text-sm text-muted-foreground">Busca, mira el salario y los requisitos, y aplica gratis. ¿Sin CV? <Link to="/cv" className="font-semibold text-primary underline">Créalo gratis en 5 minutos</Link>. <Link to="/cuenta" className="font-semibold text-primary underline">Crea tu cuenta</Link> y recibe vacantes para ti.</p>
+      <section className="border-b border-border bg-surface px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">
+          {/* Candidatos: tono claro y cercano */}
+          <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-[#cfe0fb] bg-gradient-to-br from-[#eef5ff] via-white to-[#e2edff] p-6 shadow-[var(--shadow-soft)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_50px_-28px_rgba(10,47,92,.55)] sm:p-7">
+            <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-20 size-56 rounded-full bg-cta/15 blur-3xl transition-transform duration-700 group-hover:scale-125" />
+            <UserRound aria-hidden="true" className="pointer-events-none absolute -bottom-6 -right-4 size-36 text-primary/[.05] transition-transform duration-500 group-hover:-rotate-6" />
+            <div className="relative flex items-center gap-3.5">
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-primary text-white shadow-lg ring-4 ring-white transition-transform duration-300 group-hover:scale-105"><UserRound className="size-5" aria-hidden="true" /></span>
+              <div>
+                <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-cta">Para quien busca trabajo</p>
+                <h2 className="text-xl font-extrabold tracking-tight text-primary sm:text-2xl">¿Buscas empleo?</h2>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-soft)]">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-cta text-white shadow-[0_8px_16px_-8px_rgba(29,111,242,.8)]"><Building2 className="size-5" aria-hidden="true" /></span>
-            <div>
-              <p className="font-bold">¿Eres empresa o institución?</p>
-              <p className="mt-1 text-sm text-muted-foreground">Publica tus vacantes gratis y llega a candidatos de todo el país. <Link to="/empresas" className="font-semibold text-primary underline">Publicar vacante</Link></p>
+            <p className="relative mt-4 text-[15px] leading-relaxed text-muted-foreground">Mira el salario y los requisitos <span className="font-semibold text-foreground">antes</span> de aplicar. Sin adivinanzas y sin pagar nada.</p>
+            <ul className="relative mt-4 flex flex-wrap gap-2 text-xs font-bold text-primary">
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-[#cfe0fb]"><Wallet className="size-3.5 text-[#0f7a43]" aria-hidden="true" /> Salario a la vista</li>
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-[#cfe0fb]"><BadgeCheck className="size-3.5 text-cta" aria-hidden="true" /> Aplicas gratis</li>
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-[#cfe0fb]"><FileText className="size-3.5 text-cta" aria-hidden="true" /> CV en 5 minutos</li>
+            </ul>
+            <div className="relative mt-auto flex flex-wrap items-center gap-2.5 pt-6">
+              <Link to="/vacantes" className="group/b inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white shadow-md transition hover:bg-[#0f4aa8]">Ver empleos <ArrowRight className="size-4 transition-transform group-hover/b:translate-x-1" aria-hidden="true" /></Link>
+              <Link to="/cv" className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-bold text-primary ring-1 ring-[#bcd3f7] transition hover:ring-primary">Crear mi CV gratis</Link>
             </div>
-          </div>
+            <p className="relative mt-3 flex items-center gap-1.5 text-xs text-muted-foreground"><Bell className="size-3.5 shrink-0 text-cta" aria-hidden="true" /><span><Link to="/cuenta" className="font-bold text-primary hover:underline">Crea tu cuenta</Link> y te avisamos de vacantes para ti.</span></p>
+          </article>
+
+          {/* Empresas: tono institucional, azul de marca */}
+          <article className="group relative flex flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a2f5c] via-[#0f4aa8] to-[#1d6ff2] p-6 text-white shadow-[0_24px_48px_-28px_rgba(10,47,92,.9)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_32px_60px_-28px_rgba(10,47,92,1)] sm:p-7">
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[.08] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:18px_18px]" />
+            <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -right-16 size-64 rounded-full bg-[#8fc1ff]/25 blur-3xl transition-transform duration-700 group-hover:scale-125" />
+            <Building2 aria-hidden="true" className="pointer-events-none absolute -bottom-6 -right-4 size-36 text-white/[.07] transition-transform duration-500 group-hover:rotate-6" />
+            <div className="relative flex items-center gap-3.5">
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-white text-[#0a2f5c] shadow-lg ring-4 ring-white/20 transition-transform duration-300 group-hover:scale-105"><Building2 className="size-5" aria-hidden="true" /></span>
+              <div>
+                <p className="text-[11px] font-extrabold uppercase tracking-[.14em] text-[#a9d0ff]">Para empresas e instituciones</p>
+                <h2 className="text-xl font-extrabold tracking-tight sm:text-2xl">¿Necesitas talento?</h2>
+              </div>
+            </div>
+            <p className="relative mt-4 text-[15px] leading-relaxed text-white/85">Publica tus vacantes gratis y llega a candidatos de todo el país, con información clara desde el primer día.</p>
+            <ul className="relative mt-4 flex flex-wrap gap-2 text-xs font-bold">
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-3 py-1.5 ring-1 ring-white/25 backdrop-blur"><BadgeCheck className="size-3.5 text-[#a9d0ff]" aria-hidden="true" /> Publicar es gratis</li>
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-3 py-1.5 ring-1 ring-white/25 backdrop-blur"><Camera className="size-3.5 text-[#a9d0ff]" aria-hidden="true" /> Sube la foto del flyer</li>
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white/12 px-3 py-1.5 ring-1 ring-white/25 backdrop-blur"><ShieldCheck className="size-3.5 text-[#a9d0ff]" aria-hidden="true" /> Revisamos cada vacante</li>
+            </ul>
+            <div className="relative mt-auto flex flex-wrap items-center gap-2.5 pt-6">
+              <Link to="/empresas" className="group/b inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-bold text-[#0a2f5c] shadow-md transition hover:bg-[#eef5ff]">Publicar vacante <ArrowRight className="size-4 transition-transform group-hover/b:translate-x-1" aria-hidden="true" /></Link>
+            </div>
+            {jobs.length > 0 && (
+              <p className="relative mt-3 text-xs text-white/75">Tu vacante se suma a <span className="font-bold text-white">{jobs.length.toLocaleString("es-DO")} empleos</span> que la gente ya está viendo.</p>
+            )}
+          </article>
         </div>
       </section>
 
