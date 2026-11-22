@@ -76,7 +76,25 @@ function Home() {
 
       <PulsoHoy jobs={jobs} className="pb-6" />
 
-      <section className="border-b border-border bg-surface px-4 py-8 sm:px-6 sm:py-10">
+
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="eyebrow">{personal ? "✦ Para ti" : "Vacantes"}</p>
+            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">{personal ? `${nombre ? `${nombre}, estas` : "Estas"} encajan contigo` : "Empleos recientes"}</h2>
+            <p className="mt-1 text-muted-foreground">{personal ? `${mias.length} vacantes se parecen a lo que buscas${perfil?.puesto.trim() ? ` (${perfil.puesto.trim()})` : ""}. Las más parecidas primero.` : "Las últimas vacantes publicadas en Enlace Laboral."}</p>
+            {!personal && !cargando && <Link to="/guardadas" search={{ ver: "parati" }} className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline"><Sparkles className="size-4" /> Dinos qué buscas y te mostramos las tuyas</Link>}
+          </div>
+          <Link to="/vacantes" className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-bold text-primary hover:bg-primary hover:text-white">{personal ? `Ver mis ${mias.length}` : "Ver todos los empleos"} <ArrowRight className="size-4" aria-hidden="true" /></Link>
+        </div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {cargando && (<div className="col-span-full flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Cargando vacantes…</div>)}
+          {!cargando && recientes.map((job) => (<VacanteTarjeta key={job.id} job={job} />))}
+          {!cargando && recientes.length === 0 && (<div className="col-span-full rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">Estamos cargando nuevas vacantes. Vuelve pronto.</div>)}
+        </div>
+      </section>
+
+      <section className="border-y border-border bg-surface px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">
           {/* Candidatos: tono claro y cercano */}
           <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-[#cfe0fb] bg-gradient-to-br from-[#eef5ff] via-white to-[#e2edff] p-6 shadow-[var(--shadow-soft)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_50px_-28px_rgba(10,47,92,.55)] sm:p-7">
@@ -127,23 +145,6 @@ function Home() {
               <p className="relative mt-3 text-xs text-white/75">Tu vacante se suma a <span className="font-bold text-white">{jobs.length.toLocaleString("es-DO")} empleos</span> que la gente ya está viendo.</p>
             )}
           </article>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="eyebrow">{personal ? "✦ Para ti" : "Vacantes"}</p>
-            <h2 className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">{personal ? `${nombre ? `${nombre}, estas` : "Estas"} encajan contigo` : "Empleos recientes"}</h2>
-            <p className="mt-1 text-muted-foreground">{personal ? `${mias.length} vacantes se parecen a lo que buscas${perfil?.puesto.trim() ? ` (${perfil.puesto.trim()})` : ""}. Las más parecidas primero.` : "Las últimas vacantes publicadas en Enlace Laboral."}</p>
-            {!personal && !cargando && <Link to="/guardadas" search={{ ver: "parati" }} className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:underline"><Sparkles className="size-4" /> Dinos qué buscas y te mostramos las tuyas</Link>}
-          </div>
-          <Link to="/vacantes" className="inline-flex items-center gap-2 rounded-full border border-primary px-5 py-2 text-sm font-bold text-primary hover:bg-primary hover:text-white">{personal ? `Ver mis ${mias.length}` : "Ver todos los empleos"} <ArrowRight className="size-4" aria-hidden="true" /></Link>
-        </div>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {cargando && (<div className="col-span-full flex items-center justify-center gap-2 p-10 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" /> Cargando vacantes…</div>)}
-          {!cargando && recientes.map((job) => (<VacanteTarjeta key={job.id} job={job} />))}
-          {!cargando && recientes.length === 0 && (<div className="col-span-full rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">Estamos cargando nuevas vacantes. Vuelve pronto.</div>)}
         </div>
       </section>
 
