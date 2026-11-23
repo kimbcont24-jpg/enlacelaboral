@@ -1,0 +1,45 @@
+[
+ {
+  "titulo": "Panadero",
+  "empresa": "Olé El Rompeprecios",
+  "provincia": "La Vega",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Panadero para la sucursal Olé Jarabacoa, en turno nocturno. Se valora la experiencia en panadería.",
+  "requisitos": "Experiencia en panadería (preferible) | Disponibilidad para trabajar de noche | Responsabilidad y compromiso | Trabajo en equipo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 809-609-0986 · o depositar el currículum en Gestión Humana de la sucursal Olé Jarabacoa",
+  "imagen": "https://enlace-rd.vercel.app/flyers/ole-panadero-jarabacoa.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Oficial de Seguridad",
+  "empresa": "HGPS (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Horario de 1:30 p. m. a 9:00 p. m. Salario publicado: RD$30,000 mensuales. Ubicación por confirmar.",
+  "requisitos": "Disponibilidad para laborar fines de semana y días feriados",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Reclutamientoyseleccion@hgps.org.do",
+  "redes": "si"
+ },
+ {
+  "titulo": "Conserje",
+  "empresa": "HGPS (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Horario de 1:30 p. m. a 9:00 p. m. Salario publicado: RD$30,000 mensuales. Ubicación por confirmar.",
+  "requisitos": "Disponibilidad para laborar fines de semana y días feriados",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Reclutamientoyseleccion@hgps.org.do",
+  "redes": "si"
+ }
+]
