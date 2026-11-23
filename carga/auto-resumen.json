@@ -1,8 +1,8 @@
 {
-  "fecha": "2026-11-23T13:31:57.016Z",
-  "total": 790,
-  "revisadas": 71,
-  "sin_contacto": 71,
+  "fecha": "2026-11-23T13:56:10.110Z",
+  "total": 853,
+  "revisadas": 132,
+  "sin_contacto": 132,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "nst": 0,
@@ -12,6 +12,6 @@
     "citi": 2,
     "medtronic": 2,
     "baxter": 2,
-    "eaton": "error: Error: 429 https://eaton.eightfold.ai/api/pcsx/search?domain=eaton.com&query=&location=Dominican%20Republic&start=0&sort"
+    "eaton": 61
   }
 }
