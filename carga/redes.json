@@ -1,5 +1,5 @@
 {
- "fecha": "2026-11-22T17:20:47.238Z",
+ "fecha": "2026-11-23T00:41:23.357Z",
  "vacantes": [
   {
    "id": "4f733a25-ebf2-4320-8770-a54403e270dd",
@@ -28,19 +28,6 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/1a9097d4-1b95-4662-939c-5d958771af2c.png"
   },
   {
-   "id": "e8b92abd-6846-48e0-940a-933f6170a656",
-   "titulo": "Operador",
-   "empresa": "Evams Group",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 29900,
-   "salario_max": null,
-   "creada": "2026-11-21T18:44:00.0737+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/e8b92abd-6846-48e0-940a-933f6170a656",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/e8b92abd-6846-48e0-940a-933f6170a656.png"
-  },
-  {
    "id": "72ca68a4-a526-4ea4-9bf6-9fad91529b2c",
    "titulo": "Auxiliar de Recursos Humanos",
    "empresa": "INCORP Servicios de Seguridad",
@@ -52,6 +39,19 @@
    "creada": "2026-11-21T18:44:00.0737+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/72ca68a4-a526-4ea4-9bf6-9fad91529b2c",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/72ca68a4-a526-4ea4-9bf6-9fad91529b2c.png"
+  },
+  {
+   "id": "e8b92abd-6846-48e0-940a-933f6170a656",
+   "titulo": "Operador",
+   "empresa": "Evams Group",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 29900,
+   "salario_max": null,
+   "creada": "2026-11-21T18:44:00.0737+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/e8b92abd-6846-48e0-940a-933f6170a656",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/e8b92abd-6846-48e0-940a-933f6170a656.png"
   },
   {
    "id": "c606dbeb-5077-49ca-8944-21c16ab6c614",
@@ -106,19 +106,6 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/ad511aff-7522-47a9-8e47-98a77c59105b.png"
   },
   {
-   "id": "21c15196-dda9-4a63-aec3-1706a36426a8",
-   "titulo": "Gestor(a) de Cobros",
-   "empresa": "Oficina de Abogados (confidencial)",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 18662,
-   "salario_max": null,
-   "creada": "2026-11-20T01:04:00.174231+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/21c15196-dda9-4a63-aec3-1706a36426a8",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/21c15196-dda9-4a63-aec3-1706a36426a8.png"
-  },
-  {
    "id": "de28332c-be59-42d0-bca5-e3c21669259d",
    "titulo": "Supervisor de Tesorería",
    "empresa": "Empresa confidencial",
@@ -130,6 +117,19 @@
    "creada": "2026-11-20T01:04:00.174231+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/de28332c-be59-42d0-bca5-e3c21669259d",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/de28332c-be59-42d0-bca5-e3c21669259d.png"
+  },
+  {
+   "id": "21c15196-dda9-4a63-aec3-1706a36426a8",
+   "titulo": "Gestor(a) de Cobros",
+   "empresa": "Oficina de Abogados (confidencial)",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 18662,
+   "salario_max": null,
+   "creada": "2026-11-20T01:04:00.174231+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/21c15196-dda9-4a63-aec3-1706a36426a8",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/21c15196-dda9-4a63-aec3-1706a36426a8.png"
   },
   {
    "id": "2c09b526-bb04-47fe-8c29-30d7d36e17d8",
@@ -169,6 +169,45 @@
    "creada": "2026-11-20T00:44:00.17614+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/6bc9c5e3-7514-40ba-99ca-5493073b2e06",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/6bc9c5e3-7514-40ba-99ca-5493073b2e06.png"
+  },
+  {
+   "id": "6e07685f-3842-450a-9b88-80bc4738d27c",
+   "titulo": "Vendedor",
+   "empresa": "Agrobasic (Provisiones y Embutidos Agrobasic)",
+   "provincia": "Santiago",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-22T23:24:00.1914+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/6e07685f-3842-450a-9b88-80bc4738d27c",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/6e07685f-3842-450a-9b88-80bc4738d27c.png"
+  },
+  {
+   "id": "6568781c-68bf-4e7f-820e-6a9e0077edca",
+   "titulo": "Shampooner",
+   "empresa": "Namila Beauty & Spa",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-22T20:44:00.094073+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/6568781c-68bf-4e7f-820e-6a9e0077edca",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/6568781c-68bf-4e7f-820e-6a9e0077edca.png"
+  },
+  {
+   "id": "e9b25d6a-5adf-4a58-8d1e-0325e69ef714",
+   "titulo": "Cajera",
+   "empresa": "Namila Beauty & Spa",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-22T20:44:00.094073+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/e9b25d6a-5adf-4a58-8d1e-0325e69ef714",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/e9b25d6a-5adf-4a58-8d1e-0325e69ef714.png"
   },
   {
    "id": "1a534c00-d810-48e7-9843-7de3e9bf09de",
@@ -236,6 +275,32 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/08717985-29b0-4d8b-81f7-8ffe5624f6c6.png"
   },
   {
+   "id": "6fa583ad-3996-420f-ab6d-7d8f2a96dcd6",
+   "titulo": "Ayudante de Sommelier",
+   "empresa": "Meliá Hotels International",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-21T20:44:00.208839+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/6fa583ad-3996-420f-ab6d-7d8f2a96dcd6",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/6fa583ad-3996-420f-ab6d-7d8f2a96dcd6.png"
+  },
+  {
+   "id": "5bcf081a-9b6e-4b82-ac86-307aa5ebec65",
+   "titulo": "Camarero de restaurante",
+   "empresa": "Meliá Hotels International",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-21T20:44:00.208839+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/5bcf081a-9b6e-4b82-ac86-307aa5ebec65",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/5bcf081a-9b6e-4b82-ac86-307aa5ebec65.png"
+  },
+  {
    "id": "1c85e820-2acf-4174-9603-abf5fe653b5f",
    "titulo": "Brillador de piso",
    "empresa": "Meliá Hotels International",
@@ -247,6 +312,32 @@
    "creada": "2026-11-21T20:44:00.208839+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/1c85e820-2acf-4174-9603-abf5fe653b5f",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/1c85e820-2acf-4174-9603-abf5fe653b5f.png"
+  },
+  {
+   "id": "ad7b43ec-483c-4358-a025-c58493abe86e",
+   "titulo": "Bartender",
+   "empresa": "Meliá Hotels International",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-21T20:44:00.208839+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/ad7b43ec-483c-4358-a025-c58493abe86e",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/ad7b43ec-483c-4358-a025-c58493abe86e.png"
+  },
+  {
+   "id": "e65d26cb-0d5f-46f3-ae49-078e4d399120",
+   "titulo": "Chef de partie",
+   "empresa": "Meliá Hotels International",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-21T20:44:00.208839+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/e65d26cb-0d5f-46f3-ae49-078e4d399120",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/e65d26cb-0d5f-46f3-ae49-078e4d399120.png"
   },
   {
    "id": "9824d7a7-6784-4e27-8061-f0f8e30e6e1d",
@@ -366,58 +457,6 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/f07ef700-fccd-450d-8075-4c01f7d3c5ae.png"
   },
   {
-   "id": "6fa583ad-3996-420f-ab6d-7d8f2a96dcd6",
-   "titulo": "Ayudante de Sommelier",
-   "empresa": "Meliá Hotels International",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T20:44:00.208839+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/6fa583ad-3996-420f-ab6d-7d8f2a96dcd6",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/6fa583ad-3996-420f-ab6d-7d8f2a96dcd6.png"
-  },
-  {
-   "id": "5bcf081a-9b6e-4b82-ac86-307aa5ebec65",
-   "titulo": "Camarero de restaurante",
-   "empresa": "Meliá Hotels International",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T20:44:00.208839+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/5bcf081a-9b6e-4b82-ac86-307aa5ebec65",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/5bcf081a-9b6e-4b82-ac86-307aa5ebec65.png"
-  },
-  {
-   "id": "ad7b43ec-483c-4358-a025-c58493abe86e",
-   "titulo": "Bartender",
-   "empresa": "Meliá Hotels International",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T20:44:00.208839+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/ad7b43ec-483c-4358-a025-c58493abe86e",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/ad7b43ec-483c-4358-a025-c58493abe86e.png"
-  },
-  {
-   "id": "e65d26cb-0d5f-46f3-ae49-078e4d399120",
-   "titulo": "Chef de partie",
-   "empresa": "Meliá Hotels International",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T20:44:00.208839+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/e65d26cb-0d5f-46f3-ae49-078e4d399120",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/e65d26cb-0d5f-46f3-ae49-078e4d399120.png"
-  },
-  {
    "id": "b3143939-b70b-46a9-b67c-4967cf2fe42d",
    "titulo": "Steward",
    "empresa": "Meliá Hotels International",
@@ -470,6 +509,32 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/f382f320-4e8b-4be8-a54f-32130614ade8.png"
   },
   {
+   "id": "a875c9a8-5da9-4957-a629-f7e99e43bcf0",
+   "titulo": "Aprendiz de procesos",
+   "empresa": "Marat Industrial",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-21T18:44:00.0737+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/a875c9a8-5da9-4957-a629-f7e99e43bcf0",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/a875c9a8-5da9-4957-a629-f7e99e43bcf0.png"
+  },
+  {
+   "id": "48f842aa-8eb0-4d0f-94df-d5d602472433",
+   "titulo": "Asistente Administrativa/o Legal",
+   "empresa": "La Referencia",
+   "provincia": "Distrito Nacional",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-21T18:44:00.0737+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/48f842aa-8eb0-4d0f-94df-d5d602472433",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/48f842aa-8eb0-4d0f-94df-d5d602472433.png"
+  },
+  {
    "id": "2e2d81f3-0d4d-4261-abc4-b92aad9da21a",
    "titulo": "Asistente Administrativa de Vicepresidencia Comercial",
    "empresa": "Mardom Servicios Logísticos Integrados",
@@ -481,6 +546,19 @@
    "creada": "2026-11-21T18:44:00.0737+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/2e2d81f3-0d4d-4261-abc4-b92aad9da21a",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/2e2d81f3-0d4d-4261-abc4-b92aad9da21a.png"
+  },
+  {
+   "id": "01b2fb88-8fb1-46ba-8697-53c65c6c4a09",
+   "titulo": "Oficial de Créditos",
+   "empresa": "Dinant",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-21T18:44:00.0737+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/01b2fb88-8fb1-46ba-8697-53c65c6c4a09",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/01b2fb88-8fb1-46ba-8697-53c65c6c4a09.png"
   },
   {
    "id": "2378dd60-3877-4641-b034-f4e3e2980cda",
@@ -572,45 +650,6 @@
    "creada": "2026-11-21T18:44:00.0737+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/c74c82ef-877b-46a3-bc8e-f79a5cbacc78",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/c74c82ef-877b-46a3-bc8e-f79a5cbacc78.png"
-  },
-  {
-   "id": "a875c9a8-5da9-4957-a629-f7e99e43bcf0",
-   "titulo": "Aprendiz de procesos",
-   "empresa": "Marat Industrial",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T18:44:00.0737+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/a875c9a8-5da9-4957-a629-f7e99e43bcf0",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/a875c9a8-5da9-4957-a629-f7e99e43bcf0.png"
-  },
-  {
-   "id": "48f842aa-8eb0-4d0f-94df-d5d602472433",
-   "titulo": "Asistente Administrativa/o Legal",
-   "empresa": "La Referencia",
-   "provincia": "Distrito Nacional",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T18:44:00.0737+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/48f842aa-8eb0-4d0f-94df-d5d602472433",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/48f842aa-8eb0-4d0f-94df-d5d602472433.png"
-  },
-  {
-   "id": "01b2fb88-8fb1-46ba-8697-53c65c6c4a09",
-   "titulo": "Oficial de Créditos",
-   "empresa": "Dinant",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T18:44:00.0737+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/01b2fb88-8fb1-46ba-8697-53c65c6c4a09",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/01b2fb88-8fb1-46ba-8697-53c65c6c4a09.png"
   },
   {
    "id": "48b7e6e0-d062-4bfb-91a0-acb1cd32358b",
@@ -1521,45 +1560,6 @@
    "creada": "2026-11-21T17:32:03.519204+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/a0b2cf57-bdf8-47e4-b9d7-6f2c7b150764",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/a0b2cf57-bdf8-47e4-b9d7-6f2c7b150764.png"
-  },
-  {
-   "id": "39d13c09-bc27-407f-acba-80340cd1e512",
-   "titulo": "Impulsador/a de Ventas",
-   "empresa": "Industrias Banilejas (INDUBAN)",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T17:32:03.519204+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/39d13c09-bc27-407f-acba-80340cd1e512",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/39d13c09-bc27-407f-acba-80340cd1e512.png"
-  },
-  {
-   "id": "4786265b-8d33-4ae1-bac6-d0857f0ecd33",
-   "titulo": "Psicólogo/a Clínico/a",
-   "empresa": "Centro Casas Comunitarias de Justicia",
-   "provincia": "La Vega",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T17:32:03.519204+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/4786265b-8d33-4ae1-bac6-d0857f0ecd33",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/4786265b-8d33-4ae1-bac6-d0857f0ecd33.png"
-  },
-  {
-   "id": "394f0f34-3a9e-487b-8d2d-d9ee2355cfa1",
-   "titulo": "Asesor/a de Servicios (Santiago)",
-   "empresa": "Grupo Avant",
-   "provincia": "Santiago",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-21T17:32:03.519204+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/394f0f34-3a9e-487b-8d2d-d9ee2355cfa1",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/394f0f34-3a9e-487b-8d2d-d9ee2355cfa1.png"
   }
  ]
 }
