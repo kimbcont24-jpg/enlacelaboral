@@ -1,8 +1,8 @@
 {
-  "fecha": "2026-11-23T11:25:05.021Z",
-  "total": 851,
-  "revisadas": 133,
-  "sin_contacto": 133,
+  "fecha": "2026-11-23T13:31:57.016Z",
+  "total": 790,
+  "revisadas": 71,
+  "sin_contacto": 71,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "nst": 0,
@@ -11,7 +11,7 @@
     "marriott": 54,
     "citi": 2,
     "medtronic": 2,
-    "baxter": 3,
-    "eaton": 61
+    "baxter": 2,
+    "eaton": "error: Error: 429 https://eaton.eightfold.ai/api/pcsx/search?domain=eaton.com&query=&location=Dominican%20Republic&start=0&sort"
   }
 }
