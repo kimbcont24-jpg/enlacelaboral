@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Encargado de Almacén",
+  "empresa": "MSA",
+  "provincia": "Santiago",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Supervisar y coordinar las actividades diarias del almacén para garantizar su eficiencia y funcionalidad. Ubicación: Santiago de los Caballeros.",
+  "requisitos": "Experiencia mínima de 2 a 4 años en gestión de almacenes o logística | Conocimiento en manejo de inventarios y sistemas de gestión, con dominio de Excel y, preferiblemente, SAP | Capacidad de liderazgo, organización y trabajo en equipo | Conocimiento en herramientas, materiales de ferretería y normas de seguridad y salud en el trabajo | Proactividad e iniciativa | Orientación al logro de resultados | Planificación, organización y seguimiento de las operaciones del almacén",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "cdelarosa@msa.com.do (asunto: Encargado de Almacén)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/msa-encargado-almacen.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista de Contabilidad",
+  "empresa": "MSA",
+  "provincia": "Santiago",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Gestionar la contabilidad interna de forma integral y actualizada, asegurando el correcto registro de operaciones, manejo de bancos y tarjetas, y la entrega de información financiera confiable, en coordinación con la administración y el contable externo. Ubicación: Santiago de los Caballeros.",
+  "requisitos": "Licenciatura en Contabilidad | Experiencia de 1 a 2 años en posiciones contables | Dominio del ciclo contable completo (registros, cierres y reportes) | Contabilidad general | Conciliaciones bancarias | Conocimientos básicos de impuestos y cumplimiento fiscal | Excel | Uso de sistemas contables | Organización y atención al detalle | Responsabilidad, honestidad y proactividad | Buena comunicación y trabajo en equipo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "cdelarosa@msa.com.do (asunto: Analista de Contabilidad)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/msa-analista-contabilidad.jpg",
+  "redes": "si"
+ }
+]
