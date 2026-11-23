@@ -1,0 +1,34 @@
+[
+ {
+  "titulo": "Mercaderista",
+  "empresa": "Velvety",
+  "provincia": "Santiago",
+  "area": "Ventas",
+  "modalidad": "Campo",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Velvety busca mercaderista para asegurar la correcta exhibición de sus productos en supermercados y puntos de venta: abastecimiento, precios, conteo de inventario, planograma y material POP. Colocar productos en góndola, instalar material POP, levantar precios de la marca y la competencia y reportar con fotos la ruta de clientes asignada.",
+  "requisitos": "Estudiante universitario | Más de 1 año de experiencia como mercaderista de marcas de consumo masivo | Experiencia trabajando en supermercados | Manejo de Excel y Office 365 (deseable) | Disponibilidad para trabajo de calle en ruta rotativa por zona",
+  "fuente": "Flyer de la empresa",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/velvety-mercaderista.jpg#santiago",
+  "aplicar": "reclutamientos@velvety.do (indicar el nombre de la posición en el asunto)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/velvety-mercaderista.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Mercaderista",
+  "empresa": "Velvety",
+  "provincia": "Duarte",
+  "area": "Ventas",
+  "modalidad": "Campo",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Velvety busca mercaderista para asegurar la correcta exhibición de sus productos en supermercados y puntos de venta: abastecimiento, precios, conteo de inventario, planograma y material POP. Colocar productos en góndola, instalar material POP, levantar precios de la marca y la competencia y reportar con fotos la ruta de clientes asignada. Ubicación: San Francisco de Macorís.",
+  "requisitos": "Estudiante universitario | Más de 1 año de experiencia como mercaderista de marcas de consumo masivo | Experiencia trabajando en supermercados | Manejo de Excel y Office 365 (deseable) | Disponibilidad para trabajo de calle en ruta rotativa por zona",
+  "fuente": "Flyer de la empresa",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/velvety-mercaderista.jpg#sfm",
+  "aplicar": "reclutamientos@velvety.do (indicar el nombre de la posición en el asunto)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/velvety-mercaderista.jpg",
+  "redes": "si"
+ }
+]
