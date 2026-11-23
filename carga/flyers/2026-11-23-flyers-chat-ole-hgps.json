@@ -22,11 +22,12 @@
   "modalidad": "Presencial",
   "tipo": "Tiempo completo",
   "experiencia": "Sin experiencia",
-  "descripcion": "Horario de 1:30 p. m. a 9:00 p. m. Salario publicado: RD$30,000 mensuales. Ubicación por confirmar.",
-  "requisitos": "Disponibilidad para laborar fines de semana y días feriados",
+  "descripcion": "Se busca oficial de seguridad para formar parte del equipo. Horario: 2:00 p. m. a 9:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Disponibilidad de horario | Responsabilidad y compromiso | Disposición para el trabajo en equipo",
   "fuente": "Flyer de la empresa",
   "aplicar": "Reclutamientoyseleccion@hgps.org.do",
-  "redes": "si"
+  "redes": "si",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hgps-seguridad-conserje.jpg"
  },
  {
   "titulo": "Conserje",
@@ -36,10 +37,11 @@
   "modalidad": "Presencial",
   "tipo": "Tiempo completo",
   "experiencia": "Sin experiencia",
-  "descripcion": "Horario de 1:30 p. m. a 9:00 p. m. Salario publicado: RD$30,000 mensuales. Ubicación por confirmar.",
-  "requisitos": "Disponibilidad para laborar fines de semana y días feriados",
+  "descripcion": "Se busca conserje para formar parte del equipo. Horario: 1:30 p. m. a 9:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Disponibilidad de horario | Responsabilidad y compromiso | Disposición para el trabajo en equipo",
   "fuente": "Flyer de la empresa",
   "aplicar": "Reclutamientoyseleccion@hgps.org.do",
-  "redes": "si"
+  "redes": "si",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hgps-seguridad-conserje.jpg"
  }
 ]
