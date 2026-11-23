@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Bus, CalendarClock, Check, Clock, FileText, Gift, GraduationCap, Heart, Info, ListChecks, type LucideIcon, Plus, Send, ShieldCheck, Sparkles, Star, Target, TrendingUp, UtensilsCrossed, Wallet } from "lucide-react";
+import { MapPin, Bus, CalendarClock, Check, Clock, FileText, Gift, GraduationCap, Heart, Info, ListChecks, type LucideIcon, Plus, Send, ShieldCheck, Sparkles, Star, Target, TrendingUp, UtensilsCrossed, Wallet } from "lucide-react";
 
 import { diasRestantes } from "@/lib/claridad";
 import { tipoBeneficio, type TipoBeneficio } from "@/lib/presentar";
@@ -139,6 +139,19 @@ export function Notas({ items }: { items: string[] }) {
       <p className="flex items-center gap-2 text-sm font-extrabold text-[#1557c4]"><Info className="size-4" aria-hidden="true" /> Ten en cuenta</p>
       <ul className="mt-2 space-y-1.5 text-[15px] leading-snug">{items.map((n) => <li key={n}>{n}</li>)}</ul>
     </div>
+  );
+}
+
+/** Dónde es el trabajo: provincia(s) y lo que diga la vacante sobre dónde vivir. Separado de las funciones. */
+export function Lugares({ provincia, items }: { provincia: string; items: string[] }) {
+  return (
+    <Seccion etiqueta="sec-lugar">
+      <SeccionTitulo id="sec-lugar" Icono={MapPin} titulo="Dónde es el trabajo" />
+      <div className="mt-5 max-w-[66ch] rounded-2xl border border-border bg-surface p-4 sm:p-5">
+        <p className="flex items-center gap-2 text-[1.0625rem] font-bold"><MapPin className="size-4 text-[#1d6ff2]" aria-hidden="true" /> {provincia}</p>
+        {items.length > 0 && <ul className="mt-2 space-y-1.5 text-[15px] leading-snug text-foreground/85">{items.map((n) => <li key={n} className="[overflow-wrap:anywhere]">{n}</li>)}</ul>}
+      </div>
+    </Seccion>
   );
 }
 

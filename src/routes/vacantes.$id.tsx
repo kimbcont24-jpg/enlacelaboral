@@ -25,7 +25,7 @@ import { registrarVista } from "@/lib/vistas";
 import { ContactoDirecto, tieneContactoDirecto } from "@/components/site/ContactoDirecto";
 import { revisarVacante } from "@/lib/inclusion";
 import { empresaOculta, nombreEmpresa, presentar } from "@/lib/presentar";
-import { Beneficios, Funciones, Notas, PasosAplicar, Requisitos, Seccion, SeccionTitulo, Vigencia } from "@/components/site/VacanteSecciones";
+import { Beneficios, Funciones, Lugares, Notas, PasosAplicar, Requisitos, Seccion, SeccionTitulo, Vigencia } from "@/components/site/VacanteSecciones";
 
 export const Route = createFileRoute("/vacantes/$id")({
   loader: async ({ params }) => {
@@ -255,6 +255,7 @@ function Detalle() {
             </Seccion>
           )}
 
+          {p.lugares.length > 0 && <Lugares provincia={job.provincia} items={p.lugares} />}
           {p.funciones.length > 0 && <Funciones items={p.funciones} />}
           {(p.imprescindibles.length > 0 || p.cualidades.length > 0 || p.suman.length > 0) && <Requisitos imprescindibles={p.imprescindibles} cualidades={p.cualidades} suman={p.suman} />}
           {p.ofrece.length > 0 && <Beneficios items={p.ofrece} />}

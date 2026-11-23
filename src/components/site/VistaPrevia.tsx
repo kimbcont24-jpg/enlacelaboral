@@ -87,6 +87,7 @@ export function VistaPrevia({ job }: { job: Vacante }) {
           </div>
         )}
         {p.notas.length > 0 && <p className="flex gap-2 rounded-xl bg-[#f2f7ff] p-3 text-sm leading-snug"><Info className="mt-0.5 size-4 shrink-0 text-[#1557c4]" />{p.notas.join(" ")}</p>}
+        {p.lugares.length > 0 && <p className="flex gap-2 rounded-xl border border-border p-3 text-sm leading-snug"><MapPin className="mt-0.5 size-4 shrink-0 text-[#1557c4]" /><span><b>Dónde:</b> {p.lugares.join(" ")}</span></p>}
         {p.funciones.length > 0 && (
           <section>
             <H I={Target} t="Lo que harás" />

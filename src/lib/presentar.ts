@@ -15,6 +15,8 @@ export type Presentacion = {
   suman: string[];
   ofrece: string[];
   notas: string[];
+  /** Dónde es el trabajo o dónde hay que vivir. Nunca va en «Lo que harás». */
+  lugares: string[];
   salarioTexto: string;
   gestor: string;
   gratis: boolean;
@@ -63,6 +65,15 @@ const RE_FUNC = /^(funciones|responsabilidades|tareas|lo que har[aá]s|actividad
 const RE_SUMA = /^(suma|suman|deseable|valoramos|es un plus|plus|se valora)\s*:\s*(.*)$/i;
 const RE_OFRECE = /^(te ofrecemos|ofrecemos|se ofrece|ofrecen|ofrece|beneficios)\s*:?\s*(.*)$/i;
 const RE_SALARIO = /^salario(\s+publicado[^:]*)?\s*:\s*(.*)$/i;
+/** Oraciones de lugar: dónde es el trabajo o dónde hay que vivir (no son funciones ni requisitos sueltos). */
+const RE_LUGAR_INICIO = /^(ubicaci[oó]n(es)?|lugar(es)?( de trabajo)?|zonas?|[aá]reas? de trabajo|provincias?|sucursal(es)?|localidad(es)?|sede)\b/i;
+const RE_RESIDIR = /\b(resid(ir|a|an|encia|entes?)|vivir|viva[ns]?)\s+(en|cerca|por|de|próximo|en las|en los|en zonas?)\b|\bresidir\b/i;
+export function esLugar(s: string): boolean {
+  const t = s.trim();
+  if (!t || t.length > 260) return false;
+  if (RE_LUGAR_INICIO.test(t)) return true;
+  return RE_RESIDIR.test(t) && !/\b(busca|contrata|solicita|necesita un|requiere un)\b/i.test(t);
+}
 const RE_NOTA = /^(horario|ubicaci[oó]n|lugar|jornada|disponibilidad|nota|importante)\b/i;
 
 type Cubo = "funciones" | "suman" | "ofrece" | "requisitos" | "lista";
@@ -122,7 +133,7 @@ const RE_REQ_DURO = /^(educaci|bachiller|licenci|t[eé]cnic|grado|estudiante|exp
 const BASURA = /^(condiciones laborales|informaci[oó]n no disponible|modalidad|trabajo presencial|empresa verificada|publicado|publicada|requisitos|beneficios|c[oó]mo aplicar\b.*)$/i;
 
 export function presentar(job: Pick<Vacante, "descripcion" | "requisitos" | "salarioMin">): Presentacion {
-  const p: Presentacion = { resumen: [], lista: [], funciones: [], imprescindibles: [], cualidades: [], suman: [], ofrece: [], notas: [], salarioTexto: "", gestor: "", gratis: false };
+  const p: Presentacion = { resumen: [], lista: [], funciones: [], imprescindibles: [], cualidades: [], suman: [], ofrece: [], notas: [], lugares: [], salarioTexto: "", gestor: "", gratis: false };
   const extraReq: string[] = [];
   let cubo: Cubo | null = null;
 
@@ -142,6 +153,7 @@ export function presentar(job: Pick<Vacante, "descripcion" | "requisitos" | "sal
       s = s.replace(/ubicaci[oó]n por confirmar\s*(\([^)]*\))?\.?/i, "").trim();
       if (!s) return;
     }
+    if (esLugar(s)) { p.lugares.push(mayus(s.replace(/\.$/, "")) + "."); return; }
     if ((m = s.match(RE_OFRECE)) && m[2]) { p.ofrece.push(...items(m[2])); return; }
     if (/^(ofrece|se ofrece)/i.test(s) || (/beneficios de ley|salario competitivo/i.test(s) && s.length < 160 && !/busca|contrata|solicita/i.test(s))) {
       p.ofrece.push(...items(s.replace(/^(ofrecemos|se ofrece|ofrece)\s*/i, "")));
@@ -182,6 +194,7 @@ export function presentar(job: Pick<Vacante, "descripcion" | "requisitos" | "sal
     vistos.add(k);
     if (/^nota\s*:/i.test(r)) { p.notas.push(mayus(r.replace(/^nota\s*:\s*/i, "")) + "."); continue; }
     if (cuboReq === "ofrece") { p.ofrece.push(limpiar(r)); continue; }
+    if (esLugar(r)) { p.lugares.push(mayus(r) + "."); continue; }
     if (cuboReq === "funciones") { p.funciones.push(limpiar(r)); continue; }
     if (RE_DESEABLE.test(r) || /^se valora/i.test(r)) p.suman.push(limpiar(r.replace(RE_DESEABLE, "").replace(/^se valoran?\s*/i, "")));
     else if (r.split(/\s+/).length <= 3 && !/\d/.test(r) && !/[,(]/.test(r) && !RE_REQ_DURO.test(r)) p.cualidades.push(mayus(r));
@@ -194,7 +207,7 @@ export function presentar(job: Pick<Vacante, "descripcion" | "requisitos" | "sal
   if (!p.funciones.length) {
     for (let i = 0; i < p.resumen.length; i++) {
       const m = p.resumen[i]!.match(/^([^:]{15,}?):\s+(.+)$/);
-      if (!m) continue;
+      if (!m || esLugar(p.resumen[i]!)) continue;
       const lista = items(m[2]!.replace(/\.$/, ""));
       if (lista.length < 3) continue;
       p.resumen[i] = `${m[1]!.trim()}.`;
@@ -206,6 +219,9 @@ export function presentar(job: Pick<Vacante, "descripcion" | "requisitos" | "sal
   p.notas.push(...p.ofrece.filter((x) => RE_COMO.test(x)).map((x) => mayus(x.replace(/^o\s+/i, "")) + "."));
   p.ofrece = [...new Set(p.ofrece.filter((x) => !RE_COMO.test(x)))];
   p.suman = [...new Set(p.suman)];
+  // Lugares sin repetir (la misma idea puede venir en la descripción y en los requisitos).
+  const vl = new Set<string>();
+  p.lugares = p.lugares.filter((x) => { const k = clave(x); if (vl.has(k)) return false; vl.add(k); return true; });
   return p;
 }
 
