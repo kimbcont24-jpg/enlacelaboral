@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Operadores de Producción",
+  "empresa": "Nesplas",
+  "provincia": "Santo Domingo",
+  "area": "Producción",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Nesplas contrata operadores de producción para la limpieza y terminación de envases plásticos, velando por la producción de la máquina asignada y su buen funcionamiento. Zona: Autopista Duarte, Santo Domingo Oeste y alrededores.",
+  "requisitos": "8vo curso aprobado | Disponibilidad para horario rotativo (diurno/nocturno) | Disponibilidad para trabajar en la Autopista Duarte, Santo Domingo Oeste o zonas aledañas",
+  "aplicar": "reclutamiento@nesplas.com (poner el nombre de la posición en el asunto)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/nesplas-operadores-produccion.jpg",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si"
+ },
+ {
+  "titulo": "Camareros",
+  "empresa": "Restaurante (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Hotelería y Turismo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Restaurante en Santo Domingo solicita camareros con experiencia en el área de servicio (obligatoria). Ubicación por confirmar.",
+  "requisitos": "Experiencia en el área de servicio (obligatoria) | Disponibilidad de horario | Responsabilidad y buena actitud",
+  "aplicar": "WhatsApp (829) 259-5352",
+  "imagen": "https://enlace-rd.vercel.app/flyers/restaurante-camareros-santo-domingo.jpg",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si"
+ }
+]
