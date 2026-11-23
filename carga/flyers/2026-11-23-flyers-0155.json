@@ -1,0 +1,62 @@
+[
+ {
+  "titulo": "Mercaderista",
+  "empresa": "CCN (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Temporal",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se buscan mercaderistas para empleo temporal, atendiendo negocios de venta de productos. Residir en Santo Domingo de Guzmán. Disponibilidad de horario.",
+  "requisitos": "Bachiller | Experiencia como mercaderista, atendiendo negocios de venta de productos o labores similares | Disponibilidad de horario | Residir en Santo Domingo de Guzmán | Disponibilidad para tomar el empleo temporal",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "atoribio@ccn.net.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/ccn-mercaderistas.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Mercaderista",
+  "empresa": "CCN (confidencial)",
+  "provincia": "Santiago",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Temporal",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se buscan mercaderistas para empleo temporal, atendiendo negocios de venta de productos. Residir en Santiago de los Caballeros. Disponibilidad de horario.",
+  "requisitos": "Bachiller | Experiencia como mercaderista, atendiendo negocios de venta de productos o labores similares | Disponibilidad de horario | Residir en Santiago de los Caballeros | Disponibilidad para tomar el empleo temporal",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "atoribio@ccn.net.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/ccn-mercaderistas.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Mercaderista",
+  "empresa": "CCN (confidencial)",
+  "provincia": "La Altagracia (Punta Cana)",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Temporal",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se buscan mercaderistas para empleo temporal, atendiendo negocios de venta de productos. Residir en Bávaro. Disponibilidad de horario.",
+  "requisitos": "Bachiller | Experiencia como mercaderista, atendiendo negocios de venta de productos o labores similares | Disponibilidad de horario | Residir en Bávaro | Disponibilidad para tomar el empleo temporal",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "atoribio@ccn.net.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/ccn-mercaderistas.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Mercaderista",
+  "empresa": "CCN (confidencial)",
+  "provincia": "La Vega",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Temporal",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se buscan mercaderistas para empleo temporal, atendiendo negocios de venta de productos. Residir en La Vega. Disponibilidad de horario.",
+  "requisitos": "Bachiller | Experiencia como mercaderista, atendiendo negocios de venta de productos o labores similares | Disponibilidad de horario | Residir en La Vega | Disponibilidad para tomar el empleo temporal",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "atoribio@ccn.net.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/ccn-mercaderistas.jpg",
+  "redes": "si"
+ }
+]
