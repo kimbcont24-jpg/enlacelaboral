@@ -1,0 +1,33 @@
+[
+ {
+  "titulo": "Auxiliar de Contabilidad",
+  "empresa": "Marítima Oriental",
+  "provincia": "Distrito Nacional",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Marítima Oriental busca un Auxiliar de Contabilidad. Funciones: apoyo en el llenado y preparación de los formularios fiscales 606, 607 y demás reportes requeridos, registro y control de facturas de clientes y proveedores, control de cartera y seguimiento a cuentas por cobrar, conciliaciones bancarias, apoyo en cierres mensuales, gestión de cuentas por pagar a proveedores y manejo de caja chica y control de retenciones. Salario RD$35,000.",
+  "requisitos": "Estudiante universitario de Contabilidad o áreas relacionadas | Manejo de Microsoft Office | Residir en el Distrito Nacional | 1 año de experiencia en posición similar",
+  "salario": "RD$35,000",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rrhh@maritimaoriental.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/maritima-oriental-auxiliar-contabilidad.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Técnico de Rebobinado de Motores Eléctricos Industriales, Electricidad Industrial y Mecánica Industrial",
+  "empresa": "Electro Servicios Rosario Mariñez, S.R.L.",
+  "provincia": "Santo Domingo",
+  "area": "Mantenimiento",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Electro Servicios Rosario Mariñez, S.R.L. está contratando un técnico para el área de rebobinado de motores eléctricos industriales, electricidad industrial y mecánica industrial. Preferiblemente residenciado en la zona de Herrera, Santo Domingo Oeste.",
+  "requisitos": "Técnico en rebobinado de motores eléctricos industriales, electricidad industrial o mecánica industrial | Preferiblemente residir en la zona de Herrera, Santo Domingo Oeste",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "electroserviciosrosario@hotmail.com · Tel. (809) 865-9013",
+  "imagen": "https://enlace-rd.vercel.app/flyers/electro-servicios-rosario-marinez-tecnico-rebobinado.jpg",
+  "redes": "si"
+ }
+]
