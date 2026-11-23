@@ -1,0 +1,17 @@
+[
+ {
+  "titulo": "Delivery (motoristas)",
+  "empresa": "El Arepanito",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "El Arepanito solicita deliverys con motor. Ofrece sueldo fijo + gasolina. Ubicación por confirmar.",
+  "requisitos": "Motor en buen estado | Mochila para pedidos | Papeles en regla",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Tel. 849-267-3456",
+  "imagen": "https://enlace-rd.vercel.app/flyers/el-arepanito-deliverys.jpg",
+  "redes": "si"
+ }
+]
