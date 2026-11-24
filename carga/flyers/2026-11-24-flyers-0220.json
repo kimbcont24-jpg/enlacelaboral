@@ -1,0 +1,47 @@
+[
+ {
+  "empresa": "Grupo Domati",
+  "provincia": "Santo Domingo",
+  "titulo": "Asistente de ventas y contabilidad",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Grupo Domati, la fábrica de servicios, busca asistente de ventas y contabilidad. Se pide ser estudiante de Contabilidad. Solo para personas que vivan en Santo Domingo Oeste o zonas cercanas a la Av. Los Beisbolistas.",
+  "requisitos": "Estudiante de Contabilidad | Residir en Santo Domingo Oeste o zonas aledañas a la Av. Los Beisbolistas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "cv@grupodomati.com · Tel. 1 (849) 545-0377 · solo residentes de Santo Domingo Oeste o zonas aledañas a la Av. Los Beisbolistas",
+  "imagen": "https://enlace-rd.vercel.app/flyers/grupo-domati-vacantes.jpg",
+  "redes": "si"
+ },
+ {
+  "empresa": "Grupo Domati",
+  "provincia": "Santo Domingo",
+  "titulo": "Técnico de rebobinado",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Grupo Domati busca técnico de rebobinado con cursos técnicos de electricidad, preferiblemente electricidad industrial. Solo para personas que vivan en Santo Domingo Oeste o zonas cercanas a la Av. Los Beisbolistas.",
+  "requisitos": "Cursos técnicos de electricidad, preferiblemente electricidad industrial | Residir en Santo Domingo Oeste o zonas aledañas a la Av. Los Beisbolistas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "cv@grupodomati.com · Tel. 1 (849) 545-0377 · solo residentes de Santo Domingo Oeste o zonas aledañas a la Av. Los Beisbolistas",
+  "imagen": "https://enlace-rd.vercel.app/flyers/grupo-domati-vacantes.jpg",
+  "redes": "si"
+ },
+ {
+  "empresa": "Grupo Domati",
+  "provincia": "Santo Domingo",
+  "titulo": "Técnico de electricidad",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Grupo Domati busca técnico de electricidad con cursos técnicos de electricidad, preferiblemente electricidad industrial. Solo para personas que vivan en Santo Domingo Oeste o zonas cercanas a la Av. Los Beisbolistas.",
+  "requisitos": "Cursos técnicos de electricidad, preferiblemente electricidad industrial | Residir en Santo Domingo Oeste o zonas aledañas a la Av. Los Beisbolistas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "cv@grupodomati.com · Tel. 1 (849) 545-0377 · solo residentes de Santo Domingo Oeste o zonas aledañas a la Av. Los Beisbolistas",
+  "imagen": "https://enlace-rd.vercel.app/flyers/grupo-domati-vacantes.jpg",
+  "redes": "si"
+ }
+]
