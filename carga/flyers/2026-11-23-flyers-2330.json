@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Asesor(a) Comercial de Vehículos",
+  "empresa": "H&H Motors Investment",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "H&H Motors Investment S.R.L. busca asesor(a) comercial de vehículos. Ofrece sueldo base + comisiones, incentivos por cumplimiento de metas, oportunidad de crecimiento, capacitación y acompañamiento. Ubicación: Calle Camino Juan López No. 60, Ensanche Ozama, Santo Domingo Este.",
+  "requisitos": "Facilidad para comunicarse y negociar | Habilidad para conectar con clientes | Responsabilidad y honestidad | Organización y seguimiento de prospectos | Orientación al cumplimiento de metas | Experiencia en ventas (preferible)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 809-641-8003 (enviar CV)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hh-motors-asesor-comercial-vehiculos.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Especialista en Pauta Publicitaria Digital",
+  "empresa": "The Six (VÜO Partners)",
+  "provincia": "Santo Domingo",
+  "area": "Tecnología",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Responsable de planificar, configurar, ejecutar y optimizar campañas de publicidad digital. Ubicación por confirmar.",
+  "requisitos": "Profesional o técnico en Marketing Digital, Publicidad o afines | Mínimo 2 años de experiencia en planificación, ejecución y optimización de campañas de publicidad digital | Conocimientos técnicos en Meta Ads Manager, Google Ads (Search, Display, Performance Max, YouTube), herramientas de IA de pauta (Advantage+, Smart Bidding, Smart+), CRM y otros | Se valora experiencia con herramientas de IA para contenido y optimización de campañas | Manejo de indicadores: CPL, CPA y ROAS",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@vuo.do · ubicación por confirmar",
+  "imagen": "https://enlace-rd.vercel.app/flyers/the-six-vuo-especialista-pauta-digital.jpg",
+  "redes": "si"
+ }
+]
