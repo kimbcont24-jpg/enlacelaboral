@@ -265,11 +265,20 @@ function provinciasDe(r: Pick<BorradorRow, "texto" | "provincia">): string[] {
   return todas;
 }
 
+/** Nota que deja Claude al revisar el borrador (datos.revision). */
+function revisionDe(r: Pick<BorradorRow, "datos">): { estado: string; motivo: string; fecha: string } | null {
+  const v = r.datos?.["revision"];
+  if (!v || typeof v !== "object") return null;
+  const o = v as Record<string, unknown>;
+  return { estado: str(o["estado"]), motivo: str(o["motivo"]), fecha: str(o["fecha"]) };
+}
+
 function desdeBorradorRow(r: BorradorRow): Borrador {
   const base = extraer(r.texto);
   const d = r.datos ?? {};
   const reqs = Array.isArray(d["requisitos"]) ? (d["requisitos"] as unknown[]).map(str).filter(Boolean).join("\n") : str(d["requisitos"]);
-  const conIA = Object.keys(d).length > 0;
+  // «revision» es la nota de la revisión de Claude, no datos de la vacante.
+  const conIA = Object.keys(d).some((k) => k !== "revision");
   const b: Borrador = conIA
     ? {
         titulo: str(d["titulo"]) || base.titulo,
@@ -499,7 +508,8 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
   const analizar = (r: BorradorRow) => {
     const b = desdeBorradorRow(r);
     const riesgos = senalesRiesgo(`${r.texto} ${b.descripcion}`, !!(b.aplicar.trim() || r.contacto_email || r.contacto_telefono));
-    const completa = !!b.titulo.trim() && !!b.empresa.trim() && !!b.aplicar.trim() && riesgos.length === 0;
+    const duda = revisionDe(r)?.estado === "duda";
+    const completa = !!b.titulo.trim() && !!b.empresa.trim() && !!b.aplicar.trim() && riesgos.length === 0 && !duda;
     return { b, riesgos, completa };
   };
 
@@ -569,7 +579,7 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
         const { b: v, riesgos } = analizar(r);
         return (
         <div key={r.id} className="rounded-2xl border border-border bg-surface p-4">
-          <p className="font-bold">{r.titulo || str(r.datos?.["titulo"]) || "Vacante sin título"} <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">{r.origen === "empresa" ? "Empresa" : "Correo"}</span></p>
+          <p className="font-bold">{r.titulo || str(r.datos?.["titulo"]) || "Vacante sin título"} {revisionDe(r)?.estado === "duda" && <span className="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase text-amber-800">Duda</span>} <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">{r.origen === "empresa" ? "Empresa" : "Correo"}</span></p>
           <p className="mt-0.5 text-xs text-muted-foreground">{[r.empresa || str(r.datos?.["empresa"]), provinciasDe(r).join(", ") || r.provincia, new Date(r.created_at).toLocaleDateString("es-DO"), r.contacto_email].filter(Boolean).join(" · ")}</p>
           <div className="mt-3 rounded-xl bg-secondary p-3 text-sm">
             <p className="text-xs font-semibold text-muted-foreground">Así se publicaría:</p>
@@ -577,6 +587,12 @@ function Borradores({ uid, onRevisar, onCambio }: { uid: string; onRevisar: (r: 
             <p className="text-muted-foreground">{[v.empresa || "Empresa no indicada", v.provincia, v.modalidad, v.salarioMin ? `RD$${Number(v.salarioMin).toLocaleString("es-DO")}${v.salarioMax ? ` - RD$${Number(v.salarioMax).toLocaleString("es-DO")}` : ""}` : ""].filter(Boolean).join(" · ")}</p>
             <p className="text-muted-foreground">{v.requisitos ? `${v.requisitos.split("\n").length} requisitos` : "Sin requisitos"} · {v.aplicar ? `Aplicar: ${v.aplicar}` : "Aplican por tu página"}</p>
           </div>
+          {(() => { const rev = revisionDe(r); return rev?.estado === "duda" ? (
+            <div className="mt-3 rounded-xl border border-amber-400 bg-amber-50 p-3 text-sm text-amber-900" role="note">
+              <p className="font-bold">🟡 Duda de Claude{rev.fecha ? ` · ${new Date(rev.fecha).toLocaleDateString("es-DO")}` : ""}</p>
+              <p className="mt-1">{rev.motivo || "Revísala tú antes de publicar."}</p>
+            </div>
+          ) : null; })()}
           {riesgos.length > 0 && (
             <div className="mt-3 rounded-xl border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive" role="alert">
               <p className="font-bold">Revisa antes de publicar:</p>
