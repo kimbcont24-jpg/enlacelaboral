@@ -1,0 +1,62 @@
+[
+ {
+  "titulo": "Agente de Servicio al Pasajero",
+  "empresa": "E.T. Heinsen",
+  "provincia": "La Romana",
+  "area": "Servicio al Cliente",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "E.T. Heinsen busca personal para el puesto de Agente de Servicio al Pasajero. Puesto en el Aeropuerto de La Romana. El flyer no detalla funciones, salario ni años de experiencia.",
+  "requisitos": "Enviar CV al correo indicado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "atracciondetalentos@etheinsen.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/et-heinsen-vacantes.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista de Procesos y Datos (Operativa)",
+  "empresa": "E.T. Heinsen",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "E.T. Heinsen busca personal para el puesto de Analista de Procesos y Datos (Operativa). Ubicación por confirmar. Área operativa. El flyer no detalla funciones, salario ni años de experiencia.",
+  "requisitos": "Enviar CV al correo indicado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "atracciondetalentos@etheinsen.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/et-heinsen-vacantes.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Analista de Datos y Procesos (Administrativa)",
+  "empresa": "E.T. Heinsen",
+  "provincia": "Santo Domingo",
+  "area": "Administración",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "E.T. Heinsen busca personal para el puesto de Analista de Datos y Procesos (Administrativa). Ubicación por confirmar. Área administrativa. El flyer no detalla funciones, salario ni años de experiencia.",
+  "requisitos": "Enviar CV al correo indicado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "atracciondetalentos@etheinsen.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/et-heinsen-vacantes.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Auxiliar de Contabilidad",
+  "empresa": "E.T. Heinsen",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "E.T. Heinsen busca personal para el puesto de Auxiliar de Contabilidad. Ubicación por confirmar. El flyer no detalla funciones, salario ni años de experiencia.",
+  "requisitos": "Enviar CV al correo indicado",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "atracciondetalentos@etheinsen.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/et-heinsen-vacantes.jpg",
+  "redes": "si"
+ }
+]
