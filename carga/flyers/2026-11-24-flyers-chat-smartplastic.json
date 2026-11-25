@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Chofer",
+  "empresa": "Smart Plastic",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Smart Plastic solicita un Chofer con licencia categoría 3 al día. Residir cerca de Las Américas, Ureña, Cancela, Riviera, Caleta, etc. Beneficios de ley detallados en entrevista.",
+  "requisitos": "Bachiller | Licencia categoría 3 al día | Residir próximo a Las Américas, Ureña, Cancela, Riviera, Caleta, etc.",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 809-539-3417 (enviar CV, licencia y certificado)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smart-plastic-chofer.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ayudante de Almacén",
+  "empresa": "Smart Plastic",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Smart Plastic solicita un Ayudante de Almacén. Residir cerca de Las Américas, Ureña, Cancela, Riviera, Caleta, etc. Beneficios de ley detallados en entrevista.",
+  "requisitos": "Bachiller | Residir próximo a Las Américas, Ureña, Cancela, Riviera, Caleta, etc.",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 809-539-3417 (enviar CV, licencia y certificado)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/smart-plastic-ayudante-almacen.jpg",
+  "redes": "si"
+ }
+]
