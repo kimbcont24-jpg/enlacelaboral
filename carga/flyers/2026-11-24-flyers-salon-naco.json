@@ -1,0 +1,34 @@
+[
+ {
+  "empresa": "Salón de belleza (confidencial)",
+  "provincia": "Distrito Nacional",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Tel. 809-870-5212",
+  "redes": "si",
+  "titulo": "Estilista Profesional",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Salón de belleza en el sector Naco solicita estilista profesional con experiencia en ondas perfectas y estilos con volumen, cepillo, tubo y plancha, y peinados elaborados para eventos especiales. Horario según el flyer: 7:00 a. m. a 4:00 p. m. y de 1:00 p. m. a 8:00 p. m. Ubicación: Naco.",
+  "requisitos": "Conocimientos avanzados en técnicas de peinado y herramientas de calor | Experiencia previa como estilista (no indican años) | Habilidad para ofrecer un servicio al cliente excepcional | Organización, puntualidad y atención al detalle",
+  "imagen": "https://enlace-rd.vercel.app/flyers/salon-naco-estilista.jpg",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/salon-naco-estilista.jpg"
+ },
+ {
+  "empresa": "Salón de belleza (confidencial)",
+  "provincia": "Distrito Nacional",
+  "area": "Otros",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Tel. 809-870-5212",
+  "redes": "si",
+  "titulo": "Shamponier",
+  "experiencia": "3+ años",
+  "descripcion": "Salón de belleza en Naco, Distrito Nacional, busca shamponier: profesional especializado en el cuidado capilar, responsable de ejecutar procesos de lavado y aplicación de tratamientos con alto nivel. Ofrece comisión por servicios y ventas, sueldo base y todos los beneficios de ley.",
+  "requisitos": "Mínimo 5 años de experiencia en lavado y tratamiento capilares | Amplio conocimiento en aplicación de tratamientos de cabina (Plex Forte, acidic color gloss, booster de salerm 21) | Conocimiento actualizado de las líneas capilares del mercado",
+  "imagen": "https://enlace-rd.vercel.app/flyers/salon-naco-shamponier.jpg",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/salon-naco-shamponier.jpg"
+ }
+]
