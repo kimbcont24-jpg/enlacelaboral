@@ -1,0 +1,32 @@
+[
+ {
+  "empresa": "Laboratorios LAM",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@lam.com.do (indicar el título de la vacante en el CV)",
+  "redes": "si",
+  "area": "Contabilidad y Finanzas",
+  "experiencia": "Sin experiencia",
+  "titulo": "Auditor Senior Financiero y Operativo",
+  "descripcion": "Laboratorios LAM busca profesionales para coordinar, ejecutar y supervisar servicios de aseguramiento y asesoramiento sobre los procesos operativos, financieros y administrativos de las empresas que hayan adoptado el mandato de Auditoría Interna, evaluando de manera independiente la efectividad de los sistemas de control interno, gestión de riesgos y gobierno corporativo, para identificar exposiciones, desviaciones y oportunidades de mejora. Ubicación por confirmar.",
+  "requisitos": "Licenciatura en Contabilidad, Finanzas, Administración de Empresas, Economía, Ingeniería Industrial o áreas afines | Especialidad o maestría en Auditoría, Control de Gestión, Finanzas, Gestión de Riesgos, Administración o Gestión por Procesos (deseable) | Formación comprobable en auditoría interna, financiera u operacional, control interno, gestión de riesgos, análisis de procesos y técnicas de auditoría basada en riesgos | Conocimientos de COSO, Normas Globales de Auditoría Interna, gestión de riesgos y documentación de auditoría | Manejo avanzado de herramientas de análisis de datos y hojas de cálculo",
+  "imagen": "https://enlace-rd.vercel.app/flyers/lam-auditor-senior-financiero-operativo.jpg"
+ },
+ {
+  "empresa": "Laboratorios LAM",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@lam.com.do (indicar el título de la vacante en el CV)",
+  "redes": "si",
+  "area": "Contabilidad y Finanzas",
+  "experiencia": "Sin experiencia",
+  "titulo": "Especialista de Auditorías Especiales",
+  "descripcion": "Laboratorios LAM busca profesionales para evaluar los riesgos de fraude interno y externo que puedan afectar a las empresas, analizar la efectividad de los mecanismos de prevención y detección, identificar señales o irregularidades mediante técnicas de auditoría y análisis de datos, y ejecutar investigaciones especiales autorizadas para determinar los hechos asociados a denuncias, indicios o eventos potencialmente fraudulentos. Ubicación por confirmar.",
+  "requisitos": "Licenciatura en Contabilidad, Auditoría, Finanzas, Administración de Empresas, Derecho, Economía o áreas afines | Especialidad o maestría en Auditoría interna / Forense, Prevención e Investigación de Fraude, cumplimiento o Gestión de Riesgos (deseable) | Formación especializada en fraude, auditoría forense, investigaciones corporativas, control interno, gestión de riesgos, técnicas de entrevistas, análisis financiero y preservación de evidencia | Conocimiento de COSO Fraud Risk Management Guide y técnicas de prevención y detección de fraude | Análisis de datos con MS SQL Management Studio, Power BI, Excel u otra herramienta",
+  "imagen": "https://enlace-rd.vercel.app/flyers/lam-especialista-auditorias-especiales.jpg"
+ }
+]
