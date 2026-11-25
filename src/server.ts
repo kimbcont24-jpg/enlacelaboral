@@ -86,6 +86,13 @@ async function sitemap(): Promise<Response> {
   return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600", "vercel-cdn-cache-control": "public, s-maxage=3600, stale-while-revalidate=86400" } });
 }
 
+/**
+ * Si no se puede generar la imagen (p. ej. en Cloudflare gratis, que no permite ese procesamiento),
+ * se manda la imagen fija de Enlace Laboral en vez de un error: así WhatsApp y Telegram siempre muestran algo.
+ */
+const imagenRespaldo = (origen: string) =>
+  new Response(null, { status: 302, headers: { location: `${origen}/og/enlace-laboral-rd.png`, "cache-control": "public, max-age=3600" } });
+
 const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
 
 /** /og/blog/<slug>.png → imagen de vista previa de un artículo del blog. */
@@ -105,7 +112,7 @@ async function ogArticulo(slugArt: string, origen: string): Promise<Response> {
     return new Response(png as BodyInit, { headers: { "content-type": "image/png", "cache-control": "public, max-age=3600, s-maxage=86400" } });
   } catch (e) {
     console.error(e);
-    return new Response("Error", { status: 500 });
+    return imagenRespaldo(origen);
   }
 }
 
@@ -129,7 +136,7 @@ async function ogPortadaIG(ids: string, origen: string): Promise<Response> {
     return new Response(png as BodyInit, { headers: { "content-type": "image/png", "cache-control": "public, max-age=3600, s-maxage=86400" } });
   } catch (e) {
     console.error(e);
-    return new Response("Error", { status: 500 });
+    return imagenRespaldo(origen);
   }
 }
 
@@ -154,7 +161,7 @@ async function ogVacante(id: string, origen: string, ig = false): Promise<Respon
     return new Response(png as BodyInit, { headers: { "content-type": "image/png", "cache-control": "public, max-age=3600, s-maxage=86400" } });
   } catch (e) {
     console.error(e);
-    return new Response("Error", { status: 500 });
+    return imagenRespaldo(origen);
   }
 }
 
