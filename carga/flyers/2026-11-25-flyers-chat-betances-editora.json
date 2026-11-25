@@ -1,0 +1,45 @@
+[
+ {
+  "provincia": "Santo Domingo",
+  "modalidad": "Remota",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Desarrollador Central Senior",
+  "empresa": "FL Betances & Asociados",
+  "area": "Tecnología",
+  "descripcion": "FL Betances & Asociados busca un Desarrollador Central Senior en modalidad remota. Ubicación por confirmar.",
+  "requisitos": "Perfil senior de desarrollo | Modalidad remota",
+  "aplicar": "Vacantes@flbetances.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/fl-betances-desarrollador-central-senior.jpg"
+ },
+ {
+  "provincia": "Distrito Nacional",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Técnico Eléctrico",
+  "empresa": "Editora de Formas (confidencial)",
+  "area": "Operaciones",
+  "descripcion": "Empresa de manufactura ubicada en el Distrito Nacional busca Técnico Eléctrico.",
+  "requisitos": "Experiencia en controles eléctricos, PLC y variadores",
+  "aplicar": "captaciondetalento@editoradeformas.com"
+ },
+ {
+  "provincia": "Distrito Nacional",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Técnico Electrónico",
+  "empresa": "Editora de Formas (confidencial)",
+  "area": "Operaciones",
+  "descripcion": "Empresa de manufactura ubicada en el Distrito Nacional busca Técnico Electrónico.",
+  "requisitos": "Experiencia en controles eléctricos, PLC y variadores",
+  "aplicar": "captaciondetalento@editoradeformas.com"
+ }
+]
