@@ -1,0 +1,34 @@
+[
+ {
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "empresa": "Sheraton Santo Domingo Hotel",
+  "area": "Recursos Humanos",
+  "experiencia": "1-3 años",
+  "titulo": "Analista de Nómina",
+  "aplicar": "recursoshumanos@sheratonsantodomingo.com · WhatsApp 809-796-2056",
+  "descripcion": "Sheraton Santo Domingo Hotel busca Analista de Nómina: generar la nómina del personal verificando los soportes de las novedades, emitir los reportes de nómina y de pago en TSS, entregarlos al Gerente de Recursos Humanos para validación y completar los reportes DGT-3, DGT-4, IR-3 e IR-4.",
+  "requisitos": "Licenciatura en Administración de Empresas, Psicología, Contabilidad o carreras afines | Mínimo 2 años de experiencia en nómina, compensación y beneficios | Manejo de Excel | Alto nivel de planificación y organización",
+  "imagen": "https://enlace-rd.vercel.app/flyers/sheraton-sd-analista-nomina.jpg",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/sheraton-sd-analista-nomina.jpg"
+ },
+ {
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "empresa": "Hageco",
+  "area": "Operaciones",
+  "experiencia": "3+ años",
+  "titulo": "Arquitecto(a) Senior",
+  "aplicar": "empleos@hageco.com (asunto: nombre de la vacante)",
+  "descripcion": "Hageco busca Arquitecto(a) Senior en Santo Domingo: diseñar proyectos arquitectónicos y elaborar planos, preparar presentaciones y renders, coordinar los planos de las disciplinas (MEP), hacer visitas a obra, participar en la selección de materiales de terminación, preparar planos de tramitación y planos As-Built.",
+  "requisitos": "Arquitecto(a), con maestría (preferible) | De 4 a 6 años de experiencia en diseño arquitectónico | Dominio de Revit, AutoCAD, Excel e Illustrator | Manejo avanzado de programa de renderización | Deseable: inglés nivel medio",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hageco-arquitecto-senior.jpg",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/hageco-arquitecto-senior.jpg"
+ }
+]
