@@ -1,0 +1,34 @@
+[
+ {
+  "provincia": "San Cristóbal",
+  "modalidad": "Presencial",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "empresa": "Productos Chef",
+  "area": "Ventas",
+  "tipo": "Por proyecto",
+  "titulo": "Mercaderista Vacacionista",
+  "aplicar": "gestionhumana@productoschef.com",
+  "descripcion": "Productos Chef busca mercaderista vacacionista en San Cristóbal: mantener buena comunicación con el cliente sobre su satisfacción, visitar los puntos de venta y organizar, limpiar y colocar los productos en refrigeradores según la ubicación y presentación requeridas. Enviar el CV indicando el nombre de la vacante en el asunto.",
+  "requisitos": "Estudiante universitario | Vehículo propio (motor o pasola, obligatorio) | Licencia de conducir, casco y seguro del vehículo al día | Excelente servicio al cliente | Residir en San Cristóbal o zonas aledañas",
+  "imagen": "https://enlace-rd.vercel.app/flyers/productos-chef-mercaderista.jpg",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/productos-chef-mercaderista.jpg"
+ },
+ {
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "empresa": "Grupo Eulen",
+  "area": "Servicio al Cliente",
+  "tipo": "Tiempo completo",
+  "titulo": "Recepcionista Bilingüe (inglés/español)",
+  "aplicar": "Tel. 809-390-7379 · 829-521-6630 · 829-521-2519 · 829-755-5471",
+  "descripcion": "Grupo Eulen busca recepcionista bilingüe (inglés/español) en Santo Domingo Este. Contactar a los teléfonos indicados en el flyer.",
+  "requisitos": "Inglés y español",
+  "imagen": "https://enlace-rd.vercel.app/flyers/eulen-recepcionista-bilingue.jpg",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/eulen-recepcionista-bilingue.jpg"
+ }
+]
