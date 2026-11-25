@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Auxiliar de Despacho",
+  "empresa": "Terminaciones (Accesorios, Puertas y Ventanas)",
+  "provincia": "Santiago",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Terminaciones busca un/a Auxiliar de Despacho en Santiago de los Caballeros para preparar los pedidos, verificar las piezas y cantidades contra la orden de despacho y coordinar con almacén y choferes la salida de la mercancía.",
+  "requisitos": "Persona organizada y atenta a los detalles",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Infoterminaciones@gmail.com · WhatsApp 849-403-4000",
+  "imagen": "https://enlace-rd.vercel.app/flyers/terminaciones-auxiliar-despacho.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Operador de Fabricación de Puertas y Ventanas",
+  "empresa": "Terminaciones (Accesorios, Puertas y Ventanas)",
+  "provincia": "Santiago",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Terminaciones busca un Operador de Fabricación de Puertas y Ventanas en Santiago de los Caballeros para medir, cortar y ensamblar perfiles de aluminio de acuerdo con las medidas y especificaciones de cada orden de producción.",
+  "requisitos": "Se valorará experiencia en talleres de puertas y ventanas y en el manejo de herramientas de fabricación",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Infoterminaciones@gmail.com · WhatsApp 849-403-4000",
+  "imagen": "https://enlace-rd.vercel.app/flyers/terminaciones-operador-fabricacion.jpg",
+  "redes": "si"
+ }
+]
