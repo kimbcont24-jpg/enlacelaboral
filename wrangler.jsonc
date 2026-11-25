@@ -3,7 +3,7 @@
 // Vercel ignora este archivo: para volver a Vercel no hay que borrarlo.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "enlace-laboral",
+  "name": "enlacelaboral",
   "main": ".output/server/index.mjs",
   "compatibility_date": "2026-11-22",
   "compatibility_flags": ["nodejs_compat"],
