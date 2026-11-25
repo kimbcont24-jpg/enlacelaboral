@@ -83,7 +83,7 @@ async function sitemap(): Promise<Response> {
   for (const f of filas) for (const t of f.etiquetas ?? []) if (t.startsWith("m:empresa:") && t.length > 10) empresas.add(slug(t.slice(10)));
   const landings = [...landingsColeccion, ...landingsProvincia, ...landingsArea].map((l) => l.slug).concat([...empresas]).filter(Boolean).map((s) => `<url><loc>${origen}/empleos/${s}</loc><lastmod>${hoy}</lastmod><changefreq>daily</changefreq></url>`);
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${[...fijas, ...blog, ...landings, ...vacantes].join("")}</urlset>`;
-  return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
+  return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600", "vercel-cdn-cache-control": "public, s-maxage=3600, stale-while-revalidate=86400" } });
 }
 
 const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
@@ -348,6 +348,28 @@ async function crmEmpresas(request: Request): Promise<Response> {
   return new Response(cuerpo, { headers: { "content-type": "application/json", "cache-control": "no-store" } });
 }
 
+/**
+ * 25 nov 2026: Vercel pausó la cuenta por pasarse de «Fluid Active CPU» (4 h/mes del plan gratis).
+ * Causa: cada visita (y cada robot) armaba la página en el servidor desde cero.
+ * Ahora las páginas públicas se guardan 10 min en la CDN de Vercel y, al vencer, se sirve la copia
+ * guardada mientras se renueva por detrás (hasta 1 día). Cada publicación nueva borra la caché.
+ * La sesión vive en el navegador (localStorage), así que el HTML del servidor es igual para todos.
+ */
+const PRIVADAS = /^\/(admin|panel|cuenta|auth|guardadas|renovar|baja|insignias\/prueba|_serverFn|api)(\/|$)/;
+function conCacheCDN(request: Request, url: URL, response: Response): Response {
+  if (request.method !== "GET" && request.method !== "HEAD") return response;
+  if (response.status !== 200 || response.headers.has("set-cookie")) return response;
+  if (!(response.headers.get("content-type") ?? "").includes("text/html")) return response;
+  const h = new Headers(response.headers);
+  if (PRIVADAS.test(url.pathname)) {
+    h.set("cache-control", "private, no-store");
+  } else {
+    h.set("cache-control", "public, max-age=0, must-revalidate");
+    h.set("vercel-cdn-cache-control", "public, s-maxage=600, stale-while-revalidate=86400");
+  }
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers: h });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
@@ -368,12 +390,12 @@ export default {
     const ogBlog = url.pathname.match(/^\/og\/blog\/([a-z0-9-]{1,90})\.png$/);
     if (ogBlog) return ogArticulo(ogBlog[1]!, url.origin);
     if (url.pathname === "/robots.txt") {
-      return new Response(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /panel\nDisallow: /auth\nDisallow: /api/\n\nSitemap: ${SITIO}/sitemap.xml\n`, { headers: { "content-type": "text/plain; charset=utf-8" } });
+      return new Response(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /panel\nDisallow: /auth\nDisallow: /api/\n\nSitemap: ${SITIO}/sitemap.xml\n`, { headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=86400" } });
     }
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      return conCacheCDN(request, url, await normalizeCatastrophicSsrResponse(response));
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {
