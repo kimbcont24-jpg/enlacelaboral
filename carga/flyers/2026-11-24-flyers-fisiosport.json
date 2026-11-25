@@ -1,0 +1,34 @@
+[
+ {
+  "empresa": "FisioSport Estudio",
+  "provincia": "La Altagracia (Punta Cana)",
+  "area": "Salud",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "contacto@fisiosportestudio.com",
+  "redes": "si",
+  "titulo": "Licenciado en Rehabilitación o Fisioterapeuta",
+  "descripcion": "FisioSport Estudio, en crecimiento, busca licenciados en rehabilitación o fisioterapeutas diplomados para su sede en Bávaro. No se necesita experiencia: la empresa te ayuda a convertirte en el candidato ideal. Ofrece excelente ambiente laboral y oportunidad de crecimiento profesional. Enviar CV al correo indicado.",
+  "requisitos": "Licenciatura en rehabilitación o diploma de fisioterapeuta",
+  "imagen": "https://enlace-rd.vercel.app/flyers/fisiosport-estudio.jpg",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/fisiosport-estudio.jpg#licenciado-en-rehabilitación-o-fisioterapeuta"
+ },
+ {
+  "empresa": "FisioSport Estudio",
+  "provincia": "La Altagracia (Punta Cana)",
+  "area": "Salud",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "contacto@fisiosportestudio.com",
+  "redes": "si",
+  "titulo": "Entrenador/a de Gimnasio",
+  "descripcion": "FisioSport Estudio busca entrenador/a de gimnasio con conocimientos en ejercicios de rehabilitación y entrenamientos personalizados para su sede en Bávaro. Ofrece excelente ambiente laboral y oportunidad de crecimiento profesional. Enviar CV al correo indicado.",
+  "requisitos": "Conocimientos en ejercicios de rehabilitación | Experiencia en entrenamientos personalizados",
+  "imagen": "https://enlace-rd.vercel.app/flyers/fisiosport-estudio.jpg",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/fisiosport-estudio.jpg#entrenadora-de-gimnasio"
+ }
+]
