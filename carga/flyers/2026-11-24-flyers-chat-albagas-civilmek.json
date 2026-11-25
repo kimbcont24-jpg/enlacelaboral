@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Auxiliar Logístico / Transportación",
+  "empresa": "Albagas",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Albagas busca un/a Auxiliar Logístico / Transportación con disponibilidad inmediata. Horario: lunes a viernes 8:00 AM – 5:00 PM y sábados 8:00 AM – 12:00 PM. Residente en Santo Domingo Norte.",
+  "requisitos": "Estudiante o egresado de Ing. Industrial, Sistemas, Administración o afines | Residente en Santo Domingo Norte | Género indistinto | Disponibilidad inmediata | Herramientas: MS Office y Microsoft Excel",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Reclutamiento@albagas.com.do (asunto: Vacante)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/albagas-auxiliar-logistico-transportacion.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Encargado/a de Compras",
+  "empresa": "Civil Mek",
+  "provincia": "Santo Domingo",
+  "area": "Compras",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Civil Mek busca un/a Encargado/a de Compras: gestionar y supervisar los procesos de compras, negociar precios y condiciones con proveedores, evaluar y seleccionar proveedores, garantizar el abastecimiento oportuno, dar seguimiento a órdenes de compra y entregas, controlar costos y mantener actualizada la base de datos de proveedores. Ubicación por confirmar.",
+  "requisitos": "Profesional en Administración de Empresas, Negocios, Ingeniería Industrial o áreas afines | Experiencia previa en posiciones de compras | Habilidades de negociación y análisis | Manejo de Excel y sistemas administrativos | Capacidad de organización, planificación y toma de decisiones",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "gestionhumana@civilmek.com (asunto: ENCARGADO(A) DE COMPRAS)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/civilmek-encargado-compras.jpg",
+  "redes": "si"
+ }
+]
