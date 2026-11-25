@@ -1,8 +1,8 @@
 {
-  "fecha": "2026-11-25T00:06:57.356Z",
-  "total": 698,
-  "revisadas": 125,
-  "sin_contacto": 125,
+  "fecha": "2026-11-25T00:07:45.604Z",
+  "total": 708,
+  "revisadas": 133,
+  "sin_contacto": 133,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "nst": 0,
