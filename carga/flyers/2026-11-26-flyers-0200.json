@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Auxiliar de Reclutamiento y Selección de Talento",
+  "empresa": "Melcon",
+  "provincia": "Distrito Nacional",
+  "area": "Recursos Humanos",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Melcon busca un/a Auxiliar de Reclutamiento y Selección de Talento en modalidad temporal, en Santo Domingo, D.N. Horario de lunes a viernes de 8:00 a. m. a 5:00 p. m. y sábados de 9:00 a. m. a 1:00 p. m. Integración inmediata y residir en Santo Domingo.",
+  "requisitos": "Estudiante de término o egresado de Psicología Industrial, Administración de Empresas o carreras afines | Más de 6 meses de experiencia en reclutamiento, selección e integración de personal | Experiencia en publicación de vacantes, búsqueda y preselección de candidatos | Conocimiento de pruebas psicométricas y plataformas de evaluación | Microsoft Office, con Excel intermedio | Elaboración de expedientes y seguimiento a contratos de trabajo | Disponibilidad inmediata",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "cv@melcon.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/melcon-auxiliar-reclutamiento-seleccion.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Recepcionista",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Administración",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Se busca una Recepcionista para integrarse al equipo a partir de enero. Salario publicado en el flyer: aproximadamente RD$32,000 mensuales, más subsidio de almuerzo. Disponibilidad para trabajar sábados rotativos. Ubicación por confirmar. Enviar CV por WhatsApp.",
+  "requisitos": "Preferiblemente estudiante de Psicología o recién graduada | Buena presentación personal | Buenas habilidades de comunicación y servicio al cliente | Manejo de Canva (deseable) | Disponibilidad para sábados rotativos",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 829-867-1319",
+  "imagen": "https://enlace-rd.vercel.app/flyers/empresa-confidencial-recepcionista.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ayudante de Producción",
+  "empresa": "Productos de Acero",
+  "provincia": "Santo Domingo",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Productos de Acero busca Ayudantes de Producción con contrato indefinido, jornada rotativa de turnos de 8 horas (incluye amanecidas), de lunes a sábado. Salario publicado en el flyer: RD$29,988 mensuales. Beneficios: de ley, pago de horas extras, transporte y subsidio de almuerzo y cena. Rutas alternas: Km. 9 y Villa Altagracia. Ubicación por confirmar.",
+  "requisitos": "Bachiller concluido | Experiencia en producción o áreas operativas (preferible, no indispensable) | Conocimientos básicos de mecánica y herramientas manuales | Conocimiento básico de normas de seguridad industrial | Disponibilidad para horarios rotativos, incluyendo turnos nocturnos | Capacidad para trabajo físico",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp (809) 607-5766",
+  "imagen": "https://enlace-rd.vercel.app/flyers/productos-de-acero-ayudante-de-produccion.jpg",
+  "redes": "si"
+ }
+]
