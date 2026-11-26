@@ -1,0 +1,18 @@
+[
+ {
+  "titulo": "Chofer",
+  "empresa": "Sabe",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Sabe busca un chofer para su equipo en Santo Domingo Oeste. Horario: lunes a viernes de 6:00 a. m. a 3:00 p. m., sábados 4 horas y domingos libres. Ofrece almuerzo cubierto al 100%, seguro médico, salario de Navidad, vacaciones, bonificación anual, cooperativa y buen ambiente de trabajo.",
+  "requisitos": "Manejar vehículos mecánicos | Licencia de conducir categoría 2 | Mínimo 3 años de experiencia | Disposición y agilidad | Residir en Santo Domingo Oeste, Herrera, Km 9 o zonas cercanas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@sabemg.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/sabe-chofer.jpg",
+  "redes": "si",
+  "fuente_url": "https://enlace-rd.vercel.app/flyers/sabe-chofer.jpg#chofer"
+ }
+]
