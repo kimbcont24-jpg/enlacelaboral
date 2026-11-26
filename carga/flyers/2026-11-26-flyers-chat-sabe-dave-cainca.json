@@ -1,0 +1,62 @@
+[
+ {
+  "titulo": "Chef Ejecutivo",
+  "empresa": "Sabe",
+  "provincia": "Santo Domingo",
+  "area": "Hotelería y Turismo",
+  "experiencia": "3+ años",
+  "descripcion": "Sabe busca Chef Ejecutivo en Santo Domingo Oeste. Horario: lunes a viernes de 6:00 a. m. a 3:00 p. m., sábados libres y domingos de 6:00 a. m. a 10:00 a. m. Se requieren 5 o más años de experiencia en restaurantes o empresas de comida empresarial. Disponibilidad inmediata. Salario no indicado en el flyer.",
+  "requisitos": "Licenciatura en Gastronomía, Hotelería y Turismo o carreras afines | 5+ años de experiencia en restaurantes o empresas de comida empresarial | Conocimientos y manejo de IA | Excel avanzado | Habilidades de liderazgo y supervisión | Formación en cocina | Experiencia trabajando con recetarios | Experiencia con indicadores y métricas | Disponibilidad inmediata",
+  "aplicar": "reclutamiento@sabemg.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/sabe-chef-ejecutivo.jpg",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo"
+ },
+ {
+  "titulo": "Bartender",
+  "empresa": "Dave & Buster's",
+  "provincia": "Santo Domingo",
+  "area": "Hotelería y Turismo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Dave & Buster's busca Bartender. Ubicación por confirmar. Se requiere disponibilidad para horarios rotativos, nocturnos y fines de semana. Salario no indicado en el flyer.",
+  "requisitos": "Experiencia como bartender | Excelente comunicación y habilidades de atención al cliente | Actitud de servicio, dinamismo y trabajo en equipo | Capacidad para trabajar bajo presión y mantener altos estándares de calidad e higiene | Disponibilidad para horarios rotativos, nocturnos y fines de semana",
+  "aplicar": "rh@daveandbusters.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/dave-and-busters-bartender.jpg",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo"
+ },
+ {
+  "titulo": "Camarero",
+  "empresa": "Dave & Buster's",
+  "provincia": "Santo Domingo",
+  "area": "Hotelería y Turismo",
+  "experiencia": "1-3 años",
+  "descripcion": "Dave & Buster's busca Camarero(a) con más de 1 año de experiencia. Ubicación por confirmar. Se requiere disponibilidad para horarios rotativos, nocturnos y fines de semana. Salario no indicado en el flyer.",
+  "requisitos": "Bachiller | +1 año de experiencia como camarero(a) | Experiencia en servicio de alto nivel y atención al detalle | Excelente comunicación | Actitud de servicio al cliente | Disponibilidad para horarios rotativos, nocturnos y fines de semana",
+  "aplicar": "rh@daveandbusters.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/dave-and-busters-camarero.jpg",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo"
+ },
+ {
+  "titulo": "Agente de Ventas Courier",
+  "empresa": "Cainca",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Cainca busca Agente de Ventas Courier en Santo Domingo, modalidad presencial. Funciones: gestión de prospectos de ventas y clientes corporativos, asesoría profesional a clientes, estrategias de ventas y manejo de indicadores de ventas. Salario no indicado en el flyer. En el asunto del correo colocar «Agente de Ventas Courier».",
+  "requisitos": "Amplio manejo en técnicas de ventas y negociación | Experiencia laboral en ventas y marketing de servicios courier y carga aérea | Manejo de tarifas, cotizaciones logísticas y paquete de office | Conocimiento del mercado de cargas y paquetería | Orientación a resultados, comunicación, trabajo en equipo, estrategia de marketing y proactividad",
+  "aplicar": "rrhh@cainca.com y gerenciarrhh@cainca.com (asunto: Agente de Ventas Courier)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/cainca-agente-de-ventas-courier.jpg",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo"
+ }
+]
