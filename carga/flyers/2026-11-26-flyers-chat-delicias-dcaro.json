@@ -1,0 +1,62 @@
+[
+ {
+  "titulo": "Repostera",
+  "area": "Producción",
+  "descripcion": "La pastelería busca una repostera creativa y responsable para integrarse a su equipo. Ubicación por confirmar. Enviar CV por correo.",
+  "requisitos": "Pasión por la repostería | Creatividad | Responsabilidad",
+  "imagen": "https://enlace-rd.vercel.app/flyers/delicias-d-caro-repostera.jpg",
+  "empresa": "Delicias D' Caro Pastelería",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "deliciasdecarord@gmail.com",
+  "redes": "si"
+ },
+ {
+  "titulo": "Encargada de Limpieza",
+  "area": "Operaciones",
+  "descripcion": "La pastelería busca una encargada de limpieza responsable para su equipo. Ubicación por confirmar. Enviar CV por correo.",
+  "requisitos": "Responsabilidad | Orden y cuidado del local",
+  "imagen": "https://enlace-rd.vercel.app/flyers/delicias-d-caro-encargada-limpieza.jpg",
+  "empresa": "Delicias D' Caro Pastelería",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "deliciasdecarord@gmail.com",
+  "redes": "si"
+ },
+ {
+  "titulo": "Servicio al Cliente",
+  "area": "Servicio al Cliente",
+  "descripcion": "La pastelería busca una persona creativa y responsable para atender a sus clientes. Ubicación por confirmar. Enviar CV por correo.",
+  "requisitos": "Responsabilidad | Creatividad | Buena atención al cliente",
+  "imagen": "https://enlace-rd.vercel.app/flyers/delicias-d-caro-servicio-cliente.jpg",
+  "empresa": "Delicias D' Caro Pastelería",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "deliciasdecarord@gmail.com",
+  "redes": "si"
+ },
+ {
+  "titulo": "Decorador/a de Globos",
+  "area": "Otros",
+  "descripcion": "Pastelería de repostería y eventos busca decorador/a de globos creativo/a y responsable. Ubicación por confirmar. Enviar CV por correo.",
+  "requisitos": "Creatividad | Responsabilidad | Interés por los eventos",
+  "imagen": "https://enlace-rd.vercel.app/flyers/delicias-d-caro-decorador-globos.jpg",
+  "empresa": "Delicias D' Caro Pastelería",
+  "provincia": "Santo Domingo",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "deliciasdecarord@gmail.com",
+  "redes": "si"
+ }
+]
