@@ -1,0 +1,62 @@
+[
+ {
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Técnico en Equipos Odontológicos",
+  "empresa": "Roce Dental",
+  "provincia": "Santiago",
+  "area": "Mantenimiento",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Roce Dental busca un Técnico en Equipos Odontológicos para Santiago. Se valora experiencia en el área técnica y conocimientos básicos de informática. Buscan personas con trabajo en equipo, proactividad, responsabilidad y atención al detalle.",
+  "requisitos": "Técnico o estudiante de Electrónica o carreras afines | Licencia de conducir vigente | Deseos de aprender y crecer | Conocimientos básicos de informática (se valora) | Experiencia en el área técnica",
+  "aplicar": "recursoshumanosst@rocedental.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/roce-dental-tecnico-equipos-odontologicos.jpg"
+ },
+ {
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Ejecutiva de Ventas Internas",
+  "empresa": "Total Logistics Solutions",
+  "provincia": "Distrito Nacional",
+  "area": "Ventas",
+  "experiencia": "1-3 años",
+  "descripcion": "Total Logistics Solutions busca una Ejecutiva de Ventas Internas en Zona Colonial, Santo Domingo: realizar la gestión de ventas y seguimiento de los servicios ofertados desde la oficina y proveer soporte a los Ejecutivos de Cuentas para brindar un servicio de calidad a los clientes.",
+  "requisitos": "Mínimo 1 año de experiencia en el sector logístico | Estudiante de Licenciatura en Administración de Empresas, Mercadeo, Negocios Internacionales o áreas afines | Inglés intermedio | Cursos o diplomados en logística (deseable) | Servicio al cliente | Microsoft Office 365 | Curso o entrenamiento en ventas y negociación",
+  "aplicar": "reclutamiento@mardom.com · WhatsApp 809-913-3143",
+  "imagen": "https://enlace-rd.vercel.app/flyers/total-logistics-solutions-ejecutiva-ventas-internas.jpg"
+ },
+ {
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Boarding Clerk",
+  "empresa": "Mardom Servicios Logísticos Integrados",
+  "provincia": "San Cristóbal",
+  "area": "Logística",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Mardom Servicios Logísticos Integrados busca un Boarding Clerk en Haina. Responsabilidades: recibir y despachar los buques con las autoridades designadas, cumpliendo con los requerimientos de los clientes y de las autoridades locales según el procedimiento establecido, y servir de enlace entre el departamento de Tráfico y el buque, garantizando la fluidez y prontitud de la información.",
+  "requisitos": "Estudiante universitario de Administración de Empresas, Administración Portuaria, Negocios Internacionales o Ingeniería Industrial | Licencia de conducir categoría 2 (indispensable) | Inglés intermedio-avanzado | Microsoft 365",
+  "aplicar": "reclutamiento@mardom.com · dgacevedo@mardom.com · WhatsApp 809-722-8017",
+  "imagen": "https://enlace-rd.vercel.app/flyers/mardom-boarding-clerk.jpg"
+ },
+ {
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "titulo": "Gerente de Área Restaurante",
+  "empresa": "Dave & Buster's",
+  "provincia": "Santo Domingo",
+  "area": "Alimentos y Bebidas",
+  "experiencia": "3+ años",
+  "descripcion": "Dave & Buster's busca un Gerente de Área Restaurante con experiencia liderando operaciones en restaurantes de alto volumen, enfoque en resultados y manejo de indicadores (ventas, costos y productividad). Ubicación por confirmar.",
+  "requisitos": "Experiencia liderando operaciones en restaurantes de alto volumen | Enfoque en resultados y manejo de indicadores (ventas, costos y productividad) | Habilidades de liderazgo y desarrollo de equipos | Excelente servicio al cliente y manejo de situaciones críticas | Organización, toma de decisiones y capacidad para trabajar bajo presión",
+  "aplicar": "rh@daveandbusters.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/dave-and-busters-gerente-area-restaurante.jpg"
+ }
+]
