@@ -1,0 +1,31 @@
+[
+ {
+  "titulo": "Almacenista I",
+  "empresa": "Schad",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Schad busca un Almacenista I para movilizar, trasladar y ubicar mercancías dentro de las áreas de almacén, contribuyendo al orden y al flujo eficiente de los productos. Ubicación: Avenida Monumental.",
+  "requisitos": "Educación básica | Formación complementaria en almacén y control de inventarios | Conocimiento y manejo de equipos de movilización de carga (walkie / pallet jack) | Capacidad para trabajar en equipo | Conocimientos en operación de montacargas (deseable)",
+  "fuente": "Publicación de la empresa",
+  "aplicar": "rys@schad.do",
+  "redes": "si"
+ },
+ {
+  "titulo": "Asistente Oftálmico",
+  "empresa": "Instituto Oftalmológico",
+  "provincia": "Santo Domingo",
+  "area": "Salud",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "El Instituto Oftalmológico (desde 1995) busca asistente oftálmico para integrarse a su equipo. Disponibilidad inmediata. Ubicación por confirmar.",
+  "requisitos": "Auxiliar en farmacia | Experiencia en asistencia médica | Experiencia en atención a pacientes | Proactividad y capacidad de adaptación | Disponibilidad inmediata",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "wandasalcedor@hotmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/instituto-oftalmologico-asistente-oftalmico.jpg",
+  "redes": "si"
+ }
+]
