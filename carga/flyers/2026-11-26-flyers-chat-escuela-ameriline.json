@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Asistente de Maestro(a)",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Centro educativo confidencial busca asistente de maestro(a) con vocación de servicio y ganas de aportar en la formación de niños. Ubicación por confirmar. Salario no indicado en el flyer.",
+  "requisitos": "Responsabilidad | Trabajo en equipo | Actitud positiva | Deseo de aprender | Vocación de servicio",
+  "imagen": "https://enlace-rd.vercel.app/flyers/empresa-confidencial-asistente-de-maestro.jpg",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "aplicar": "WhatsApp 829-901-8218",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo"
+ },
+ {
+  "titulo": "Psicólogo(a) Escolar",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Centro educativo confidencial busca psicólogo(a) escolar con experiencia trabajando en escuelas. Ubicación por confirmar. Salario no indicado en el flyer.",
+  "requisitos": "Experiencia trabajando en escuelas | Profesional responsable | Vocación de servicio | Comprometido(a) con el bienestar de la comunidad educativa",
+  "imagen": "https://enlace-rd.vercel.app/flyers/empresa-confidencial-psicologo-escolar.jpg",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Otros",
+  "aplicar": "WhatsApp 829-901-8218",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo"
+ },
+ {
+  "titulo": "Facturación y Asistente de Contabilidad",
+  "empresa": "Ameriline Pharmaceutical",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Ameriline Pharmaceutical busca una persona organizada, responsable y con experiencia en el área contable y de facturación, en Santo Domingo. Salario no indicado en el flyer.",
+  "requisitos": "Estudiante universitario o graduado de Contabilidad | Experiencia en procesos de facturación | Conocimientos de registros y operaciones contables | Manejo de cuentas por cobrar y por pagar | Manejo de Excel y sistemas de facturación | Atención al detalle, organización y trabajo en equipo | Discreción y confidencialidad",
+  "aplicar": "rrhh@amerilineph.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/ameriline-facturacion-asistente-contabilidad.jpg",
+  "fuente": "Flyer de la empresa",
+  "redes": "si",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo"
+ }
+]
