@@ -1,0 +1,17 @@
+[
+ {
+  "titulo": "Desarrollador",
+  "empresa": "Pontificia Universidad Católica Madre y Maestra (PUCMM)",
+  "provincia": "Santiago",
+  "area": "Tecnología",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "PUCMM busca un Desarrollador para el Campus Santiago: analizar, diseñar, desarrollar y dar mantenimiento a los sistemas de información utilizados, de acuerdo a las necesidades de los usuarios, mediante el uso de herramientas de programación, asegurando la calidad de los programas desarrollados. Favor colocar el nombre de la vacante en el título del correo.",
+  "requisitos": "Ingeniero en Sistemas y Computación o carreras afines | Experiencia en análisis, diseño, desarrollo, pruebas e implementación de soluciones de software | Experiencia en consumo y publicación de servicios web REST y SOAP | Pensamiento analítico, orientación al servicio y trabajo en equipo | Preferible: experiencia en desarrollo sobre plataforma PeopleSoft | Preferible: experiencia desarrollando instrucciones de bases de datos avanzado (Oracle y MS SQL)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento-csti@pucmm.edu.do (colocar el nombre de la vacante en el título del correo)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/pucmm-desarrollador-santiago.jpg",
+  "redes": "si"
+ }
+]
