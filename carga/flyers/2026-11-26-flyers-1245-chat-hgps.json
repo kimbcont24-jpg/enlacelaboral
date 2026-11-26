@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Soporte BI",
+  "empresa": "Hospital General de la Plaza de la Salud",
+  "provincia": "Santo Domingo",
+  "area": "Tecnología",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Soporte BI para el Hospital General de la Plaza de la Salud: extracción, recopilación, análisis e interpretación de datos con SQL, generación de reportes y apoyo a la toma de decisiones. Horario lunes a viernes de 9:00 a. m. a 5:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Grado universitario en Ingeniería en Sistemas, Informática o carreras afines | Experiencia comprobada en extracción, recopilación, análisis e interpretación de datos con SQL | Capacidad para generar reportes y apoyar decisiones basadas en datos | Dominio avanzado de SQL, Power BI y Microsoft Excel | Formación complementaria en SQL, Power BI y Excel",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamientoyseleccion@hgps.org.do · Asunto: nombre de la vacante",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hgps-soporte-bi.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Coordinador de Monitoreo CCTV",
+  "empresa": "Hospital General de la Plaza de la Salud",
+  "provincia": "Santo Domingo",
+  "area": "Operaciones",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Coordinación del monitoreo CCTV del Hospital General de la Plaza de la Salud. Horario lunes a viernes de 9:00 a. m. a 5:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Grado de Ingeniería en Sistemas, Industrial o afines | Experiencia en supervisión de personal | Experiencia en estrategia de seguridad para circuitos cerrados | Manejo y mantenimiento de sistemas de vigilancia y seguridad | Manejo de Siera SAC y Panther 3.0 | Conocimiento del sistema SAP (deseable)",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamientoyseleccion@hgps.org.do · Asunto: nombre de la vacante",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hgps-coordinador-monitoreo-cctv.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Especialista de Planificación",
+  "empresa": "Hospital General de la Plaza de la Salud",
+  "provincia": "Santo Domingo",
+  "area": "Administración",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Especialista de Planificación en el Hospital General de la Plaza de la Salud: estructura organizacional, análisis y descriptivos de puestos. Horario lunes a viernes de 9:00 a. m. a 5:00 p. m. Ubicación por confirmar.",
+  "requisitos": "Grado universitario en Ingeniería Industrial, Psicología Industrial o carreras afines | Experiencia en estructura organizacional, análisis y descriptivos de puestos | Dominio de Microsoft Excel y Visio | Conocimiento del sistema SAP | Diplomado en Diseño y Documentación de Procesos",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamientoyseleccion@hgps.org.do · Asunto: nombre de la vacante",
+  "imagen": "https://enlace-rd.vercel.app/flyers/hgps-especialista-planificacion.jpg",
+  "redes": "si"
+ }
+]
