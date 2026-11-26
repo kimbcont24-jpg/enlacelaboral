@@ -1,0 +1,33 @@
+[
+ {
+  "titulo": "Auxiliar de Almacén",
+  "empresa": "Arias Repuestos y Más",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Pasantía",
+  "experiencia": "1-3 años",
+  "salario": "RD$30,000 - RD$35,000",
+  "descripcion": "Arias Repuestos y Más busca un Auxiliar de Almacén (pasante) para el área de operaciones, almacén y logística, con residencia en Ens. La Fe, Villa Juana, Cristo Rey o zonas aledañas. Horario: lunes a viernes de 8:00 a. m. a 5:00 p. m. y sábados de 8:00 a. m. a 12:00 p. m. Ofrece seguro médico, estabilidad laboral y oportunidad de crecimiento.",
+  "requisitos": "Bachiller técnico recién graduado (preferible) | 1 año de experiencia | Manejo básico de paquete de oficina (Word, Excel) | Disponibilidad para mover piezas desde la tienda al almacén y viceversa | Residir en Ens. La Fe, Villa Juana, Cristo Rey o zonas aledañas | Disponibilidad de lunes a viernes de 8:00 a. m. a 5:00 p. m. y sábados de 8:00 a. m. a 12:00 p. m.",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rrhh@arias.do · WhatsApp 849-440-9417",
+  "imagen": "https://enlace-rd.vercel.app/flyers/arias-repuestos-auxiliar-almacen.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Encargada de Tienda",
+  "empresa": "Pam Móvil Shop",
+  "provincia": "Distrito Nacional",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Pam Móvil Shop busca una Encargada de Tienda en Plaza Central, 2do piso (27 de Febrero con Winston Churchill). Horario: lunes a sábado de 9:00 a. m. a 7:00 p. m. y domingo de 9:00 a. m. a 4:00 p. m. (1 día libre a la semana). Ofrece sueldo, comisión, bono por cumplir metas, seguro médico y doble sueldo.",
+  "requisitos": "Puntualidad extrema | Experiencia en teléfonos, videojuegos y multiservicios | Proactiva, amable, creativa y con comunicación asertiva | Dominio de Word, Excel, escaneo e impresiones | Dominio de marketing y ventas (digital y local) | Que resida cerca de Plaza Central",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Tel. 809-447-8978 (enviar CV)",
+  "imagen": "https://enlace-rd.vercel.app/flyers/pam-movil-shop-encargada-tienda.jpg",
+  "redes": "si"
+ }
+]
