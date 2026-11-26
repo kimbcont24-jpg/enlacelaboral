@@ -1,0 +1,47 @@
+[
+ {
+  "titulo": "Asistente Administrativa",
+  "empresa": "Rent-A-House",
+  "provincia": "La Altagracia (Punta Cana)",
+  "area": "Administración",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Rent-A-House busca una Asistente Administrativa para su sucursal de Punta Cana. Horario: lunes a viernes de 9:00 a. m. a 6:00 p. m. y sábados de 9:00 a. m. a 1:00 p. m. Salario a discutir en la entrevista.",
+  "requisitos": "Enviar currículum por correo o WhatsApp",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "rentahouserd@gmail.com · WhatsApp 829-648-0507",
+  "imagen": "https://enlace-rd.vercel.app/flyers/rent-a-house-asistente-administrativa.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Electricista Automotriz",
+  "empresa": "Radiocentro",
+  "provincia": "Santo Domingo",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Radiocentro busca un Electricista Automotriz para diagnosticar y reparar fallas eléctricas de vehículos, realizar mantenimiento preventivo y correctivo y verificar el funcionamiento seguro de las unidades. Salario publicado en el flyer: RD$35,000 mensuales. Ubicación por confirmar. Asunto del correo: Electricista Automotriz.",
+  "requisitos": "Técnico en Electricidad o Mecánica Automotriz | Experiencia mínima de 1 año en el área | Diagnóstico de sistemas eléctricos automotrices | Lectura de diagramas eléctricos y códigos DTC | Licencia de conducir vigente",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@radiocentro.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/radiocentro-electricista-automotriz.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Animadora de Promociones",
+  "empresa": "Dinant",
+  "provincia": "Santo Domingo",
+  "area": "Ventas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Dinant (Santo Domingo Oeste) busca una Animadora de Promociones para ejecutar actividades de animación, manejo de eventos y activaciones en el punto de venta, cumpliendo tiempos de respuesta y políticas de la empresa. Se puede entregar el CV en Capital Humano.",
+  "requisitos": "Bachiller | Un año de experiencia en posiciones similares | Disponibilidad de horario | Disponibilidad de viajar al interior del país | Manejo de audio y luces para animación de eventos",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "empleos.rd@dinant.com · Tel. (829) 762-5503",
+  "imagen": "https://enlace-rd.vercel.app/flyers/dinant-animadora-de-promociones.jpg",
+  "redes": "si"
+ }
+]
