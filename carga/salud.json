@@ -1,16 +1,16 @@
 {
-  "fecha": "2026-11-26T02:43:27.236Z",
-  "publicadas": 2440,
-  "nuevas_24h": 70,
-  "nuevas_72h": 293,
+  "fecha": "2026-11-26T19:15:09.577Z",
+  "publicadas": 2509,
+  "nuevas_24h": 116,
+  "nuevas_72h": 344,
   "problemas": [],
   "ok": [
     "https://enlacelaboralrd.com/ → 200",
     "https://enlacelaboralrd.com/vacantes → 200",
     "https://enlacelaboralrd.com/sitemap.xml → 200",
     "https://enlacelaboralrd.com/empleos/sector-publico → 200",
-    "2440 vacantes publicadas",
-    "70 vacantes nuevas en 24 h",
+    "2509 vacantes publicadas",
+    "116 vacantes nuevas en 24 h",
     "Robot corrió hace 0 h"
   ]
 }
