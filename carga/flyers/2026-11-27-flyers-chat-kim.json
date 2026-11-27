@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Operario de Limpieza",
+  "empresa": "Empresa (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Servicios Generales",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "1-3 años",
+  "descripcion": "Se solicita Operario de Limpieza con salario fijo más bono, beneficios de ley y crecimiento laboral. Horario: amanecida. Ubicación por confirmar.",
+  "requisitos": "Bachillerato terminado | Experiencia previa como conserje | Responsabilidad y puntualidad",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "arias.gestionhumana@gmail.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/empresa-confidencial-operario-de-limpieza.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Ayudante de Pintura",
+  "empresa": "Samsic Handling Dominicana",
+  "provincia": "Santo Domingo",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Samsic Handling Dominicana contrata Ayudante de Pintura en el Aeropuerto Internacional de Las Américas (AILA). Funciones: preparación de superficies (lijar, desengrasar, aplicar primer y enmascarar), apoyo en pintado (mezcla de pinturas y capas base y barniz), ayudar en la desabolladura de vehículos y apoyo en secado y pulido.",
+  "requisitos": "Ser bachiller | Licencia de conducir al día categoría 2 | Disponibilidad para trabajar horarios rotativos",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Tel. 829-755-1703",
+  "imagen": "https://enlace-rd.vercel.app/flyers/samsic-ayudante-de-pintura.jpg",
+  "redes": "si"
+ }
+]
