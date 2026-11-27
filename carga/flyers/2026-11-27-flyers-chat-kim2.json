@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Gerente de Contabilidad",
+  "empresa": "Manuel Corripio",
+  "provincia": "Santo Domingo",
+  "area": "Contabilidad y Finanzas",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "3+ años",
+  "descripcion": "Manuel Corripio busca un Gerente de Contabilidad que guíe e impulse el crecimiento del departamento: dirigir y supervisar las operaciones de contabilidad, cierres mensuales, revisión de impuestos, control interno, cierre anual, estados financieros y análisis con el presupuesto. Ofrece oportunidades de crecimiento, ambiente colaborativo, bonificación y beneficios de ley y salario competitivo. Ubicación por confirmar.",
+  "requisitos": "Egresado de Contabilidad, Finanzas o áreas afines | Maestría en el área (preferible) | Manejo de sistemas contables (preferiblemente Dynamics 365 Finance) | Dominio de Office (Planner) | 5 años de experiencia en roles similares | Experiencia en supervisión de personal | Dominio de impuestos (mensual y anual) | Normas NIIF y NIAS | Conocimiento de auditoría interna y externa y de presupuesto financiero",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "Manuel.corripiogyg@corripio.com.do",
+  "imagen": "https://enlace-rd.vercel.app/flyers/manuel-corripio-gerente-de-contabilidad.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Supervisor de Operaciones (bilingüe inglés-francés)",
+  "empresa": "Newtech",
+  "provincia": "Santo Domingo",
+  "area": "Servicio al Cliente",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Newtech busca un Operations Supervisor para su operación de call center/BPO. Requiere inglés avanzado y francés fluido. Trabajo presencial. Ubicación por confirmar.",
+  "requisitos": "Inglés avanzado | Francés fluido | Experiencia previa en servicio al cliente en call center/BPO | Buenas habilidades de comunicación e interpersonales | Permiso de trabajo vigente | Disponibilidad para trabajar presencial",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "applynow@newtechsa.com",
+  "imagen": "https://enlace-rd.vercel.app/flyers/newtech-operations-supervisor.jpg",
+  "redes": "si"
+ }
+]
