@@ -1,6 +1,32 @@
 {
- "fecha": "2026-11-26T19:15:09.696Z",
+ "fecha": "2026-11-27T02:43:57.057Z",
  "vacantes": [
+  {
+   "id": "5ed7a8f3-ea02-4e55-9495-7c5d676544a5",
+   "titulo": "Coordinador(a) de Trade Marketing",
+   "empresa": "Empresa (confidencial)",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 90000,
+   "salario_max": null,
+   "creada": "2026-11-26T21:24:00.161927+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/5ed7a8f3-ea02-4e55-9495-7c5d676544a5",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/5ed7a8f3-ea02-4e55-9495-7c5d676544a5.png"
+  },
+  {
+   "id": "17210f91-cfd5-4be6-9fd1-5b5c14c45d6b",
+   "titulo": "Lavador de Carros",
+   "empresa": "Empresa (confidencial)",
+   "provincia": "Distrito Nacional",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 16993,
+   "salario_max": null,
+   "creada": "2026-11-26T19:44:00.205503+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/17210f91-cfd5-4be6-9fd1-5b5c14c45d6b",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/17210f91-cfd5-4be6-9fd1-5b5c14c45d6b.png"
+  },
   {
    "id": "ef2a893a-addc-4077-b085-ed9f55c042ff",
    "titulo": "Vendedor(a) de Joyería",
@@ -197,30 +223,147 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/168adf18-8dc7-47ac-a1a0-ff9091c78f9b.png"
   },
   {
-   "id": "8b5945d4-f898-49e7-8a8a-6a5dd56a9646",
-   "titulo": "Coordinador de Operaciones",
-   "empresa": "SAM Latinoamérica",
-   "provincia": "Santo Domingo",
+   "id": "7b1d5b6c-0996-4abe-869d-f8fef9ce2095",
+   "titulo": "Oficial de Soporte de Tecnología de la Información (Sucursal Santiago)",
+   "empresa": "Parval",
+   "provincia": "Santiago",
    "modalidad": "Presencial",
    "tipo": "Tiempo completo",
-   "salario_min": 50000,
+   "salario_min": 0,
    "salario_max": null,
-   "creada": "2026-11-24T01:44:00.17683+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/8b5945d4-f898-49e7-8a8a-6a5dd56a9646",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/8b5945d4-f898-49e7-8a8a-6a5dd56a9646.png"
+   "creada": "2026-11-26T21:44:00.073906+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/7b1d5b6c-0996-4abe-869d-f8fef9ce2095",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/7b1d5b6c-0996-4abe-869d-f8fef9ce2095.png"
   },
   {
-   "id": "6cbb0c2c-fbbc-4ce3-bad6-99a39c158578",
-   "titulo": "Inspector Técnico",
-   "empresa": "SAM Latinoamérica",
+   "id": "54f457d4-3d08-4a20-b3ef-bb4eb1905093",
+   "titulo": "Médico General / Médico Asistente",
+   "empresa": "Centro Estética Stephany",
    "provincia": "Santo Domingo",
    "modalidad": "Presencial",
    "tipo": "Tiempo completo",
-   "salario_min": 50000,
+   "salario_min": 0,
    "salario_max": null,
-   "creada": "2026-11-24T01:44:00.17683+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/6cbb0c2c-fbbc-4ce3-bad6-99a39c158578",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/6cbb0c2c-fbbc-4ce3-bad6-99a39c158578.png"
+   "creada": "2026-11-26T21:24:00.161927+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/54f457d4-3d08-4a20-b3ef-bb4eb1905093",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/54f457d4-3d08-4a20-b3ef-bb4eb1905093.png"
+  },
+  {
+   "id": "60f0158b-00a2-494d-a603-b61a7aa5cbae",
+   "titulo": "Cocinero de Línea",
+   "empresa": "The Food Market",
+   "provincia": "Distrito Nacional",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T20:04:00.095031+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/60f0158b-00a2-494d-a603-b61a7aa5cbae",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/60f0158b-00a2-494d-a603-b61a7aa5cbae.png"
+  },
+  {
+   "id": "3f1007a2-bbc6-4a7f-a2ba-0dae106d8420",
+   "titulo": "Asistente de Despacho",
+   "empresa": "Alterra Grupo",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T19:44:00.205503+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/3f1007a2-bbc6-4a7f-a2ba-0dae106d8420",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/3f1007a2-bbc6-4a7f-a2ba-0dae106d8420.png"
+  },
+  {
+   "id": "cf262f53-3a73-41fe-8515-787ad0950c84",
+   "titulo": "Director de la Escuela de Ciencias de la Salud y Psicología",
+   "empresa": "UAPA",
+   "provincia": "Santiago",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T19:24:00.177933+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/cf262f53-3a73-41fe-8515-787ad0950c84",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/cf262f53-3a73-41fe-8515-787ad0950c84.png"
+  },
+  {
+   "id": "6c98162a-32dc-4185-8180-a159100ff659",
+   "titulo": "Conserje",
+   "empresa": "Alterra Grupo",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T19:24:00.177933+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/6c98162a-32dc-4185-8180-a159100ff659",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/6c98162a-32dc-4185-8180-a159100ff659.png"
+  },
+  {
+   "id": "476be6a9-f7ba-4db9-819f-0133748271af",
+   "titulo": "Pasante de Recursos Humanos",
+   "empresa": "Almafrío (Vima Foods)",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Pasantía",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T19:24:00.177933+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/476be6a9-f7ba-4db9-819f-0133748271af",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/476be6a9-f7ba-4db9-819f-0133748271af.png"
+  },
+  {
+   "id": "872a65f5-f73f-4808-876c-a99eb05a6d86",
+   "titulo": "Analista de Call Center",
+   "empresa": "UAPA",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T19:24:00.177933+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/872a65f5-f73f-4808-876c-a99eb05a6d86",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/872a65f5-f73f-4808-876c-a99eb05a6d86.png"
+  },
+  {
+   "id": "3812889a-0e72-4237-91ee-8a57aac8db41",
+   "titulo": "Técnico de Mantenimiento",
+   "empresa": "UAPA",
+   "provincia": "Santiago",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T19:24:00.177933+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/3812889a-0e72-4237-91ee-8a57aac8db41",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/3812889a-0e72-4237-91ee-8a57aac8db41.png"
+  },
+  {
+   "id": "1c6351f7-cdef-46d5-a425-567ba952412d",
+   "titulo": "Coordinador/a de Marca (UCAP)",
+   "empresa": "UAPA",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T19:24:00.177933+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/1c6351f7-cdef-46d5-a425-567ba952412d",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/1c6351f7-cdef-46d5-a425-567ba952412d.png"
+  },
+  {
+   "id": "b538132f-2586-4747-a8da-4001c418679e",
+   "titulo": "Encargado/a de Control Patrimonial",
+   "empresa": "UAPA",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T19:24:00.177933+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/b538132f-2586-4747-a8da-4001c418679e",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/b538132f-2586-4747-a8da-4001c418679e.png"
   },
   {
    "id": "afacae8f-511f-4f77-8a47-a2c404745060",
@@ -236,19 +379,6 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/afacae8f-511f-4f77-8a47-a2c404745060.png"
   },
   {
-   "id": "3cbdaf3b-f600-4fc5-94c9-af8ff21d5d7f",
-   "titulo": "Animadora de Promociones",
-   "empresa": "Dinant",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T18:24:00.199252+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/3cbdaf3b-f600-4fc5-94c9-af8ff21d5d7f",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/3cbdaf3b-f600-4fc5-94c9-af8ff21d5d7f.png"
-  },
-  {
    "id": "9727bcb4-83f3-4f89-a581-10f10fa1c677",
    "titulo": "Asistente Administrativa",
    "empresa": "Rent-A-House",
@@ -262,6 +392,19 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/9727bcb4-83f3-4f89-a581-10f10fa1c677.png"
   },
   {
+   "id": "3cbdaf3b-f600-4fc5-94c9-af8ff21d5d7f",
+   "titulo": "Animadora de Promociones",
+   "empresa": "Dinant",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T18:24:00.199252+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/3cbdaf3b-f600-4fc5-94c9-af8ff21d5d7f",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/3cbdaf3b-f600-4fc5-94c9-af8ff21d5d7f.png"
+  },
+  {
    "id": "4131d1a0-6eeb-493a-b46a-6e97c828cf05",
    "titulo": "Inspector de Calidad",
    "empresa": "Polyplas",
@@ -273,6 +416,19 @@
    "creada": "2026-11-26T17:24:00.191647+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/4131d1a0-6eeb-493a-b46a-6e97c828cf05",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/4131d1a0-6eeb-493a-b46a-6e97c828cf05.png"
+  },
+  {
+   "id": "4076660f-9409-4a85-8d71-7cff4c050689",
+   "titulo": "Cajero(a) Supervisor(a)",
+   "empresa": "V&P Beauty Factory",
+   "provincia": "Distrito Nacional",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T17:04:00.190528+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/4076660f-9409-4a85-8d71-7cff4c050689",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/4076660f-9409-4a85-8d71-7cff4c050689.png"
   },
   {
    "id": "6fb2b5f9-4767-4171-93ee-48ac14ba1ca8",
@@ -444,6 +600,32 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/750f7ae7-cec5-411d-9be3-523f6bf0d5e0.png"
   },
   {
+   "id": "1c951f16-ccc9-4845-9400-822c749150a5",
+   "titulo": "Facturación y Asistente de Contabilidad",
+   "empresa": "Ameriline Pharmaceutical",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T17:04:00.190528+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/1c951f16-ccc9-4845-9400-822c749150a5",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/1c951f16-ccc9-4845-9400-822c749150a5.png"
+  },
+  {
+   "id": "35c62492-d5a2-4565-a22c-0f19e0b9e8dc",
+   "titulo": "Customer Service Officer",
+   "empresa": "AutoPAQ",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T17:04:00.190528+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/35c62492-d5a2-4565-a22c-0f19e0b9e8dc",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/35c62492-d5a2-4565-a22c-0f19e0b9e8dc.png"
+  },
+  {
    "id": "5559b358-8c67-4864-8ad3-b8835f6cb808",
    "titulo": "Peluquero(a) Completo(a)",
    "empresa": "V&P Beauty Factory",
@@ -455,19 +637,6 @@
    "creada": "2026-11-26T17:04:00.190528+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/5559b358-8c67-4864-8ad3-b8835f6cb808",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/5559b358-8c67-4864-8ad3-b8835f6cb808.png"
-  },
-  {
-   "id": "4076660f-9409-4a85-8d71-7cff4c050689",
-   "titulo": "Cajero(a) Supervisor(a)",
-   "empresa": "V&P Beauty Factory",
-   "provincia": "Distrito Nacional",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T17:04:00.190528+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/4076660f-9409-4a85-8d71-7cff4c050689",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/4076660f-9409-4a85-8d71-7cff4c050689.png"
   },
   {
    "id": "98f912c7-ad38-4d5a-8cc4-62ad9504a740",
@@ -522,19 +691,6 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/9c42da1e-3f7d-4f89-b162-085a9e0369a0.png"
   },
   {
-   "id": "1c951f16-ccc9-4845-9400-822c749150a5",
-   "titulo": "Facturación y Asistente de Contabilidad",
-   "empresa": "Ameriline Pharmaceutical",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T17:04:00.190528+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/1c951f16-ccc9-4845-9400-822c749150a5",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/1c951f16-ccc9-4845-9400-822c749150a5.png"
-  },
-  {
    "id": "8e9a67d1-a5e8-41e1-81af-dd5553a2b477",
    "titulo": "Analista Seguridad y Salud en el Trabajo",
    "empresa": "Brinsa Dominicana",
@@ -574,17 +730,17 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/b731226a-4595-44ac-b165-1820f841f998.png"
   },
   {
-   "id": "35c62492-d5a2-4565-a22c-0f19e0b9e8dc",
-   "titulo": "Customer Service Officer",
-   "empresa": "AutoPAQ",
-   "provincia": "Santo Domingo",
+   "id": "69d62bb8-b632-414a-a4fc-179dec5b1c3a",
+   "titulo": "Asistente de Ventas Turísticas",
+   "empresa": "Richard Xpress",
+   "provincia": "San Cristóbal",
    "modalidad": "Presencial",
    "tipo": "Tiempo completo",
    "salario_min": 0,
    "salario_max": null,
-   "creada": "2026-11-26T17:04:00.190528+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/35c62492-d5a2-4565-a22c-0f19e0b9e8dc",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/35c62492-d5a2-4565-a22c-0f19e0b9e8dc.png"
+   "creada": "2026-11-26T16:04:00.185322+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/69d62bb8-b632-414a-a4fc-179dec5b1c3a",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/69d62bb8-b632-414a-a4fc-179dec5b1c3a.png"
   },
   {
    "id": "756749f9-8b7b-4c4d-a5f3-5f7590e5f635",
@@ -598,19 +754,6 @@
    "creada": "2026-11-26T16:04:00.185322+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/756749f9-8b7b-4c4d-a5f3-5f7590e5f635",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/756749f9-8b7b-4c4d-a5f3-5f7590e5f635.png"
-  },
-  {
-   "id": "69d62bb8-b632-414a-a4fc-179dec5b1c3a",
-   "titulo": "Asistente de Ventas Turísticas",
-   "empresa": "Richard Xpress",
-   "provincia": "San Cristóbal",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T16:04:00.185322+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/69d62bb8-b632-414a-a4fc-179dec5b1c3a",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/69d62bb8-b632-414a-a4fc-179dec5b1c3a.png"
   },
   {
    "id": "6ad2652f-7c55-483f-b389-f9e5e74f6f6a",
@@ -704,19 +847,6 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/0a1461ec-9c15-4b6e-b1cd-45c9b566fdf5.png"
   },
   {
-   "id": "e667f0a3-50ed-4e84-bd29-3df50fd539cf",
-   "titulo": "Técnico en Soldadura (Temporal)",
-   "empresa": "Mardom Servicios Logísticos Integrados",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T15:24:00.193913+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/e667f0a3-50ed-4e84-bd29-3df50fd539cf",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/e667f0a3-50ed-4e84-bd29-3df50fd539cf.png"
-  },
-  {
    "id": "1c5efd9f-8754-4ff3-a9e3-52cf08987b53",
    "titulo": "Procesador/a de Datos",
    "empresa": "Mardom Servicios Logísticos Integrados",
@@ -782,6 +912,45 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/a92b2fb2-ee2e-4cb8-adca-84f43fe8734f.png"
   },
   {
+   "id": "e667f0a3-50ed-4e84-bd29-3df50fd539cf",
+   "titulo": "Técnico en Soldadura (Temporal)",
+   "empresa": "Mardom Servicios Logísticos Integrados",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T15:24:00.193913+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/e667f0a3-50ed-4e84-bd29-3df50fd539cf",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/e667f0a3-50ed-4e84-bd29-3df50fd539cf.png"
+  },
+  {
+   "id": "c72f9505-e7dc-4e53-a8cd-134f023e0b2a",
+   "titulo": "Especialista de Planificación",
+   "empresa": "Hospital General de la Plaza de la Salud",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T15:04:00.221005+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/c72f9505-e7dc-4e53-a8cd-134f023e0b2a",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/c72f9505-e7dc-4e53-a8cd-134f023e0b2a.png"
+  },
+  {
+   "id": "f76bf4ee-2210-4e67-9029-71b5af0def2a",
+   "titulo": "Cuentas por Pagar",
+   "empresa": "Bellotas Premium Quality Foods",
+   "provincia": "Distrito Nacional",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T15:04:00.221005+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/f76bf4ee-2210-4e67-9029-71b5af0def2a",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/f76bf4ee-2210-4e67-9029-71b5af0def2a.png"
+  },
+  {
    "id": "0782156f-805d-4728-b537-2b6b3af6367b",
    "titulo": "Soporte BI",
    "empresa": "Hospital General de la Plaza de la Salud",
@@ -806,32 +975,6 @@
    "creada": "2026-11-26T15:04:00.221005+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/56e0f061-2b85-42fb-8a92-351276f614a0",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/56e0f061-2b85-42fb-8a92-351276f614a0.png"
-  },
-  {
-   "id": "f76bf4ee-2210-4e67-9029-71b5af0def2a",
-   "titulo": "Cuentas por Pagar",
-   "empresa": "Bellotas Premium Quality Foods",
-   "provincia": "Distrito Nacional",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T15:04:00.221005+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/f76bf4ee-2210-4e67-9029-71b5af0def2a",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/f76bf4ee-2210-4e67-9029-71b5af0def2a.png"
-  },
-  {
-   "id": "c72f9505-e7dc-4e53-a8cd-134f023e0b2a",
-   "titulo": "Especialista de Planificación",
-   "empresa": "Hospital General de la Plaza de la Salud",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T15:04:00.221005+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/c72f9505-e7dc-4e53-a8cd-134f023e0b2a",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/c72f9505-e7dc-4e53-a8cd-134f023e0b2a.png"
   },
   {
    "id": "7bb58d3c-f19d-4101-bb9b-418910eacb93",
@@ -873,19 +1016,6 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/bc705deb-7554-4d5f-9784-dca3864e90a4.png"
   },
   {
-   "id": "8edc318b-a911-47fc-8dae-101f76a6467e",
-   "titulo": "Encargada de Limpieza",
-   "empresa": "Delicias D' Caro Pastelería",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T13:44:00.08858+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/8edc318b-a911-47fc-8dae-101f76a6467e",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/8edc318b-a911-47fc-8dae-101f76a6467e.png"
-  },
-  {
    "id": "7eecb526-5fdf-4e0b-bfc2-05e88f3f2c8c",
    "titulo": "Servicio al Cliente",
    "empresa": "Delicias D' Caro Pastelería",
@@ -897,6 +1027,19 @@
    "creada": "2026-11-26T13:44:00.08858+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/7eecb526-5fdf-4e0b-bfc2-05e88f3f2c8c",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/7eecb526-5fdf-4e0b-bfc2-05e88f3f2c8c.png"
+  },
+  {
+   "id": "8edc318b-a911-47fc-8dae-101f76a6467e",
+   "titulo": "Encargada de Limpieza",
+   "empresa": "Delicias D' Caro Pastelería",
+   "provincia": "Santo Domingo",
+   "modalidad": "Presencial",
+   "tipo": "Tiempo completo",
+   "salario_min": 0,
+   "salario_max": null,
+   "creada": "2026-11-26T13:44:00.08858+00:00",
+   "enlace": "https://enlacelaboralrd.com/vacantes/8edc318b-a911-47fc-8dae-101f76a6467e",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/8edc318b-a911-47fc-8dae-101f76a6467e.png"
   },
   {
    "id": "1ed9e73c-1674-4ae6-a65d-583f526db6c9",
@@ -1341,17 +1484,17 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/203e5ef9-5d6d-4b07-87d1-3b06ff910c12.png"
   },
   {
-   "id": "ca198236-31d1-4b94-aed7-7cdcddd1af2d",
-   "titulo": "Boarding Clerk",
-   "empresa": "Mardom Servicios Logísticos Integrados",
-   "provincia": "San Cristóbal",
+   "id": "e1c927f1-4aff-4517-bf55-763dbcc7b321",
+   "titulo": "Encargada de Tienda",
+   "empresa": "Pam Móvil Shop",
+   "provincia": "Distrito Nacional",
    "modalidad": "Presencial",
    "tipo": "Tiempo completo",
    "salario_min": 0,
    "salario_max": null,
    "creada": "2026-11-26T01:24:00.099488+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/ca198236-31d1-4b94-aed7-7cdcddd1af2d",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/ca198236-31d1-4b94-aed7-7cdcddd1af2d.png"
+   "enlace": "https://enlacelaboralrd.com/vacantes/e1c927f1-4aff-4517-bf55-763dbcc7b321",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/e1c927f1-4aff-4517-bf55-763dbcc7b321.png"
   },
   {
    "id": "3cc3ded3-976e-42ce-beb8-18a1dff0aa6f",
@@ -1380,30 +1523,17 @@
    "imagen": "https://enlacelaboralrd.com/og/vacantes/391f5656-8f10-471b-a8fa-ad255c1a1766.png"
   },
   {
-   "id": "1b8cd255-a223-49a2-a3fc-ccaa5e1a4956",
-   "titulo": "Auxiliar de Almacén",
-   "empresa": "Arias Repuestos y Más",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Pasantía",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T01:24:00.099488+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/1b8cd255-a223-49a2-a3fc-ccaa5e1a4956",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/1b8cd255-a223-49a2-a3fc-ccaa5e1a4956.png"
-  },
-  {
-   "id": "e1c927f1-4aff-4517-bf55-763dbcc7b321",
-   "titulo": "Encargada de Tienda",
-   "empresa": "Pam Móvil Shop",
-   "provincia": "Distrito Nacional",
+   "id": "ca198236-31d1-4b94-aed7-7cdcddd1af2d",
+   "titulo": "Boarding Clerk",
+   "empresa": "Mardom Servicios Logísticos Integrados",
+   "provincia": "San Cristóbal",
    "modalidad": "Presencial",
    "tipo": "Tiempo completo",
    "salario_min": 0,
    "salario_max": null,
    "creada": "2026-11-26T01:24:00.099488+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/e1c927f1-4aff-4517-bf55-763dbcc7b321",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/e1c927f1-4aff-4517-bf55-763dbcc7b321.png"
+   "enlace": "https://enlacelaboralrd.com/vacantes/ca198236-31d1-4b94-aed7-7cdcddd1af2d",
+   "imagen": "https://enlacelaboralrd.com/og/vacantes/ca198236-31d1-4b94-aed7-7cdcddd1af2d.png"
   },
   {
    "id": "68ee6ece-efc3-4478-9d94-47aabe27963d",
@@ -1430,136 +1560,6 @@
    "creada": "2026-11-26T01:24:00.099488+00:00",
    "enlace": "https://enlacelaboralrd.com/vacantes/3fcca3b2-2d59-4478-93f8-26166ff4bdcb",
    "imagen": "https://enlacelaboralrd.com/og/vacantes/3fcca3b2-2d59-4478-93f8-26166ff4bdcb.png"
-  },
-  {
-   "id": "fa9cdd98-ecac-4b00-8944-bc1f65451eaf",
-   "titulo": "Encargado de Tienda",
-   "empresa": "Jael Technology",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T01:24:00.099488+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/fa9cdd98-ecac-4b00-8944-bc1f65451eaf",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/fa9cdd98-ecac-4b00-8944-bc1f65451eaf.png"
-  },
-  {
-   "id": "1877ea0e-80c5-448a-9ae0-881946192cdc",
-   "titulo": "Gerente Gobierno Corporativo del Consejo y Atención al Asociado",
-   "empresa": "Asociación Duarte de Ahorros y Préstamos",
-   "provincia": "Duarte (San Francisco)",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T01:04:00.17648+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/1877ea0e-80c5-448a-9ae0-881946192cdc",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/1877ea0e-80c5-448a-9ae0-881946192cdc.png"
-  },
-  {
-   "id": "1f534cfa-393c-489f-8f99-f9a1d70bfd3b",
-   "titulo": "Analista Comercial",
-   "empresa": "Cervecería Vegana",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T00:44:00.325472+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/1f534cfa-393c-489f-8f99-f9a1d70bfd3b",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/1f534cfa-393c-489f-8f99-f9a1d70bfd3b.png"
-  },
-  {
-   "id": "db0e61b4-08a9-4406-b66f-5abfe912d260",
-   "titulo": "Coordinador de Farmacias",
-   "empresa": "Grupo Menarini",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T00:24:00.172398+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/db0e61b4-08a9-4406-b66f-5abfe912d260",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/db0e61b4-08a9-4406-b66f-5abfe912d260.png"
-  },
-  {
-   "id": "1aa59678-1e00-49cf-af7b-84a021ac2790",
-   "titulo": "Analista de Auditoría",
-   "empresa": "Interval Puesto de Bolsa",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-26T00:24:00.172398+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/1aa59678-1e00-49cf-af7b-84a021ac2790",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/1aa59678-1e00-49cf-af7b-84a021ac2790.png"
-  },
-  {
-   "id": "70aba54b-309e-4f89-8ab4-ed1eabaf16ca",
-   "titulo": "Ejecutiva de Negocios",
-   "empresa": "CKTRANS Motors",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-25T23:24:00.165731+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/70aba54b-309e-4f89-8ab4-ed1eabaf16ca",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/70aba54b-309e-4f89-8ab4-ed1eabaf16ca.png"
-  },
-  {
-   "id": "b83c8fad-ecbb-4005-8c34-d4cdfba8d2b2",
-   "titulo": "Operador Temporal",
-   "empresa": "Refidomsa",
-   "provincia": "San Cristóbal",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-25T22:24:00.206395+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/b83c8fad-ecbb-4005-8c34-d4cdfba8d2b2",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/b83c8fad-ecbb-4005-8c34-d4cdfba8d2b2.png"
-  },
-  {
-   "id": "cb4dba5c-e057-4058-9104-7fe596ac4c51",
-   "titulo": "Director(a) General de Administración y Carrera Judicial",
-   "empresa": "Poder Judicial de la República Dominicana",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-25T22:24:00.206395+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/cb4dba5c-e057-4058-9104-7fe596ac4c51",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/cb4dba5c-e057-4058-9104-7fe596ac4c51.png"
-  },
-  {
-   "id": "41a5cb6b-5053-4e35-9e1f-16efb61778e7",
-   "titulo": "Auditor Senior Financiero y Operativo",
-   "empresa": "Laboratorios LAM",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-25T22:24:00.206395+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/41a5cb6b-5053-4e35-9e1f-16efb61778e7",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/41a5cb6b-5053-4e35-9e1f-16efb61778e7.png"
-  },
-  {
-   "id": "63ea4dc5-f9ba-4d9b-9310-f601df244062",
-   "titulo": "Especialista de Auditorías Especiales",
-   "empresa": "Laboratorios LAM",
-   "provincia": "Santo Domingo",
-   "modalidad": "Presencial",
-   "tipo": "Tiempo completo",
-   "salario_min": 0,
-   "salario_max": null,
-   "creada": "2026-11-25T22:24:00.206395+00:00",
-   "enlace": "https://enlacelaboralrd.com/vacantes/63ea4dc5-f9ba-4d9b-9310-f601df244062",
-   "imagen": "https://enlacelaboralrd.com/og/vacantes/63ea4dc5-f9ba-4d9b-9310-f601df244062.png"
   }
  ]
 }
