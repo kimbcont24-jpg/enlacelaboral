@@ -64,12 +64,13 @@ function AvisoSitio() {
   const [texto, setTexto] = useState("");
   const [tipo, setTipo] = useState<"info" | "alerta">("info");
   const [visible, setVisible] = useState(false);
+  const [hasta, setHasta] = useState("");
   const [listo, setListo] = useState(false);
-  useEffect(() => { if (!listo) { setTexto(aviso.texto); setTipo(aviso.tipo); setVisible(aviso.visible); if (aviso.texto || aviso.visible) setListo(true); } }, [aviso, listo]);
+  useEffect(() => { if (!listo) { setTexto(aviso.texto); setTipo(aviso.tipo); setVisible(aviso.visible); setHasta(aviso.hasta); if (aviso.texto || aviso.visible) setListo(true); } }, [aviso, listo]);
 
   const aplicar = async (mostrar: boolean) => {
     if (mostrar && texto.trim().length < 3) return void toast.error("Escribe el mensaje del aviso.");
-    const r = await Promise.all([guardar("aviso_texto", texto.trim().slice(0, 200)), guardar("aviso_tipo", tipo), guardar("ctl_aviso", mostrar ? "on" : "off")]);
+    const r = await Promise.all([guardar("aviso_texto", texto.trim().slice(0, 200)), guardar("aviso_tipo", tipo), guardar("aviso_hasta", hasta), guardar("ctl_aviso", mostrar ? "on" : "off")]);
     if (r.every(Boolean)) { setVisible(mostrar); toast.success(mostrar ? "Aviso publicado en todo el sitio" : "Aviso quitado"); } else toast.error("No se pudo guardar el aviso");
   };
 
@@ -77,6 +78,8 @@ function AvisoSitio() {
     <Tarjeta titulo="Aviso para todo el sitio" ayuda="Una barra arriba de todas las páginas. Úsala para mantenimiento, ofertas o novedades.">
       <label className="block"><span className={rotulo}>Mensaje (máximo 200 letras)</span><input className={campo} maxLength={200} value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Ej. Oferta de lanzamiento en Impulso hasta el 30 de noviembre" /></label>
       <label className="mt-3 block sm:w-60"><span className={rotulo}>Estilo</span><select className={campo} value={tipo} onChange={(e) => setTipo(e.target.value as "info" | "alerta")}><option value="info">Informativo (azul)</option><option value="alerta">Importante (amarillo)</option></select></label>
+      <label className="mt-3 block sm:w-60"><span className={rotulo}>Se quita solo el (opcional)</span><input type="date" className={campo} value={hasta} onChange={(e) => setHasta(e.target.value)} /></label>
+      {hasta && <p className="mt-1 text-xs text-muted-foreground">Deja de verse al terminar ese día. Bórralo si quieres que se quede hasta que lo quites tú.</p>}
       {texto.trim() && (
         <div className="mt-4 overflow-hidden rounded-xl border border-border">
           <p className={`px-4 py-2 text-center text-sm font-semibold ${tipo === "alerta" ? "bg-[#ffd84d] text-[#4a3000]" : "bg-primary text-primary-foreground"}`}>{texto}</p>

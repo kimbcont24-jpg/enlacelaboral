@@ -16,12 +16,12 @@ export type ClaveControl = (typeof CONTROLES)[number]["clave"];
 
 export type Controles = {
   activos: Record<ClaveControl, boolean>;
-  aviso: { visible: boolean; texto: string; tipo: "info" | "alerta" };
+  aviso: { visible: boolean; texto: string; tipo: "info" | "alerta"; hasta: string };
 };
 
 const porDefecto: Controles = {
   activos: { ctl_empresas: true, ctl_pedidos: true, ctl_avisos_pedidos: true, ctl_redes: true, ctl_renovar: true, ctl_hojas: true },
-  aviso: { visible: false, texto: "", tipo: "info" },
+  aviso: { visible: false, texto: "", tipo: "info", hasta: "" },
 };
 
 async function leer(): Promise<Controles> {
@@ -30,7 +30,10 @@ async function leer(): Promise<Controles> {
   const activos = { ...porDefecto.activos };
   for (const c of CONTROLES) activos[c.clave] = m.get(c.clave) !== "off";
   const texto = (m.get("aviso_texto") ?? "").trim();
-  return { activos, aviso: { visible: m.get("ctl_aviso") === "on" && texto.length > 0, texto, tipo: m.get("aviso_tipo") === "alerta" ? "alerta" : "info" } };
+  // «aviso_hasta» (AAAA-MM-DD, opcional): el aviso se quita solo al terminar ese día (hora de RD).
+  const hasta = (m.get("aviso_hasta") ?? "").trim();
+  const vencido = /^\d{4}-\d{2}-\d{2}$/.test(hasta) && Date.now() > new Date(`${hasta}T23:59:59-04:00`).getTime();
+  return { activos, aviso: { visible: m.get("ctl_aviso") === "on" && texto.length > 0 && !vencido, texto, tipo: m.get("aviso_tipo") === "alerta" ? "alerta" : "info", hasta } };
 }
 
 export function useControles() {

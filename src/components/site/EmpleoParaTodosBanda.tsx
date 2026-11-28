@@ -57,7 +57,6 @@ export function EmpleoParaTodosBanda() {
       </svg>
 
       {/* Marca de agua arriba */}
-      <p aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-10 whitespace-nowrap text-center text-[8px] font-bold uppercase tracking-[0.28em] text-white/35 sm:top-14 sm:text-xs sm:tracking-[0.5em]">Conecta talento con oportunidades reales</p>
 
       <div className="relative mx-auto max-w-6xl">
         <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_1.15fr]">

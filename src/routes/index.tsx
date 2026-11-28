@@ -94,6 +94,13 @@ function Home() {
         </div>
       </section>
 
+      {/* 2 · Sentirse incluido: el sello más humano de Enlace, justo después de ver vacantes */}
+      <EmpleoParaTodosBanda />
+
+      {/* 3 · Explorar: Estado + áreas y provincias */}
+      <ExploraEmpleos jobs={jobs} provincias={provinciasConVacantes} />
+
+      {/* 4 · Decidir: ¿buscas empleo o buscas talento? */}
       <section className="border-y border-border bg-surface px-4 py-8 sm:px-6 sm:py-10">
         <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">
           {/* Candidatos: tono claro y cercano */}
@@ -149,19 +156,11 @@ function Home() {
       </section>
 
       <RegaliaBanda />
-      <EmpleoParaTodosBanda />
+
+      {/* 5 · Quedarse conectado */}
       <FeriasConectadas />
       <RecibeVacantes />
 
-      <ExploraEmpleos jobs={jobs} provincias={provinciasConVacantes} />
-
-      <EnlaceAnimado ondas className="mb-12" video="/video/apreton-1280.mp4" credito="Video: Yan Krukau · Pexels">
-        <p className="mx-auto max-w-2xl text-balance text-lg font-semibold leading-relaxed text-white/90 sm:text-xl">Conectamos talento con oportunidades reales en toda República Dominicana. Sin discriminación, con información clara y gratis para quien busca empleo.</p>
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Link to="/vacantes" className="inline-flex h-12 items-center rounded-xl bg-white px-6 font-bold text-[#0a2f5c] shadow-lg transition-transform hover:-translate-y-0.5">Ver empleos</Link>
-          <Link to="/empresas" className="inline-flex h-12 items-center rounded-xl bg-white/15 px-6 font-bold text-white ring-1 ring-white/40 backdrop-blur transition-colors hover:bg-white/25">Publicar una vacante</Link>
-        </div>
-      </EnlaceAnimado>
       <section className="cv-auto border-t border-border bg-surface py-10 sm:py-12">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="flex items-end justify-between gap-3">
@@ -192,15 +191,13 @@ function Home() {
         </div>
       </section>
 
-      <section className="cv-auto px-4 py-8 sm:px-6 sm:py-10">
-        <div className="hero-dark mx-auto flex max-w-6xl flex-col gap-4 rounded-3xl p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-          <div>
-            <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">{t.reclutadores_titulo}</h2>
-            <p className="mt-1 text-sm text-white/80 sm:text-base">Publicar vacantes es gratis. Llega a candidatos de todo el país.</p>
-          </div>
-          <Link to="/empresas" className="btn-aplicar shrink-0 rounded-xl px-6 py-3 text-center">Publicar vacante gratis</Link>
+      <EnlaceAnimado ondas className="mt-4" video="/video/apreton-1280.mp4">
+        <p className="mx-auto max-w-2xl text-balance text-lg font-semibold leading-relaxed text-white/90 sm:text-xl">Detrás de cada vacante hay una persona que necesita una oportunidad y una empresa que necesita a alguien bueno. Nosotros hacemos el enlace, gratis y sin discriminación.</p>
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <Link to="/vacantes" className="inline-flex h-12 items-center rounded-xl bg-white px-6 font-bold text-[#0a2f5c] shadow-lg transition-transform hover:-translate-y-0.5">Ver empleos</Link>
+          <Link to="/empresas" className="inline-flex h-12 items-center rounded-xl bg-white/15 px-6 font-bold text-white ring-1 ring-white/40 backdrop-blur transition-colors hover:bg-white/25">Publicar una vacante</Link>
         </div>
-      </section>
+      </EnlaceAnimado>
       <Footer />
     </div>
   );
