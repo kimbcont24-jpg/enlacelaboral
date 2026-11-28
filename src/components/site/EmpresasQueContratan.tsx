@@ -15,8 +15,18 @@ export function EmpresasQueContratan() {
   const { jobs } = useVacantes();
   const { lista, total } = useMemo(() => {
     const filas = directorioEmpresas(jobs).filter((f) => !f.recluta);
-    const orden = [...filas].sort((a, b) => Number(b.aliada) - Number(a.aliada) || b.vacantes - a.vacantes);
-    return { lista: orden.slice(0, 16), total: filas.length };
+    // Aliadas que contratan seguido (2+ vacantes) primero; luego las que más contratan, que son las más conocidas.
+    const aliadas = filas.filter((f) => f.aliada && f.vacantes >= 2).sort((a, b) => b.vacantes - a.vacantes).slice(0, 6);
+    const grandes = [...filas].sort((a, b) => b.vacantes - a.vacantes);
+    // Sin repetir la misma empresa escrita distinto («Chiller Service» / «Chillerservice»).
+    const vistas = new Set<string>();
+    const lista = [...aliadas, ...grandes].filter((f) => {
+      const k = f.nombre.toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g, "").replace(/(srl|sas|sa|inc)$/, "");
+      if (vistas.has(k)) return false;
+      vistas.add(k);
+      return true;
+    }).slice(0, 16);
+    return { lista, total: filas.length };
   }, [jobs]);
   if (lista.length < 6) return null;
 
