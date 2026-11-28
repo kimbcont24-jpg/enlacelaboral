@@ -1,0 +1,32 @@
+[
+ {
+  "titulo": "Chofer Categoría 3",
+  "empresa": "Empresa de eventos (confidencial)",
+  "provincia": "Santo Domingo",
+  "area": "Logística",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Empresa de eventos busca Chofer con licencia categoría 3. Salario base RD$30,000 más dieta por eventos. Disponible para trabajar fines de semana y días feriados. Ubicación por confirmar.",
+  "requisitos": "Licencia de conducir categoría 3 | Disponibilidad fines de semana y días feriados",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "WhatsApp 839-722-1377",
+  "imagen": "https://enlace-rd.vercel.app/flyers/empresa-confidencial-chofer-categoria-3.jpg",
+  "redes": "si"
+ },
+ {
+  "titulo": "Encargado(a) de Electricidad",
+  "empresa": "Instituto Politécnico Loyola",
+  "provincia": "San Cristóbal",
+  "area": "Producción",
+  "modalidad": "Presencial",
+  "tipo": "Tiempo completo",
+  "experiencia": "Sin experiencia",
+  "descripcion": "Dirige y coordina las labores de electricidad y climatización de la institución mediante la planificación preventiva y correctiva de redes e instalaciones eléctricas, y el diseño de propuestas de eficiencia energética y ahorro de energía.",
+  "requisitos": "Ingeniero Eléctrico y/o Electromecánico | Licencia de la SIE como técnico electricista | Conocimiento amplio del Código Eléctrico Nacional CEN-RD | Instalaciones eléctricas residenciales e industriales | Controles eléctricos y conexiones de máquinas | Manejo de plantas eléctricas, ATS y PLC | Diseño y elaboración de planes y proyectos | Interpretación de planos eléctricos y diagramas",
+  "fuente": "Flyer de la empresa",
+  "aplicar": "reclutamiento@ipl.edu.do · Tel. 809-528-4010 Ext. 3101",
+  "imagen": "https://enlace-rd.vercel.app/flyers/instituto-politecnico-loyola-encargado-electricidad.jpg",
+  "redes": "si"
+ }
+]
