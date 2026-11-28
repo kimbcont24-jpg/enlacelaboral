@@ -159,7 +159,7 @@ function Cuenta({ n, sufijo = "" }: { n: number; sufijo?: string }) {
     if (!n) { setV(0); return; }
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) { setV(n); return; }
     let raf = 0; const t0 = performance.now(); const dur = 1100;
-    const paso = (t: number) => { const p = Math.min(1, (t - t0) / dur); setV(Math.round(n * (1 - Math.pow(1 - p, 3)))); if (p < 1) raf = requestAnimationFrame(paso); };
+    const paso = (t: number) => { const p = Math.min(1, Math.max(0, (t - t0) / dur)); setV(Math.round(n * (1 - Math.pow(1 - p, 3)))); if (p < 1) raf = requestAnimationFrame(paso); };
     raf = requestAnimationFrame(paso);
     return () => cancelAnimationFrame(raf);
   }, [n]);

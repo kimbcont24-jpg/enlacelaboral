@@ -29,7 +29,7 @@ export function Contador({ valor, formato = (n: number) => Math.round(n).toLocal
       visto.current = true;
       const t0 = performance.now(), desde = actual.current;
       const paso = (t: number) => {
-        const p = Math.min(1, (t - t0) / ms);
+        const p = Math.min(1, Math.max(0, (t - t0) / ms));
         actual.current = desde + (valor - desde) * (1 - Math.pow(1 - p, 3));
         setV(actual.current);
         if (p < 1) raf = requestAnimationFrame(paso);

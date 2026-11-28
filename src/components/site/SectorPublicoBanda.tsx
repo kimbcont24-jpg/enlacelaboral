@@ -26,7 +26,7 @@ export function SectorPublicoBanda({ jobs }: { jobs: Vacante[] }) {
           <h3 className="mt-3 text-xl font-extrabold leading-tight sm:text-2xl">Empleos en el Estado dominicano</h3>
           <p className="mt-1.5 text-sm text-white/80 sm:text-base">Ministerios, ayuntamientos, hospitales y empresas públicas. Te explicamos cómo aplicar por Concursa, el portal oficial de concursos del MAP.</p>
           <p className="mt-3 text-sm font-semibold text-white/90">
-            {total > 0 ? <><b className="text-2xl font-extrabold text-white">{total}</b> {total === 1 ? "vacante abierta" : "vacantes abiertas"}{nuevas > 0 && <span className="ml-2 rounded-full bg-[#c8102e] px-2 py-0.5 text-xs font-bold">+{nuevas} esta semana</span>}</> : "Ahora mismo no hay plazas abiertas: activa tu alerta y te escribimos el mismo día que salga una."}
+            {total > 0 ? <><b className="text-2xl font-extrabold text-white">{total}</b> {total === 1 ? "vacante abierta" : "vacantes abiertas"}{nuevas > 0 && <span className="ml-2 rounded-full bg-[#c8102e] px-2 py-0.5 text-xs font-bold">+{nuevas} esta semana</span>}</> : jobs.length === 0 ? "Revisamos las plazas del Estado todos los días." : "Ahora mismo no hay plazas abiertas: activa tu alerta y te escribimos el mismo día que salga una."}
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2.5">

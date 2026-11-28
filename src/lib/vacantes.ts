@@ -64,7 +64,7 @@ export type VacanteRow = {
 export const SELECT = "id,titulo,area,provincia,modalidad,tipo,experiencia,salario_min,salario_max,descripcion,requisitos,etiquetas,estado,created_at,destacada,preguntas";
 
 /** Las empresas sin nombre («… (confidencial)», «Confidencial») se guardan todas igual. */
-export const empresaDe = (e?: string) => (!e || /^(…|\.\.\.)|^\s*(empresa\s+)?confidencial\s*$|\(confidencial\)\s*$/i.test(e.trim()) ? "Empresa no indicada" : e.trim());
+export const empresaDe = (e?: string) => (!e || /^(…|\.\.\.)|^\s*(empresa\s+)?confidencial\s*$|\(confidencial\)\s*$|^\s*(tu|mi|nombre de (la|tu))\s+empresa\s*$/i.test(e.trim()) ? "Empresa no indicada" : e.trim());
 
 const pesos = (n: number) => `RD$${n.toLocaleString("es-DO")}`;
 
@@ -93,6 +93,36 @@ export function hace(fecha: string) {
 
 // Cero discriminación al mostrar: fuera el sexo pegado al puesto y los requisitos de edad, sexo, foto, estado civil o apariencia.
 const SEXO_EN_TITULO = /\s*[(\-–]?\s*(masculino|femenina|femenino)\s*\)?\s*$/i;
+
+// Títulos solo en femenino («Coordinadora», «Cajera») se muestran para cualquier persona: «Coordinador(a)», «Cajero(a)».
+// Solo se tocan puestos conocidos y nunca si el título ya trae «(a)», «/a» o «/o».
+const PUESTO_FEMENINO: Record<string, string> = Object.fromEntries([
+  // -ora → -or
+  ...["coordinador", "promotor", "vendedor", "supervisor", "contador", "diseñador", "programador", "operador", "asesor", "gestor", "cobrador", "digitador", "encuestador", "entrenador", "instructor", "investigador", "auditor", "inspector", "desarrollador", "administrador", "organizador", "facilitador", "conductor", "repartidor", "empacador", "despachador", "teleoperador", "redactor", "traductor", "locutor", "productor", "editor"].map((m) => [`${m}a`, m]),
+  // -a → -o
+  ...["cajer", "camarer", "cociner", "meser", "enfermer", "niñer", "mensajer", "panader", "reposter", "ingenier", "secretari", "abogad", "encargad", "emplead", "ejecutiv", "licenciad", "técnic", "tecnic"].map((r) => [`${r}a`, `${r}o`]),
+]);
+export function tituloInclusivo(titulo: string): string {
+  if (/\((a|as|o|os)\)|\/\s*(a|as|o|os)\b|@/i.test(titulo)) return titulo;
+  // Solo la palabra del puesto (la primera) y, si cambió, el adjetivo que la sigue («Secretaria Ejecutiva»).
+  let pos = 0;
+  let cambio = false;
+  return titulo.replace(/\p{L}+/gu, (w) => {
+    const i = pos++;
+    if (i > 1 || (i === 1 && !cambio)) return w;
+    const low = w.toLowerCase();
+    const plural = !PUESTO_FEMENINO[low] && low.endsWith("s") ? PUESTO_FEMENINO[low.slice(0, -1)] : undefined;
+    const base = PUESTO_FEMENINO[low] ?? plural;
+    if (!base) return w;
+    cambio = true;
+    const masc = plural ? `${base}s` : base;
+    const fem = plural ? "(as)" : "(a)";
+    if (w === w.toUpperCase() && w.length > 1) return `${masc.toUpperCase()}${fem.toUpperCase()}`;
+    return `${w[0] === w[0]!.toUpperCase() ? masc[0]!.toUpperCase() + masc.slice(1) : masc}${fem}`;
+  });
+}
+/** Títulos que llegaron cortados por el lector de fotos («Personal de limpieza /»). */
+const COLA_ROTA = /[\s/\\\-–,:;(]+$/;
 const REQUISITO_EXCLUYE = /(\bedad\b.*\d{2}|\b\d{2}\s*(a|y|-|–)\s*\d{2}\s*años(?!\s*de\s*experiencia)|\bsexo\b|preferiblemente\s+(hombre|mujer|masculino|femenin)|\b(solo|sólo)\s+(hombres|mujeres|damas|caballeros)\b|buena presencia|\bfoto|estado civil|\bsolter[oa]|\bcasad[oa]\b|estatura|\bpeso\b|menor(es)? de \d{2} años)/i;
 
 export function rowToVacante(r: VacanteRow): Vacante {
@@ -106,7 +136,7 @@ export function rowToVacante(r: VacanteRow): Vacante {
   const salario = min > 0 ? (max ? `${pesos(min)} - ${pesos(max)}` : pesos(min)) : "";
   return {
     id: r.id,
-    titulo: r.titulo.replace(SEXO_EN_TITULO, "").trim() || r.titulo,
+    titulo: tituloInclusivo(r.titulo.replace(SEXO_EN_TITULO, "").replace(COLA_ROTA, "").trim() || r.titulo),
     empresa: empresaDe(meta["empresa"]),
     provincia: r.provincia,
     modalidad: r.modalidad,

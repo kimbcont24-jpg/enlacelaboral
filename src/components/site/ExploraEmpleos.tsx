@@ -57,7 +57,7 @@ export function ExploraEmpleos({ jobs, provincias }: { jobs: Vacante[]; provinci
                     <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white"><Icono className="size-[1.1rem]" /></span>
                     <span className="min-w-0 leading-tight">
                       <span className="block truncate text-[13px] font-bold sm:text-sm">{area}</span>
-                      <span className="block text-xs text-muted-foreground">{total} {total === 1 ? "vacante" : "vacantes"}</span>
+                      <span className="block text-xs text-muted-foreground">{jobs.length === 0 ? "Ver vacantes" : `${total.toLocaleString("es-DO")} ${total === 1 ? "vacante" : "vacantes"}`}</span>
                     </span>
                   </Link>
                 );

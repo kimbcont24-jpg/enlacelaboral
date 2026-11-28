@@ -41,6 +41,6 @@ export function nivelDe(job: Pick<Vacante, "titulo" | "experiencia">): (typeof N
   const t = job.titulo.toLowerCase();
   if (/gerente|director|directora|jefe|jefa|encargad|head of|líder|lider|coordinador|coordinadora|supervisor|supervisora/.test(t)) return "Gerencial";
   if (job.experiencia === "Sin experiencia") return "Primer empleo";
-  if (/t[eé]cnic|operari|auxiliar|mensajer|chofer|conductor|cajer|vendedor|vendedora|almacen|seguridad|limpieza|mec[aá]nic|electricist|soldador|cocinero|mesero|mesera|asistente|recepcion/.test(t)) return "Operativo / técnico";
+  if (/t[eé]cnic|operari|operador|auxiliar|ayudante|mensajer|chofer|conductor|repartidor|cajer|vendedor|promotor|almacen|empacador|despachador|montacargas|estibador|seguridad|vigilan|guardi[aá]n|limpieza|conserje|camarist|camarer|pasiller|houseman|steward|botones|ama de llaves|lavander|jardiner|pintor|carpinter|plomer|alba[nñ]il|mec[aá]nic|electricist|soldador|cociner|panader|reposter|carnicer|mesero|mesera|bartender|barista|asistente|recepcion|digitador|teleoperador|agente de (servicio|call|ventas)|personal de/.test(t)) return "Operativo / técnico";
   return "Profesional";
 }

@@ -107,9 +107,9 @@ function Home() {
                 <h2 className="text-xl font-extrabold tracking-tight text-primary sm:text-2xl">¿Buscas empleo?</h2>
               </div>
             </div>
-            <p className="relative mt-4 text-[15px] leading-relaxed text-muted-foreground">Mira el salario y los requisitos <span className="font-semibold text-foreground">antes</span> de aplicar. Sin adivinanzas y sin pagar nada.</p>
+            <p className="relative mt-4 text-[15px] leading-relaxed text-muted-foreground">Mira los requisitos, cómo aplicar y el salario cuando la empresa lo publica, <span className="font-semibold text-foreground">antes</span> de aplicar. Sin adivinanzas y sin pagar nada.</p>
             <ul className="relative mt-4 flex flex-wrap gap-2 text-xs font-bold text-primary">
-              <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-[#cfe0fb]"><Wallet className="size-3.5 text-[#0f7a43]" aria-hidden="true" /> Salario a la vista</li>
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-[#cfe0fb]"><Wallet className="size-3.5 text-[#0f7a43]" aria-hidden="true" /> Filtra las que traen salario</li>
               <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-[#cfe0fb]"><BadgeCheck className="size-3.5 text-cta" aria-hidden="true" /> Aplicas gratis</li>
               <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 ring-1 ring-[#cfe0fb]"><FileText className="size-3.5 text-cta" aria-hidden="true" /> CV en 5 minutos</li>
             </ul>

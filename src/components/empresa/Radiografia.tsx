@@ -35,7 +35,7 @@ export function Contador({ a, sufijo = "", ms = 1100 }: { a: number; sufijo?: st
   useEffect(() => {
     if (!visto) return;
     let raf = 0; const t0 = performance.now();
-    const paso = (t: number) => { const p = Math.min(1, (t - t0) / ms); setN(Math.round(a * (1 - Math.pow(1 - p, 3)))); if (p < 1) raf = requestAnimationFrame(paso); };
+    const paso = (t: number) => { const p = Math.min(1, Math.max(0, (t - t0) / ms)); setN(Math.round(a * (1 - Math.pow(1 - p, 3)))); if (p < 1) raf = requestAnimationFrame(paso); };
     raf = requestAnimationFrame(paso);
     return () => cancelAnimationFrame(raf);
   }, [visto, a, ms]);

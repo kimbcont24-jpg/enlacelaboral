@@ -57,7 +57,7 @@ export function PieCalculadora({ nota }: { nota?: string }) {
       <section className="mt-10 grid gap-6 lg:grid-cols-2">
         <div className="rounded-3xl border border-border bg-surface p-6">
           <h2 className="text-xl font-extrabold">¿Buscas empleo?</h2>
-          <p className="mt-2 text-muted-foreground">Mira vacantes reales con el salario a la vista y aplica gratis.</p>
+          <p className="mt-2 text-muted-foreground">Mira vacantes reales, filtra las que traen salario y aplica gratis.</p>
           <Link to="/vacantes" className="btn-aplicar mt-4 inline-flex rounded-xl px-6 py-3">Ver vacantes</Link>
           <div className="mt-3"><CanalWhatsApp variante="boton" /></div>
         </div>
