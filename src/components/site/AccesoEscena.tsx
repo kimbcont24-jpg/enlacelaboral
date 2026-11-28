@@ -109,9 +109,10 @@ function useContar(meta: number) {
     if (!meta) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) { setN(meta); return; }
     const t0 = performance.now(); let raf = 0;
-    const paso = (t: number) => { const k = Math.min(1, Math.max(0, (t - t0) / 1400)); setN(Math.round(meta * (1 - (1 - k) ** 3))); if (k < 1) raf = requestAnimationFrame(paso); };
+    const paso = () => { const k = Math.min(1, Math.max(0, (performance.now() - t0) / 1400)); setN(Math.round(meta * (1 - (1 - k) ** 3))); if (k < 1) raf = requestAnimationFrame(paso); };
     raf = requestAnimationFrame(paso);
-    return () => cancelAnimationFrame(raf);
+    const fin = setTimeout(() => { cancelAnimationFrame(raf); setN(meta); }, 1600);
+    return () => { cancelAnimationFrame(raf); clearTimeout(fin); };
   }, [meta]);
   return n;
 }

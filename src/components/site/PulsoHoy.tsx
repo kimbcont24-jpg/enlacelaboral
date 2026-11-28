@@ -23,14 +23,17 @@ function useCuenta(objetivo: number, activo: boolean, ms = 1100) {
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setV(objetivo); return; }
     let raf = 0;
     const t0 = performance.now();
-    const paso = (t: number) => {
-      const p = Math.min(1, Math.max(0, (t - t0) / ms));
+    // Se mide con el reloj real (no con la hora del cuadro) y nunca baja de 0.
+    const paso = () => {
+      const p = Math.min(1, Math.max(0, (performance.now() - t0) / ms));
       setV(objetivo * (1 - Math.pow(1 - p, 3)));
       if (p < 1) raf = requestAnimationFrame(paso);
     };
     setV(0);
     raf = requestAnimationFrame(paso);
-    return () => cancelAnimationFrame(raf);
+    // Si el navegador no anima (pestaña en segundo plano, robots de Google), igual queda el número real.
+    const fin = setTimeout(() => { cancelAnimationFrame(raf); setV(objetivo); }, ms + 200);
+    return () => { cancelAnimationFrame(raf); clearTimeout(fin); };
   }, [objetivo, activo, ms]);
   return v;
 }

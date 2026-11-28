@@ -23,23 +23,26 @@ export function Contador({ valor, formato = (n: number) => Math.round(n).toLocal
   useEffect(() => {
     if (sinMovimiento()) { actual.current = valor; setV(valor); return; }
     let raf = 0;
+    let fin: ReturnType<typeof setTimeout> | undefined;
     const el = ref.current;
     // Sube (o baja) desde el número que ya se ve, no desde cero.
     const correr = () => {
       visto.current = true;
       const t0 = performance.now(), desde = actual.current;
-      const paso = (t: number) => {
-        const p = Math.min(1, Math.max(0, (t - t0) / ms));
+      const paso = () => {
+        const p = Math.min(1, Math.max(0, (performance.now() - t0) / ms));
         actual.current = desde + (valor - desde) * (1 - Math.pow(1 - p, 3));
         setV(actual.current);
         if (p < 1) raf = requestAnimationFrame(paso);
       };
       raf = requestAnimationFrame(paso);
+      // Respaldo: si el navegador no anima, queda el número real.
+      fin = setTimeout(() => { if (actual.current !== valor) { cancelAnimationFrame(raf); actual.current = valor; setV(valor); } }, ms + 200);
     };
-    if (visto.current || !el || typeof IntersectionObserver === "undefined") { correr(); return () => cancelAnimationFrame(raf); }
+    if (visto.current || !el || typeof IntersectionObserver === "undefined") { correr(); return () => { cancelAnimationFrame(raf); clearTimeout(fin); }; }
     const io = new IntersectionObserver(([e]) => { if (e?.isIntersecting) { correr(); io.disconnect(); } }, { threshold: 0.4 });
     io.observe(el);
-    return () => { io.disconnect(); cancelAnimationFrame(raf); };
+    return () => { io.disconnect(); cancelAnimationFrame(raf); clearTimeout(fin); };
   }, [valor, ms]);
   return <span ref={ref} className="tabular-nums">{formato(v)}</span>;
 }
