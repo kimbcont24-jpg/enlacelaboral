@@ -8,6 +8,7 @@ import { ArrowRight, Bell, Building2, CalendarCheck, CalendarClock, Check, Clipb
 
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { EmpresasQueContratan } from "@/components/site/EmpresasQueContratan";
 import { supabase } from "@/integrations/supabase/client";
 import { useControles } from "@/lib/controles";
 import { provincias } from "@/lib/data";
@@ -124,6 +125,9 @@ function Empresas() {
           </div>
         </div>
       </header>
+
+      {/* 1.5 Prueba social: empresas reales con vacantes abiertas */}
+      <EmpresasQueContratan />
 
       {/* 2. Qué pasa después + la vía del correo, explicada */}
       <section className="border-b border-border bg-surface px-4 py-12 sm:px-6 md:py-16">

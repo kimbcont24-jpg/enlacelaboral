@@ -16,11 +16,13 @@ import { lema, nombreEmpresa } from "@/lib/presentar";
 export function ClaridadPill({ job, className = "" }: { job: Vacante; className?: string }) {
   const c = claridad(job);
   if (c.puntos === c.total) return <SelloClara className={className} />;
-  const tono = c.nivel === "Alta" ? "bg-success/10 text-success" : c.nivel === "Media" ? "bg-cta/15 text-[#8a5200]" : "bg-muted text-muted-foreground";
+  // Medida neutra («5 de 6 datos»), no un juicio («claridad media»): informa sin castigar y deja que el sello 6/6 resalte.
+  const tono = c.nivel === "Alta" ? "bg-success/10 text-success" : "bg-secondary text-muted-foreground";
+  const falta = c.falta.length ? `Falta: ${c.falta.join(", ").toLowerCase()}.` : "";
   return (
-    <span title={`Tiene: ${c.tiene.join(", ") || "poca información"}`} className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${tono} ${className}`}>
+    <span title={`${c.puntos} de ${c.total} datos clave. ${falta} Pregúntalo antes de la entrevista.`} aria-label={`${c.puntos} de ${c.total} datos clave. ${falta}`} className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${tono} ${className}`}>
       <span aria-hidden="true" className="flex gap-0.5">{Array.from({ length: c.total }, (_, i) => <span key={i} className={`h-2.5 w-1 rounded-full ${i < c.puntos ? "bg-current" : "bg-current opacity-20"}`} />)}</span>
-      Claridad {c.nivel.toLowerCase()}
+      {c.puntos} de {c.total} datos
     </span>
   );
 }
