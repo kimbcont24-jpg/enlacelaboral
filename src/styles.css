@@ -298,13 +298,34 @@ html.a11y-lectura p, html.a11y-lectura li { max-width: 70ch; }
   .ept-orbita, .ept-nodo, .ept-latido::before { animation: none; }
 }
 
-/* Franja «Empleo para todos» de la portada: bordes curvos, degradado que se desplaza y parallax */
-.ept-banda{border-radius:62% 38% 55% 45% / 70px 46px 64px 40px}
-@media (max-width:640px){.ept-banda{border-radius:60% 40% 55% 45% / 36px 24px 34px 22px}}
-.ept-banda-fondo{background:linear-gradient(110deg,#0f7a43 0%,#0b5a6e 22%,#0f4aa8 48%,#0a2f5c 70%,#1d6ff2 88%,#0f7a43 110%);background-size:260% 100%;background-position:calc(var(--p) * 100%) 50%}
-.ept-banda-fondo::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at calc(20% + var(--p) * 60%) 30%,rgb(126 226 168/.22),transparent 60%),radial-gradient(50% 70% at calc(85% - var(--p) * 50%) 80%,rgb(29 111 242/.3),transparent 60%)}
-.ept-banda-simbolo{transform:translate(-50%,calc(-50% + (var(--p) - .5) * 260px)) rotate(calc((var(--p) - .5) * 14deg))}
-.ept-banda-marca{transform:translateY(calc((.5 - var(--p)) * 90px))}
+/* Franja «Empleo para todos» de la portada.
+   --p = cuánto ha recorrido la pantalla (0 a 1) · --e = cuánto ha entrado (0 a 1). Las pone EmpleoParaTodosBanda.tsx al bajar. */
+.ept-banda{border-radius:62% 38% 55% 45% / 70px 46px 64px 40px;transform:scale(calc(.93 + .07 * var(--e)));transform-origin:50% 30%;will-change:transform}
+@media (max-width:640px){.ept-banda{border-radius:60% 40% 55% 45% / 36px 24px 34px 22px;transform:scale(calc(.96 + .04 * var(--e)))}}
+/* Azules de la marca (#0a2f5c → #1257c7): el texto blanco siempre pasa el contraste AA. El verde queda como luz, no como fondo. */
+.ept-banda-fondo{background:linear-gradient(115deg,#06264d 0%,#0a2f5c 20%,#0d3f8f 42%,#1257c7 62%,#0a2f5c 82%,#07304f 100%);background-size:240% 100%;background-position:calc(var(--p) * 100%) 50%}
+.ept-banda-fondo::after{content:"";position:absolute;inset:0;background:radial-gradient(45% 70% at calc(8% + var(--p) * 70%) 18%,rgb(126 226 168/.2),transparent 62%),radial-gradient(45% 70% at calc(96% - var(--p) * 60%) 88%,rgb(142 193 255/.28),transparent 62%),radial-gradient(30% 45% at calc(60% - var(--p) * 30%) 50%,rgb(255 216 77/.07),transparent 70%)}
+.ept-banda-simbolo{transform:translate(-50%,calc(-50% + (var(--p) - .5) * 300px)) rotate(calc((var(--p) - .5) * 18deg)) scale(calc(.9 + var(--p) * .25))}
+.ept-banda-texto{opacity:clamp(0,calc(var(--e) * 2.2 - .3),1);transform:translateX(calc((1 - clamp(0,calc(var(--e) * 1.6 - .2),1)) * -36px))}
+/* Tarjetas: suben una detrás de otra a medida que la franja entra */
+.ept-carta-sube{--k:clamp(0,calc(var(--e) * 2 - .35 - var(--i) * .13),1);opacity:var(--k);transform:translateY(calc((1 - var(--k)) * 46px)) scale(calc(.94 + var(--k) * .06))}
+.ept-carta{border:1px solid rgb(255 255 255/.2);background:linear-gradient(160deg,rgb(255 255 255/.13),rgb(255 255 255/.05));box-shadow:inset 0 1px 0 rgb(255 255 255/.16),0 18px 30px -24px rgb(3 16 38/.9);transition:transform .3s var(--ease-out-expo),border-color .3s,box-shadow .3s}
+.ept-carta::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(220px circle at var(--mx,50%) var(--my,0%),color-mix(in srgb,var(--c) 30%,transparent),transparent 70%)}
+.ept-carta::after{content:"";position:absolute;left:1.25rem;right:1.25rem;top:0;height:2px;border-radius:2px;pointer-events:none;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.55;transition:opacity .3s,left .3s,right .3s}
+.ept-carta>*{position:relative}
+.ept-carta-icono{color:var(--c);background:color-mix(in srgb,var(--c) 16%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent);transition:transform .35s var(--ease-out-expo),background-color .3s}
+.ept-carta-flecha{color:var(--c);background:rgb(255 255 255/.1);box-shadow:inset 0 0 0 1px rgb(255 255 255/.22);transition:transform .3s var(--ease-out-expo),background-color .3s,color .3s}
+.ept-carta:hover,.ept-carta:focus-visible{transform:translateY(-4px);border-color:color-mix(in srgb,var(--c) 70%,transparent);box-shadow:inset 0 1px 0 rgb(255 255 255/.2),0 24px 40px -22px color-mix(in srgb,var(--c) 55%,transparent)}
+.ept-carta:hover::before,.ept-carta:focus-visible::before{opacity:1}
+.ept-carta:hover::after,.ept-carta:focus-visible::after{opacity:1;left:.5rem;right:.5rem}
+.ept-carta:hover .ept-carta-icono,.ept-carta:focus-visible .ept-carta-icono{transform:scale(1.08) rotate(-6deg);background:color-mix(in srgb,var(--c) 26%,transparent)}
+.ept-carta:hover .ept-carta-flecha,.ept-carta:focus-visible .ept-carta-flecha{background:var(--c);color:#06264d;transform:translateX(3px)}
+.ept-carta:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.ept-carta:active{transform:translateY(-1px) scale(.985)}
+/* El nombre: completo, con relleno visible y una luz que lo cruza con el scroll */
+.ept-banda-marca{transform:translateY(calc((.5 - var(--p)) * 44px))}
+.ept-banda-nombre{font-size:9.4vw;color:transparent;-webkit-text-stroke:1px rgb(255 255 255/.22);background:linear-gradient(100deg,rgb(255 255 255/.2) 0%,rgb(255 255 255/.2) 38%,rgb(214 232 255/.72) 50%,rgb(255 255 255/.2) 62%,rgb(255 255 255/.2) 100%);background-size:300% 100%;background-position:calc(125% - var(--p) * 150%) 50%;-webkit-background-clip:text;background-clip:text}
+@media (prefers-reduced-motion: reduce){.ept-banda,.ept-banda-texto,.ept-carta-sube,.ept-banda-marca,.ept-banda-simbolo{transform:none;opacity:1}.ept-banda-simbolo{transform:translate(-50%,-50%)}.ept-carta,.ept-carta-icono,.ept-carta-flecha{transition:none}}
 
 /* Insignias (Perfila): la medalla aparece con un salto suave. */
 @keyframes insignia-pop {
