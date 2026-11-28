@@ -1,8 +1,8 @@
 {
-  "fecha": "2026-11-28T11:26:06.044Z",
-  "total": 652,
-  "revisadas": 134,
-  "sin_contacto": 134,
+  "fecha": "2026-11-28T13:51:30.204Z",
+  "total": 653,
+  "revisadas": 133,
+  "sin_contacto": 133,
   "regla": "todas; las que traen correo o WhatsApp se aplican desde Enlace Laboral",
   "resumen": {
     "nst": 0,
@@ -11,7 +11,7 @@
     "marriott": 54,
     "citi": 2,
     "medtronic": 1,
-    "baxter": 1,
+    "baxter": "error: Error: 403 https://jobs.baxter.com/en/location/provincia-de-san-cristobal-dominican-republic-jobs/152-33592/3508796-3493",
     "eaton": 65
   }
 }
